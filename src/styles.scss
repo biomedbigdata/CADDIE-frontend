@@ -1,0 +1,240 @@
+/* You can add global styles to this file, and also import other style files */
+
+@charset "utf-8";
+
+@import url('https://fonts.googleapis.com/css?family=Varela+Round');
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+$family-sans-serif: "Varela Round", sans-serif;
+$primary: #3070B3;
+$success: #48C774;
+$danger: #EF476F;
+$link: $primary;
+$info: $primary;
+@import "~bulma/bulma.sass";
+@import '~bulma-tooltip';
+@import "~primeng/resources/primeng.min.css";
+@import "~primeicons/primeicons.css";
+
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  height: 100%;
+}
+
+nav.navbar {
+  height: 60px;
+}
+
+img.menu-icon.is-hoverable.navbar-item.logo {
+  height: 40px;
+  width: 125px;
+  padding: 0;
+}
+
+.landing {
+  background-color: $primary;
+  background-image: url("assets/virus_background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: calc(100vh - 60px);
+  width: 100vw;
+}
+
+div.navbar-menu {
+  margin-left: 5px;
+}
+
+span.icon {
+  margin-right: 5px;
+}
+
+img {
+  margin: 10px;
+}
+
+img.inline {
+  height: 30px;
+  align: middle;
+
+}
+
+button.i {
+  margin-left: 5px;
+}
+
+input.checkbox {
+  margin-left: 15px;
+}
+
+div.covex.sidebar {
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 350px;
+}
+
+div.covex.bar-left {
+  float: left;
+}
+
+div.covex.bar-right {
+  float: right;
+}
+
+div.card.bar-small {
+  margin-bottom: 15px;
+  word-wrap: break-word;
+  height: 130px;
+}
+
+div.card.bar-medium {
+  margin-bottom: 15px;
+  word-wrap: break-word;
+  height: 170px;
+}
+
+div.card.bar-large {
+  margin-bottom: 15px;
+  max-height: 600px;
+}
+
+div.card-content.overflow {
+  overflow: auto;
+  max-height: 350px;
+}
+
+div.covex.left-window {
+  float: left;
+  width: calc(100vw - 350px - 2 * 20px);
+  height: 100%;
+}
+
+div.covex.network {
+  width: calc(100% - 350px - 40px);
+  height: calc(100vh - 100px);
+  margin-left: 20px;
+  margin-right: 20px;
+  float: right;
+}
+
+div.card.network {
+  width: 100%;
+  height: calc(100vh - 75px);
+}
+
+div.network {
+  height: calc(100vh - 200px);
+}
+
+div.parent {
+  position: relative;
+}
+
+div.image1 {
+  position: relative;
+}
+
+div.image2 {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+
+div.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+div.covex.explorer {
+  height: calc(100vh - 70px);
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.analysis-view {
+  height: 100%;
+  width: calc(100% - 20px);
+  position: relative;
+  margin-top: 0;
+}
+
+div.field.has-addons.add-remove-toggle {
+  margin-top: 20px;
+}
+
+.fa-check {
+  color: $success;
+}
+
+.fa-search.investigational {
+  color: $warning;
+}
+
+.fa-spinner {
+  color: $light-invert;
+}
+
+.fa-pause {
+  color: $warning;
+}
+
+.fa-exclamation-triangle {
+  color: $danger;
+}
+
+.fa-times {
+  color: $danger;
+}
+
+.footer-buttons {
+  margin-left: 20px;
+  margin-right: 10px;
+}
+
+.toolbar {
+  padding: 5px;
+  border-top: 2px solid #d0d0d0;
+
+  .field {
+    margin-bottom: 0;
+    .control {
+      margin-bottom: 0;
+    }
+  }
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+
+.ui-chkbox-box {
+  border: 1px solid black !important;
+}
+
+.tissue-dropdown {
+  padding: 5px;
+  background-color: rgba(255.0, 255.0, 255.0, 0.85);
+
+  .scroll-area {
+    max-height: 600px;
+    overflow-y: scroll;
+    padding-right: 5px;
+  }
+}
+
+.mb-3 {
+  margin-bottom: 10px;
+}

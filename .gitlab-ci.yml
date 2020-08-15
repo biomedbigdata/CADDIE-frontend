@@ -1,0 +1,83 @@
+stages:
+  - setup
+  - check
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+setup:
+  image: trion/ng-cli-karma
+  stage: setup
+  script:
+    - npm install
+
+check:lint:
+  image: trion/ng-cli-karma
+  stage: check
+  script:
+    - npm install
+    - npm run lint
+  dependencies:
+    - setup
+
+#check:test:
+#  image: trion/ng-cli-karma
+#  stage: check
+#  script:
+#    - npm install
+#    - ng test
+#  dependencies:
+#    - setup
+
+build:
+  image: trion/ng-cli-karma
+  stage: build
+  artifacts:
+    paths:
+      - dist
+  script:
+    - npm install
+    - npm run build
+  dependencies:
+    - check:lint
+#    - check:test
+
+deploy:dev:
+  image: docker
+  stage: deploy
+  only:
+    - master
+  services:
+    - docker:dind
+  variables:
+    CONTAINER_HOSTNAME: docker
+  before_script:
+    - docker info
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t gitlab.lrz.de:5005/covid-19/frontend:dev -f ./Dockerfile.dev .
+    - docker push gitlab.lrz.de:5005/covid-19/frontend:dev
+  dependencies:
+    - build
+
+deploy:prod:
+  image: docker
+  stage: deploy
+  only:
+    - master
+  when: manual
+  services:
+    - docker:dind
+  variables:
+    CONTAINER_HOSTNAME: docker
+  before_script:
+    - docker info
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t gitlab.lrz.de:5005/covid-19/frontend:prod -f ./Dockerfile.prod .
+    - docker push gitlab.lrz.de:5005/covid-19/frontend:prod
+  dependencies:
+    - build

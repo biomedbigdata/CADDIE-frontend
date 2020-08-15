@@ -1,0 +1,17 @@
+<div class="content">
+
+  <ng-select
+    [multiple]="true"
+    [items]="cancerTypeItems"
+    [(ngModel)]="selectedCancerTypeItems"
+    [virtualScroll]="true"
+    placeholder="Select..."
+    bindLabel="name"
+    (ngModelChange)="select($event)"
+    >
+
+    <!-- [disabled]="item.disabled" -->
+    <ng-option *ngFor="let item of cancerTypeItems" [value]="item.id" >{{item.name}}</ng-option>
+  </ng-select>
+
+</div>

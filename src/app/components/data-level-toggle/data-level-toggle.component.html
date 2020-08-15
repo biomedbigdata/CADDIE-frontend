@@ -1,0 +1,18 @@
+<div class="field has-addons">
+  <p class="control has-tooltip">
+    <button class="button is-rounded has-tooltip" [attr.data-tooltip]="tooltipGene" [class.is-primary]="value" (click)="toggle(true, 'gene')">
+      <span class="icon is-small">
+        <i class="fa {{iconGene}}"></i>
+      </span>
+      <span>{{textGene}}</span>
+    </button>
+  </p>
+  <p class="control">
+    <button class="button is-rounded has-tooltip" [attr.data-tooltip]="tooltipProtein" [class.is-primary]="!value" (click)="toggle(false,'protein')">
+      <span>{{textProtein}}</span>
+      <span *ngIf="iconProtein" class="icon is-small">
+        <i class="fa {{iconProtein}}"></i>
+      </span>
+    </button>
+  </p>
+</div>

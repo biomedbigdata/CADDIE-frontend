@@ -16,7 +16,7 @@ export class QueryTileComponent {
     term = term.toLowerCase();
     if (item.type === 'gene') {
       const data = item.data as Gene;
-      return data.name.toLowerCase().indexOf(term) > -1 || data.id.toLowerCase().indexOf(term) > -1 ||
+      return data.name.toLowerCase().indexOf(term) > -1 || data.backendId.toLowerCase().indexOf(term) > -1 ||
         item.type.toLowerCase().indexOf(term) > -1;
     } else {
       const data = item.data as CancerDriverGene;

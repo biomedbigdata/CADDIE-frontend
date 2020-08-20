@@ -17,7 +17,8 @@ import {
   getGeneNodeId,
   Dataset,
   Tissue,
-  CancerType
+  CancerType,
+  DataLevel
 } from '../../interfaces';
 import {GeneNetwork, getDatasetFilename} from '../../main-network';
 import {HttpClient, HttpParams} from '@angular/common/http';
@@ -39,7 +40,7 @@ declare var vis: any;
 export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   // level of display, either gene-gene interactions or protein-protein
-  public dataLevel: 'gene' | 'protein'
+  public selectedDataLevel: DataLevel
 
   public showDetails = false;
   public selectedWrapper: Wrapper | null = null;
@@ -170,9 +171,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       await this.initCancerTypes()
     }
 
-    if (!this.dataLevel) {
+    if (!this.selectedDataLevel) {
       // data level is always set
-      this.dataLevel = 'gene'
+      this.selectedDataLevel = 'gene'
     }
 
     // init network if this.network is not set
@@ -180,7 +181,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // default selection
       this.selectedDataset = this.datasetItems[0];
       this.selectedCancerTypeItems = [this.cancerTypes[10]];
-      await this.createNetwork(this.selectedDataset, this.selectedCancerTypeItems);
+      await this.createNetwork(this.selectedDataset, this.selectedDataLevel, this.selectedCancerTypeItems);
       this.physicsEnabled = false;
     }
   }
@@ -255,20 +256,20 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.showDetails = false;
   }
 
-  private async getNetwork(dataset: Dataset, cancerTypes: CancerType[]) {
+  private async getNetwork(dataset: Dataset, dataLevel: DataLevel, cancerTypes: CancerType[]) {
     /**
      * Fetches Network data from API
      */
     this.currentDataset = dataset;
     this.selectedCancerTypeItems = cancerTypes;
-    const data = await this.control.getNetwork(dataset, cancerTypes)
+    const data = await this.control.getNetwork(dataset, dataLevel, cancerTypes)
 
     this.genes = data.genes;
     this.cancerDriverGenes = data.cancerDriverGenes;
     this.interactions = data.interactions;
   }
 
-  public async createNetwork(dataset: Dataset, cancerType: CancerType[]) {
+  public async createNetwork(dataset: Dataset, dataLevel: DataLevel, cancerType: CancerType[]) {
     /**
      * uses getNetwork() to fetch network data
      * +
@@ -279,7 +280,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     // fetch all relevant network data and store it in component
     // genes are returned alphabetically
-    await this.getNetwork(dataset, cancerType);
+    await this.getNetwork(dataset, dataLevel, cancerType);
 
     this.geneData = new GeneNetwork(this.genes, this.cancerDriverGenes, this.interactions);
     if (!this.dumpPositions) {
@@ -290,6 +291,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // Populate baits
     const cancerDriverGeneNames = [];
     console.log(this.geneData)
+
+    // order cancer driver genes alphabetically for filter list
+    this.geneData.cancer_driver_genes.sort((a, b) => {
+      return a.geneName.localeCompare(b.geneName);
+    });
 
     // populate checkboxes
     this.cancerDriverGenesCheckboxes = [];
@@ -423,7 +429,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         if (cb.checked || showAll) {
           filteredCancerDriverGenes.push(cancerDriverGene);
           cancerDriverGene.interactions.forEach((gene) => {
-            connectedGenesIds.add(gene.id);
+            connectedGenesIds.add(gene.backendId);
           });
         }
       });
@@ -431,7 +437,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const filteredGenes = [];
     for (const gene of this.geneData.genes) {
       const nodeId = getGeneNodeId(gene);
-      const contains = connectedGenesIds.has(gene.id);
+      const contains = connectedGenesIds.has(gene.backendId);
       const found = visibleIds.has(nodeId);
       if (contains) {
         filteredGenes.push(gene);
@@ -475,7 +481,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     /**
      * Updates the data level variable if button is pressed
      */
-    this.dataLevel = level;
+    this.selectedDataLevel = level;
   }
 
   private mapGeneToNode(gene: Gene): any {
@@ -486,7 +492,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const node = NetworkSettings.getNodeStyle('gene', true, this.analysis.inSelection(wrapper));
     let nodeLabel = gene.name;
     if (gene.name.length === 0) {
-      nodeLabel = gene.id;
+      nodeLabel = gene.backendId;
     }
     node.label = nodeLabel;
     node.id = wrapper.nodeId;

@@ -11,5 +11,8 @@
     <ul>
       <li *ngIf="selectedDataset.name"><b>Name: </b>{{selectedDataset.name}}</li>
     </ul>
+    <ul>
+      <li *ngIf="selectedDataset.link"><b>Source: </b><a href="{{selectedDataset.link}}">Link</a></li>
+    </ul>
   </div>
 </div>

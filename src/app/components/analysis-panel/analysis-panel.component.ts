@@ -170,7 +170,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableSelectedGenes = [];
             this.tableProteins.forEach((gene) => {
               gene.rawScore = gene.score;
-              gene.isSeed = isSeed[gene.id];
+              gene.isSeed = isSeed[gene.backendId];
               gene.closestViralProteins = (gene.closestViralProteins as any).split(',');
               if (this.analysis.proteinInSelection(gene)) {
                 this.tableSelectedGenes.push(gene);
@@ -182,7 +182,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableViralProteins = table;
             this.tableViralProteins.forEach((cancerDriverGene) => {
               cancerDriverGene.rawScore = cancerDriverGene.score;
-              cancerDriverGene.isSeed = isSeed[cancerDriverGene.id];
+              cancerDriverGene.isSeed = isSeed[cancerDriverGene.backendId];
             });
           }));
         await Promise.all(promises);
@@ -453,7 +453,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       wrapper = getWrapperFromGene(gene);
       nodeLabel = gene.name;
       if (!gene.name) {
-        nodeLabel = gene.id;
+        nodeLabel = gene.backendId;
       }
     } else if (nodeType === 'drug') {
       const drug = details as Drug;

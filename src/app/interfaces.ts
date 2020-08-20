@@ -5,12 +5,14 @@ export interface Gene {
    * Interface for gene
    */
   name: string;
-  id: string;
+  backendId: string;
   interactions?: CancerDriverGene[];
   x?: number;
   y?: number;
   expressionLevel?: number;
 }
+
+export type DataLevel = 'gene' | 'protein'
 
 export interface Tissue {
   /**
@@ -25,7 +27,7 @@ export interface CancerDriverGene {
    * Interface for cancer driver gene
    */
   geneName: string;
-  id: string;
+  backendId: string;
   entityid: string;
   cancerType: string;
   datasetName: string;
@@ -99,14 +101,14 @@ export function getGeneNodeId(gene: Gene) {
   /**
    * Returns the network node id based on a given gene
    */
-  return `g_${gene.id}`;
+  return `g_${gene.backendId}`;
 }
 
 export function getGeneBackendId(gene: Gene) {
   /**
    * Returns backend_id of Gene object
    */
-  return gene.id;
+  return gene.backendId;
 }
 
 export function getCancerDriverGeneNodeId(cancer_driver_gene: CancerDriverGene) {
@@ -150,7 +152,7 @@ export function getCancerDriverGeneBackendId(cancerDriverGene: CancerDriverGene)
   /**
    * Returns backend_id given a CancerDriverGene object
    */
-  return cancerDriverGene.id;
+  return cancerDriverGene.backendId;
 }
 
 export function getDrugNodeId(drug: Drug) {
@@ -221,11 +223,12 @@ export interface Drug {
 
 export interface Dataset {
   name: string;
-  id: number;
+  link: string;
+  backendId: number;
   data?: CancerDriverGene[];
 }
 
 export interface CancerType {
   name: string;
-  id: number;
+  backendId: number;
 }

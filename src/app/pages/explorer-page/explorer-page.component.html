@@ -111,7 +111,7 @@
         <!-- Network Submit Button START -->
         <app-button
           buttonText="Submit"
-          (callbackFun)="createNetwork(selectedDataset, selectedCancerTypeItems)"
+          (callbackFun)="createNetwork(selectedDataset, selectedDataLevel, selectedCancerTypeItems)"
         >
         </app-button>
         <!-- Network Submit Button END -->
@@ -358,7 +358,7 @@
               <div class="tile notification is-danger">
                 <div class="align-vmiddle">
                   <div class="digit"><i class="fa fa-fast-forward"></i></div>
-                  <button (click)="analysis.startQuickAnalysis(true, selectedDataset)"
+                  <button (click)="analysis.startQuickAnalysis(true, selectedDataset, selectedCancerTypeItems)"
                           [disabled]="analysis.isLaunchingQuick()"
                           class="button is-white is-rounded has-tooltip" data-tooltip="Find drugs for all proteins.">
                     <span class="icon">
@@ -386,7 +386,7 @@
               <div class="tile notification is-info">
                 <div class="align-vmiddle">
                   <div class="digit">2</div>
-                  <button (click)="analysis.startQuickAnalysis(false, selectedDataset)"
+                  <button (click)="analysis.startQuickAnalysis(false, selectedDataset, selectedCancerTypeItems)"
                           [disabled]="analysis.getCount() === 0 || analysis.isLaunchingQuick()"
                           class="button is-white is-rounded has-tooltip"
                           data-tooltip="Find drugs for the selected proteins.">

@@ -110,7 +110,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
       seeds: this.analysis.getSelection().map((item) => item.backendId),
     };
 
-    parameters.strain_or_drugs = this.target === 'drug' ? 'drugs' : this.dataset.id;
+    parameters.strain_or_drugs = this.target === 'drug' ? 'drugs' : this.dataset.backendId;
     parameters.bait_datasets = this.dataset.data;
 
     if (this.algorithm === 'trustrank') {

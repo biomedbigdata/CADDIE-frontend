@@ -1,4 +1,14 @@
-import {Wrapper, Task, getWrapperFromGene, getWrapperFromCancerDriverGene, Gene, CancerDriverGene, Dataset, Tissue} from './interfaces';
+import {
+  Wrapper,
+  Task,
+  getWrapperFromGene,
+  getWrapperFromCancerDriverGene,
+  Gene,
+  CancerDriverGene,
+  Dataset,
+  Tissue,
+  CancerType
+} from './interfaces';
 import {Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../environments/environment';
@@ -199,7 +209,7 @@ export class AnalysisService {
 
   public invertSelection(nodes) {
     /**
-     *
+     * Iverts selected nodes
      */
     const newSelection = [];
     nodes.forEach((node) => {
@@ -304,6 +314,9 @@ export class AnalysisService {
   }
 
   getCount(): number {
+    /**
+     * Returns number of selected items
+     */
     return this.selectedItems.size;
   }
 
@@ -313,7 +326,9 @@ export class AnalysisService {
     });
   }
 
-  async startQuickAnalysis(isSuper: boolean, dataset: Dataset) {
+  async startQuickAnalysis(isSuper: boolean, dataset: Dataset, cancerTypes: CancerType[]) {
+
+    // break if maximum number of tasks exceeded
     if (!this.canLaunchTask()) {
       toast({
         message: `You can only run ${MAX_TASKS} tasks at once. Please wait for one of them to finish or delete it from the task list.`,
@@ -329,11 +344,16 @@ export class AnalysisService {
 
     this.launchingQuick = true;
 
+    // parse cancer type items to backendId-string-format '1,6,9,..'
+    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
+    const cancerTypesIdsString = cancerTypesIds.join(',')
+
     const resp = await this.http.post<any>(`${environment.backend}task/`, {
       algorithm: isSuper ? 'super' : 'quick',
       target: 'drug',
       parameters: {
-        strain_or_drugs: dataset.id,
+        dataset: dataset.backendId,
+        cancer_types: cancerTypesIdsString,
         bait_datasets: dataset.data,
         seeds: isSuper ? [] : this.getSelection().map((i) => i.backendId),
       },

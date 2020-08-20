@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, Dataset} from "./interfaces";
+import {CancerType, DataLevel, Dataset} from "./interfaces";
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +56,7 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}cancer_types/`).toPromise();
   }
 
-  public async getNetwork(dataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
+  public async getNetwork(dataset: Dataset, dataLevel: DataLevel, cancerTypes: CancerType[]): Promise<any> {
     /**
      * returns promise of all data needed to construct a gene gene interaction network
      *
@@ -68,11 +68,12 @@ export class ControlService {
    *    ]
      *    }
      */
-    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.id);
+    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
     const cancerTypesIdsString = cancerTypesIds.join(',')
     const params = new HttpParams()
-        .set('dataset', JSON.stringify(dataset.id))
+        .set('dataset', JSON.stringify(dataset.backendId))
         .set('cancerTypes', JSON.stringify(cancerTypesIdsString))
+        .set('dataLevel', JSON.stringify(dataLevel))
       ;
 
     return this.http.get<any>(`${environment.backend}network/`, {params}).toPromise();

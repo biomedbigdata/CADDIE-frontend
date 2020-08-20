@@ -42,7 +42,7 @@ export class GeneNetwork {
     /**
      * Returns Gene in network with corresponding backend_id
      */
-    return this.genes.find((g) => g.id === backend_id);
+    return this.genes.find((g) => g.backendId === backend_id);
   }
 
   public getCancerDriverGene(name: string, cancerType: string, cancerDataset: string): CancerDriverGene | undefined {

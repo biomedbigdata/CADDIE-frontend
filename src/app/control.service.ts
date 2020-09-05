@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, DataLevel, Dataset} from "./interfaces";
+import {CancerType, DataLevel, Dataset, CancerNode} from "./interfaces";
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}cancer_datasets/`).toPromise();
   }
 
-  public async getCancerTypes(): Promise<any> {
+  public async getCancerTypes(dataset: Dataset): Promise<any> {
     /**
      * Returns promise of a list of all cancer types
      *
@@ -53,7 +53,10 @@ export class ControlService {
     //     },
      //    ... ]
      **/
-    return this.http.get<any>(`${environment.backend}cancer_types/`).toPromise();
+
+    const params = new HttpParams().set('dataset', JSON.stringify(dataset.backendId));
+
+    return this.http.get<any>(`${environment.backend}cancer_types/`, {params}).toPromise();
   }
 
   public async getNetwork(dataset: Dataset, dataLevel: DataLevel, cancerTypes: CancerType[]): Promise<any> {
@@ -77,6 +80,40 @@ export class ControlService {
       ;
 
     return this.http.get<any>(`${environment.backend}network/`, {params}).toPromise();
+  }
+
+  public async getNodeInteractions(
+    dataset: Dataset,
+    dataLevel: DataLevel,
+    cancerTypes: CancerType[],
+    node: CancerNode
+  ): Promise<any> {
+    /**
+     * returns promise of all data needed to construct a gene gene interaction network
+     *
+     * {
+     *    'interactions': [
+     *      ...
+     *    ]
+     * }
+     */
+    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
+    const cancerTypesIdsString = cancerTypesIds.join(',')
+    const params = new HttpParams()
+      .set('dataset', JSON.stringify(dataset.backendId))
+      .set('cancerTypes', JSON.stringify(cancerTypesIdsString))
+      .set('dataLevel', JSON.stringify(dataLevel))
+      .set('backendId', JSON.stringify(node.backendId))
+    ;
+    console.log(params)
+    return this.http.get<any>(`${environment.backend}nodeRelations/`, {params}).toPromise();
+  }
+
+  public async getSummary(): Promise<any> {
+    /**
+     * returns summary information of the database
+     */
+    return this.http.get(`${environment.backend}summary/`).toPromise();
   }
 
   public async getTask(token): Promise<any> {
@@ -120,5 +157,18 @@ export class ControlService {
      */
     return this.http.get<any>(`${environment.backend}task_result/?token=${token}&view=cancer_driver_genes`).toPromise();
   }
+
+  public async postTask(algorithm: 'super' | 'quick', target, parameters, ) {
+    /**
+     * sends a task to task service
+     */
+    console.log(parameters)
+    return this.http.post<any>(`${environment.backend}task/`, {
+      algorithm: algorithm,
+      target: target,
+      parameters: parameters,
+    }).toPromise()
+  }
+
 
 }

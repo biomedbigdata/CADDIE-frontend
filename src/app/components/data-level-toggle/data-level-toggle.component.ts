@@ -26,8 +26,6 @@ export class DataLevelToggleComponent implements OnInit {
 
   public toggle(value: boolean, level:string) {
     this.value = value;
-    console.log(level)
-    console.log(value)
     this.valueChange.emit(level);
   }
 

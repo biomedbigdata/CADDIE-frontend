@@ -6,13 +6,13 @@ import {
   ViewChild
 } from '@angular/core';
 import {
-  GeneDriverInteraction,
-  CancerDriverGene,
-  Gene,
+  Interaction,
+  CancerNode,
+  Node,
   Wrapper,
-  getWrapperFromCancerDriverGene,
-  getWrapperFromGene,
-  getNodeIdsFromGeneDriverGeneInteraction,
+  getWrapperFromCancerNode,
+  getWrapperFromNode,
+  getNodeIdsFromGeneGeneInteraction,
   getCancerDriverGeneNodeId,
   getGeneNodeId,
   Dataset,
@@ -20,7 +20,7 @@ import {
   CancerType,
   DataLevel
 } from '../../interfaces';
-import {GeneNetwork, getDatasetFilename} from '../../main-network';
+import {Network, getDatasetFilename} from '../../main-network';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {AnalysisService} from '../../analysis.service';
 import html2canvas from 'html2canvas';
@@ -63,13 +63,18 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   // in comparison to "selectedDataset", "selectedCancerTypeItems" has to be a list
   public selectedCancerTypeItems: CancerType[];
 
-  public cancerDriverGenesCheckboxes: Array<{ checked: boolean; data: CancerDriverGene }> = [];
+  public cancerNodesCheckboxes: Array<{ checked: boolean; data: CancerNode }> = [];
 
-  public geneData: GeneNetwork;
+  public networkData: Network;
 
-  public genes: any;
-  public cancerDriverGenes: any;
-  public interactions: any;
+  public nodes: Node[];
+  public cancerNodes: CancerNode[];
+  public interactions: Interaction[];
+
+  // supplementary data that can be added to network but is not initially loaded to keep it simple and fast
+  public nodesSup: Node[];
+  public cancerNodesSup: CancerNode[];
+  public interactionsSup: Interaction[];
 
   private network: any;
   public nodeData: { nodes: any, edges: any } = {nodes: null, edges: null};
@@ -78,24 +83,26 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public physicsEnabled = false;
 
   public queryItems: Wrapper[] = [];
+  public filterAddItems: Wrapper[] = [];
   public showAnalysisDialog = false;
   public showThresholdDialog = false;
   public analysisDialogTarget: 'drug' | 'drug-target';
 
-  public showCustomProteinsDialog = false;
+  public showCustomGenesDialog = false;
 
   public selectedAnalysisToken: string | null = null;
 
   public currentDataset:Dataset = undefined;
-  public currentCancerType:CancerType = undefined;
+  public currentCancerTypeItems:CancerType[] = undefined;
 
   //public datasetItems: Dataset[] = undefined;
   public cancerTypeItems: CancerType[] = undefined;
 
-  public currentViewGenes: Gene[];
-  public currentViewCancerDriverGenes: CancerDriverGene[];
+  public currentViewGenes: Node[];
+  public currentViewCancerNodes: CancerNode[];
   public currentViewSelectedTissue: Tissue | null = null;
   public currentViewNodes: any[];
+  public currentDataLevel: DataLevel
 
   public expressionExpanded = false;
   public selectedTissue: Tissue | null = null;
@@ -115,7 +122,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         if (items.length === 0) {
           return;
         }
-        const updatedNodes = [];
+        let updatedNodes = [];
         for (const item of items) {
           const node = this.nodeData.nodes.get(item.nodeId);
           if (!node) {
@@ -168,7 +175,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     if (!this.cancerTypes) {
       // cancer types are always loaded
-      await this.initCancerTypes()
+      await this.initCancerTypes(this.selectedDataset)
+
     }
 
     if (!this.selectedDataLevel) {
@@ -179,26 +187,27 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // init network if this.network is not set
     if (!this.network) {
       // default selection
-      this.selectedDataset = this.datasetItems[0];
-      this.selectedCancerTypeItems = [this.cancerTypes[10]];
+      this.selectedCancerTypeItems = [this.cancerTypes[0]];
       await this.createNetwork(this.selectedDataset, this.selectedDataLevel, this.selectedCancerTypeItems);
       this.physicsEnabled = false;
     }
   }
 
-  private async initCancerDatasets() {
+  public async initCancerDatasets() {
     /**
      * Fetches Cancer Dataset data from API and initializes dataset tile
      */
     this.datasetItems = await this.control.getCancerDatasets();
+    this.selectedDataset = this.datasetItems[0];
 
   }
 
-  private async initCancerTypes() {
+  public async initCancerTypes(dataset: Dataset) {
     /**
      * Fetches Cancer Type data from API and initializes cancer type tile
      */
-    this.cancerTypes = await this.control.getCancerTypes();
+    this.cancerTypes = await this.control.getCancerTypes(dataset);
+    this.selectedCancerTypeItems = [this.cancerTypes[1]]
 
   }
 
@@ -207,7 +216,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Removes all filters from filter tile and calls filterNodes() to show all genes
      */
     const checked = event.target.checked;
-    this.cancerDriverGenesCheckboxes.forEach(item => item.checked = checked);
+    this.cancerNodesCheckboxes.forEach(item => item.checked = checked);
     this.filterNodes();
   }
 
@@ -260,13 +269,18 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     /**
      * Fetches Network data from API
      */
-    this.currentDataset = dataset;
-    this.selectedCancerTypeItems = cancerTypes;
     const data = await this.control.getNetwork(dataset, dataLevel, cancerTypes)
 
-    this.genes = data.genes;
-    this.cancerDriverGenes = data.cancerDriverGenes;
+    this.nodes = data.nodes;
+    this.nodesSup = data.nodesSup;
+    this.cancerNodes = data.cancerNodes;
+    this.cancerNodesSup = data.cancerNodesSup;
     this.interactions = data.interactions;
+    this.interactionsSup = data.interactionsSup;
+
+    this.currentDataset = dataset;
+    this.currentCancerTypeItems = cancerTypes;
+    this.currentDataLevel = dataLevel;
   }
 
   public async createNetwork(dataset: Dataset, dataLevel: DataLevel, cancerType: CancerType[]) {
@@ -282,40 +296,42 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // genes are returned alphabetically
     await this.getNetwork(dataset, dataLevel, cancerType);
 
-    this.geneData = new GeneNetwork(this.genes, this.cancerDriverGenes, this.interactions);
+    this.networkData = new Network(this.nodes, this.cancerNodes, this.interactions);
     if (!this.dumpPositions) {
-      await this.geneData.loadPositionsFromFile(this.http, dataset);
+      await this.networkData.loadPositionsFromFile(this.http, dataset);
     }
-    this.geneData.linkNodes();
+    this.networkData.linkNodes();
 
     // Populate baits
     const cancerDriverGeneNames = [];
-    console.log(this.geneData)
 
-    // order cancer driver genes alphabetically for filter list
-    this.geneData.cancer_driver_genes.sort((a, b) => {
-      return a.geneName.localeCompare(b.geneName);
+    // order cancer driver genes/proteins alphabetically for filter list
+    this.networkData.cancerNodes.sort((a, b) => {
+      return a.name.localeCompare(b.name);
     });
 
     // populate checkboxes
-    this.cancerDriverGenesCheckboxes = [];
-    this.geneData.cancer_driver_genes.forEach((cancerDriverGene) => {
-      const cancerDriverGeneName = cancerDriverGene.geneName;
-      if (cancerDriverGeneNames.indexOf(cancerDriverGeneName) === -1) {
-        cancerDriverGeneNames.push(cancerDriverGeneName);
-        this.cancerDriverGenesCheckboxes.push({
+    this.cancerNodesCheckboxes = [];
+    this.networkData.cancerNodes.forEach((cancerNode) => {
+      const cancerNodeName = cancerNode.name;
+      if (cancerDriverGeneNames.indexOf(cancerNodeName) === -1) {
+        cancerDriverGeneNames.push(cancerNodeName);
+        this.cancerNodesCheckboxes.push({
           checked: false,
-          data: cancerDriverGene,
+          data: cancerNode,
         });
       }
     });
 
-    const {nodes, edges} = this.mapDataToNodes(this.geneData);
+    // get node and edge data for network
+    const {nodes, edges} = this.mapDataToNodes(this.networkData);
     this.nodeData.nodes = new vis.DataSet(nodes);
     this.nodeData.edges = new vis.DataSet(edges);
+    this.filterNodes();
 
     const container = this.networkEl.nativeElement;
     const options = NetworkSettings.getOptions('main');
+
     this.network = new vis.Network(container, this.nodeData, options);
     this.network.on('doubleClick', (properties) => {
       const nodeIds: Array<string> = properties.nodes;
@@ -362,31 +378,96 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.zoomToNode(this.selectedWrapper.nodeId);
     }
 
-    this.queryItems = [];
-    this.fillQueryItems(this.genes, this.cancerDriverGenes);
+    // fill query items for network search
+    this.fillQueryItems(this.nodes, this.cancerNodes);
     if (this.selectedWrapper) {
       this.network.selectNodes([this.selectedWrapper.nodeId]);
     }
+
+    // fill adding option in the filter menu
+    this.fillFilterItems(this.cancerNodesSup)
   }
 
-  public fillQueryItems(genes: Gene[], cancerGenes: CancerDriverGene[]) {
+  public fillFilterItems(cancerNodesSup: CancerNode[], reset: Boolean = true) {
+    /**
+     * Fills the item options in the filter query menu.
+     * Allows user to add new genes to network which were previously not displayed due to loading times
+     */
+    if (reset) {
+      this.filterAddItems = []
+    }
+
+    cancerNodesSup.forEach((cancerNode) => {
+      this.filterAddItems.push(getWrapperFromCancerNode(cancerNode));
+    });
+
+  }
+
+  public fillQueryItems(nodes: Node[], cancerNodes: CancerNode[], reset: Boolean = true) {
     /**
      * fills the queryItems list, relevant for sending queries to the server, related to the query tile
      * +
      * adapts network view respectively such that only relevant nodes and edges are shown
      */
-    this.queryItems = [];
-    genes.forEach((gene) => {
-      this.queryItems.push(getWrapperFromGene(gene));
+
+    if (reset) {
+      this.queryItems = []
+      this.currentViewGenes = [];
+      this.currentViewCancerNodes = [];
+    }
+
+    let newQueryItems = []
+
+    nodes.forEach((node) => {
+      newQueryItems.push(getWrapperFromNode(node));
     });
 
-    cancerGenes.forEach((cancer_gene) => {
-      this.queryItems.push(getWrapperFromCancerDriverGene(cancer_gene));
+    cancerNodes.forEach((cancerNode) => {
+      newQueryItems.push(getWrapperFromCancerNode(cancerNode));
     });
+    console.log(newQueryItems)
+
+    // if item is just pushed directly to queryItems, component does not update
+    this.queryItems = [...this.queryItems, ...newQueryItems]
 
     this.currentViewNodes = this.nodeData.nodes;
-    this.currentViewGenes = this.genes;
-    this.currentViewCancerDriverGenes = this.cancerDriverGenes;
+    this.currentViewGenes.push(...this.nodes);
+    this.currentViewCancerNodes.push(...this.cancerNodes);
+  }
+
+  public async addNetworkNode(cancerNode: CancerNode) {
+    /**
+     * Fetches interactionn information from API and fills information in
+     */
+    // add edges for node dynamically
+    const data = await this.control.getNodeInteractions(
+      this.currentDataset,
+      this.currentDataLevel,
+      this.currentCancerTypeItems,
+      cancerNode)
+
+    const edgesToAdd = []
+    for (const interaction of data.interactions) {
+      edgesToAdd.push(this.mapEdge(interaction))
+    }
+
+    // add node dynamically to network
+    const node = this.mapCancerDriverGeneToNode(cancerNode);
+
+    // add data to network
+    this.nodeData.nodes.add(node);
+    this.nodeData.edges.add(edgesToAdd);
+
+    // add data to network interface
+    this.networkData.cancerNodes.push(cancerNode)
+    this.networkData.edges.push(...data.interactions)
+
+    // TODO just do this for new node to speed up
+    this.networkData.linkNodes()
+
+    // TODO not working yet
+    this.fillQueryItems([], [cancerNode], false)
+
   }
 
   public async filterNodes() {
@@ -404,28 +485,40 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const removeIds = new Set<string>();
     const addNodes = new Map<string, Node>();
 
-    const showAll = !this.cancerDriverGenesCheckboxes.find((eff) => eff.checked);
+    // show all is true if no checkbox is selected
+    const showAll = !this.cancerNodesCheckboxes.find((eff) => eff.checked);
+
     const connectedGenesIds = new Set<string>();
 
     const filteredCancerDriverGenes = [];
-    this.cancerDriverGenesCheckboxes.forEach((cb) => {
-      const cancerDriverGenes: Array<CancerDriverGene> = [];
-      this.geneData.cancer_driver_genes.forEach((cancerDriverGene) => {
-        if (cancerDriverGene.geneName === cb.data.geneName) {
+    this.cancerNodesCheckboxes.forEach((cb) => {
+
+      // find node which has a , TODO improve time here by storing them in an object for lookup simplification
+      const cancerDriverGenes: Array<CancerNode> = [];
+      this.networkData.cancerNodes.forEach((cancerDriverGene) => {
+        if (cancerDriverGene.name === cb.data.name) {
           cancerDriverGenes.push(cancerDriverGene);
         }
       });
+
+      // iterate over found node
       cancerDriverGenes.forEach((cancerDriverGene) => {
+        // get node id
         const nodeId = getCancerDriverGeneNodeId(cancerDriverGene);
+        // check if node is already visible
         const found = visibleIds.has(nodeId);
+
+        // if node is checked or we wanna show all + it is not yet visible
         if ((cb.checked || showAll) && !found) {
           const node = this.mapCancerDriverGeneToNode(cancerDriverGene);
-          // this.nodeData.nodes.add(node);
           addNodes.set(node.id, node);
+          // we dont want to show all and it is not checked but displayed
         } else if ((!showAll && !cb.checked) && found) {
           // this.nodeData.nodes.remove(nodeId);
           removeIds.add(nodeId);
         }
+
+        // if checked or we wanna show all, get edges
         if (cb.checked || showAll) {
           filteredCancerDriverGenes.push(cancerDriverGene);
           cancerDriverGene.interactions.forEach((gene) => {
@@ -433,9 +526,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
           });
         }
       });
-    });
+
+    }); // end iteration over checkboxes
+
     const filteredGenes = [];
-    for (const gene of this.geneData.genes) {
+    for (const gene of this.networkData.nodes) {
       const nodeId = getGeneNodeId(gene);
       const contains = connectedGenesIds.has(gene.backendId);
       const found = visibleIds.has(nodeId);
@@ -453,7 +548,27 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     this.nodeData.nodes.remove(Array.from(removeIds.values()));
     this.nodeData.nodes.add(Array.from(addNodes.values()));
+
+    // update query options
     this.fillQueryItems(filteredGenes, filteredCancerDriverGenes);
+  }
+
+  public addFilterNode(item: any) {
+    if (item) {
+      this.cancerNodesCheckboxes.push({
+        checked: false,
+        data: item.data
+      })
+    }
+
+    this.addNetworkNode(item.data)
+
+    this.filterAddItems.forEach((wrapper: Wrapper) => {
+      if (wrapper.backendId = item.data.backendId) {
+        // todo remove item
+      }
+    })
+
   }
 
   public queryAction(item: any) {
@@ -484,12 +599,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.selectedDataLevel = level;
   }
 
-  private mapGeneToNode(gene: Gene): any {
+  private mapGeneToNode(gene: Node): any {
     /**
      * Creates a network node object out of a given Gene object
      */
-    const wrapper = getWrapperFromGene(gene);
-    const node = NetworkSettings.getNodeStyle('gene', true, this.analysis.inSelection(wrapper));
+    const wrapper = getWrapperFromNode(gene);
+    const node = NetworkSettings.getNodeStyle('node', true, this.analysis.inSelection(wrapper));
     let nodeLabel = gene.name;
     if (gene.name.length === 0) {
       nodeLabel = gene.backendId;
@@ -499,41 +614,41 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     node.x = gene.x;
     node.y = gene.y;
     node.wrapper = wrapper;
+    node.isCancer = false;
     return node;
   }
 
-  private mapCancerDriverGeneToNode(cancerDriverGene: CancerDriverGene): any {
+  private mapCancerDriverGeneToNode(cancerDriverGene: CancerNode): any {
     /**
      * Creates a network node object out of a given CancerDriverGene object
      */
-    const wrapper = getWrapperFromCancerDriverGene(cancerDriverGene);
-    const node = NetworkSettings.getNodeStyle('cancerDriverGene', true, this.analysis.inSelection(wrapper));
+    const wrapper = getWrapperFromCancerNode(cancerDriverGene);
+    const node = NetworkSettings.getNodeStyle('cancerNode', true, this.analysis.inSelection(wrapper));
     node.id = wrapper.nodeId;
-    node.label = cancerDriverGene.geneName;
-    node.id = wrapper.nodeId;
+    node.label = cancerDriverGene.name;
     node.x = cancerDriverGene.x;
     node.y = cancerDriverGene.y;
     node.wrapper = wrapper;
     return node;
   }
 
-  private mapEdge(edge: GeneDriverInteraction): any {
+  private mapEdge(edge: Interaction): any {
     /**
-     * Creates a network edge object out of a given GeneDriverInteraction object
+     * Creates a network edge object out of a given GeneGeneInteraction object
      */
-    const {from, to} = getNodeIdsFromGeneDriverGeneInteraction(edge);
+    const {from, to} = getNodeIdsFromGeneGeneInteraction(edge);
     return {
       from, to,
       color: {
-        color: NetworkSettings.getColor('edgeGeneCancerDriverGene'),
-        highlight: NetworkSettings.getColor('edgeGeneCancerDriverGeneHighlight')
+        color: NetworkSettings.getColor('edgeGene'),
+        highlight: NetworkSettings.getColor('edgeGeneHighlight')
       },
     };
   }
 
-  private mapDataToNodes(data: GeneNetwork): { nodes: any[], edges: any[] } {
+  private mapDataToNodes(data: Network): { nodes: any[], edges: any[] } {
     /**
-     * Maps raw netowrk data to network nobde and gene objects by using
+     * Maps raw network data to network node and gene objects by using
      * mapGeneToNode(), mapCancerDriverGeneToNode() and mapEdge()
      *
      * Returns edges and node objects
@@ -541,12 +656,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const nodes = [];
     const edges = [];
 
-    for (const gene of data.genes) {
+    for (const gene of data.nodes) {
       nodes.push(this.mapGeneToNode(gene));
     }
 
-    for (const effect of data.cancer_driver_genes) {
-      nodes.push(this.mapCancerDriverGeneToNode(effect));
+    for (const cdg of data.cancerNodes) {
+      nodes.push(this.mapCancerDriverGeneToNode(cdg));
     }
 
     for (const edge of data.edges) {
@@ -557,11 +672,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       nodes,
       edges,
     };
-  }
-
-  public buttonNetworkSubmit() {
-    console.log("submit")
-
   }
 
   public toCanvas() {
@@ -577,19 +687,19 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  analysisWindowChanged($event: [any[], [Gene[], CancerDriverGene[], Tissue]]) {
+  analysisWindowChanged($event: [any[], [Node[], CancerNode[], Tissue]]) {
     /**
      * Changes view to analysis window if event is given, else uses current data
      */
     if ($event) {
       this.currentViewNodes = $event[0];
       this.currentViewGenes = $event[1][0];
-      this.currentViewCancerDriverGenes = $event[1][1];
+      this.currentViewCancerNodes = $event[1][1];
       this.currentViewSelectedTissue = $event[1][2];
     } else {
       this.currentViewNodes = this.nodeData.nodes;
-      this.currentViewGenes = this.genes;
-      this.currentViewCancerDriverGenes = this.cancerDriverGenes;
+      this.currentViewGenes = this.nodes;
+      this.currentViewCancerNodes = this.cancerNodes;
       this.currentViewSelectedTissue = this.selectedTissue;
     }
   }
@@ -600,7 +710,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * uses collected analysis data (getSelection())
      */
     const queryString = this.analysis.getSelection()
-      .filter(wrapper => wrapper.type === 'gene')
+      .filter(wrapper => wrapper.type === 'node')
       .map(wrapper => wrapper.data.proteinAc)
       .join('%0A');
     return 'http://biit.cs.ut.ee/gprofiler/gost?' +
@@ -628,8 +738,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // if no tissue selected, we reset all nodes in network
       this.selectedTissue = null;
       const updatedNodes = [];
-      for (const gene of this.genes) {
-        const item = getWrapperFromGene(gene);
+      for (const gene of this.nodes) {
+        const item = getWrapperFromNode(gene);
         const node = this.nodeData.nodes.get(item.nodeId);
         if (!node) {
           continue;
@@ -648,7 +758,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         node.wrapper = item;
         node.gradient = 1.0;
         gene.expressionLevel = undefined;
-        (node.wrapper.data as Gene).expressionLevel = undefined;
+        (node.wrapper.data as Node).expressionLevel = undefined;
         updatedNodes.push(node);
       }
       this.nodeData.nodes.update(updatedNodes);
@@ -665,7 +775,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
           const updatedNodes = [];
           const maxExpr = Math.max(...levels.map(lvl => lvl.level));
           for (const lvl of levels) {
-            const item = getWrapperFromGene(lvl.protein);
+            const item = getWrapperFromNode(lvl.protein);
             const node = this.nodeData.nodes.get(item.nodeId);
             if (!node) {
               continue;
@@ -684,8 +794,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
                 gradient));
             node.wrapper = item;
             node.gradient = gradient;
-            this.genes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
-            (node.wrapper.data as Gene).expressionLevel = lvl.level;
+            this.nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
+            (node.wrapper.data as Node).expressionLevel = lvl.level;
             updatedNodes.push(node);
           }
           this.nodeData.nodes.update(updatedNodes);

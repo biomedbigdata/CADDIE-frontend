@@ -1,15 +1,16 @@
 import {AlgorithmType, QuickAlgorithmType} from './analysis.service';
 
-export interface Gene {
+export interface Node {
   /**
-   * Interface for gene
+   * Interface for gene/protein
    */
   name: string;
   backendId: string;
-  interactions?: CancerDriverGene[];
+  interactions?: (CancerNode | Node)[];
   x?: number;
   y?: number;
   expressionLevel?: number;
+  proteinName?: string;
 }
 
 export type DataLevel = 'gene' | 'protein'
@@ -22,26 +23,32 @@ export interface Tissue {
   name: string;
 }
 
-export interface CancerDriverGene {
+export interface CancerNode {
   /**
-   * Interface for cancer driver gene
+   * Interface for cancer driver gene or protein
    */
-  geneName: string;
+  name: string;
   backendId: string;
-  entityid: string;
-  cancerType: string;
+  type: string;
   datasetName: string;
-  interactions?: Gene[];
+  interactions?: (Node | CancerNode)[];
   x?: number;
   y?: number;
+  // if gene
+  entityid?: string;
+  // if protein
+  pubmedId?: string;
+
 }
 
-export interface GeneDriverInteraction {
+export interface Interaction {
   /**
-   * Interface for gene - cancer driver gene - interaction
+   * Interface for gene-gene-interaction or protein-protein-interaction
    */
-  geneName: string;
-  cancerDriverGeneName: string;
+  interactorAName: string;
+  interactorBName: string;
+  interactorABackendId: string;
+  interactorBBackendId: string;
   datasetName: string;
   id: string;
 }
@@ -97,38 +104,38 @@ export interface Baited {
   closestDistance: number;
 }
 
-export function getGeneNodeId(gene: Gene) {
+export function getGeneNodeId(gene: Node) {
   /**
    * Returns the network node id based on a given gene
    */
-  return `g_${gene.backendId}`;
+  return `${gene.backendId}`;
 }
 
-export function getGeneBackendId(gene: Gene) {
+export function getGeneBackendId(gene: Node) {
   /**
    * Returns backend_id of Gene object
    */
-  return gene.backendId;
+  return gene.backendId.toString();
 }
 
-export function getCancerDriverGeneNodeId(cancer_driver_gene: CancerDriverGene) {
+export function getCancerDriverGeneNodeId(cancer_driver_gene: CancerNode) {
   /**
    * Returns node ID for CancerDriverGene object
    */
-  return `cdg_${cancer_driver_gene.geneName}`;
+  return `${cancer_driver_gene.backendId}`;
 }
 
-export function getNodeIdsFromGeneDriverGeneInteraction(geneDriverInteraction: GeneDriverInteraction) {
+export function getNodeIdsFromGeneGeneInteraction(geneGeneInteraction: Interaction) {
   /**
-   * Returns js object with network node endpoints of given GeneDriverInteraction object
+   * Returns js object with network node endpoints of given GeneGeneInteraction object
    */
   return {
-    from: `g_${geneDriverInteraction.id}`,
-    to: `cdg_${geneDriverInteraction.geneName}_${geneDriverInteraction.cancerDriverGeneName}`,
+    from: `${geneGeneInteraction.interactorABackendId}`,
+    to: `${geneGeneInteraction.interactorBBackendId}`,
   };
 }
 
-export function getNodeIdsFromGeneGeneInteraction(edge: NetworkEdge, wrappers: { [key: string]: Wrapper }) {
+export function getNodeIdsFromEdgeGene(edge: NetworkEdge, wrappers: { [key: string]: Wrapper }) {
   /**
    * Returns endpoints of network edge (Gene Gene interaction)
    */
@@ -143,49 +150,49 @@ export function getNodeIdsFromCancerDriverGeneDrugInteraction(edge: NetworkEdge)
    * Returns endpoints of newtork edge (CancerDriverGene Drug interaction)
    */
   return {
-    from: `cdg_${edge.from}`,
-    to: `d_${edge.to}`,
+    from: `${edge.from}`,
+    to: `${edge.to}`,
   };
 }
 
-export function getCancerDriverGeneBackendId(cancerDriverGene: CancerDriverGene) {
+export function getCancerDriverGeneBackendId(cancerDriverGene: CancerNode) {
   /**
    * Returns backend_id given a CancerDriverGene object
    */
-  return cancerDriverGene.backendId;
+  return cancerDriverGene.backendId.toString();
 }
 
 export function getDrugNodeId(drug: Drug) {
   /**
    * Returns network drug-node id given a Drug object
    */
-  return `d_${drug.backendId}`;
+  return `${drug.backendId}`;
 }
 
 export function getDrugBackendId(drug: Drug) {
   /**
    * Returns backend_id given a Drug object
    */
-  return drug.backendId;
+  return drug.backendId.toString();
 }
 
-export function getWrapperFromGene(gene: Gene): Wrapper {
+export function getWrapperFromNode(gene: Node): Wrapper {
   /**
    * Constructs wrapper interface for gene
    */
   return {
     backendId: getGeneBackendId(gene),
     nodeId: getGeneNodeId(gene),
-    type: 'gene',
+    type: 'node',
     data: gene,
   };
 }
 
-export function getWrapperFromCancerDriverGene(cancer_gene: CancerDriverGene): Wrapper {
+export function getWrapperFromCancerNode(cancer_gene: CancerNode): Wrapper {
   return {
     backendId: getCancerDriverGeneBackendId(cancer_gene),
     nodeId: getCancerDriverGeneNodeId(cancer_gene),
-    type: 'cancerDriverGene',
+    type: 'cancerNode',
     data: cancer_gene,
   };
 }
@@ -199,11 +206,11 @@ export function getWrapperFromDrug(drug: Drug): Wrapper {
   };
 }
 
-export type WrapperType = 'gene' | 'cancerDriverGene' | 'drug';
+export type WrapperType = 'node' | 'cancerNode' | 'drug';
 
 export interface Wrapper {
   /**
-   * Wrapper is common interface for all genes and drugs
+   * Wrapper is common interface for all nodes (genes and proteins), cancer nodes and drugs
    * provides backend information
    */
   backendId: string;
@@ -225,7 +232,7 @@ export interface Dataset {
   name: string;
   link: string;
   backendId: number;
-  data?: CancerDriverGene[];
+  data?: CancerNode[];
 }
 
 export interface CancerType {

@@ -36,7 +36,7 @@
       </div>
     </section>
     <footer class="modal-card-foot">
-      <button (click)="addProteins();" class="button is-success is-rounded has-tooltip"
+      <button (click)="addProteins();" class="button is-success   has-tooltip"
               data-tooltip="Add all to the selection."
               [disabled]="proteins.length === 0 || !selectedTissue || loading">
         <span class="icon">
@@ -46,7 +46,7 @@
           Add proteins
         </span>
       </button>
-      <button (click)="addVisibleProteins();" class="button is-success is-rounded has-tooltip"
+      <button (click)="addVisibleProteins();" class="button is-success   has-tooltip"
               data-tooltip="Add to selection if they appear in the current network."
               [disabled]="proteins.length === 0 || !selectedTissue || loading">
         <span class="icon">
@@ -56,7 +56,7 @@
           Select proteins ({{proteins.length}})
         </span>
       </button>
-      <button (click)="close()" class="button is-rounded has-tooltip" data-tooltip="Close the current window.">
+      <button (click)="close()" class="button   has-tooltip" data-tooltip="Close the current window.">
         Close
       </button>
     </footer>

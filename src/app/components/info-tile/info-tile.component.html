@@ -1,34 +1,58 @@
 <div *ngIf="wrapper">
-  <div *ngIf="wrapper.type === 'gene'">
+  <div *ngIf="wrapper.type === 'node'">
     <p>
       <b><span>Gene Name: </span></b>
       {{ wrapper.data.name }}
       <span class="icon is-small"><i class="fas fa-dna"></i></span>
     </p>
-    <p>
-      <b><span>Uniprot AC :</span></b>
-      <a href="https://www.uniprot.org/uniprot/{{ wrapper.data.proteinAc }}" target="_blank">
-        {{ wrapper.data.proteinAc }}
+    <p *ngIf="wrapper.data.geneAlias" >
+      <b><span>Gene Alias: </span></b>
+      {{ wrapper.data.geneAlias }}
+      <span class="icon is-small"><i class="fas fa-dna"></i></span>
+    </p>
+    <p *ngIf="wrapper.data.entrezId">
+      <b><span>Entrez Gene:</span></b>
+      <a href="https://www.ncbi.nlm.nih.gov/gene/{{ wrapper.data.entrezId }}" target="_blank">
+        {{ wrapper.data.entrezId }}
       </a>
     </p>
-    <p>
-      <b><span>Name: </span></b>
+    <p *ngIf="wrapper.data.uniprotAc">
+      <b><span>Uniprot:</span></b>
+      <a href="https://www.uniprot.org/uniprot/{{ wrapper.data.uniprotAc }}" target="_blank">
+        {{ wrapper.data.uniprotAc }}
+      </a>
+    </p>
+    <p *ngIf="wrapper.data.proteinName">
+      <b><span>Protein Name:</span></b>
       {{ wrapper.data.proteinName }}
     </p>
-    <p *ngIf="wrapper.data.expressionLevel">
-      <b><span>Expression level: </span></b>
-      {{ wrapper.data.expressionLevel|number }}
-    </p>
   </div>
-  <div *ngIf="wrapper.type === 'cancerDriverGene'">
+  <div *ngIf="wrapper.type === 'cancerNode'">
     <p>
-      <b><span>Virus:</span></b>
-      {{ wrapper.data.virusName.replace('V', 'V-') }}
-      <span class="icon is-small"><i class="fas fa-virus"></i></span>
+      <b><span>Gene Name: </span></b>
+      {{ wrapper.data.name }}
+      <span class="icon is-small"><i class="fas fa-dna"></i></span>
     </p>
-    <p>
-      <b><span>Effect: </span></b>
-      {{ wrapper.data.effectName }}
+    <p *ngIf="wrapper.data.geneAlias" >
+      <b><span>Gene Alias: </span></b>
+      {{ wrapper.data.geneAlias }}
+      <span class="icon is-small"><i class="fas fa-dna"></i></span>
+    </p>
+    <p *ngIf="wrapper.data.entrezId">
+      <b><span>Entrez Gene:</span></b>
+      <a href="https://www.ncbi.nlm.nih.gov/gene/{{ wrapper.data.entrezId }}" target="_blank">
+        {{ wrapper.data.entrezId }}
+      </a>
+    </p>
+    <p *ngIf="wrapper.data.uniprotAc">
+      <b><span>Uniprot:</span></b>
+      <a href="https://www.uniprot.org/uniprot/{{ wrapper.data.uniprotAc }}" target="_blank">
+        {{ wrapper.data.uniprotAc }}
+      </a>
+    </p>
+    <p *ngIf="wrapper.data.proteinName">
+      <b><span>Protein Name:</span></b>
+        {{ wrapper.data.proteinName }}
     </p>
   </div>
   <div *ngIf="wrapper.type === 'drug'">
@@ -39,7 +63,7 @@
     </p>
     <p>
       <b>DrugBank ID: </b>
-      <a href="https://www.drugbank.ca/drugs/{{ wrapper.data.drugId }}" target="_blank"> {{ wrapper.data.drugId }}</a>
+      <a href="https://www.drugbank.ca/drugs/{{ wrapper.data.db_id }}" target="_blank"> {{ wrapper.data.db_id }}</a>
     </p>
     <p *ngIf="wrapper.data.status === 'unapproved' ">
       <b>Status: </b> Unapproved
@@ -51,8 +75,8 @@
     <p *ngIf="wrapper.data.inTrial">
       <b>In trial(s) </b> <span class="icon is-small"><i class="fas fa-check"></i></span>
     </p>
-    <div *ngIf="wrapper.data.inTrial && wrapper.data.trialLinks.length > 0" class="list">
-      <div *ngFor="let link of wrapper.data.trialLinks" class="list-item">
+    <div *ngIf="wrapper.data.inTrial && wrapper.data.links.length > 0" class="list">
+      <div *ngFor="let link of wrapper.data.links" class="list-item">
         <a [href]="link" target="_blank">{{beautify(link)}}</a>
       </div>
       <small class="list-item"><i>Links provided by WHO</i></small>

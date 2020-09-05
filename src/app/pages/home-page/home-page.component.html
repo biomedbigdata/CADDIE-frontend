@@ -3,7 +3,7 @@
   <div class="container has-text-centered">
     <div class="column">
       <div class="logo-box is-hidden-mobile">
-        <img src="assets/covex_logo.png" style="height: 233px; width: 600px">
+        <img src="assets/caddie_logo.png" style="height: 233px; width: 600px">
       </div>
 
       <div class="video-container">
@@ -20,7 +20,7 @@
       </div>
 
       <div class="button-box is-hidden-mobile">
-        <button class="button has-text-info is-large is-rounded">
+        <button class="button has-text-info is-large  ">
           <a routerLink="/explorer" routerLinkActive="is-active">
             <span class="icon"><i class="fa fa-project-diagram has-text-info"></i></span>
             <span>Start App</span>
@@ -29,7 +29,7 @@
       </div>
 
       <div class="button-box is-hidden-tablet">
-        <button class="button has-text-info is-large is-rounded">
+        <button class="button has-text-info is-large  ">
           <a routerLink="/explorer" routerLinkActive="is-active">
             <span class="icon"><i class="fa fa-project-diagram has-text-info"></i></span>
             <span>Open Desktop App</span>
@@ -48,7 +48,10 @@
           Repurpose drugs
         </h1>
         <h1 class="subtitle is-3">
-          All in one web-tool
+          {{ cancerDriverGenes_n }} Cancer Driver Genes <br>
+          {{ genes_n }} Genes <br>
+          {{ proteins_n }} Proteins <br>
+          {{ drugs_n }} Drugs <br>
         </h1>
       </div>
     </div>

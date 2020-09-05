@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {Gene, Wrapper, CancerDriverGene} from '../../interfaces';
+import {Node, Wrapper, CancerNode, DataLevel} from '../../interfaces';
 
 @Component({
   selector: 'app-query-tile-component',
@@ -8,21 +8,43 @@ import {Gene, Wrapper, CancerDriverGene} from '../../interfaces';
 })
 export class QueryTileComponent {
 
-
   @Output() selectItem: EventEmitter<any> = new EventEmitter();
   @Input() queryItems: Wrapper[];
+  @Input() dataLevel: DataLevel;
 
   querySearch(term: string, item: Wrapper) {
     term = term.toLowerCase();
-    if (item.type === 'gene') {
-      const data = item.data as Gene;
-      return data.name.toLowerCase().indexOf(term) > -1 || data.backendId.toLowerCase().indexOf(term) > -1 ||
-        item.type.toLowerCase().indexOf(term) > -1;
-    } else {
-      const data = item.data as CancerDriverGene;
-      return data.geneName.toLowerCase().indexOf(term) > -1 || data.cancerType.toLowerCase().indexOf(term) > -1 ||
-        item.type.toLowerCase().indexOf(term) > -1;
+    if (this.dataLevel == 'gene') {
+      if (item.type === 'node') {
+        const data = item.data as Node;
+        return data.name.toLowerCase().indexOf(term) > -1 ||
+          data.backendId.toString().toLowerCase().indexOf(term) > -1 ||
+          item.type.toLowerCase().indexOf(term) > -1;
+      } else {
+        // type is cancerNode
+        const data = item.data as CancerNode;
+        return data.name.toLowerCase().indexOf(term) > -1 ||
+          data.type.toLowerCase().indexOf(term) > -1 ||
+          item.type.toLowerCase().indexOf(term) > -1 ||
+          data.backendId.toString().toLowerCase().indexOf(term) > -1;
+      }
+    } else if (this.dataLevel == 'protein') {
+      if (item.type === 'node') {
+        const data = item.data as Node;
+        return data.name.toLowerCase().indexOf(term) > -1 ||
+          data.backendId.toString().toLowerCase().indexOf(term) > -1 ||
+          item.type.toLowerCase().indexOf(term) > -1 ||
+          data.proteinName.toString().toLowerCase().indexOf(term) > -1
+      } else {
+        // type is cancerNode
+        const data = item.data as CancerNode;
+        return data.name.toLowerCase().indexOf(term) > -1 ||
+          data.type.toLowerCase().indexOf(term) > -1 ||
+          item.type.toLowerCase().indexOf(term) > -1 ||
+          data.backendId.toString().toLowerCase().indexOf(term) > -1;
+      }
     }
+
   }
 
   select(item) {

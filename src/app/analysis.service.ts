@@ -1,10 +1,10 @@
 import {
   Wrapper,
   Task,
-  getWrapperFromGene,
-  getWrapperFromCancerDriverGene,
-  Gene,
-  CancerDriverGene,
+  getWrapperFromNode,
+  getWrapperFromCancerNode,
+  Node,
+  CancerNode,
   Dataset,
   Tissue,
   CancerType
@@ -209,12 +209,12 @@ export class AnalysisService {
 
   public invertSelection(nodes) {
     /**
-     * Iverts selected nodes
+     * Inverts selected nodes
      */
     const newSelection = [];
     nodes.forEach((node) => {
       const wrapper: Wrapper = node.wrapper;
-      if (wrapper.type === 'gene' || wrapper.type === 'cancerDriverGene') {
+      if (wrapper.type === 'node' || wrapper.type === 'cancerNode') {
         if (!this.inSelection(wrapper)) {
           newSelection.push(wrapper);
         }
@@ -227,11 +227,11 @@ export class AnalysisService {
     this.selectListSubject.next({items: newSelection, selected: null});
   }
 
-  public addExpressedHostProteins(nodes, proteins: Gene[], threshold: number): number {
+  public addExpressedHostProteins(nodes, proteins: Node[], threshold: number): number {
     const items: Wrapper[] = [];
     const visibleIds = new Set<string>(nodes.getIds());
     for (const protein of proteins) {
-      const wrapper = getWrapperFromGene(protein);
+      const wrapper = getWrapperFromNode(protein);
       const found = visibleIds.has(wrapper.nodeId);
       if (found && !this.inSelection(wrapper) && protein.expressionLevel > threshold) {
         items.push(wrapper);
@@ -242,11 +242,14 @@ export class AnalysisService {
     return items.length;
   }
 
-  public addVisibleHostProteins(nodes, proteins: Gene[]): number {
+  public addVisibleGenes(nodes, genes: Node[]): number {
+    /**
+     * adds all genes currently displayed in network to selection
+     */
     const items: Wrapper[] = [];
     const visibleIds = new Set<string>(nodes.getIds());
-    for (const protein of proteins) {
-      const wrapper = getWrapperFromGene(protein);
+    for (const gene of genes) {
+      const wrapper = getWrapperFromNode(gene);
       const found = visibleIds.has(wrapper.nodeId);
       if (found && !this.inSelection(wrapper)) {
         items.push(wrapper);
@@ -257,11 +260,14 @@ export class AnalysisService {
     return items.length;
   }
 
-  public addVisibleViralProteins(nodes, viralProteins: CancerDriverGene[]): number {
+  public addVisibleCancerDriverGenes(nodes, cancerDriverGenes: CancerNode[]): number {
+    /**
+     * adds all visible cancer driver genes from network to selection
+     */
     const items: Wrapper[] = [];
     const visibleIds = new Set<string>(nodes.getIds());
-    for (const viralProtein of viralProteins) {
-      const wrapper = getWrapperFromCancerDriverGene(viralProtein);
+    for (const cancerDriverGene of cancerDriverGenes) {
+      const wrapper = getWrapperFromCancerNode(cancerDriverGene);
       const found = visibleIds.has(wrapper.nodeId);
       if (found && !this.inSelection(wrapper)) {
         items.push(wrapper);
@@ -272,16 +278,22 @@ export class AnalysisService {
     return items.length;
   }
 
-  public removeAllHostProteins() {
-    const items: Wrapper[] = Array.from(this.selectedItems.values()).filter(p => p.type === 'gene');
+  public removeAllGenes() {
+    /**
+     * removes all genes from selection
+     */
+    const items: Wrapper[] = Array.from(this.selectedItems.values()).filter(p => p.type === 'node');
     for (const wrapper of items) {
       this.selectedItems.delete(wrapper.nodeId);
     }
     this.selectListSubject.next({items, selected: false});
   }
 
-  public removeAllViralProteins() {
-    const items: Wrapper[] = Array.from(this.selectedItems.values()).filter(p => p.type === 'cancerDriverGene');
+  public removeAllCancerDriverGenes() {
+    /**
+     * removes all cancer driver genes from selection
+     */
+    const items: Wrapper[] = Array.from(this.selectedItems.values()).filter(p => p.type === 'cancerNode');
     for (const wrapper of items) {
       this.selectedItems.delete(wrapper.nodeId);
     }
@@ -289,6 +301,9 @@ export class AnalysisService {
   }
 
   resetSelection() {
+    /**
+     * clears selection
+     */
     this.selectedItems.clear();
     this.selectListSubject.next({items: [], selected: null});
   }
@@ -301,12 +316,12 @@ export class AnalysisService {
     return this.selectedItems.has(wrapper.nodeId);
   }
 
-  proteinInSelection(protein: Gene): boolean {
-    return this.inSelection(getWrapperFromGene(protein));
+  proteinInSelection(protein: Node): boolean {
+    return this.inSelection(getWrapperFromNode(protein));
   }
 
-  viralProteinInSelection(viralProtein: CancerDriverGene): boolean {
-    return this.inSelection(getWrapperFromCancerDriverGene(viralProtein));
+  viralProteinInSelection(viralProtein: CancerNode): boolean {
+    return this.inSelection(getWrapperFromCancerNode(viralProtein));
   }
 
   getSelection(): Wrapper[] {
@@ -346,18 +361,18 @@ export class AnalysisService {
 
     // parse cancer type items to backendId-string-format '1,6,9,..'
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
-    const cancerTypesIdsString = cancerTypesIds.join(',')
-
-    const resp = await this.http.post<any>(`${environment.backend}task/`, {
-      algorithm: isSuper ? 'super' : 'quick',
-      target: 'drug',
-      parameters: {
+    console.log(this.getSelection())
+    const resp = await this.control.postTask(
+      isSuper ? 'super' : 'quick',
+      'drug',
+      {
         dataset: dataset.backendId,
-        cancer_types: cancerTypesIdsString,
+        cancer_types: cancerTypesIds,
         bait_datasets: dataset.data,
-        seeds: isSuper ? [] : this.getSelection().map((i) => i.backendId),
-      },
-    }).toPromise();
+        seeds: isSuper ? [] : this.getSelection().map((i) => i.backendId.toString()),
+      }
+    );
+    console.log(resp.token)
     this.tokens.push(resp.token);
     localStorage.setItem('tokens', JSON.stringify(this.tokens));
     this.startWatching();
@@ -448,6 +463,7 @@ export class AnalysisService {
             } else if (task.info.failed) {
               this.finishedTokens.push(task.token);
               this.showToast(task, 'FAILED');
+              console.log(task.info.status)
               localStorage.setItem('finishedTokens', JSON.stringify(this.finishedTokens));
             } else {
             }

@@ -1,15 +1,15 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
-import {getWrapperFromGene, Gene, Wrapper} from '../../interfaces';
+import {getWrapperFromNode, Node, Wrapper} from '../../interfaces';
 import {AnalysisService} from '../../analysis.service';
 
 @Component({
-  selector: 'app-custom-proteins',
-  templateUrl: './custom-proteins.component.html',
-  styleUrls: ['./custom-proteins.component.scss']
+  selector: 'app-custom-genes',
+  templateUrl: './custom-genes.component.html',
+  styleUrls: ['./custom-genes.component.scss']
 })
-export class CustomProteinsComponent implements OnInit {
+export class CustomGenesComponent implements OnInit {
 
   @Input()
   public show = false;
@@ -19,7 +19,7 @@ export class CustomProteinsComponent implements OnInit {
   public visibleNodes: Array<any> = [];
 
   public textList = '';
-  public proteins: Array<string> = [];
+  public genes: Array<string> = [];
   public notFound: Array<string> = [];
   public itemsFound: Array<Wrapper> = [];
   public addedCount = 0;
@@ -34,7 +34,7 @@ export class CustomProteinsComponent implements OnInit {
   public close() {
     this.show = false;
     this.textList = '';
-    this.proteins = [];
+    this.genes = [];
     this.notFound = [];
     this.itemsFound = [];
     this.showChange.emit(this.show);
@@ -42,18 +42,18 @@ export class CustomProteinsComponent implements OnInit {
     this.selectOnly = false;
   }
 
-  public async addProteins() {
+  public async addGenes() {
     this.loading = true;
     this.notFound = [];
     this.itemsFound = [];
-    const proteins = this.proteins;
+    const genes = this.genes;
     this.changeTextList('');
-    const result = await this.http.post<any>(`${environment.backend}query_proteins/`, proteins).toPromise();
+    const result = await this.http.post<any>(`${environment.backend}query_proteins/`, genes).toPromise();
     this.notFound = result.notFound;
     const details = result.details;
     const items = [];
     for (const detail of details) {
-      items.push(getWrapperFromGene(detail));
+      items.push(getWrapperFromNode(detail));
     }
     this.itemsFound = items;
     this.addedCount = this.analysis.addItems(items);
@@ -61,23 +61,23 @@ export class CustomProteinsComponent implements OnInit {
     this.loading = false;
   }
 
-  public async addVisibleProteins() {
+  public async addVisibleGenes() {
     this.loading = true;
     this.notFound = [];
     this.itemsFound = [];
-    const proteins = this.proteins;
+    const genes = this.genes;
     this.changeTextList('');
-    const result = await this.http.post<any>(`${environment.backend}query_proteins/`, proteins).toPromise();
+    const result = await this.http.post<any>(`${environment.backend}query_proteins/`, genes).toPromise();
     this.notFound = result.notFound;
     const details = result.details;
-    const proteinItems = [];
+    const geneItems = [];
     const items = [];
     for (const detail of details) {
-      proteinItems.push(detail as Gene);
-      items.push(getWrapperFromGene(detail));
+      geneItems.push(detail as Node);
+      items.push(getWrapperFromNode(detail));
     }
     this.itemsFound = items;
-    this.addedCount = this.analysis.addVisibleHostProteins(this.visibleNodes, proteinItems);
+    this.addedCount = this.analysis.addVisibleGenes(this.visibleNodes, geneItems);
     this.selectOnly = true;
     this.loading = false;
   }
@@ -85,26 +85,26 @@ export class CustomProteinsComponent implements OnInit {
   public changeTextList(textList) {
     this.textList = textList;
     if (!textList) {
-      this.proteins = [];
+      this.genes = [];
       return;
     }
 
     const separators = ['\n', ',', ';', ' '];
 
-    let proteins;
+    let genes;
     for (const sep of separators) {
       if (textList.indexOf(sep) === -1) {
         continue;
       }
-      proteins = textList.split(sep).map(ac => ac.trim()).filter(ac => !!ac);
+      genes = textList.split(sep).map(ac => ac.trim()).filter(ac => !!ac);
       break;
     }
 
-    if (!proteins) {
-      proteins = [textList];
+    if (!genes) {
+      genes = [textList];
     }
 
-    this.proteins = proteins;
+    this.genes = genes;
   }
 
 }

@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {AnalysisService} from '../../analysis.service';
-import {getWrapperFromGene, Gene, Tissue} from '../../interfaces';
+import {getWrapperFromNode, Node, Tissue} from '../../interfaces';
 import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 
 @Component({
-  selector: 'app-add-expressed-proteins',
+  selector: 'app-add-expressed-genes',
   templateUrl: './add-expressed-proteins.component.html',
   styleUrls: ['./add-expressed-proteins.component.scss']
 })
@@ -18,7 +18,7 @@ export class AddExpressedProteinsComponent implements OnChanges {
   @Input()
   public visibleNodes: Array<any> = [];
   @Input()
-  public currentViewProteins: Array<Gene> = [];
+  public currentViewProteins: Array<Node> = [];
   @Input()
   public selectedTissue: Tissue | null = null;
 
@@ -40,7 +40,7 @@ export class AddExpressedProteinsComponent implements OnChanges {
       {tissueId: this.selectedTissue.id, threshold: this.threshold}).toPromise();
     const items = [];
     for (const detail of result) {
-      items.push(getWrapperFromGene(detail));
+      items.push(getWrapperFromNode(detail));
     }
     this.addedCount = this.analysis.addItems(items);
     this.loading = false;

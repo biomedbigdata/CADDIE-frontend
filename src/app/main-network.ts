@@ -1,8 +1,8 @@
 import {HttpClient} from '@angular/common/http';
 import {
-  GeneDriverInteraction,
-  CancerDriverGene,
-  Gene,
+  Interaction,
+  CancerNode,
+  Node,
   getGeneNodeId,
   getCancerDriverGeneNodeId,
   Dataset
@@ -12,24 +12,24 @@ export function getDatasetFilename(dataset: Dataset): string {
   return `network-${JSON.stringify(dataset.name).replace(/[\[\]\",]/g, '')}.json`;
 }
 
-export class GeneNetwork {
+export class Network {
 
   constructor(
-    public genes: Gene[],
-    public cancer_driver_genes: CancerDriverGene[],
-    public edges: GeneDriverInteraction[]) {
+    public nodes: Node[],
+    public cancerNodes: CancerNode[],
+    public edges: Interaction[]) {
   }
 
   public async loadPositionsFromFile(http: HttpClient, dataset: Dataset) {
     const nodePositions = await http.get(`assets/positions/${getDatasetFilename(dataset)}`).toPromise();
-    this.genes.forEach((node) => {
+    this.nodes.forEach((node) => {
       const nodePosition = nodePositions[getGeneNodeId(node)];
       if (nodePosition) {
         node.x = nodePosition.x;
         node.y = nodePosition.y;
       }
     });
-    this.cancer_driver_genes.forEach((node) => {
+    this.cancerNodes.forEach((node) => {
       const nodePosition = nodePositions[getCancerDriverGeneNodeId(node)];
       if (nodePosition) {
         node.x = nodePosition.x;
@@ -38,43 +38,40 @@ export class GeneNetwork {
     });
   }
 
-  public getGene(backend_id: string): Gene | undefined {
+  public getNode(backend_id: string): Node | undefined {
     /**
-     * Returns Gene in network with corresponding backend_id
+     * Returns Gene/Protein in network with corresponding backend_id
      */
-    return this.genes.find((g) => g.backendId === backend_id);
+    return this.nodes.find((g) => g.backendId === backend_id);
   }
 
-  public getCancerDriverGene(name: string, cancerType: string, cancerDataset: string): CancerDriverGene | undefined {
+  public getCancerNode(backend_id: string): CancerNode | undefined {
     /**
-     * Returns CancerDriverGene in network with corresponding name, cancerType and cancerDataset
+     * Returns Gene/protein in network with corresponding backend_id
      */
-    return this.cancer_driver_genes.find((cancer_driver_gene) =>
-      cancer_driver_gene.geneName === name &&
-      cancer_driver_gene.cancerType === cancerType &&
-      cancer_driver_gene.datasetName === cancerDataset);
+    return this.cancerNodes.find((g) => g.backendId === backend_id);
   }
 
   public linkNodes() {
     /**
-     * Links ALL nodes in the network based on their interactions to all related nodes
+     * Links ALL nodes (cancer and non-cancer) in the network based on their interactions to all related nodes
      */
-    this.genes.forEach((g) => {
+    // reset all interactions
+    this.nodes.forEach((g) => {
       g.interactions = [];
     });
-    this.cancer_driver_genes.forEach((eff) => {
-      eff.interactions = [];
+    // reset all interactions
+    this.cancerNodes.forEach((cdg) => {
+      cdg.interactions = [];
     });
-    this.edges.forEach((gene_driver_interaction) => {
-      const gene = this.getGene(gene_driver_interaction.id);
-      const cancer_driver_gene = this.getCancerDriverGene(
-        gene_driver_interaction.geneName,
-        gene_driver_interaction.cancerDriverGeneName,
-        gene_driver_interaction.datasetName);
+    // set interactions
+    this.edges.forEach((interaction) => {
+      const nodeA = this.getNode(interaction.interactorABackendId) || this.getCancerNode(interaction.interactorABackendId);
+      const nodeB = this.getNode(interaction.interactorBBackendId) || this.getCancerNode(interaction.interactorBBackendId);
 
-      if (gene && cancer_driver_gene) {
-        gene.interactions.push(cancer_driver_gene);
-        cancer_driver_gene.interactions.push(gene);
+      if (nodeA && nodeB) {
+        nodeA.interactions.push(nodeB);
+        nodeB.interactions.push(nodeA);
       }
     });
   }

@@ -81,9 +81,9 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public maxTasks = MAX_TASKS;
 
   constructor(public analysis: AnalysisService) {
-    this.hasBaits = !!analysis.getSelection().find((i) => i.type === 'cancerDriverGene');
+    this.hasBaits = !!analysis.getSelection().find((i) => i.type === 'cancerNode');
     analysis.subscribeList(() => {
-      this.hasBaits = !!analysis.getSelection().find((i) => i.type === 'cancerDriverGene');
+      this.hasBaits = !!analysis.getSelection().find((i) => i.type === 'cancerNode');
     });
   }
 

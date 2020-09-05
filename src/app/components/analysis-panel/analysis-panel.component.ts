@@ -13,18 +13,18 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {AnalysisService, algorithmNames} from '../../analysis.service';
 import {
-  Gene,
+  Node,
   Task,
-  CancerDriverGene,
+  CancerNode,
   Drug,
   Wrapper,
   WrapperType,
-  getWrapperFromGene,
+  getWrapperFromNode,
   getWrapperFromDrug,
-  getWrapperFromCancerDriverGene,
+  getWrapperFromCancerNode,
   getNodeIdsFromCancerDriverGeneDrugInteraction,
-  getNodeIdsFromGeneDriverGeneInteraction,
   getNodeIdsFromGeneGeneInteraction,
+  getNodeIdsFromEdgeGene,
   getCancerDriverGeneNodeId,
   getGeneNodeId,
   Tissue,
@@ -53,7 +53,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   @Output() tokenChange = new EventEmitter<string | null>();
   @Output() showDetailsChange = new EventEmitter<Wrapper>();
-  @Output() visibleItems = new EventEmitter<[any[], [Gene[], CancerDriverGene[], Tissue]]>();
+  @Output() visibleItems = new EventEmitter<[any[], [Node[], CancerNode[], Tissue]]>();
 
   public task: Task | null = null;
 
@@ -69,10 +69,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   public effects: any;
 
   public tableDrugs: Array<Drug & Scored & Baited> = [];
-  public tableProteins: Array<Gene & Scored & Seeded & Baited> = [];
-  public tableSelectedGenes: Array<Gene & Scored & Seeded & Baited> = [];
-  public tableViralProteins: Array<CancerDriverGene & Scored & Seeded> = [];
-  public tableSelectedCancerDriverGenes: Array<CancerDriverGene & Scored & Seeded> = [];
+  public tableProteins: Array<Node & Scored & Seeded & Baited> = [];
+  public tableSelectedGenes: Array<Node & Scored & Seeded & Baited> = [];
+  public tableViralProteins: Array<CancerNode & Scored & Seeded> = [];
+  public tableSelectedCancerDriverGenes: Array<CancerNode & Scored & Seeded> = [];
   public tableNormalize = false;
   public tableHasScores = false;
 
@@ -262,7 +262,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             const proteinSelection = this.tableSelectedGenes;
             const viralProteinSelection = this.tableSelectedCancerDriverGenes;
             for (const item of items) {
-              if (item.type === 'gene') {
+              if (item.type === 'node') {
                 // TODO: Refactor!
                 const found = proteinSelection.findIndex((i) => getGeneNodeId(i) === item.nodeId);
                 const tableItem = this.tableProteins.find((i) => getGeneNodeId(i) === item.nodeId);
@@ -272,7 +272,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
                 if (!selected && found !== -1 && tableItem) {
                   proteinSelection.splice(found, 1);
                 }
-              } else if (item.type === 'cancerDriverGene') {
+              } else if (item.type === 'cancerNode') {
                 // TODO: Refactor!
                 const found = viralProteinSelection.findIndex((i) => getCancerDriverGeneNodeId(i) === item.nodeId);
                 const tableItem = this.tableViralProteins.find((i) => getCancerDriverGeneNodeId(i) === item.nodeId);
@@ -310,12 +310,12 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             const proteinSelection = [];
             const viralProteinSelection = [];
             for (const item of items) {
-              if (item.type === 'gene') {
+              if (item.type === 'node') {
                 const tableItem = this.tableProteins.find((i) => getGeneNodeId(i) === item.nodeId);
                 if (tableItem) {
                   proteinSelection.push(tableItem);
                 }
-              } else if (item.type === 'cancerDriverGene') {
+              } else if (item.type === 'cancerNode') {
                 const tableItem = this.tableViralProteins.find((i) => getCancerDriverGeneNodeId(i) === item.nodeId);
                 if (tableItem) {
                   viralProteinSelection.push(tableItem);
@@ -340,6 +340,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   }
 
   close() {
+    /**
+     * closes analysis modal
+     */
     this.analysis.switchSelection('main');
     this.token = null;
     this.tokenChange.emit(this.token);
@@ -347,6 +350,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   }
 
   public toggleNormalization(normalize: boolean) {
+    /**
+     * toggles normalization in analysis table
+     */
     this.tableNormalize = normalize;
 
     const normalizeFn = (table) => {
@@ -388,11 +394,11 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public inferNodeType(nodeId: string): WrapperType {
     if (nodeId.indexOf('-') !== -1 || nodeId.indexOf('_') !== -1) {
-      return 'cancerDriverGene';
+      return 'cancerNode';
     } else if (nodeId.startsWith('DB')) {
       return 'drug';
     }
-    return 'gene';
+    return 'node';
   }
 
   public createNetwork(result: any): { edges: any[], nodes: any[] } {
@@ -418,12 +424,12 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     const details = attributes.details || {};
     const wrappers: { [key: string]: Wrapper } = {};
     for (const node of network.nodes) {
-      if (nodeTypes[node] === 'host') {
+      if (nodeTypes[node] === 'gene') {
         this.proteins.push(details[node]);
-        wrappers[node] = getWrapperFromGene(details[node]);
-      } else if (nodeTypes[node] === 'virus') {
+        wrappers[node] = getWrapperFromNode(details[node]);
+      } else if (nodeTypes[node] === 'cancerDriverGene') {
         this.effects.push(details[node]);
-        wrappers[node] = getWrapperFromCancerDriverGene(details[node]);
+        wrappers[node] = getWrapperFromCancerNode(details[node]);
       } else if (nodeTypes[node] === 'drug') {
         wrappers[node] = getWrapperFromDrug(details[node]);
       }
@@ -440,7 +446,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     };
   }
 
-  private mapNode(nodeType: WrapperType, details: Gene | CancerDriverGene | Drug, isSeed?: boolean, score?: number): any {
+  private mapNode(nodeType: WrapperType, details: Node | CancerNode | Drug, isSeed?: boolean, score?: number): any {
     /**
      * Wraps, whether it is gene, cancerdrivergene or drug object, to a network node object
      */
@@ -448,9 +454,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     let wrapper: Wrapper;
     let drugType;
     let drugInTrial;
-    if (nodeType === 'gene') {
-      const gene = details as Gene;
-      wrapper = getWrapperFromGene(gene);
+    if (nodeType === 'node') {
+      const gene = details as Node;
+      wrapper = getWrapperFromNode(gene);
       nodeLabel = gene.name;
       if (!gene.name) {
         nodeLabel = gene.backendId;
@@ -465,10 +471,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       } else {
         nodeLabel = drug.backendId;
       }
-    } else if (nodeType === 'cancerDriverGene') {
-      const cancerDriverGene = details as CancerDriverGene;
-      wrapper = getWrapperFromCancerDriverGene(cancerDriverGene);
-      nodeLabel = cancerDriverGene.geneName;
+    } else if (nodeType === 'cancerNode') {
+      const cancerDriverGene = details as CancerNode;
+      wrapper = getWrapperFromCancerNode(cancerDriverGene);
+      nodeLabel = cancerDriverGene.name;
     }
 
     const node = NetworkSettings.getNodeStyle(nodeType, isSeed, this.analysis.inSelection(wrapper), drugType, drugInTrial);
@@ -488,10 +494,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     let edgeColor;
     if (type === 'gene-gene') {
       edgeColor = {
-        color: NetworkSettings.getColor('edgeGeneCancerDriverGene'),
-        highlight: NetworkSettings.getColor('edgeGeneCancerDriverGeneHighlight'),
+        color: NetworkSettings.getColor('edgeGene'),
+        highlight: NetworkSettings.getColor('edgeGeneHighlight'),
       };
-      const {from, to} = getNodeIdsFromGeneGeneInteraction(edge, wrappers);
+      const {from, to} = getNodeIdsFromEdgeGene(edge, wrappers);
       return {
         from, to,
         color: edgeColor,
@@ -605,14 +611,14 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     const removeItems = [];
 
     for (const i of this.tableSelectedGenes) {
-      const wrapper = getWrapperFromGene(i);
+      const wrapper = getWrapperFromNode(i);
       if (oldSelection.indexOf(i) === -1) {
         addItems.push(wrapper);
       }
     }
 
     for (const i of oldSelection) {
-      const wrapper = getWrapperFromGene(i);
+      const wrapper = getWrapperFromNode(i);
       if (this.tableSelectedGenes.indexOf(i) === -1) {
         removeItems.push(wrapper);
       }
@@ -633,13 +639,13 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     const addItems = [];
     const removeItems = [];
     for (const i of this.tableSelectedCancerDriverGenes) {
-      const wrapper = getWrapperFromCancerDriverGene(i);
+      const wrapper = getWrapperFromCancerNode(i);
       if (oldSelection.indexOf(i) === -1) {
         addItems.push(wrapper);
       }
     }
     for (const i of oldSelection) {
-      const wrapper = getWrapperFromCancerDriverGene(i);
+      const wrapper = getWrapperFromCancerNode(i);
       if (this.tableSelectedCancerDriverGenes.indexOf(i) === -1) {
         removeItems.push(wrapper);
       }
@@ -661,7 +667,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       this.selectedTissue = null;
       const updatedNodes = [];
       for (const protein of this.proteins) {
-        const item = getWrapperFromGene(protein);
+        const item = getWrapperFromNode(protein);
         const node = this.nodeData.nodes.get(item.nodeId);
         if (!node) {
           continue;
@@ -680,20 +686,20 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         node.wrapper = item;
         node.gradient = 1.0;
         protein.expressionLevel = undefined;
-        (node.wrapper.data as Gene).expressionLevel = undefined;
+        (node.wrapper.data as Node).expressionLevel = undefined;
         updatedNodes.push(node);
       }
       this.nodeData.nodes.update(updatedNodes);
     } else {
       this.selectedTissue = tissue;
       const minExp = 0.3;
-      this.http.get<Array<{ protein: Gene, level: number }>>(
+      this.http.get<Array<{ protein: Node, level: number }>>(
         `${environment.backend}tissue_expression/?tissue=${tissue.id}&token=${this.token}`)
         .subscribe((levels) => {
           const updatedNodes = [];
           const maxExpr = Math.max(...levels.map(lvl => lvl.level));
           for (const lvl of levels) {
-            const item = getWrapperFromGene(lvl.protein);
+            const item = getWrapperFromNode(lvl.protein);
             const node = this.nodeData.nodes.get(item.nodeId);
             if (!node) {
               continue;
@@ -713,7 +719,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             node.wrapper = item;
             node.gradient = gradient;
             this.proteins.find(prot => getGeneNodeId(prot) === item.nodeId).expressionLevel = lvl.level;
-            (node.wrapper.data as Gene).expressionLevel = lvl.level;
+            (node.wrapper.data as Node).expressionLevel = lvl.level;
             updatedNodes.push(node);
           }
           this.nodeData.nodes.update(updatedNodes);

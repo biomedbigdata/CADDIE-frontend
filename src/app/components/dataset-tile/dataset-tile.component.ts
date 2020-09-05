@@ -15,7 +15,6 @@ export class DatasetTileComponent {
   @Input() datasetItems: Dataset[];
 
   public select(selectionItem) {
-    console.log(selectionItem)
     this.selectedDataset = selectionItem;
     this.selectedDatasetChange.emit(selectionItem);
   }

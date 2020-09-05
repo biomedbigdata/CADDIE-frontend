@@ -1,0 +1,7 @@
+<div *ngFor="let bait of checkboxes">
+  <label class="checkbox">
+    <input type="checkbox" class="checkbox" [ngModel]="bait.checked"
+           (ngModelChange)="bait.checked = $event; filterFun()">
+    {{ bait.data.name }}
+  </label>
+</div>

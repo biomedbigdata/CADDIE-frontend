@@ -37,14 +37,14 @@
           </textarea>
         </div>
       </div>
-      <p *ngIf="proteins">
-        Items parsed: {{proteins.length}}
+      <p *ngIf="genes">
+        Items parsed: {{genes.length}}
       </p>
     </section>
     <footer class="modal-card-foot">
-      <button (click)="addProteins();" class="button is-success is-rounded has-tooltip"
+      <button (click)="addGenes();" class="button is-success   has-tooltip"
               data-tooltip="Add all to the selection."
-              [disabled]="proteins.length === 0 || loading">
+              [disabled]="genes.length === 0 || loading">
         <span class="icon">
           <i class="fa fa-plus"></i>
         </span>
@@ -52,9 +52,9 @@
           Add
         </span>
       </button>
-      <button (click)="addVisibleProteins();" class="button is-success is-rounded has-tooltip"
+      <button (click)="addVisibleGenes();" class="button is-success   has-tooltip"
               data-tooltip="Add to selection if they appear in the current network."
-              [disabled]="proteins.length === 0 || loading">
+              [disabled]="genes.length === 0 || loading">
         <span class="icon">
           <i class="fas fa-expand"></i>
         </span>
@@ -62,7 +62,7 @@
           Select
         </span>
       </button>
-      <button (click)="close()" class="button is-rounded has-tooltip" data-tooltip="Close the current window.">Close
+      <button (click)="close()" class="button   has-tooltip" data-tooltip="Close the current window.">Close
       </button>
     </footer>
   </div>

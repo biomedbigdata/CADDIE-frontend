@@ -62,15 +62,28 @@ export class NetworkSettings {
   };
   private static mainEdges = {
     smooth: false,
-    length: 250,
+  //  length: 250,
   };
   private static mainPhysics = {
-    enabled: false,
+    solver: 'barnesHut',
+    barnesHut: {
+      theta: 1,
+      gravitationalConstant: -30000,
+      centralGravity: 0.0,
+      springLength: 500,
+      springConstant: 0.8,
+      damping: 0.5,
+      avoidOverlap: 1,
+    },
+    stabilization: {
+      enabled: true,
+      iterations: 1000
+    },
   };
 
   // Node size
-  private static hostSize = 20;
-  private static virusSize = 30;
+  private static nodeSize = 20;
+  private static cancerNodeSize = 30;
   private static drugSize = 15;
 
   // Node shape
@@ -80,19 +93,19 @@ export class NetworkSettings {
   private static drugInTrialShape = 'triangle';
 
   static getNodeSize(wrapperType: WrapperType) {
-    if (wrapperType === 'gene') {
-      return this.hostSize;
-    } else if (wrapperType === 'cancerDriverGene') {
-      return this.virusSize;
+    if (wrapperType === 'node') {
+      return this.nodeSize;
+    } else if (wrapperType === 'cancerNode') {
+      return this.cancerNodeSize;
     } else if (wrapperType === 'drug') {
       return this.drugSize;
     }
   }
 
   static getNodeShape(wrapperType: WrapperType, drugInTrial?: boolean) {
-    if (wrapperType === 'gene') {
+    if (wrapperType === 'node') {
       return this.hostShape;
-    } else if (wrapperType === 'cancerDriverGene') {
+    } else if (wrapperType === 'cancerNode') {
       return this.virusShape;
     } else if (wrapperType === 'drug') {
       if (drugInTrial) {
@@ -125,15 +138,15 @@ export class NetworkSettings {
     }
   }
 
-  static getColor(color: 'gene' | 'cancerDriverGene' | 'approvedDrug' | 'unapprovedDrug' | 'geneFont' | 'cancerFont' | 'drugFont' |
+  static getColor(color: 'node' | 'cancerNode' | 'approvedDrug' | 'unapprovedDrug' | 'geneFont' | 'cancerFont' | 'drugFont' |
     'nonSeedGene' | 'nonSeedCancerDriverGenes' | 'selectedForAnalysis' | 'selectedForAnalysisText' |
-    'edgeGeneCancerDriverGene' | 'edgeGeneCancerDriverGeneHighlight' | 'edgeGeneDrug' | 'edgeGeneDrugHighlight') {
+    'edgeGene' | 'edgeGeneHighlight' | 'edgeGeneCancer' | 'edgeGeneCancerHighlight' | 'edgeGeneDrug' | 'edgeGeneDrugHighlight') {
     /**
      * Collection of all colors per use-case
      */
-    if (color === 'gene') {
+    if (color === 'node') {
       return this.hostColor;
-    } else if (color === 'cancerDriverGene') {
+    } else if (color === 'cancerNode') {
       return this.virusColor;
     } else if (color === 'approvedDrug') {
       return this.approvedDrugColor;
@@ -149,11 +162,15 @@ export class NetworkSettings {
       return this.nonSeedHostColor;
     } else if (color === 'nonSeedCancerDriverGenes') {
       return this.nonSeedVirusColor;
-    } else if (color === 'edgeGeneCancerDriverGene') {
+    } else if (color === 'edgeGene') {
+      return this.edgeHostVirusColor;
+    } else if (color === 'edgeGeneCancer') {
+      return this.edgeHostVirusColor;
+    } else if (color === 'edgeGeneCancerHighlight') {
       return this.edgeHostVirusColor;
     } else if (color === 'edgeGeneDrug') {
       return this.edgeHostDrugColor;
-    } else if (color === 'edgeGeneCancerDriverGeneHighlight') {
+    } else if (color === 'edgeGeneHighlight') {
       return this.edgeHostVirusHighlightColor;
     } else if (color === 'edgeGeneDrugHighlight') {
       return this.edgeHostDrugHighlightColor;
@@ -161,9 +178,9 @@ export class NetworkSettings {
   }
 
   static getFont(wrapperType: WrapperType, drugInTrial?: boolean) {
-    if (wrapperType === 'gene') {
+    if (wrapperType === 'node') {
       return {color: this.hostFontColor, size: this.hostFontSize};
-    } else if (wrapperType === 'cancerDriverGene') {
+    } else if (wrapperType === 'cancerNode') {
       return {color: this.virusFontColor, size: this.virusFontSize};
     } else if (wrapperType === 'drug') {
       if (!drugInTrial) {
@@ -191,16 +208,16 @@ export class NetworkSettings {
     nodeShape = NetworkSettings.getNodeShape(nodeType);
     nodeSize = NetworkSettings.getNodeSize(nodeType);
     nodeFont = NetworkSettings.getFont(nodeType);
-    if (nodeType === 'gene') {
+    if (nodeType === 'node') {
       nodeColor = NetworkSettings.getColor(nodeType);
-      nodeFont = NetworkSettings.getFont('gene');
+      nodeFont = NetworkSettings.getFont('node');
       if (!isSeed) {
         nodeColor = NetworkSettings.getColor('nonSeedGene');
       }
-    } else if (nodeType === 'cancerDriverGene') {
+    } else if (nodeType === 'cancerNode') {
       nodeColor = NetworkSettings.getColor(nodeType);
-      if (nodeType === 'cancerDriverGene') {
-        nodeFont = NetworkSettings.getFont('cancerDriverGene');
+      if (nodeType === 'cancerNode') {
+        nodeFont = NetworkSettings.getFont('cancerNode');
         if (!isSeed) {
           nodeColor = NetworkSettings.getColor('nonSeedCancerDriverGenes');
         }

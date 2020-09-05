@@ -143,7 +143,7 @@
         <footer class="card-footer toolbar">
           <div class="field">
             <p class="control footer-buttons">
-              <button class="button is-primary is-rounded has-tooltip"
+              <button class="button is-primary   has-tooltip"
                       data-tooltip="Take a screenshot of the current network." (click)="toCanvas()">
                 <span class="icon">
                   <i class="fas fa-camera" aria-hidden="true"></i>
@@ -157,7 +157,7 @@
 
           <div class="field">
             <p class="control footer-buttons">
-              <a [href]="graphmlLink()" class="button is-success is-rounded has-tooltip" data-tooltip="Export this network as .graphml file.">
+              <a [href]="graphmlLink()" class="button is-success   has-tooltip" data-tooltip="Export this network as .graphml file.">
                 <span class="icon">
                   <i class="fas fa-download" aria-hidden="true"></i>
                 </span>
@@ -170,7 +170,7 @@
 
 <!--          <div class="field">-->
 <!--            <p class="control footer-buttons">-->
-<!--              <button class="button is-danger is-rounded has-tooltip" data-tooltip="Delete the current analysis."-->
+<!--              <button class="button is-danger   has-tooltip" data-tooltip="Delete the current analysis."-->
 <!--                      (click)="analysis.removeTask(token); close()">-->
 <!--                <span class="icon">-->
 <!--                  <i class="fas fa-trash" aria-hidden="true"></i>-->
@@ -185,7 +185,7 @@
           <div class="footer-buttons dropdown is-up" [class.is-active]="expressionExpanded">
             <div class="dropdown-trigger">
               <button (click)="expressionExpanded=!expressionExpanded"
-                      class="button is-rounded is-primary" [class.is-outlined]="!selectedTissue"
+                      class="button   is-primary" [class.is-outlined]="!selectedTissue"
                       aria-haspopup="true" aria-controls="dropdown-menu">
                 <span *ngIf="!selectedTissue">Tissue</span>
                 <span *ngIf="selectedTissue">{{selectedTissue.name}}</span>
@@ -227,7 +227,7 @@
       <div class="content tab-content scrollable" *ngIf="task && task.info.done" [class.is-visible]="tab === 'table'">
         <div class="field has-addons" *ngIf="tableHasScores && task.info.algorithm !== 'proximity'">
           <p class="control">
-            <button class="button is-rounded has-tooltip" data-tooltip="Normalize the scores"
+            <button class="button   has-tooltip" data-tooltip="Normalize the scores"
                     [class.is-primary]="tableNormalize" (click)="toggleNormalization(true)">
                 <span class="icon is-small">
                   <i class="fa fa-ruler-vertical"></i>
@@ -236,7 +236,7 @@
             </button>
           </p>
           <p class="control">
-            <button class="button is-rounded has-tooltip" data-tooltip="Disable normalization of the scores."
+            <button class="button   has-tooltip" data-tooltip="Disable normalization of the scores."
                     [class.is-primary]="!tableNormalize" (click)="toggleNormalization(false)">
               <span>Off</span>
             </button>

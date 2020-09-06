@@ -1,18 +1,21 @@
 <div class="content">
-  <ng-select [items]="datasetItems" bindLabel="name" [virtualScroll]="true" class="custom"
-             placeholder="Select..." [ngModel]="selectedDataset" (ngModelChange)="select($event)"
-             data-tooltip="Choose the dataset you want to explore.">
-    <ng-template ng-option-tmp let-item="item">
-      {{item.name}}
-    </ng-template>
-  </ng-select>
+  <div class="columns">
+    <div class="column is-6">
+      <ng-select [items]="datasetItems" bindLabel="name" [virtualScroll]="true" class="custom"
+                 placeholder="Select..." [ngModel]="selectedDataset" (ngModelChange)="select($event)"
+                 data-tooltip="Choose the dataset you want to explore.">
+        <ng-template ng-option-tmp let-item="item">
+          {{item.name}}
+        </ng-template>
+      </ng-select>
+    </div>
 
-  <div *ngIf="selectedDataset" class="info">
-    <ul>
-      <li *ngIf="selectedDataset.name"><b>Name: </b>{{selectedDataset.name}}</li>
-    </ul>
-    <ul>
-      <li *ngIf="selectedDataset.link"><b>Source: </b><a href="{{selectedDataset.link}}">Link</a></li>
-    </ul>
+    <div class="column is-narrow">
+      <div *ngIf="selectedDataset" class="info">
+
+          <div *ngIf="selectedDataset.link"><a href="{{selectedDataset.link}}"><i class="fas fa-link"></i> Source</a></div>
+
+      </div>
+    </div>
   </div>
 </div>

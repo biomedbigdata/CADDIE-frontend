@@ -15,345 +15,16 @@
 
   <div class="covex explorer">
 
-    <!-- Data Selector START -->
-    <div class="columns is-multiline is-centered">
-      <div class="column is-1"></div>
+    <div class="covex right-window">
 
-      <div class="column is-3">
-        <!-- Dataset Selector START -->
-        <h5 class="title is-5">Dataset</h5>
-        <app-dataset-tile [datasetItems]="datasetItems" [selectedDataset]="selectedDataset"
-                          (selectedDatasetChange)="selectedDataset = $event; initCancerTypes(selectedDataset)">
-        </app-dataset-tile>
-        <!-- Dataset Selector END -->
-      </div>
-      <div class="column is-3">
-        <!-- Cancer Type Selector START -->
-        <h5 class="title is-5">Cancer Type</h5>
-        <app-cancertype-tile [cancerTypeItems]="cancerTypes" [selectedCancerTypeItems]="selectedCancerTypeItems"
-                             (selectedCancerTypeItemsChange)="selectedCancerTypeItems = $event">
-        </app-cancertype-tile>
-        <!-- Cancer Type Selector END -->
-      </div>
-      <div class="column iis-3">
-        <!-- Data Level Toggle START -->
-        <h5 class="title is-5" data-tooltip="Decide whether to use genes or proteins">Data Level</h5>
-        <app-data-level-toggle
-          class=""
-          textGene="Gene"
-          textProtein="Protein"
-          tooltipGene="Show Gene-Gene interactions in network"
-          tooltipProtein="Show Protein-Protein interactions in network"
-
-          [value]="true"
-          (valueChange)="updateDataLevel($event)">
-
-        </app-data-level-toggle>
-        <!-- Data Level Toggle END -->
-      </div>
-      <div class="column is-3">
-        <!-- Network Submit Button START -->
-        <app-button
-          buttonText="Submit"
-          (callbackFun)="createNetwork(selectedDataset, selectedDataLevel, selectedCancerTypeItems)"
-        >
-        </app-button>
-        <!-- Network Submit Button END -->
-      </div>
-
-      <div class="column is-1"></div>
-    </div>
-    <!-- Data Selector END -->
-
-    <div class="covex left-window">
       <div>
-
-        <!-- Panel Left START -->
-        <div class="covex sidebar bar-left">
-
-          <!-- Dataset Selector START -->
-          <div class="card bar-large">
-            <header class="card-header">
-              <p class="card-header-title">
-              <span class="icon">
-                <i class="fas fa-database" aria-hidden="true"></i>
-              </span> Choose Dataset
-              </p>
-              <a (click)="collapseData = !collapseData" data-action="collapse"
-                 class="card-header-icon is-hidden-fullscreen"
-                 aria-label="more options">
-             <span class="icon">
-            <i *ngIf="collapseData" class="fas fa-angle-down" aria-hidden="true"></i>
-            <i *ngIf="!collapseData" class="fas fa-angle-left" aria-hidden="true"></i>
-             </span>
-              </a>
-            </header>
-            <div *ngIf="collapseData">
-              <div class="card-content">
-                <app-dataset-tile [datasetItems]="datasetItems" [selectedDataset]="selectedDataset"
-                                  (selectedDatasetChange)="selectedDataset = $event; initCancerTypes(selectedDataset)">
-                </app-dataset-tile>
-              </div>
-            </div>
-          </div>
-          <!-- Dataset Selector END -->
-
-          <!-- Cancer Type Selector START -->
-          <div class="card bar-large">
-            <header class="card-header">
-              <p class="card-header-title">
-              <span class="icon">
-                <i class="fas fa-database" aria-hidden="true"></i>
-              </span> Choose Cancer Types
-              </p>
-              <a (click)="collapseType = !collapseType" data-action="collapse"
-                 class="card-header-icon is-hidden-fullscreen"
-                 aria-label="more options">
-             <span class="icon">
-            <i *ngIf="collapseType" class="fas fa-angle-down" aria-hidden="true"></i>
-            <i *ngIf="!collapseType" class="fas fa-angle-left" aria-hidden="true"></i>
-             </span>
-              </a>
-            </header>
-            <div *ngIf="collapseType">
-              <div class="card-content">
-                <app-cancertype-tile [cancerTypeItems]="cancerTypes" [selectedCancerTypeItems]="selectedCancerTypeItems"
-                                     (selectedCancerTypeItemsChange)="selectedCancerTypeItems = $event">
-                </app-cancertype-tile>
-              </div>
-            </div>
-          </div>
-          <!-- Cancer Type Selector END -->
-
-          <!-- Data Level Toggle START -->
-          <div class="card bar-large">
-            <header class="card-header">
-              <p class="card-header-title">
-              <span class="icon">
-                <i class="fas fa-database" aria-hidden="true"></i>
-              </span> Choose Data Level
-              </p>
-              <a (click)="collapseLevel = !collapseLevel" data-action="collapse"
-                 class="card-header-icon is-hidden-fullscreen"
-                 aria-label="more options">
-             <span class="icon">
-            <i *ngIf="collapseLevel" class="fas fa-angle-down" aria-hidden="true"></i>
-            <i *ngIf="!collapseLevel" class="fas fa-angle-left" aria-hidden="true"></i>
-             </span>
-              </a>
-            </header>
-            <div *ngIf="collapseLevel">
-              <div class="card-content">
-                <app-data-level-toggle
-                  class="footer-buttons"
-                  textGene="Gene"
-                  textProtein="Protein"
-                  tooltipGene="Show Gene-Gene interactions in network"
-                  tooltipProtein="Show Protein-Protein interactions in network"
-
-                  [value]="true"
-                  (valueChange)="updateDataLevel($event)">
-
-                </app-data-level-toggle>
-              </div>
-            </div>
-          </div>
-          <!-- Data Level Toggle END -->
-
-          <!-- Network Submit Button START -->
-          <app-button
-            buttonText="Submit"
-            (callbackFun)="createNetwork(selectedDataset, selectedDataLevel, selectedCancerTypeItems)"
-          >
-          </app-button>
-          <!-- Network Submit Button END -->
-
-          <!-- Search Overview START -->
-          <div class="card bar-large">
-            <header class="card-header">
-              <p class="card-header-title">
-                <span class="icon">
-                  <i class="fas fa-info" aria-hidden="true"></i>
-                </span> Search Overview
-              </p>
-              <a (click)="collapseOverview= !collapseOverview" data-action="collapse"
-                 class="card-header-icon is-hidden-fullscreen" aria-label="more options">
-             <span class="icon">
-              <i *ngIf="collapseOverview" class="fas fa-angle-down" aria-hidden="true"></i>
-              <i *ngIf="!collapseOverview" class="fas fa-angle-left" aria-hidden="true"></i>
-             </span>
-              </a>
-            </header>
-            <div *ngIf="collapseOverview">
-              <div class="card-content">
-                <nav class="level" *ngIf="networkData">
-                  <div class="level-item has-text-centered">
-                    <div>
-                      <p *ngIf="currentDataLevel=='gene'" class="heading">Cancer<br>Genes</p>
-                      <p *ngIf="currentDataLevel=='protein'" class="heading">Cancer<br>Proteins</p>
-                      <p class="title"> {{ cancerNodesSup.length }}</p>
-                    </div>
-                  </div>
-                  <div class="level-item has-text-centered">
-                    <div>
-                      <p *ngIf="currentDataLevel=='gene'" class="heading">Genes</p>
-                      <p *ngIf="currentDataLevel=='protein'" class="heading">Proteins</p>
-                      <p class="title">{{ nodesSup.length }}</p>
-                    </div>
-                  </div>
-                  <div class="level-item has-text-centered">
-                    <div>
-                      <p class="heading">Interactions</p>
-                      <p class="title">{{ interactionsSup.length }}</p>
-                    </div>
-                  </div>
-                </nav>
-              </div>
-            </div>
-          </div>
-          <!-- Search Overview END -->
-
-          <!-- Network Overview START -->
-          <div class="card bar-large">
-            <header class="card-header">
-              <p class="card-header-title">
-          <span class="icon">
-        <i class="fas fa-info" aria-hidden="true"></i>
-      </span> Network Overview
-              </p>
-              <a (click)="collapseOverview= !collapseOverview" data-action="collapse"
-                 class="card-header-icon is-hidden-fullscreen" aria-label="more options">
-             <span class="icon">
-              <i *ngIf="collapseOverview" class="fas fa-angle-down" aria-hidden="true"></i>
-              <i *ngIf="!collapseOverview" class="fas fa-angle-left" aria-hidden="true"></i>
-             </span>
-              </a>
-            </header>
-            <div *ngIf="collapseOverview">
-              <div class="card-content">
-                <nav class="level" *ngIf="networkData">
-                  <div class="level-item has-text-centered">
-                    <div>
-                      <p *ngIf="currentDataLevel=='gene'" class="heading">Cancer<br>Genes</p>
-                      <p *ngIf="currentDataLevel=='protein'" class="heading">Cancer<br>Proteins</p>
-                      <p class="title"> {{ networkData.cancerNodes.length }}</p>
-                    </div>
-                  </div>
-                  <div class="level-item has-text-centered">
-                    <div>
-                      <p *ngIf="currentDataLevel=='gene'" class="heading">Genes</p>
-                      <p *ngIf="currentDataLevel=='protein'" class="heading">Proteins</p>
-                      <p class="title">{{ networkData.nodes.length }}</p>
-                    </div>
-                  </div>
-                  <div class="level-item has-text-centered">
-                    <div>
-                      <p class="heading">Interactions</p>
-                      <p class="title">{{ networkData.edges.length }}</p>
-                    </div>
-                  </div>
-                </nav>
-              </div>
-            </div>
-          </div>
-          <!-- Network Overview END -->
-
-          <!-- Query Network START -->
-          <div class="card bar-large">
-            <header class="card-header">
-              <p class="card-header-title">
-              <span class="icon">
-                <i class="fas fa-search" aria-hidden="true"></i>
-              </span>
-                Query network nodes
-              </p>
-              <a (click)="collapseQuery = !collapseQuery" data-action="collapse"
-                 class="card-header-icon is-hidden-fullscreen" aria-label="more options">
-           <span class="icon">
-            <i *ngIf="collapseQuery" class="fas fa-angle-down" aria-hidden="true"></i>
-            <i *ngIf="!collapseQuery" class="fas fa-angle-left" aria-hidden="true"></i>
-           </span>
-              </a>
-            </header>
-            <div *ngIf="collapseQuery">
-              <div class="card-content">
-                <div class="field">
-                  <div class="control">
-                    <app-query-tile-component [queryItems]="queryItems"
-                                              [dataLevel]="currentDataLevel"
-                                              (selectItem)="queryAction($event)"></app-query-tile-component>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Query Network END -->
-
-          <!-- Filter Network START -->
-          <div class="card bar-large">
-            <header class="card-header">
-              <p class="card-header-title">
-              <span class="icon">
-                <i class="fas fa-filter" aria-hidden="true"></i>
-              </span>
-                <span *ngIf="currentDataLevel=='gene'">Filter Cancer Driver Genes</span>
-                <span *ngIf="currentDataLevel=='protein'">Filter Cancer Proteins</span>
-              </p>
-              <a (click)="collapseBaitFilter = !collapseBaitFilter" data-action="collapse"
-                 class="card-header-icon is-hidden-fullscreen" aria-label="more options">
-              <span class="icon">
-                <i *ngIf="collapseBaitFilter" class="fas fa-angle-down" aria-hidden="true"></i>
-                <i *ngIf="!collapseBaitFilter" class="fas fa-angle-left" aria-hidden="true"></i>
-              </span>
-              </a>
-            </header>
-            <div *ngIf="collapseBaitFilter">
-
-              <!-- Filter -->
-              <div class="card-content overflow">
-                <div>
-                  <app-filter-tile (selectItem)="filterNodes()"
-                                   [checkboxes]="cancerNodesCheckboxes">
-                  </app-filter-tile>
-                </div>
-
-                <!-- Add to Filter -->
-                <div class="field">
-                  <div class="control">
-                    <app-query-tile-component [queryItems]="filterAddItems"
-                                              [dataLevel]="currentDataLevel"
-                                              (selectItem)="addFilterNode($event)"></app-query-tile-component>
-                  </div>
-                </div>
-
-
-              </div>
-              <footer class="card-footer">
-                <a (click)="reset($event);" class="card-footer-item has-text-danger"
-                   data-tooltip="Remove filter and show all.">
-              <span class="icon">
-              <i class="fa fa-broom"></i>
-              </span>
-                    <span>
-                Show All
-              </span>
-                </a>
-              </footer>
-            </div>
-          </div>
-          <!-- Filter Network END -->
-
-
-        </div> <!-- Panel Left END -->
-
-
         <div class="covex network">
           <div class="card network">
             <header class="card-header">
               <p *ngIf="currentDataLevel == 'gene'" class="card-header-title">Gene-Gene Interaction Network</p>
               <p *ngIf="currentDataLevel == 'protein'" class="card-header-title">Protein-Protein Interaction Network</p>
             </header>
-            <div class="card-content">
+            <div class="card-content" style="positon:relative">
               <div class="card-image" id="canvas-content">
                 <div class="parent">
                   <div class="network center image1" #network>
@@ -365,6 +36,10 @@
                 </div>
               </div>
 
+              <div class="detail-view">
+                here
+              </div>
+
               <footer class="card-footer toolbar">
                 <button (click)="toCanvas()" class="button is-primary has-tooltip"
                         data-tooltip="Take a screenshot of the current network.">
@@ -373,6 +48,7 @@
                 </span> <span>Screenshot</span>
                 </button>
 
+                <!--
                 <div class="footer-buttons dropdown is-up" [class.is-active]="expressionExpanded">
                   <div class="dropdown-trigger">
                     <button (click)="expressionExpanded=!expressionExpanded"
@@ -406,7 +82,7 @@
                     </div>
                   </div>
                 </div>
-
+                -->
                 <app-toggle class="footer-buttons" textOn="Animation On" textOff="Off"
                             tooltipOn="Enable the network animation."
                             tooltipOff="Disable the network animation and freeze nodes."
@@ -424,7 +100,217 @@
       </div>
     </div>
 
-    <div class="covex sidebar bar-right">
+    <div class="covex sidebar bar-left">
+
+      <!-- Data Selector START -->
+      <div class="columns is-multiline is-centered row-data-selector">
+
+        <div class="column is-6 has-text-centered">
+
+          <!-- Dataset Selector START -->
+          <div class="columns is-vcentered">
+            <div class="column is-4 has-text-left">
+              <h6 class="title is-6">Dataset: </h6>
+            </div>
+            <div class="column">
+              <app-dataset-tile [datasetItems]="datasetItems" [selectedDataset]="selectedDataset"
+                                (selectedDatasetChange)="selectedDataset = $event; initCancerTypes(selectedDataset)">
+              </app-dataset-tile>
+            </div>
+          </div>
+          <!-- Dataset Selector END -->
+
+        </div>
+
+        <div class="column is-6 has-text-centered">
+
+          <!-- Data Level Toggle START -->
+          <div class="columns is-vcentered">
+            <div class="column is-4 has-text-left">
+              <h6 class="title is-6" data-tooltip="Decide whether to use genes or proteins">Data Level:</h6>
+            </div>
+            <div class="column">
+              <app-data-level-toggle
+                class=""
+                textGene="Gene"
+                textProtein="Protein"
+                tooltipGene="Show Gene-Gene interactions in network"
+                tooltipProtein="Show Protein-Protein interactions in network"
+
+                [value]="true"
+                (valueChange)="updateDataLevel($event)">
+
+              </app-data-level-toggle>
+            </div>
+            <!-- Data Level Toggle END -->
+          </div>
+        </div>
+
+        <div class="column is-6 has-text-centered">
+          <!-- Cancer Type Selector START -->
+
+          <div class="columns is-vcentered">
+            <div class="column is-4 has-text-left">
+              <h6 class="title is-6">Cancer Type:</h6>
+            </div>
+            <div class="column">
+              <app-cancertype-tile [cancerTypeItems]="cancerTypes" [selectedCancerTypeItems]="selectedCancerTypeItems"
+                                   (selectedCancerTypeItemsChange)="selectedCancerTypeItems = $event">
+              </app-cancertype-tile>
+            </div>
+          </div>
+          <!-- Cancer Type Selector END -->
+
+        </div>
+
+        <div class="column is-6 has-text-centered">
+          <!-- Network Submit Button START -->
+          <app-button
+            buttonText="Submit"
+            (callbackFun)="createNetwork(selectedDataset, selectedDataLevel, selectedCancerTypeItems)"
+          >
+          </app-button>
+          <!-- Network Submit Button END -->
+        </div>
+
+      </div>
+      <!-- Data Selector END -->
+
+
+      <!-- Network Overview START -->
+      <div class="card bar-large">
+        <header class="card-header">
+          <p class="card-header-title">
+          <span class="icon">
+        <i class="fas fa-info" aria-hidden="true"></i>
+      </span> Network Overview
+          </p>
+          <a (click)="collapseOverview= !collapseOverview" data-action="collapse"
+             class="card-header-icon is-hidden-fullscreen" aria-label="more options">
+             <span class="icon">
+              <i *ngIf="collapseOverview" class="fas fa-angle-down" aria-hidden="true"></i>
+              <i *ngIf="!collapseOverview" class="fas fa-angle-left" aria-hidden="true"></i>
+             </span>
+          </a>
+        </header>
+        <div *ngIf="collapseOverview">
+          <div class="card-content">
+            <nav class="level" *ngIf="networkData">
+              <div class="level-item has-text-centered">
+                <div>
+                  <p *ngIf="currentDataLevel=='gene'" class="heading">Cancer<br>Genes</p>
+                  <p *ngIf="currentDataLevel=='protein'" class="heading">Cancer<br>Proteins</p>
+                  <p class="title"> {{ networkData.cancerNodes.length }} / {{ cancerNodesSup.length  + cancerNodes.length}}</p>
+                </div>
+              </div>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p *ngIf="currentDataLevel=='gene'" class="heading">Genes</p>
+                  <p *ngIf="currentDataLevel=='protein'" class="heading">Proteins</p>
+                  <p class="title">{{ networkData.nodes.length }}</p>
+                </div>
+              </div>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">Interactions</p>
+                  <p class="title">{{ networkData.edges.length }}</p>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <!-- Network Overview END -->
+
+      <!-- Find Network START -->
+      <div class="card bar-large">
+        <header class="card-header">
+          <p class="card-header-title">
+              <span class="icon">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </span>
+            Find network nodes
+          </p>
+          <a (click)="collapseQuery = !collapseQuery" data-action="collapse"
+             class="card-header-icon is-hidden-fullscreen" aria-label="more options">
+           <span class="icon">
+            <i *ngIf="collapseQuery" class="fas fa-angle-down" aria-hidden="true"></i>
+            <i *ngIf="!collapseQuery" class="fas fa-angle-left" aria-hidden="true"></i>
+           </span>
+          </a>
+        </header>
+        <div *ngIf="collapseQuery">
+          <div class="card-content">
+            <div class="field">
+              <div class="control">
+                <app-query-tile-component [queryItems]="queryItems"
+                                          [dataLevel]="currentDataLevel"
+                                          (selectItem)="queryAction($event)"
+                                          placeholder="Search..."
+                ></app-query-tile-component>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Find Network END -->
+
+      <!-- Filter Network START -->
+      <div class="card bar-large">
+        <header class="card-header">
+          <p class="card-header-title">
+              <span class="icon">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
+            <span *ngIf="currentDataLevel=='gene'">Filter Cancer Driver Genes</span>
+            <span *ngIf="currentDataLevel=='protein'">Filter Cancer Proteins</span>
+          </p>
+          <a (click)="collapseBaitFilter = !collapseBaitFilter" data-action="collapse"
+             class="card-header-icon is-hidden-fullscreen" aria-label="more options">
+              <span class="icon">
+                <i *ngIf="collapseBaitFilter" class="fas fa-angle-down" aria-hidden="true"></i>
+                <i *ngIf="!collapseBaitFilter" class="fas fa-angle-left" aria-hidden="true"></i>
+              </span>
+          </a>
+        </header>
+        <div *ngIf="collapseBaitFilter">
+
+          <!-- Filter -->
+          <div class="card-content">
+            <div>
+              <app-filter-tile (selectItem)="filterNodes()"
+                               [checkboxes]="cancerNodesCheckboxes">
+              </app-filter-tile>
+            </div>
+
+            <!-- "Add-to" Filter -->
+            <div>
+              <app-query-tile-component [queryItems]="filterAddItems"
+                                        [dataLevel]="currentDataLevel"
+                                        (selectItem)="addFilterNode($event)"
+                                        placeholder="Add..."
+              >
+              </app-query-tile-component>
+
+            </div>
+
+          </div>
+          <footer class="card-footer">
+            <a (click)="reset($event);" class="card-footer-item has-text-danger"
+               data-tooltip="Remove filter and show all.">
+              <span class="icon">
+              <i class="fa fa-broom"></i>
+              </span>
+              <span>
+                Show All
+              </span>
+            </a>
+          </footer>
+        </div>
+      </div>
+      <!-- Filter Network END -->
+
+
       <div class="card bar-large">
         <header class="card-header">
           <p class="card-header-title">
@@ -492,53 +378,54 @@
           <div class="card-content quick-find">
             <div class="field">
               <div class="control">
-                <div class="tile notification is-danger">
-                  <div class="align-vmiddle">
-                    <div class="digit"><i class="fa fa-fast-forward"></i></div>
+
+                  <div class="columns is-centered">
+                    <div class="column is-6 has-text-centered">
+                      <div class="analysis-option" [ngClass]="{'selected': analysis.getCount() === 0 }">
+                        <span>All Nodes</span>
+                      </div>
+
+                    </div>
+
+                    <div class="column is-6 has-text-centered">
+                      <div class="analysis-option" [ngClass]="{'selected': analysis.getCount() > 0 }">
+                        <span *ngIf="currentDataLevel=='gene'">Selected Genes</span>
+                        <span *ngIf="currentDataLevel=='protein'">Selected Proteins</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="has-text-centered">
                     <button (click)="analysis.startQuickAnalysis(true, selectedDataset, selectedCancerTypeItems)"
                             [disabled]="analysis.isLaunchingQuick()"
-                            class="button is-white has-tooltip" data-tooltip="Find drugs for all genes.">
-                    <span class="icon">
-                      <i class="fa fa-capsules" *ngIf="!analysis.isLaunchingQuick()"></i>
-                      <i class="fa fa-spin fa-spinner" *ngIf="analysis.isLaunchingQuick()"></i>
-                    </span>
+                            *ngIf="analysis.getCount() === 0"
+                            class="button is-primary has-tooltip" data-tooltip="Find drugs for all genes.">
+                      <span class="icon">
+                        <i class="fa fa-capsules" *ngIf="!analysis.isLaunchingQuick()"></i>
+                        <i class="fa fa-spin fa-spinner" *ngIf="analysis.isLaunchingQuick()"></i>
+                      </span>
                       <span>
-                      Quick Start
-                    </span>
+                        Find Drugs
+                      </span>
                     </button>
-                  </div>
-                </div>
-                <div class="divisor-rapid">
-                  &mdash; or &mdash;
-                </div>
-                <div class="tile notification is-info">
-                  <div class="align-vmiddle">
-                    <div class="digit" *ngIf="analysis.getCount() == 0">1</div>
-                    <div class="digit" *ngIf="analysis.getCount() > 0"><i class="fa fa-check"></i></div>
-                    <div>
-                      <span *ngIf="currentDataLevel=='gene'">Select Genes</span>
-                      <span *ngIf="currentDataLevel=='protein'">Select Proteins</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="tile notification is-info">
-                  <div class="align-vmiddle">
-                    <div class="digit">2</div>
+
                     <button (click)="analysis.startQuickAnalysis(false, selectedDataset, selectedCancerTypeItems)"
-                            [disabled]="analysis.getCount() === 0 || analysis.isLaunchingQuick()"
-                            class="button is-white has-tooltip"
+                            *ngIf="analysis.getCount() > 0"
+                            [disabled]="analysis.isLaunchingQuick()"
+                            class="button is-primary has-tooltip"
                             data-tooltip="Find drugs for the selected genes.">
-                    <span class="icon">
-                      <i class="fa fa-capsules" *ngIf="!analysis.isLaunchingQuick()"></i>
-                      <i class="fa fa-spin fa-spinner" *ngIf="analysis.isLaunchingQuick()"></i>
-                    </span>
+                      <span class="icon">
+                        <i class="fa fa-capsules" *ngIf="!analysis.isLaunchingQuick()"></i>
+                        <i class="fa fa-spin fa-spinner" *ngIf="analysis.isLaunchingQuick()"></i>
+                      </span>
                       <span>
-                      Find Drugs
-                    </span>
+                        Find Drugs
+                      </span>
                     </button>
                   </div>
-                </div>
               </div>
+
             </div>
           </div>
         </div>

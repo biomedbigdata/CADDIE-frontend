@@ -1,6 +1,6 @@
 <div class="content">
   <ng-select [items]="queryItems" bindLabel="data.name" bindValue="data" [virtualScroll]="true" class="custom"
-             placeholder="Search..." [hideSelected]="true" [searchFn]="querySearch" (change)="select($event)" data-tooltip="Find genes in the network.">
+             [placeholder]="placeholder" [hideSelected]="true" [searchFn]="querySearch" (change)="select($event)" data-tooltip="Find genes in the network.">
     <ng-template ng-option-tmp let-item="item">
       <b *ngIf="item.type == 'node'"> {{item.data.name}}</b>
       <b *ngIf="item.type == 'cancerNode'"> {{item.data.name}}</b> <br/>

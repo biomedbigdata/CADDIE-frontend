@@ -7,7 +7,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 })
 export class DataLevelToggleComponent implements OnInit {
 
-  @Input() iconGene = 'fa-times';
+  @Input() iconGene = 'fa-dna';
   @Input() iconProtein = 'fa-check';
 
   @Input() textGene: string;

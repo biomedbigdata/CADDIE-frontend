@@ -27,6 +27,7 @@ import html2canvas from 'html2canvas';
 import {environment} from '../../../environments/environment';
 import {NetworkSettings} from '../../network-settings';
 import {ControlService} from '../../control.service'
+import {toast} from "bulma-toast";
 
 
 declare var vis: any;
@@ -465,7 +466,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // TODO just do this for new node to speed up
     this.networkData.linkNodes()
 
-    // TODO not working yet
     this.fillQueryItems([], [cancerNode], false)
 
   }
@@ -563,11 +563,23 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     this.addNetworkNode(item.data)
 
-    this.filterAddItems.forEach((wrapper: Wrapper) => {
+    this.filterAddItems.forEach((wrapper: Wrapper, index, object) => {
       if (wrapper.backendId = item.data.backendId) {
-        // todo remove item
+        // remove item
+        object.splice(index, 1);
+        return
       }
     })
+
+    toast({
+      message: `Cancer Node ${item.data.name} added to filter options`,
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+      type: 'is-success',
+      position: 'top-center',
+      animate: {in: 'fadeIn', out: 'fadeOut'}
+    });
 
   }
 

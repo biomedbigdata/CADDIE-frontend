@@ -1,6 +1,6 @@
 <div class="field has-addons">
   <p class="control has-tooltip">
-    <button class="button   has-tooltip" [attr.data-tooltip]="tooltipGene" [class.is-primary]="value" (click)="toggle(true, 'gene')">
+    <button class="button has-tooltip" [attr.data-tooltip]="tooltipGene" [class.is-primary]="value" (click)="toggle(true, 'gene')">
       <span class="icon is-small">
         <i class="fa {{iconGene}}"></i>
       </span>
@@ -8,7 +8,7 @@
     </button>
   </p>
   <p class="control">
-    <button class="button   has-tooltip" [attr.data-tooltip]="tooltipProtein" [class.is-primary]="!value" (click)="toggle(false,'protein')">
+    <button class="button has-tooltip" [attr.data-tooltip]="tooltipProtein" [class.is-primary]="!value" (click)="toggle(false,'protein')">
       <span>{{textProtein}}</span>
       <span *ngIf="iconProtein" class="icon is-small">
         <i class="fa {{iconProtein}}"></i>

@@ -6,7 +6,7 @@
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
 $family-sans-serif: "Varela Round", sans-serif;
-$primary: #3070B3;
+$primary: #408B25;
 $success: #48C774;
 $danger: #EF476F;
 $link: $primary;
@@ -15,6 +15,11 @@ $info: $primary;
 @import '~bulma-tooltip';
 @import "~primeng/resources/primeng.min.css";
 @import "~primeicons/primeicons.css";
+
+$sidebar-width: 40vw;
+$navbar-height: 60px;
+$row-data-selector-height: auto;
+$network-footer-height: 75px;
 
 html {
   overflow: hidden;
@@ -27,7 +32,11 @@ body {
 }
 
 nav.navbar {
-  height: 60px;
+  height: $navbar-height;
+}
+
+row-data-selector {
+  height: $row-data-selector-height;
 }
 
 img.menu-icon.is-hoverable.navbar-item.logo {
@@ -41,7 +50,7 @@ img.menu-icon.is-hoverable.navbar-item.logo {
   background-image: url("assets/caddie_background_large.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  height: calc(100vh - 60px);
+  height: calc(100vh - #{$navbar-height});
   width: 100vw;
 }
 
@@ -63,6 +72,21 @@ img.inline {
 
 }
 
+.analysis-option{
+  padding: 10px 30px;
+  &.selected{
+    border: 3px solid $primary;
+  }
+}
+
+.network{
+  .detail-view{
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
 button.i {
   margin-left: 5px;
 }
@@ -72,10 +96,10 @@ input.checkbox {
 }
 
 div.covex.sidebar {
-  height: calc(100vh - 70px);
+  height: calc(100vh - #{$navbar-height});
   overflow-y: auto;
   overflow-x: hidden;
-  width: 350px;
+  width: $sidebar-width;
 }
 
 div.covex.bar-left {
@@ -108,27 +132,25 @@ div.card-content.overflow {
   max-height: 350px;
 }
 
-div.covex.left-window {
-  float: left;
-  width: calc(100vw - 350px - 2 * 20px);
+div.covex.right-window {
+  float: right;
+  width: calc(100vw - #{$sidebar-width} - 2 * 20px);
   height: 100%;
 }
 
 div.covex.network {
-  width: calc(100% - 350px - 40px);
+  width: calc(100%);
   height: calc(100vh - 100px);
-  margin-left: 20px;
   margin-right: 20px;
-  float: right;
 }
 
 div.card.network {
   width: 100%;
-  height: calc(100vh - 75px);
+  height: calc(100vh - #{$network-footer-height});
 }
 
 div.network {
-  height: calc(100vh - 200px);
+  height: calc(100vh - #{$network-footer-height} - 120px);
 }
 
 div.parent {
@@ -153,7 +175,7 @@ div.center {
 
 
 div.covex.explorer {
-  height: calc(100vh - 70px);
+  height: calc(100vh - #{$navbar-height});
   margin-left: 10px;
   margin-right: 10px;
 }

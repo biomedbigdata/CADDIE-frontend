@@ -11,9 +11,12 @@ export class QueryTileComponent {
   @Output() selectItem: EventEmitter<any> = new EventEmitter();
   @Input() queryItems: Wrapper[];
   @Input() dataLevel: DataLevel;
+  @Input() placeholder: string;
 
-  querySearch(term: string, item: Wrapper) {
+  querySearch = (term: string, item: Wrapper) => {
     term = term.toLowerCase();
+    console.log(item)
+    console.log(this.dataLevel)
     if (this.dataLevel == 'gene') {
       if (item.type === 'node') {
         const data = item.data as Node;

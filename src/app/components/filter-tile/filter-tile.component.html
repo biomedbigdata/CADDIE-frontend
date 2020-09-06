@@ -1,4 +1,4 @@
-<div *ngFor="let bait of checkboxes">
+<div *ngFor="let bait of checkboxes" class="filter-checkbox">
   <label class="checkbox">
     <input type="checkbox" class="checkbox" [ngModel]="bait.checked"
            (ngModelChange)="bait.checked = $event; filterFun()">

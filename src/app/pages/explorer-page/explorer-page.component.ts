@@ -108,6 +108,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public expressionExpanded = false;
   public selectedTissue: Tissue | null = null;
 
+  public visibleCancerNodeCount = 0;
+
+
 
   @ViewChild('network', {static: false}) networkEl: ElementRef;
 
@@ -190,7 +193,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // default selection
       this.selectedCancerTypeItems = [this.cancerTypes[0]];
       await this.createNetwork(this.selectedDataset, this.selectedDataLevel, this.selectedCancerTypeItems);
-      this.physicsEnabled = false;
+      this.physicsEnabled = false
     }
   }
 
@@ -334,6 +337,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const options = NetworkSettings.getOptions('main');
 
     this.network = new vis.Network(container, this.nodeData, options);
+
+    // stop network animation when stable state is reached
+    this.network.on("stabilizationIterationsDone", () => {
+      this.updatePhysicsEnabled(false)
+    });
+
     this.network.on('doubleClick', (properties) => {
       const nodeIds: Array<string> = properties.nodes;
       if (nodeIds.length > 0) {
@@ -466,7 +475,18 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // TODO just do this for new node to speed up
     this.networkData.linkNodes()
 
+    // add node to cancer nodes
     this.fillQueryItems([], [cancerNode], false)
+
+    // remove node out of cancer nodes supplement
+    this.cancerNodesSup.forEach((item, index, object) => {
+      if (cancerNode.backendId.toString() === item.backendId.toString()) {
+        object.splice(index, 1)
+      }
+    })
+
+    // TODO not good to iterate through everything
+    this.filterNodes()
 
   }
 
@@ -549,6 +569,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.nodeData.nodes.remove(Array.from(removeIds.values()));
     this.nodeData.nodes.add(Array.from(addNodes.values()));
 
+    this.visibleCancerNodeCount = filteredCancerDriverGenes.length
+
     // update query options
     this.fillQueryItems(filteredGenes, filteredCancerDriverGenes);
   }
@@ -562,14 +584,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     }
 
     this.addNetworkNode(item.data)
-
-    this.filterAddItems.forEach((wrapper: Wrapper, index, object) => {
-      if (wrapper.backendId = item.data.backendId) {
-        // remove item
-        object.splice(index, 1);
-        return
-      }
-    })
 
     toast({
       message: `Cancer Node ${item.data.name} added to filter options`,

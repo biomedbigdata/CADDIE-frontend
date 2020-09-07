@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import {Node, Wrapper, CancerNode, DataLevel} from '../../interfaces';
 
 @Component({
@@ -12,11 +12,14 @@ export class QueryTileComponent {
   @Input() queryItems: Wrapper[];
   @Input() dataLevel: DataLevel;
   @Input() placeholder: string;
+  @Input() removeOnSelect: boolean = false;
+
+  constructor(private ref: ChangeDetectorRef) {
+  }
 
   querySearch = (term: string, item: Wrapper) => {
     term = term.toLowerCase();
-    console.log(item)
-    console.log(this.dataLevel)
+
     if (this.dataLevel == 'gene') {
       if (item.type === 'node') {
         const data = item.data as Node;
@@ -52,6 +55,21 @@ export class QueryTileComponent {
 
   select(item) {
     this.selectItem.emit(item);
+
+    if (this.removeOnSelect) {
+      let new_obj = this.queryItems;
+      this.queryItems.forEach((wrapper: Wrapper, index, object) => {
+        if (wrapper.backendId.toString() === item.data.backendId.toString()) {
+          // remove item
+          object.splice(index, 1);
+          new_obj = object;
+        }
+      })
+
+      this.queryItems = [...new_obj];
+
+    }
+
   }
 
 }

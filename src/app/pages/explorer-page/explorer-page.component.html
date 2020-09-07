@@ -24,7 +24,41 @@
               <p *ngIf="currentDataLevel == 'gene'" class="card-header-title">Gene-Gene Interaction Network</p>
               <p *ngIf="currentDataLevel == 'protein'" class="card-header-title">Protein-Protein Interaction Network</p>
             </header>
-            <div class="card-content" style="positon:relative">
+            <div class="card-content">
+              <div class="detail-view">
+                <h6 class="is-6">
+                  <span class="icon">
+                    <i *ngIf="!selectedWrapper" class="fas fa-info" aria-hidden="true"></i>
+                    <i *ngIf="selectedWrapper && selectedWrapper.type === 'node'" class="fas fa-dna" aria-hidden="true"></i>
+                    <i *ngIf="selectedWrapper && selectedWrapper.type === 'cancerNode'" class="fas fa-disease"
+                       aria-hidden="true"></i>
+                    <i *ngIf="selectedWrapper && selectedWrapper.type === 'drug'" class="fas fa-capsules"
+                       aria-hidden="true"></i>
+                  </span>
+                  <span *ngIf="!selectedWrapper">No item selected</span>
+                  <span *ngIf="selectedWrapper">
+                    <span *ngIf="selectedWrapper.type === 'node'">
+                      <span *ngIf="currentDataLevel === 'gene'">
+                        Gene
+                      </span>
+                      <span *ngIf="currentDataLevel === 'protein'">
+                        Protein
+                      </span>
+                    </span>
+                    <span *ngIf="selectedWrapper.type === 'cancerNode'">
+                      <span *ngIf="currentDataLevel === 'gene'">
+                        Cancer Driver Gene
+                      </span>
+                      <span *ngIf="currentDataLevel === 'protein'">
+                        Cancer Protein
+                      </span>
+                    </span>
+                    <span *ngIf="selectedWrapper.type === 'drug'">Drug</span>
+                  </span>
+                </h6>
+                <app-info-tile [wrapper]="selectedWrapper"></app-info-tile>
+              </div>
+
               <div class="card-image" id="canvas-content">
                 <div class="parent">
                   <div class="network center image1" #network>
@@ -34,10 +68,6 @@
                     <!-- <img src="assets/leg1.png" width="180px"/> -->
                   </div>
                 </div>
-              </div>
-
-              <div class="detail-view">
-                here
               </div>
 
               <footer class="card-footer toolbar">
@@ -200,7 +230,9 @@
                 <div>
                   <p *ngIf="currentDataLevel=='gene'" class="heading">Cancer<br>Genes</p>
                   <p *ngIf="currentDataLevel=='protein'" class="heading">Cancer<br>Proteins</p>
-                  <p class="title"> {{ networkData.cancerNodes.length }} / {{ cancerNodesSup.length  + cancerNodes.length}}</p>
+                  <p class="title"> {{ visibleCancerNodeCount }}
+                    <!-- {{ networkData.cancerNodes.length }} -->
+                    / {{ cancerNodesSup.length + cancerNodes.length}}</p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
@@ -247,6 +279,7 @@
                                           [dataLevel]="currentDataLevel"
                                           (selectItem)="queryAction($event)"
                                           placeholder="Search..."
+                                          removeOnSelect=false
                 ></app-query-tile-component>
               </div>
             </div>
@@ -289,6 +322,7 @@
                                         [dataLevel]="currentDataLevel"
                                         (selectItem)="addFilterNode($event)"
                                         placeholder="Add..."
+                                        removeOnSelect=true
               >
               </app-query-tile-component>
 
@@ -309,54 +343,6 @@
         </div>
       </div>
       <!-- Filter Network END -->
-
-
-      <div class="card bar-large">
-        <header class="card-header">
-          <p class="card-header-title">
-          <span class="icon">
-            <i *ngIf="!selectedWrapper" class="fas fa-info" aria-hidden="true"></i>
-            <i *ngIf="selectedWrapper && selectedWrapper.type === 'node'" class="fas fa-dna" aria-hidden="true"></i>
-            <i *ngIf="selectedWrapper && selectedWrapper.type === 'cancerNode'" class="fas fa-virus"
-               aria-hidden="true"></i>
-            <i *ngIf="selectedWrapper && selectedWrapper.type === 'drug'" class="fas fa-capsules"
-               aria-hidden="true"></i>
-          </span>
-            <span *ngIf="!selectedWrapper">No item selected</span>
-            <span *ngIf="selectedWrapper">
-            <span *ngIf="selectedWrapper.type === 'node'">
-              <span *ngIf="currentDataLevel === 'gene'">
-                Gene
-              </span>
-              <span *ngIf="currentDataLevel === 'protein'">
-                Protein
-              </span>
-            </span>
-            <span *ngIf="selectedWrapper.type === 'cancerNode'">
-              <span *ngIf="currentDataLevel === 'gene'">
-                Cancer Driver Gene
-              </span>
-              <span *ngIf="currentDataLevel === 'protein'">
-                Cancer Protein
-              </span>
-            </span>
-            <span *ngIf="selectedWrapper.type === 'drug'">Drug</span>
-          </span>
-          </p>
-          <a (click)="collapseDetails = !collapseDetails" data-action="collapse"
-             class="card-header-icon is-hidden-fullscreen" aria-label="more options">
-          <span class="icon">
-            <i *ngIf="collapseDetails" class="fas fa-angle-down" aria-hidden="true"></i>
-            <i *ngIf="!collapseDetails" class="fas fa-angle-left" aria-hidden="true"></i>
-          </span>
-          </a>
-        </header>
-        <div *ngIf="collapseDetails">
-          <div class="card-content">
-            <app-info-tile [wrapper]="selectedWrapper"></app-info-tile>
-          </div>
-        </div>
-      </div>
 
       <div class="card bar-large">
         <header class="card-header">
@@ -379,51 +365,51 @@
             <div class="field">
               <div class="control">
 
-                  <div class="columns is-centered">
-                    <div class="column is-6 has-text-centered">
-                      <div class="analysis-option" [ngClass]="{'selected': analysis.getCount() === 0 }">
-                        <span>All Nodes</span>
-                      </div>
-
-                    </div>
-
-                    <div class="column is-6 has-text-centered">
-                      <div class="analysis-option" [ngClass]="{'selected': analysis.getCount() > 0 }">
-                        <span *ngIf="currentDataLevel=='gene'">Selected Genes</span>
-                        <span *ngIf="currentDataLevel=='protein'">Selected Proteins</span>
-                      </div>
+                <div class="columns is-centered">
+                  <div class="column is-6 has-text-centered">
+                    <div class="analysis-option" [ngClass]="{'selected': analysis.getCount() === 0 }">
+                      <span>All Nodes</span>
                     </div>
 
                   </div>
 
-                  <div class="has-text-centered">
-                    <button (click)="analysis.startQuickAnalysis(true, selectedDataset, selectedCancerTypeItems)"
-                            [disabled]="analysis.isLaunchingQuick()"
-                            *ngIf="analysis.getCount() === 0"
-                            class="button is-primary has-tooltip" data-tooltip="Find drugs for all genes.">
-                      <span class="icon">
-                        <i class="fa fa-capsules" *ngIf="!analysis.isLaunchingQuick()"></i>
-                        <i class="fa fa-spin fa-spinner" *ngIf="analysis.isLaunchingQuick()"></i>
-                      </span>
-                      <span>
-                        Find Drugs
-                      </span>
-                    </button>
-
-                    <button (click)="analysis.startQuickAnalysis(false, selectedDataset, selectedCancerTypeItems)"
-                            *ngIf="analysis.getCount() > 0"
-                            [disabled]="analysis.isLaunchingQuick()"
-                            class="button is-primary has-tooltip"
-                            data-tooltip="Find drugs for the selected genes.">
-                      <span class="icon">
-                        <i class="fa fa-capsules" *ngIf="!analysis.isLaunchingQuick()"></i>
-                        <i class="fa fa-spin fa-spinner" *ngIf="analysis.isLaunchingQuick()"></i>
-                      </span>
-                      <span>
-                        Find Drugs
-                      </span>
-                    </button>
+                  <div class="column is-6 has-text-centered">
+                    <div class="analysis-option" [ngClass]="{'selected': analysis.getCount() > 0 }">
+                      <span *ngIf="currentDataLevel=='gene'">Selected Genes</span>
+                      <span *ngIf="currentDataLevel=='protein'">Selected Proteins</span>
+                    </div>
                   </div>
+
+                </div>
+
+                <div class="has-text-centered">
+                  <button (click)="analysis.startQuickAnalysis(true, selectedDataset, selectedCancerTypeItems)"
+                          [disabled]="analysis.isLaunchingQuick()"
+                          *ngIf="analysis.getCount() === 0"
+                          class="button is-primary has-tooltip" data-tooltip="Find drugs for all genes.">
+                      <span class="icon">
+                        <i class="fa fa-capsules" *ngIf="!analysis.isLaunchingQuick()"></i>
+                        <i class="fa fa-spin fa-spinner" *ngIf="analysis.isLaunchingQuick()"></i>
+                      </span>
+                    <span>
+                        Find Drugs
+                      </span>
+                  </button>
+
+                  <button (click)="analysis.startQuickAnalysis(false, selectedDataset, selectedCancerTypeItems)"
+                          *ngIf="analysis.getCount() > 0"
+                          [disabled]="analysis.isLaunchingQuick()"
+                          class="button is-primary has-tooltip"
+                          data-tooltip="Find drugs for the selected genes.">
+                      <span class="icon">
+                        <i class="fa fa-capsules" *ngIf="!analysis.isLaunchingQuick()"></i>
+                        <i class="fa fa-spin fa-spinner" *ngIf="analysis.isLaunchingQuick()"></i>
+                      </span>
+                    <span>
+                        Find Drugs
+                      </span>
+                  </button>
+                </div>
               </div>
 
             </div>
@@ -461,7 +447,7 @@
                 <td>
                  <span class="icon">
                     <i class="fa fa-dna" *ngIf="g.type == 'node'"></i>
-                    <i class="fa fa-virus" *ngIf="g.type =='cancerNode'"></i>
+                    <i class="fa fa-disease" *ngIf="g.type =='cancerNode'"></i>
                   </span>
                 </td>
                 <td *ngIf="g.type == 'cancerNode'">{{g.data.name}}</td>
@@ -486,18 +472,16 @@
             <span class="icon">
               <i class="fa fa-plus"></i>
             </span>
-              <span>
-              Add genes
-            </span>
+              <span *ngIf="currentDataLevel=='gene'">Add genes</span>
+              <span *ngIf="currentDataLevel=='protein'">Add proteins</span>
             </a>
             <a (click)="analysis.removeAllGenes()"
                class="card-footer-item has-text-danger" data-tooltip="Remove all genes.">
             <span class="icon">
               <i class="fa fa-minus"></i>
             </span>
-              <span>
-              Remove genes
-            </span>
+              <span *ngIf="currentDataLevel=='gene'">Remove genes</span>
+              <span *ngIf="currentDataLevel=='protein'">Remove proteins</span>
             </a>
           </footer>
 
@@ -507,18 +491,16 @@
             <span class="icon">
               <i class="fa fa-plus"></i>
             </span>
-              <span>
-              Add cancer driver genes
-            </span>
+              <span *ngIf="currentDataLevel=='gene'">Add cancer driver genes</span>
+              <span *ngIf="currentDataLevel=='protein'">Add cancer proteins</span>
             </a>
             <a (click)="analysis.removeAllCancerDriverGenes()"
                class="card-footer-item has-text-danger" data-tooltip="Remove all cancer driver genes.">
             <span class="icon">
               <i class="fa fa-minus"></i>
             </span>
-              <span>
-              Remove cancer driver genes
-            </span>
+              <span *ngIf="currentDataLevel=='gene'">Remove cancer driver genes</span>
+              <span *ngIf="currentDataLevel=='protein'">Remove cancer proteins</span>
             </a>
           </footer>
 

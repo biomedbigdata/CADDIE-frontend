@@ -16,7 +16,7 @@ $info: $primary;
 @import "~primeng/resources/primeng.min.css";
 @import "~primeicons/primeicons.css";
 
-$sidebar-width: 40vw;
+$sidebar-width: 37vw;
 $navbar-height: 60px;
 $row-data-selector-height: auto;
 $network-footer-height: 75px;
@@ -40,8 +40,8 @@ row-data-selector {
 }
 
 img.menu-icon.is-hoverable.navbar-item.logo {
-  height: 40px;
-  width: 125px;
+  height: 60px;
+  width: 60px;
   padding: 0;
 }
 
@@ -82,8 +82,9 @@ img.inline {
 .network{
   .detail-view{
     position: absolute;
-    top: 0;
     right: 0;
+    background-color:white;
+    z-index: 1;
   }
 }
 

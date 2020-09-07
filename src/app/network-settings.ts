@@ -4,10 +4,10 @@ import {getGradientColor} from './utils';
 export class NetworkSettings {
 
   // Node color
-  private static hostColor = '#123456';
-  private static virusColor = '#BE093C';
-  private static approvedDrugColor = '#48C774';
-  private static unapprovedDrugColor = '#F8981D';
+  private static node = '#143d1f';
+  private static cancerNode = '#660033';
+  private static approvedDrugColor = '#a3185e';
+  private static unapprovedDrugColor = '#662244';
   private static nonSeedHostColor = '#3070B3';
   private static nonSeedVirusColor = '#87082c';
 
@@ -77,7 +77,7 @@ export class NetworkSettings {
     },
     stabilization: {
       enabled: true,
-      iterations: 1000
+      iterations: 500
     },
   };
 
@@ -145,9 +145,9 @@ export class NetworkSettings {
      * Collection of all colors per use-case
      */
     if (color === 'node') {
-      return this.hostColor;
+      return this.node;
     } else if (color === 'cancerNode') {
-      return this.virusColor;
+      return this.cancerNode;
     } else if (color === 'approvedDrug') {
       return this.approvedDrugColor;
     } else if (color === 'unapprovedDrug') {

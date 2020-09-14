@@ -11,6 +11,7 @@ export interface Node {
   y?: number;
   expressionLevel?: number;
   proteinName?: string;
+  cancer_occurrences: number;
 }
 
 export type DataLevel = 'gene' | 'protein'
@@ -38,6 +39,7 @@ export interface CancerNode {
   entityid?: string;
   // if protein
   pubmedId?: string;
+  cancer_occurrences: number;
 
 }
 
@@ -232,6 +234,7 @@ export interface Dataset {
   name: string;
   link: string;
   backendId: number;
+  count: number;
   data?: CancerNode[];
 }
 

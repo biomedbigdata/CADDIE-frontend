@@ -5,7 +5,7 @@
                  placeholder="Select..." [ngModel]="selectedDataset" (ngModelChange)="select($event)"
                  data-tooltip="Choose the dataset you want to explore.">
         <ng-template ng-option-tmp let-item="item">
-          {{item.name}}
+          {{item.name}} ({{item.count}})
         </ng-template>
       </ng-select>
     </div>
@@ -13,7 +13,8 @@
     <div class="column is-narrow">
       <div *ngIf="selectedDataset" class="info">
 
-          <div *ngIf="selectedDataset.link"><a href="{{selectedDataset.link}}"><i class="fas fa-link"></i> Source</a></div>
+        <div *ngIf="selectedDataset.link"><a href="{{selectedDataset.link}}"><i class="fas fa-link"></i> Source</a></div>
+        <div *ngIf="selectedDataset.count">Number of genes: {{selectedDataset.count}}</div>
 
       </div>
     </div>

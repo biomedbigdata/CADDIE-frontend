@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, DataLevel, Dataset, CancerNode} from "./interfaces";
+import {CancerType, DataLevel, Dataset, CancerNode, Node, Wrapper} from "./interfaces";
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +57,20 @@ export class ControlService {
     const params = new HttpParams().set('dataset', JSON.stringify(dataset.backendId));
 
     return this.http.get<any>(`${environment.backend}cancer_types/`, {params}).toPromise();
+  }
+
+  public async getRelatedCancerTypes(dataset: Dataset, node: CancerNode | Node): Promise<any> {
+    /**
+     * Returns a list of all related cancer types for single node with cancer types ids
+     */
+
+    const params = new HttpParams()
+      .set('dataset', JSON.stringify(dataset.backendId))
+      .set('backendId', JSON.stringify(node.backendId))
+    ;
+
+    return this.http.get<any>(`${environment.backend}related_cancer_types/`, {params}).toPromise();
+
   }
 
   public async getNetwork(dataset: Dataset, dataLevel: DataLevel, cancerTypes: CancerType[]): Promise<any> {

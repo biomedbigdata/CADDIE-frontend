@@ -45,6 +45,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   public showDetails = false;
   public selectedWrapper: Wrapper | null = null;
+  public selectedWrapperCancerTypes: CancerType[] | [] = [];
 
   public collapseAnalysisQuick = true;
   public collapseAnalysis = false;
@@ -251,12 +252,22 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Zooms to node in network via zoomToNode() and opens the info tile with node information
      * +
      * sets selectedWrapper to given item
+     * +
+     * loads cancer types information for selected node from api endpoint
      */
     this.selectedWrapper = item;
     if (zoom) {
       this.zoomToNode(item.nodeId);
     }
+
+    this.getRelatedCancerTypes(item)
+
     this.showDetails = true;
+  }
+  private async getRelatedCancerTypes(item: Wrapper) {
+    const data = await this.control.getRelatedCancerTypes(this.currentDataset, item.data)
+
+    this.selectedWrapperCancerTypes = data.cancerTypes
   }
 
   public async closeSummary() {

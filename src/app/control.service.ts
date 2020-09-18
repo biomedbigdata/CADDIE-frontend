@@ -55,6 +55,8 @@ export class ControlService {
      **/
 
     const params = new HttpParams().set('dataset', JSON.stringify(dataset.backendId));
+    console.log('cancer types ')
+    console.log(params)
 
     return this.http.get<any>(`${environment.backend}cancer_types/`, {params}).toPromise();
   }
@@ -68,6 +70,8 @@ export class ControlService {
       .set('dataset', JSON.stringify(dataset.backendId))
       .set('backendId', JSON.stringify(node.backendId))
     ;
+    console.log('related_cancer types')
+    console.log(params)
 
     return this.http.get<any>(`${environment.backend}related_cancer_types/`, {params}).toPromise();
 

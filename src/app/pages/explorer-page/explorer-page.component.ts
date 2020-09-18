@@ -285,7 +285,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Fetches Network data from API
      */
     const data = await this.control.getNetwork(dataset, dataLevel, cancerTypes)
-
     this.nodes = data.nodes;
     this.nodesSup = data.nodesSup;
     this.cancerNodes = data.cancerNodes;

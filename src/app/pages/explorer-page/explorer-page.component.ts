@@ -111,6 +111,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   public visibleCancerNodeCount = 0;
 
+  public networkFullscreenStatus: boolean = false;
+
 
 
   @ViewChild('network', {static: false}) networkEl: ElementRef;
@@ -763,6 +765,24 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       'numeric_namespace=ENTREZGENE_ACC&' +
       'sources=GO:MF,GO:CC,GO:BP,KEGG,TF,REAC,MIRNA,HPA,CORUM,HP,WP&' +
       'background=';
+  }
+
+  public networkFullscreen() {
+    /**
+     * Either sets network to fullscreen mode or back to normal mode
+     */
+
+    // get network element
+    const element = document.getElementById('network');
+
+    // either add or remove class 'fullscreen' with settings for fullscreen network
+    this.networkFullscreenStatus ? element.classList.remove("fullscreen") : element.classList.add("fullscreen")
+
+    // set this.networkFullscreenStatus
+    this.networkFullscreenStatus = !this.networkFullscreenStatus
+
+    // adapt network to new layout
+    this.network.redraw()
   }
 
   public selectTissue(tissue: Tissue | null) {

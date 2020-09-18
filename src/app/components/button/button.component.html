@@ -1,5 +1,7 @@
 <div class="content">
-    <button type="button" class="button   is-primary" (click)="onClickEventReceived()">
+    <button type="button" class="button is-primary" (click)="onClickEventReceived()">
+      <i *ngIf="icon" class="{{ icon }}"></i> &nbsp;
+
       {{ buttonText }}
     </button>
 </div>

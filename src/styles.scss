@@ -96,18 +96,18 @@ input.checkbox {
   margin-left: 15px;
 }
 
-div.covex.sidebar {
+div.caddie.sidebar {
   height: calc(100vh - #{$navbar-height});
   overflow-y: auto;
   overflow-x: hidden;
   width: $sidebar-width;
 }
 
-div.covex.bar-left {
+div.caddie.bar-left {
   float: left;
 }
 
-div.covex.bar-right {
+div.caddie.bar-right {
   float: right;
 }
 
@@ -133,13 +133,13 @@ div.card-content.overflow {
   max-height: 350px;
 }
 
-div.covex.right-window {
+div.caddie.right-window {
   float: right;
   width: calc(100vw - #{$sidebar-width} - 2 * 20px);
   height: 100%;
 }
 
-div.covex.network {
+div.caddie.network {
   width: calc(100%);
   height: calc(100vh - 100px);
   margin-right: 20px;
@@ -175,7 +175,7 @@ div.center {
 }
 
 
-div.covex.explorer {
+div.caddie.explorer {
   height: calc(100vh - #{$navbar-height});
   margin-left: 10px;
   margin-right: 10px;

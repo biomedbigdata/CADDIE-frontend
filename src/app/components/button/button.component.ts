@@ -8,6 +8,7 @@ import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 export class ButtonComponent implements OnInit {
 
   @Input() buttonText: string;
+  @Input() icon: string;
   @Output() callbackFun = new EventEmitter<any>();
 
   constructor() { }

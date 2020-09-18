@@ -13,12 +13,12 @@
                            [currentViewProteins]="currentViewGenes">
   </app-add-expressed-genes>
 
-  <div class="covex explorer">
+  <div class="caddie explorer">
 
-    <div class="covex right-window">
+    <div class="caddie right-window">
 
       <div>
-        <div class="covex network">
+        <div class="caddie network" id="network">
           <div class="card network">
             <header class="card-header">
               <p *ngIf="currentDataLevel == 'gene'" class="card-header-title">Gene-Gene Interaction Network</p>
@@ -117,7 +117,9 @@
                             tooltipOn="Enable the network animation."
                             tooltipOff="Disable the network animation and freeze nodes."
                             [value]="physicsEnabled" (valueChange)="updatePhysicsEnabled($event)"></app-toggle>
-                
+
+                <app-button buttonText="Fullscreen" (callbackFun)="networkFullscreen()" icon="fa fa-arrows"></app-button>
+
               </footer>
             </div>
           </div>
@@ -131,7 +133,7 @@
       </div>
     </div>
 
-    <div class="covex sidebar bar-left">
+    <div class="caddie sidebar bar-left">
 
       <!-- Data Selector START -->
       <div class="columns is-multiline is-centered row-data-selector">
@@ -690,7 +692,7 @@
 </div>
 
 <div class="is-hidden-tablet mobile-fallback">
-  Sorry, CoVex is not available for mobile phones.
-  To find information about CoVex, please check the <a routerLink="/about">About</a> page or visit this page
+  Sorry, caddie is not available for mobile phones.
+  To find information about caddie, please check the <a routerLink="/about">About</a> page or visit this page
   with another device with a larger screen.
 </div>

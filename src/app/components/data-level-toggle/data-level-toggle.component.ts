@@ -24,7 +24,7 @@ export class DataLevelToggleComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public toggle(value: boolean, level:string) {
+  public toggle(value: boolean, level: string) {
     this.value = value;
     this.valueChange.emit(level);
   }

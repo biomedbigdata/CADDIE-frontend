@@ -17,7 +17,7 @@ export class ButtonComponent implements OnInit {
   }
 
   onClickEventReceived() {
-    this.callbackFun.emit()
+    this.callbackFun.emit();
   }
 
 }

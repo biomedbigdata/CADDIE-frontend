@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {Node, Wrapper, CancerNode, DataLevel} from '../../interfaces';
 
 @Component({
@@ -12,15 +12,15 @@ export class QueryTileComponent {
   @Input() queryItems: Wrapper[];
   @Input() dataLevel: DataLevel;
   @Input() placeholder: string;
-  @Input() removeOnSelect: boolean = false;
+  @Input() removeOnSelect = false;
 
-  constructor(private ref: ChangeDetectorRef) {
+  constructor() {
   }
 
   querySearch = (term: string, item: Wrapper) => {
     term = term.toLowerCase();
 
-    if (this.dataLevel == 'gene') {
+    if (this.dataLevel === 'gene') {
       if (item.type === 'node') {
         const data = item.data as Node;
         return data.name.toLowerCase().indexOf(term) > -1 ||
@@ -34,13 +34,13 @@ export class QueryTileComponent {
           item.type.toLowerCase().indexOf(term) > -1 ||
           data.backendId.toString().toLowerCase().indexOf(term) > -1;
       }
-    } else if (this.dataLevel == 'protein') {
+    } else if (this.dataLevel === 'protein') {
       if (item.type === 'node') {
         const data = item.data as Node;
         return data.name.toLowerCase().indexOf(term) > -1 ||
           data.backendId.toString().toLowerCase().indexOf(term) > -1 ||
           item.type.toLowerCase().indexOf(term) > -1 ||
-          data.proteinName.toString().toLowerCase().indexOf(term) > -1
+          data.proteinName.toString().toLowerCase().indexOf(term) > -1;
       } else {
         // type is cancerNode
         const data = item.data as CancerNode;
@@ -57,16 +57,16 @@ export class QueryTileComponent {
     this.selectItem.emit(item);
 
     if (this.removeOnSelect) {
-      let new_obj = this.queryItems;
+      let newObj = this.queryItems;
       this.queryItems.forEach((wrapper: Wrapper, index, object) => {
         if (wrapper.backendId.toString() === item.data.backendId.toString()) {
           // remove item
           object.splice(index, 1);
-          new_obj = object;
+          newObj = object;
         }
-      })
+      });
 
-      this.queryItems = [...new_obj];
+      this.queryItems = [...newObj];
 
     }
 

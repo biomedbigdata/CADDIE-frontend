@@ -14,7 +14,7 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../environments/environment';
 import {toast} from 'bulma-toast';
 import {Injectable} from '@angular/core';
-import {ControlService} from "./control.service";
+import {ControlService} from './control.service';
 
 export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'closeness' | 'degree' | 'proximity' | 'betweenness';
 export type QuickAlgorithmType = 'quick' | 'super';
@@ -81,7 +81,9 @@ export class AnalysisService {
     }
     this.startWatching();
 
-    this.tissues = [{id:1, name: 'brainzzz'}]
+    this.tissues = [{
+        id: 1, name: 'test'
+      }];
 
     /*
     this.http.get<Tissue[]>(`${environment.backend}tissues/`).subscribe((tissues) => {
@@ -361,7 +363,6 @@ export class AnalysisService {
 
     // parse cancer type items to backendId-string-format '1,6,9,..'
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
-    console.log(this.getSelection())
     const resp = await this.control.postTask(
       isSuper ? 'super' : 'quick',
       'drug',
@@ -372,9 +373,7 @@ export class AnalysisService {
         seeds: isSuper ? [] : this.getSelection().map((i) => i.backendId.toString()),
       }
     );
-    console.log(resp.token)
     this.tokens.push(resp.token);
-    localStorage.setItem('tokens', JSON.stringify(this.tokens));
     this.startWatching();
 
     toast({
@@ -463,7 +462,7 @@ export class AnalysisService {
             } else if (task.info.failed) {
               this.finishedTokens.push(task.token);
               this.showToast(task, 'FAILED');
-              console.log(task.info.status)
+
               localStorage.setItem('finishedTokens', JSON.stringify(this.finishedTokens));
             } else {
             }

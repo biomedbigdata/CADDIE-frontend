@@ -38,18 +38,18 @@ export class Network {
     });
   }
 
-  public getNode(backend_id: string): Node | undefined {
+  public getNode(backendId: string): Node | undefined {
     /**
      * Returns Gene/Protein in network with corresponding backend_id
      */
-    return this.nodes.find((g) => g.backendId === backend_id);
+    return this.nodes.find((g) => g.backendId === backendId);
   }
 
-  public getCancerNode(backend_id: string): CancerNode | undefined {
+  public getCancerNode(backendId: string): CancerNode | undefined {
     /**
      * Returns Gene/protein in network with corresponding backend_id
      */
-    return this.cancerNodes.find((g) => g.backendId === backend_id);
+    return this.cancerNodes.find((g) => g.backendId === backendId);
   }
 
   public linkNodes() {

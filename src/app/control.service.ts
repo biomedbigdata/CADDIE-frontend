@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, DataLevel, Dataset, CancerNode, Node, Wrapper} from "./interfaces";
+import {CancerType, DataLevel, Dataset, CancerNode, Node} from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -19,17 +19,19 @@ export class ControlService {
   public async getCancerDatasets(): Promise<any> {
     /**
      * Returns promise of a list of all datasets
-     // data = [
-     //     {
-    //         "id": 1,
-    //         "name": "NCG6"
-    //     },
-     //     {
-    //         "id": 2,
-    //         "name": "COSMIC"
-    //     }
-     // ]
-     **/
+     * data = [
+     *     {
+     *         "id": 1,
+     *         "name": "NCG6"
+     *     },
+     *     {
+     *         "id": 2,
+     *         "name": "COSMIC"
+     *     }
+     * ]
+     *
+     */
+
     return this.http.get<any>(`${environment.backend}cancer_datasets/`).toPromise();
   }
 
@@ -38,25 +40,23 @@ export class ControlService {
      * Returns promise of a list of all cancer types
      *
      *
-     // [
-     //     {
-    //         "id": 1,
-    //         "name": "pan-cancer_adult"
-    //     },
-     //     {
-    //         "id": 2,
-    //         "name": "-"
-    //     },
-     //     {
-    //         "id": 3,
-    //         "name": "pan-cancer_paediatric"
-    //     },
-     //    ... ]
-     **/
+     * [
+     *     {
+     *         "id": 1,
+     *         "name": "pan-cancer_adult"
+     *     },
+     *     {
+     *         "id": 2,
+     *         "name": "-"
+     *     },
+     *     {
+     *         "id": 3,
+     *         "name": "pan-cancer_paediatric"
+     *     },
+     *    ... ]
+     */
 
     const params = new HttpParams().set('dataset', JSON.stringify(dataset.backendId));
-    console.log('cancer types ')
-    console.log(params)
 
     return this.http.get<any>(`${environment.backend}cancer_types/`, {params}).toPromise();
   }
@@ -70,8 +70,6 @@ export class ControlService {
       .set('dataset', JSON.stringify(dataset.backendId))
       .set('backendId', JSON.stringify(node.backendId))
     ;
-    console.log('related_cancer types')
-    console.log(params)
 
     return this.http.get<any>(`${environment.backend}related_cancer_types/`, {params}).toPromise();
 
@@ -84,13 +82,13 @@ export class ControlService {
      * { 'genes': [
      *   ...
      *    ],
-   *    'interactions': [
-   *      ...
-   *    ]
+     *    'interactions': [
+     *      ...
+     *    ]
      *    }
      */
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
-    const cancerTypesIdsString = cancerTypesIds.join(',')
+    const cancerTypesIdsString = cancerTypesIds.join(',');
     const params = new HttpParams()
         .set('dataset', JSON.stringify(dataset.backendId))
         .set('cancerTypes', JSON.stringify(cancerTypesIdsString))
@@ -116,14 +114,14 @@ export class ControlService {
      * }
      */
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
-    const cancerTypesIdsString = cancerTypesIds.join(',')
+    const cancerTypesIdsString = cancerTypesIds.join(',');
     const params = new HttpParams()
       .set('dataset', JSON.stringify(dataset.backendId))
       .set('cancerTypes', JSON.stringify(cancerTypesIdsString))
       .set('dataLevel', JSON.stringify(dataLevel))
       .set('backendId', JSON.stringify(node.backendId))
     ;
-    console.log(params)
+
     return this.http.get<any>(`${environment.backend}nodeRelations/`, {params}).toPromise();
   }
 
@@ -180,12 +178,12 @@ export class ControlService {
     /**
      * sends a task to task service
      */
-    console.log(parameters)
+
     return this.http.post<any>(`${environment.backend}task/`, {
-      algorithm: algorithm,
-      target: target,
-      parameters: parameters,
-    }).toPromise()
+      algorithm,
+      target,
+      parameters,
+    }).toPromise();
   }
 
 

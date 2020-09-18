@@ -23,7 +23,6 @@ import {
   getWrapperFromDrug,
   getWrapperFromCancerNode,
   getNodeIdsFromCancerDriverGeneDrugInteraction,
-  getNodeIdsFromGeneGeneInteraction,
   getNodeIdsFromEdgeGene,
   getCancerDriverGeneNodeId,
   getGeneNodeId,
@@ -35,7 +34,7 @@ import {
 import html2canvas from 'html2canvas';
 import {toast} from 'bulma-toast';
 import {NetworkSettings} from '../../network-settings';
-import {ControlService} from "../../control.service";
+import {ControlService} from '../../control.service';
 
 declare var vis: any;
 
@@ -133,7 +132,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       }
 
       if (this.task && this.task.info.done) {
-        const result = await this.control.getTaskResult(this.token)
+        const result = await this.control.getTaskResult(this.token);
         const nodeAttributes = result.nodeAttributes || {};
         const isSeed: { [key: string]: boolean } = nodeAttributes.isSeed || {};
 

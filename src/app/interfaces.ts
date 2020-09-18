@@ -14,7 +14,7 @@ export interface Node {
   cancer_occurrences: number;
 }
 
-export type DataLevel = 'gene' | 'protein'
+export type DataLevel = 'gene' | 'protein';
 
 export interface Tissue {
   /**
@@ -120,11 +120,11 @@ export function getGeneBackendId(gene: Node) {
   return gene.backendId.toString();
 }
 
-export function getCancerDriverGeneNodeId(cancer_driver_gene: CancerNode) {
+export function getCancerDriverGeneNodeId(cancerDriverGene: CancerNode) {
   /**
    * Returns node ID for CancerDriverGene object
    */
-  return `${cancer_driver_gene.backendId}`;
+  return `${cancerDriverGene.backendId}`;
 }
 
 export function getNodeIdsFromGeneGeneInteraction(geneGeneInteraction: Interaction) {
@@ -190,12 +190,12 @@ export function getWrapperFromNode(gene: Node): Wrapper {
   };
 }
 
-export function getWrapperFromCancerNode(cancer_gene: CancerNode): Wrapper {
+export function getWrapperFromCancerNode(cancerGene: CancerNode): Wrapper {
   return {
-    backendId: getCancerDriverGeneBackendId(cancer_gene),
-    nodeId: getCancerDriverGeneNodeId(cancer_gene),
+    backendId: getCancerDriverGeneBackendId(cancerGene),
+    nodeId: getCancerDriverGeneNodeId(cancerGene),
     type: 'cancerNode',
-    data: cancer_gene,
+    data: cancerGene,
   };
 }
 

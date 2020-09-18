@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {CancerType} from "../../interfaces";
+import {CancerType} from '../../interfaces';
 
 @Component({
   selector: 'app-cancertype-tile',

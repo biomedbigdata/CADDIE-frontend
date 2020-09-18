@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {CancerNode, DataLevel, Wrapper} from "../../interfaces";
+import {CancerNode} from '../../interfaces';
 
 @Component({
   selector: 'app-filter-tile',
@@ -17,7 +17,7 @@ export class FilterTileComponent implements OnInit {
   }
 
   filterFun(): void {
-    this.selectItem.emit()
+    this.selectItem.emit();
   }
 
 }

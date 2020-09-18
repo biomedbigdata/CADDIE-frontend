@@ -12,7 +12,7 @@ export class InfoTileComponent implements OnInit {
   @Input()
   public wrapper: Wrapper;
   @Input()
-  public wrapper_cancer_types: CancerType[];
+  public wrapperCancerTypes: CancerType[];
 
   constructor(public analysis: AnalysisService) { }
 

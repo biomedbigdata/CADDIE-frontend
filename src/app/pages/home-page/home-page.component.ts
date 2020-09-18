@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import {ControlService} from "../../control.service";
+import {ControlService} from '../../control.service';
 
 @Component({
   selector: 'app-home-page',
@@ -8,28 +8,28 @@ import {ControlService} from "../../control.service";
 })
 export class HomePageComponent implements OnInit, AfterViewInit {
 
-  public genes_n: number;
-  public proteins_n: number;
-  public cancerDriverGenes_n: number;
-  public drugs_n: number;
+  public genesN: number;
+  public proteinsN: number;
+  public cancerDriverGenesN: number;
+  public drugsN: number;
 
   constructor(private control: ControlService) { }
 
   private async loadSummary() {
     // load summary information
-    const data = await this.control.getSummary()
+    const data = await this.control.getSummary();
 
-    this.genes_n = data.nGenes;
-    this.cancerDriverGenes_n = data.nCancerDriverGenes;
-    this.proteins_n = data.nProteins;
-    this.drugs_n = data.nDrugs;
+    this.genesN = data.nGenes;
+    this.cancerDriverGenesN = data.nCancerDriverGenes;
+    this.proteinsN = data.nProteins;
+    this.drugsN = data.nDrugs;
   }
 
   ngOnInit() {
   }
 
   async ngAfterViewInit() {
-    this.loadSummary()
+    this.loadSummary();
   }
 
 }

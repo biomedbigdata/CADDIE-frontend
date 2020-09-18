@@ -26,8 +26,8 @@ import {AnalysisService} from '../../analysis.service';
 import html2canvas from 'html2canvas';
 import {environment} from '../../../environments/environment';
 import {NetworkSettings} from '../../network-settings';
-import {ControlService} from '../../control.service'
-import {toast} from "bulma-toast";
+import {ControlService} from '../../control.service';
+import {toast} from 'bulma-toast';
 
 
 declare var vis: any;
@@ -41,7 +41,7 @@ declare var vis: any;
 export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   // level of display, either gene-gene interactions or protein-protein
-  public selectedDataLevel: DataLevel
+  public selectedDataLevel: DataLevel;
 
   public showDetails = false;
   public selectedWrapper: Wrapper | null = null;
@@ -94,24 +94,24 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   public selectedAnalysisToken: string | null = null;
 
-  public currentDataset:Dataset = undefined;
-  public currentCancerTypeItems:CancerType[] = undefined;
+  public currentDataset: Dataset = undefined;
+  public currentCancerTypeItems: CancerType[] = undefined;
 
-  //public datasetItems: Dataset[] = undefined;
+  // public datasetItems: Dataset[] = undefined;
   public cancerTypeItems: CancerType[] = undefined;
 
   public currentViewGenes: Node[];
   public currentViewCancerNodes: CancerNode[];
   public currentViewSelectedTissue: Tissue | null = null;
   public currentViewNodes: any[];
-  public currentDataLevel: DataLevel
+  public currentDataLevel: DataLevel;
 
   public expressionExpanded = false;
   public selectedTissue: Tissue | null = null;
 
   public visibleCancerNodeCount = 0;
 
-  public networkFullscreenStatus: boolean = false;
+  public networkFullscreenStatus = false;
 
 
 
@@ -129,7 +129,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         if (items.length === 0) {
           return;
         }
-        let updatedNodes = [];
+        const updatedNodes = [];
         for (const item of items) {
           const node = this.nodeData.nodes.get(item.nodeId);
           if (!node) {
@@ -177,18 +177,18 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     if (!this.datasetItems) {
       // cancer datasets are always loaded
-      await this.initCancerDatasets()
+      await this.initCancerDatasets();
     }
 
     if (!this.cancerTypes) {
       // cancer types are always loaded
-      await this.initCancerTypes(this.selectedDataset)
+      await this.initCancerTypes(this.selectedDataset);
 
     }
 
     if (!this.selectedDataLevel) {
       // data level is always set
-      this.selectedDataLevel = 'gene'
+      this.selectedDataLevel = 'gene';
     }
 
     // init network if this.network is not set
@@ -196,7 +196,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // default selection
       this.selectedCancerTypeItems = [this.cancerTypes[0]];
       await this.createNetwork(this.selectedDataset, this.selectedDataLevel, this.selectedCancerTypeItems);
-      this.physicsEnabled = false
+      this.physicsEnabled = false;
     }
   }
 
@@ -214,7 +214,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Fetches Cancer Type data from API and initializes cancer type tile
      */
     this.cancerTypes = await this.control.getCancerTypes(dataset);
-    this.selectedCancerTypeItems = [this.cancerTypes[1]]
+    this.selectedCancerTypeItems = [this.cancerTypes[1]];
 
   }
 
@@ -262,14 +262,14 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.zoomToNode(item.nodeId);
     }
 
-    this.getRelatedCancerTypes(item)
+    this.getRelatedCancerTypes(item);
 
     this.showDetails = true;
   }
   private async getRelatedCancerTypes(item: Wrapper) {
-    const data = await this.control.getRelatedCancerTypes(this.currentDataset, item.data)
+    const data = await this.control.getRelatedCancerTypes(this.currentDataset, item.data);
 
-    this.selectedWrapperCancerTypes = data.cancerTypes
+    this.selectedWrapperCancerTypes = data.cancerTypes;
   }
 
   public async closeSummary() {
@@ -286,7 +286,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     /**
      * Fetches Network data from API
      */
-    const data = await this.control.getNetwork(dataset, dataLevel, cancerTypes)
+    const data = await this.control.getNetwork(dataset, dataLevel, cancerTypes);
     this.nodes = data.nodes;
     this.nodesSup = data.nodesSup;
     this.cancerNodes = data.cancerNodes;
@@ -351,8 +351,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.network = new vis.Network(container, this.nodeData, options);
 
     // stop network animation when stable state is reached
-    this.network.on("stabilizationIterationsDone", () => {
-      this.updatePhysicsEnabled(false)
+    this.network.on('stabilizationIterationsDone', () => {
+      this.updatePhysicsEnabled(false);
     });
 
     this.network.on('doubleClick', (properties) => {
@@ -407,16 +407,16 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     }
 
     // fill adding option in the filter menu
-    this.fillFilterItems(this.cancerNodesSup)
+    this.fillFilterItems(this.cancerNodesSup);
   }
 
-  public fillFilterItems(cancerNodesSup: CancerNode[], reset: Boolean = true) {
+  public fillFilterItems(cancerNodesSup: CancerNode[], reset: boolean = true) {
     /**
      * Fills the item options in the filter query menu.
      * Allows user to add new genes to network which were previously not displayed due to loading times
      */
     if (reset) {
-      this.filterAddItems = []
+      this.filterAddItems = [];
     }
 
     cancerNodesSup.forEach((cancerNode) => {
@@ -425,7 +425,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   }
 
-  public fillQueryItems(nodes: Node[], cancerNodes: CancerNode[], reset: Boolean = true) {
+  public fillQueryItems(nodes: Node[], cancerNodes: CancerNode[], reset: boolean = true) {
     /**
      * fills the queryItems list, relevant for sending queries to the server, related to the query tile
      * +
@@ -433,12 +433,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      */
 
     if (reset) {
-      this.queryItems = []
+      this.queryItems = [];
       this.currentViewGenes = [];
       this.currentViewCancerNodes = [];
     }
 
-    let newQueryItems = []
+    const newQueryItems = [];
 
     nodes.forEach((node) => {
       newQueryItems.push(getWrapperFromNode(node));
@@ -447,10 +447,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     cancerNodes.forEach((cancerNode) => {
       newQueryItems.push(getWrapperFromCancerNode(cancerNode));
     });
-    console.log(newQueryItems)
 
     // if item is just pushed directly to queryItems, component does not update
-    this.queryItems = [...this.queryItems, ...newQueryItems]
+    this.queryItems = [...this.queryItems, ...newQueryItems];
 
     this.currentViewNodes = this.nodeData.nodes;
     this.currentViewGenes.push(...this.nodes);
@@ -466,11 +465,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.currentDataset,
       this.currentDataLevel,
       this.currentCancerTypeItems,
-      cancerNode)
+      cancerNode);
 
-    const edgesToAdd = []
+    const edgesToAdd = [];
     for (const interaction of data.interactions) {
-      edgesToAdd.push(this.mapEdge(interaction))
+      edgesToAdd.push(this.mapEdge(interaction));
     }
 
     // add node dynamically to network
@@ -481,24 +480,24 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.nodeData.edges.add(edgesToAdd);
 
     // add data to network interface
-    this.networkData.cancerNodes.push(cancerNode)
-    this.networkData.edges.push(...data.interactions)
+    this.networkData.cancerNodes.push(cancerNode);
+    this.networkData.edges.push(...data.interactions);
 
     // TODO just do this for new node to speed up
-    this.networkData.linkNodes()
+    this.networkData.linkNodes();
 
     // add node to cancer nodes
-    this.fillQueryItems([], [cancerNode], false)
+    this.fillQueryItems([], [cancerNode], false);
 
     // remove node out of cancer nodes supplement
     this.cancerNodesSup.forEach((item, index, object) => {
       if (cancerNode.backendId.toString() === item.backendId.toString()) {
-        object.splice(index, 1)
+        object.splice(index, 1);
       }
-    })
+    });
 
     // TODO not good to iterate through everything
-    this.filterNodes()
+    this.filterNodes();
 
   }
 
@@ -581,7 +580,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.nodeData.nodes.remove(Array.from(removeIds.values()));
     this.nodeData.nodes.add(Array.from(addNodes.values()));
 
-    this.visibleCancerNodeCount = filteredCancerDriverGenes.length
+    this.visibleCancerNodeCount = filteredCancerDriverGenes.length;
 
     // update query options
     this.fillQueryItems(filteredGenes, filteredCancerDriverGenes);
@@ -592,10 +591,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.cancerNodesCheckboxes.push({
         checked: false,
         data: item.data
-      })
+      });
     }
 
-    this.addNetworkNode(item.data)
+    this.addNetworkNode(item.data);
 
     toast({
       message: `Cancer Node ${item.data.name} added to filter options`,
@@ -776,13 +775,13 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const element = document.getElementById('network');
 
     // either add or remove class 'fullscreen' with settings for fullscreen network
-    this.networkFullscreenStatus ? element.classList.remove("fullscreen") : element.classList.add("fullscreen")
+    this.networkFullscreenStatus ? element.classList.remove('fullscreen') : element.classList.add('fullscreen');
 
     // set this.networkFullscreenStatus
-    this.networkFullscreenStatus = !this.networkFullscreenStatus
+    this.networkFullscreenStatus = !this.networkFullscreenStatus;
 
     // adapt network to new layout
-    this.network.redraw()
+    this.network.redraw();
   }
 
   public selectTissue(tissue: Tissue | null) {

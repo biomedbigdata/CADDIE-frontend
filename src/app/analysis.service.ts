@@ -72,7 +72,6 @@ export class AnalysisService {
   constructor(private http: HttpClient, private control: ControlService) {
     const tokens = localStorage.getItem('tokens');
     const finishedTokens = localStorage.getItem('finishedTokens');
-
     if (tokens) {
       this.tokens = JSON.parse(tokens);
     }
@@ -216,7 +215,7 @@ export class AnalysisService {
     const newSelection = [];
     nodes.forEach((node) => {
       const wrapper: Wrapper = node.wrapper;
-      if (wrapper.type === 'node' || wrapper.type === 'cancerNode') {
+      if (wrapper.type === 'Node' || wrapper.type === 'CancerNode') {
         if (!this.inSelection(wrapper)) {
           newSelection.push(wrapper);
         }
@@ -229,7 +228,12 @@ export class AnalysisService {
     this.selectListSubject.next({items: newSelection, selected: null});
   }
 
-  public addExpressedHostProteins(nodes, proteins: Node[], threshold: number): number {
+  public addExpressedGenes(nodes, proteins: Node[], threshold: number): number {
+    /**
+     * Returns amount of genes which have higher expression than threshold
+     * +
+     * Sets these genes to 'this.selectedItems'
+     */
     const items: Wrapper[] = [];
     const visibleIds = new Set<string>(nodes.getIds());
     for (const protein of proteins) {
@@ -280,22 +284,22 @@ export class AnalysisService {
     return items.length;
   }
 
-  public removeAllGenes() {
+  public removeAllNodes() {
     /**
      * removes all genes from selection
      */
-    const items: Wrapper[] = Array.from(this.selectedItems.values()).filter(p => p.type === 'node');
+    const items: Wrapper[] = Array.from(this.selectedItems.values()).filter(p => p.type === 'Node');
     for (const wrapper of items) {
       this.selectedItems.delete(wrapper.nodeId);
     }
     this.selectListSubject.next({items, selected: false});
   }
 
-  public removeAllCancerDriverGenes() {
+  public removeAllCancerDriverNodes() {
     /**
      * removes all cancer driver genes from selection
      */
-    const items: Wrapper[] = Array.from(this.selectedItems.values()).filter(p => p.type === 'cancerNode');
+    const items: Wrapper[] = Array.from(this.selectedItems.values()).filter(p => p.type === 'CancerNode');
     for (const wrapper of items) {
       this.selectedItems.delete(wrapper.nodeId);
     }
@@ -311,22 +315,37 @@ export class AnalysisService {
   }
 
   idInSelection(nodeId: string): boolean {
+    /**
+     * checks if nodeId is in selected items
+     */
     return this.selectedItems.has(nodeId);
   }
 
   inSelection(wrapper: Wrapper): boolean {
+    /**
+     * checks if wrapper is in selection
+     */
     return this.selectedItems.has(wrapper.nodeId);
   }
 
-  proteinInSelection(protein: Node): boolean {
-    return this.inSelection(getWrapperFromNode(protein));
+  nodeInSelection(node: Node): boolean {
+    /**
+     * Checks if node is in selection
+     */
+    return this.inSelection(getWrapperFromNode(node));
   }
 
-  viralProteinInSelection(viralProtein: CancerNode): boolean {
-    return this.inSelection(getWrapperFromCancerNode(viralProtein));
+  cancerNodeInSelection(cancerNode: CancerNode): boolean {
+    /**
+     * Checks if cancer Node is in selection
+     */
+    return this.inSelection(getWrapperFromCancerNode(cancerNode));
   }
 
   getSelection(): Wrapper[] {
+    /**
+     * Returns selection
+     */
     return Array.from(this.selectedItems.values());
   }
 
@@ -338,13 +357,18 @@ export class AnalysisService {
   }
 
   subscribeList(cb: (items: Array<Wrapper>, selected: boolean | null) => void) {
+    /**
+     * subscribes to checkboxes, 'this.selectListSubject'
+     */
     this.selectListSubject.subscribe((event) => {
       cb(event.items, event.selected);
     });
   }
 
   async startQuickAnalysis(isSuper: boolean, dataset: Dataset, cancerTypes: CancerType[]) {
-
+    /**
+     * Starts quick analysis
+     */
     // break if maximum number of tasks exceeded
     if (!this.canLaunchTask()) {
       toast({
@@ -370,7 +394,7 @@ export class AnalysisService {
         dataset: dataset.backendId,
         cancer_types: cancerTypesIds,
         bait_datasets: dataset.data,
-        seeds: isSuper ? [] : this.getSelection().map((i) => i.backendId.toString()),
+        seeds: isSuper ? [] : this.getSelection().map((i) => i.data.backendId),
       }
     );
     this.tokens.push(resp.token);
@@ -389,6 +413,10 @@ export class AnalysisService {
   }
 
   async startAnalysis(algorithm, target: 'drug' | 'drug-target', parameters) {
+    /**
+     * Starts analysis, NOT QUICK
+     * accepts algorithm with parameters
+     */
     if (!this.canLaunchTask()) {
       toast({
         message: `You can only run ${MAX_TASKS} tasks at once. Please wait for one of them to finish or delete it from the task list.`,
@@ -413,10 +441,18 @@ export class AnalysisService {
   }
 
   public isLaunchingQuick(): boolean {
+    /**
+     * returns status (boolean) of this.launchingQuick
+     *
+     * indicates whether launch is ongoing
+     */
     return this.launchingQuick;
   }
 
-  showToast(task: Task, status: 'DONE' | 'FAILED') {
+  public showToast(task: Task, status: 'DONE' | 'FAILED') {
+    /**
+     * Shows message about task status to user
+     */
     let toastMessage;
     let toastType;
     if (status === 'DONE') {
@@ -439,10 +475,18 @@ export class AnalysisService {
   }
 
   public canLaunchTask(): boolean {
+    /**
+     * return if launch of task is possible
+     */
     return this.canLaunchNewTask;
   }
 
-  startWatching() {
+  public startWatching() {
+    /**
+     * start watching for task to finish
+     *
+     * Shows toast on task finish
+     */
     const watch = async () => {
       if (this.tokens.length > 0) {
         this.tasks = await this.getTasks();

@@ -1,5 +1,5 @@
 <div *ngIf="wrapper">
-  <div *ngIf="wrapper.type === 'node'">
+  <div *ngIf="wrapper.type === 'Node'">
     <p>
       <b><span>Gene Name: </span></b>
       {{ wrapper.data.name }}
@@ -44,7 +44,7 @@
   </div>
 
 
-  <div *ngIf="wrapper.type === 'cancerNode'">
+  <div *ngIf="wrapper.type === 'CancerNode'">
     <p>
       <b><span>Gene Name: </span></b>
       {{ wrapper.data.name }}
@@ -88,7 +88,7 @@
   </div>
 
 
-  <div *ngIf="wrapper.type === 'drug'">
+  <div *ngIf="wrapper.type === 'Drug'">
     <p>
       <b><span>Name: </span></b>
       {{ wrapper.data.name }}
@@ -120,7 +120,7 @@
     </p>
   </div>
 
-  <div class="field has-addons add-remove-toggle" *ngIf="wrapper.type !== 'drug'">
+  <div class="field has-addons add-remove-toggle" *ngIf="wrapper.type !== 'Drug'">
     <app-toggle [value]="analysis.inSelection(wrapper)"
                 (valueChange)="$event ? analysis.addItems([wrapper]) : analysis.removeItems([wrapper])" textOn="Selected"
                 textOff="Deselected" tooltipOn="Add protein to selection." tooltipOff="Remove protein from selection."></app-toggle>

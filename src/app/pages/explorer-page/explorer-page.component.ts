@@ -20,7 +20,9 @@ import {
   CancerType,
   DataLevel
 } from '../../interfaces';
-import {Network, getDatasetFilename} from '../../main-network';
+
+// getDatasetFilename
+import {Network, } from '../../main-network';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {AnalysisService} from '../../analysis.service';
 import html2canvas from 'html2canvas';
@@ -389,9 +391,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // dump positions after they are calculated
       this.network.on('stabilizationIterationsDone', () => {
         // tslint:disable-next-line:no-console
-        console.log(`${getDatasetFilename(dataset)}`);
+        // console.log(`${getDatasetFilename(dataset)}`);
         // tslint:disable-next-line:no-console
-        console.log(JSON.stringify(this.network.getPositions()));
+        // console.log(JSON.stringify(this.network.getPositions()));
       });
       this.network.stabilize();
     }
@@ -641,7 +643,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Creates a network node object out of a given Gene object
      */
     const wrapper = getWrapperFromNode(gene);
-    const node = NetworkSettings.getNodeStyle('node', true, this.analysis.inSelection(wrapper));
+    const node = NetworkSettings.getNodeStyle('Node', true, this.analysis.inSelection(wrapper));
     let nodeLabel = gene.name;
     if (gene.name.length === 0) {
       nodeLabel = gene.backendId;
@@ -660,7 +662,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Creates a network node object out of a given CancerDriverGene object
      */
     const wrapper = getWrapperFromCancerNode(cancerDriverGene);
-    const node = NetworkSettings.getNodeStyle('cancerNode', true, this.analysis.inSelection(wrapper));
+    const node = NetworkSettings.getNodeStyle('CancerNode', true, this.analysis.inSelection(wrapper));
     node.id = wrapper.nodeId;
     node.label = cancerDriverGene.name;
     node.x = cancerDriverGene.x;
@@ -747,7 +749,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * uses collected analysis data (getSelection())
      */
     const queryString = this.analysis.getSelection()
-      .filter(wrapper => wrapper.type === 'node')
+      .filter(wrapper => wrapper.type === 'Node')
       .map(wrapper => wrapper.data.proteinAc)
       .join('%0A');
     return 'http://biit.cs.ut.ee/gprofiler/gost?' +

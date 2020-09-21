@@ -167,7 +167,7 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}task_result/?token=${token}&view=genes`).toPromise();
   }
 
-  public async getTaskResultCancerDriverGene(token): Promise<any> {
+  public async getTaskResultCancerNode(token): Promise<any> {
     /**
      * returns promise of cancer driver gene view of task result of COMPLETED task
      */

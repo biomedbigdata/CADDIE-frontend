@@ -183,9 +183,12 @@ div.caddie.explorer {
 
 .analysis-view {
   height: 100%;
-  width: calc(100% - 20px);
-  position: relative;
+  width: 100%;
+  position: absolute;
   margin-top: 0;
+  top: 0;
+  left: 0;
+  z-index: 20;
 }
 
 div.field.has-addons.add-remove-toggle {

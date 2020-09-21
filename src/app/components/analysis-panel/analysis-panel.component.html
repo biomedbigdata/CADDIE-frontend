@@ -338,7 +338,7 @@
           </ng-template>
         </p-table>
 
-        <div *ngIf="tableProteins.length > 0" class="table-header">
+        <div *ngIf="tableNodes.length > 0" class="table-header">
           <h4 class="is-4">
             <span class="icon"><i class="fa fa-dna"></i></span>
             <span>Proteins</span>
@@ -348,8 +348,8 @@
             <span>Download</span>
           </a>
         </div>
-        <p-table *ngIf="tableProteins.length > 0" selectionMode="multiple"
-                 [value]="tableProteins" [selection]="tableSelectedGenes" dataKey="proteinAc"
+        <p-table *ngIf="tableNodes.length > 0" selectionMode="multiple"
+                 [value]="tableNodes" [selection]="tableSelectedNodes" dataKey="proteinAc"
                  (selectionChange)="tableGeneSelection($event)">
           <ng-template pTemplate="header">
             <tr>
@@ -417,31 +417,33 @@
           </ng-template>
         </p-table>
 
-        <div *ngIf="tableViralProteins.length > 0" class="table-header">
+        <div *ngIf="tableCancerNodes.length > 0" class="table-header">
           <h4 class="is-4">
-            <span class="icon"><i class="fa fa-virus"></i></span>
-            <span>Viral Proteins</span>
+            <span class="icon"><i class="fa fa-disease"></i></span>
+            <span>Cancer Driver Genes</span>
           </h4>
-          <a [href]="downloadLink('viral_proteins')" class="button is-primary is-outlined is-pulled-right is-small">
+          <a [href]="downloadLink('cancer_driver_genes')"
+             class="button is-primary is-outlined is-pulled-right is-small">
+
             <span class="icon"><i class="fa fa-download"></i></span>
             <span>Download</span>
           </a>
         </div>
-        <p-table *ngIf="tableViralProteins.length > 0" selectionMode="multiple"
-                 [value]="tableViralProteins" [selection]="tableSelectedCancerDriverGenes" dataKey="effectId"
+        <p-table *ngIf="tableCancerNodes.length > 0" selectionMode="multiple"
+                 [value]="tableCancerNodes" [selection]="tableSelectedCancerNodes" dataKey="effectId"
                  (selectionChange)="tableCancerDriverGeneSelection($event)">
           <ng-template pTemplate="header">
             <tr>
               <th class="checkbox-col">
                 <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
               </th>
-              <th [pSortableColumn]="'effectName'">
+              <th [pSortableColumn]="'name'">
                 Name
-                <p-sortIcon [field]="'effectName'"></p-sortIcon>
+                <p-sortIcon [field]="'name'"></p-sortIcon>
               </th>
-              <th [pSortableColumn]="'virusName'">
-                Virus Strain
-                <p-sortIcon [field]="'virusName'"></p-sortIcon>
+              <th [pSortableColumn]="'cancerType'">
+                Cancer Type
+                <p-sortIcon [field]="'cancerType'"></p-sortIcon>
               </th>
               <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
                 Score
@@ -458,8 +460,8 @@
               <td>
                 <p-tableCheckbox [value]="e"></p-tableCheckbox>
               </td>
-              <td>{{e.effectName}}</td>
-              <td>{{e.virusName}}</td>
+              <td>{{e.name}}</td>
+              <td>{{e.cancerType}}</td>
               <td *ngIf="tableHasScores">{{e.score | number}}</td>
               <td>
                 <span *ngIf="e.isSeed">

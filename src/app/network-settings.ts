@@ -93,21 +93,21 @@ export class NetworkSettings {
   private static drugInTrialShape = 'triangle';
 
   static getNodeSize(wrapperType: WrapperType) {
-    if (wrapperType === 'node') {
+    if (wrapperType === 'Node') {
       return this.nodeSize;
-    } else if (wrapperType === 'cancerNode') {
+    } else if (wrapperType === 'CancerNode') {
       return this.cancerNodeSize;
-    } else if (wrapperType === 'drug') {
+    } else if (wrapperType === 'Drug') {
       return this.drugSize;
     }
   }
 
   static getNodeShape(wrapperType: WrapperType, drugInTrial?: boolean) {
-    if (wrapperType === 'node') {
+    if (wrapperType === 'Node') {
       return this.hostShape;
-    } else if (wrapperType === 'cancerNode') {
+    } else if (wrapperType === 'CancerNode') {
       return this.virusShape;
-    } else if (wrapperType === 'drug') {
+    } else if (wrapperType === 'Drug') {
       if (drugInTrial) {
         return this.drugInTrialShape;
       } else {
@@ -138,15 +138,15 @@ export class NetworkSettings {
     }
   }
 
-  static getColor(color: 'node' | 'cancerNode' | 'approvedDrug' | 'unapprovedDrug' | 'geneFont' | 'cancerFont' | 'drugFont' |
+  static getColor(color: 'Node' | 'CancerNode' | 'approvedDrug' | 'unapprovedDrug' | 'geneFont' | 'cancerFont' | 'drugFont' |
     'nonSeedGene' | 'nonSeedCancerDriverGenes' | 'selectedForAnalysis' | 'selectedForAnalysisText' |
     'edgeGene' | 'edgeGeneHighlight' | 'edgeGeneCancer' | 'edgeGeneCancerHighlight' | 'edgeGeneDrug' | 'edgeGeneDrugHighlight') {
     /**
      * Collection of all colors per use-case
      */
-    if (color === 'node') {
+    if (color === 'Node') {
       return this.node;
-    } else if (color === 'cancerNode') {
+    } else if (color === 'CancerNode') {
       return this.cancerNode;
     } else if (color === 'approvedDrug') {
       return this.approvedDrugColor;
@@ -178,11 +178,11 @@ export class NetworkSettings {
   }
 
   static getFont(wrapperType: WrapperType, drugInTrial?: boolean) {
-    if (wrapperType === 'node') {
+    if (wrapperType === 'Node') {
       return {color: this.hostFontColor, size: this.hostFontSize};
-    } else if (wrapperType === 'cancerNode') {
+    } else if (wrapperType === 'CancerNode') {
       return {color: this.virusFontColor, size: this.virusFontSize};
-    } else if (wrapperType === 'drug') {
+    } else if (wrapperType === 'Drug') {
       if (!drugInTrial) {
         return {color: this.drugFontColor, size: this.drugFontSize};
       } else {
@@ -208,31 +208,31 @@ export class NetworkSettings {
     nodeShape = NetworkSettings.getNodeShape(nodeType);
     nodeSize = NetworkSettings.getNodeSize(nodeType);
     nodeFont = NetworkSettings.getFont(nodeType);
-    if (nodeType === 'node') {
+    if (nodeType === 'Node') {
       nodeColor = NetworkSettings.getColor(nodeType);
-      nodeFont = NetworkSettings.getFont('node');
+      nodeFont = NetworkSettings.getFont('Node');
       if (!isSeed) {
         nodeColor = NetworkSettings.getColor('nonSeedGene');
       }
-    } else if (nodeType === 'cancerNode') {
+    } else if (nodeType === 'CancerNode') {
       nodeColor = NetworkSettings.getColor(nodeType);
-      if (nodeType === 'cancerNode') {
-        nodeFont = NetworkSettings.getFont('cancerNode');
+      if (nodeType === 'CancerNode') {
+        nodeFont = NetworkSettings.getFont('CancerNode');
         if (!isSeed) {
           nodeColor = NetworkSettings.getColor('nonSeedCancerDriverGenes');
         }
       }
-    } else if (nodeType === 'drug') {
+    } else if (nodeType === 'Drug') {
       if (drugType === 'approved') {
         nodeColor = NetworkSettings.getColor('approvedDrug');
       } else {
         nodeColor = NetworkSettings.getColor('unapprovedDrug');
       }
       if (drugInTrial) {
-        nodeShape = NetworkSettings.getNodeShape('drug', true);
-        nodeFont = NetworkSettings.getFont('drug', true);
+        nodeShape = NetworkSettings.getNodeShape('Drug', true);
+        nodeFont = NetworkSettings.getFont('Drug', true);
       } else {
-        nodeShape = NetworkSettings.getNodeShape('drug', false);
+        nodeShape = NetworkSettings.getNodeShape('Drug', false);
       }
     }
 

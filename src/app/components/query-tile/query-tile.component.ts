@@ -21,7 +21,7 @@ export class QueryTileComponent {
     term = term.toLowerCase();
 
     if (this.dataLevel === 'gene') {
-      if (item.type === 'node') {
+      if (item.type === 'Node') {
         const data = item.data as Node;
         return data.name.toLowerCase().indexOf(term) > -1 ||
           data.backendId.toString().toLowerCase().indexOf(term) > -1 ||
@@ -35,7 +35,7 @@ export class QueryTileComponent {
           data.backendId.toString().toLowerCase().indexOf(term) > -1;
       }
     } else if (this.dataLevel === 'protein') {
-      if (item.type === 'node') {
+      if (item.type === 'Node') {
         const data = item.data as Node;
         return data.name.toLowerCase().indexOf(term) > -1 ||
           data.backendId.toString().toLowerCase().indexOf(term) > -1 ||

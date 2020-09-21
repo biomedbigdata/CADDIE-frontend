@@ -185,7 +185,7 @@ export function getWrapperFromNode(gene: Node): Wrapper {
   return {
     backendId: getGeneBackendId(gene),
     nodeId: getGeneNodeId(gene),
-    type: 'node',
+    type: 'Node',
     data: gene,
   };
 }
@@ -194,7 +194,7 @@ export function getWrapperFromCancerNode(cancerGene: CancerNode): Wrapper {
   return {
     backendId: getCancerDriverGeneBackendId(cancerGene),
     nodeId: getCancerDriverGeneNodeId(cancerGene),
-    type: 'cancerNode',
+    type: 'CancerNode',
     data: cancerGene,
   };
 }
@@ -203,12 +203,12 @@ export function getWrapperFromDrug(drug: Drug): Wrapper {
   return {
     backendId: getDrugBackendId(drug),
     nodeId: getDrugNodeId(drug),
-    type: 'drug',
+    type: 'Drug',
     data: drug,
   };
 }
 
-export type WrapperType = 'node' | 'cancerNode' | 'drug';
+export type WrapperType = 'Node' | 'CancerNode' | 'Drug';
 
 export interface Wrapper {
   /**

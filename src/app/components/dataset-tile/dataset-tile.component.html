@@ -3,7 +3,7 @@
     <div class="column is-6">
       <ng-select [items]="datasetItems" bindLabel="name" [virtualScroll]="true" class="custom"
                  placeholder="Select..." [ngModel]="selectedDataset" (ngModelChange)="select($event)"
-                 data-tooltip="Choose the dataset you want to explore.">
+                 data-tooltip="Choose the dataset you want to explore." [clearable]="false">
         <ng-template ng-option-tmp let-item="item">
           {{item.name}} ({{item.count}})
         </ng-template>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, DataLevel, Dataset, CancerNode, Node} from './interfaces';
+import {CancerType, InteractionDataset, Dataset, CancerNode, Node} from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -18,21 +18,48 @@ export class ControlService {
 
   public async getCancerDatasets(): Promise<any> {
     /**
-     * Returns promise of a list of all datasets
+     * Returns promise of a list of all cancer datasets
      * data = [
      *     {
      *         "id": 1,
-     *         "name": "NCG6"
+     *         "name": "NCG6",
+     *         "count": xxx,
+     *         "link": sssdsd
      *     },
      *     {
      *         "id": 2,
-     *         "name": "COSMIC"
+     *         "name": "COSMIC",
+     *         "count": xxx,
+     *         "link": sssdsd
      *     }
      * ]
      *
      */
 
     return this.http.get<any>(`${environment.backend}cancer_datasets/`).toPromise();
+  }
+
+  public async getInteractionDatasets(): Promise<any> {
+    /**
+     * Returns promise of a list of all interaction datasets
+     * data = [
+     *     {
+     *         "id": 1,
+     *         "name": "BioGRID",
+     *         "count": xxx,
+     *         "link": sssdsd
+     *     },
+     *     {
+     *         "id": 2,
+     *         "name": "CoVex",
+     *         "count": xxx,
+     *         "link": sssdsd
+     *     }
+     * ]
+     *
+     */
+
+    return this.http.get<any>(`${environment.backend}interaction_datasets/`).toPromise();
   }
 
   public async getCancerTypes(dataset: Dataset): Promise<any> {
@@ -63,21 +90,33 @@ export class ControlService {
 
   public async getRelatedCancerTypes(dataset: Dataset, node: CancerNode | Node): Promise<any> {
     /**
-     * Returns a list of all related cancer types for single node with cancer types ids
+     * Returns a list of all comorbidities for given node (gene or protein)
      */
 
     const params = new HttpParams()
       .set('dataset', JSON.stringify(dataset.backendId))
-      .set('backendId', JSON.stringify(node.backendId))
+      .set('node_backendId', JSON.stringify(node.backendId))
     ;
 
     return this.http.get<any>(`${environment.backend}related_cancer_types/`, {params}).toPromise();
-
   }
 
-  public async getNetwork(dataset: Dataset, dataLevel: DataLevel, cancerTypes: CancerType[]): Promise<any> {
+  public async getComorbidities(node: CancerNode | Node): Promise<any> {
+    /**
+     * Returns a list of all related cancer types for single node with cancer types ids
+     */
+
+    const params = new HttpParams()
+      .set('node_backendId', JSON.stringify(node.backendId))
+    ;
+
+    return this.http.get<any>(`${environment.backend}comorbidities_node/`, {params}).toPromise();
+  }
+
+  public async getNetwork(dataset: Dataset, interactionDataset: InteractionDataset, cancerTypes: CancerType[]): Promise<any> {
     /**
      * returns promise of all data needed to construct a gene gene interaction network
+     * used for explore network
      *
      * { 'genes': [
      *   ...
@@ -92,20 +131,23 @@ export class ControlService {
     const params = new HttpParams()
         .set('dataset', JSON.stringify(dataset.backendId))
         .set('cancerTypes', JSON.stringify(cancerTypesIdsString))
-        .set('dataLevel', JSON.stringify(dataLevel))
+        .set('interactionDataset', JSON.stringify(interactionDataset.backendId))
       ;
+    console.log('params');
+    console.log(params);
 
     return this.http.get<any>(`${environment.backend}network/`, {params}).toPromise();
   }
 
   public async getNodeInteractions(
     dataset: Dataset,
-    dataLevel: DataLevel,
+    interactionDataset: InteractionDataset,
     cancerTypes: CancerType[],
     node: CancerNode
   ): Promise<any> {
     /**
      * returns promise of all data needed to construct a gene gene interaction network
+     * used to add single cancer nodes to explore network
      *
      * {
      *    'interactions': [
@@ -118,7 +160,7 @@ export class ControlService {
     const params = new HttpParams()
       .set('dataset', JSON.stringify(dataset.backendId))
       .set('cancerTypes', JSON.stringify(cancerTypesIdsString))
-      .set('dataLevel', JSON.stringify(dataLevel))
+      .set('interactionDataset', JSON.stringify(interactionDataset.backendId))
       .set('backendId', JSON.stringify(node.backendId))
     ;
 

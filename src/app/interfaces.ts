@@ -24,6 +24,23 @@ export interface Tissue {
   name: string;
 }
 
+export interface Disease {
+  name: string;
+  backendId: string;
+  mondoId: string;
+  icd10: string;
+}
+
+export interface DiseaseGeneInteraction {
+  diseaseName: string;
+  diseaseBackendId: string;
+  diseaseMondoId: string;
+  diseaseIcd10: string;
+  geneBackendId: string;
+  geneName: string;
+  geneEntrezId: string;
+}
+
 export interface CancerNode {
   /**
    * Interface for cancer driver gene or protein
@@ -236,6 +253,15 @@ export interface Dataset {
   backendId: number;
   count: number;
   data?: CancerNode[];
+}
+
+
+export interface InteractionDataset {
+  name: string;
+  link: string;
+  backendId: number;
+  version: string;
+  count: number;
 }
 
 export interface CancerType {

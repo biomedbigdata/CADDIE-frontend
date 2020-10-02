@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Wrapper, CancerType} from '../../interfaces';
+import {Wrapper, CancerType, DiseaseGeneInteraction} from '../../interfaces';
 import {AnalysisService} from '../../analysis.service';
 
 @Component({
@@ -13,6 +13,8 @@ export class InfoTileComponent implements OnInit {
   public wrapper: Wrapper;
   @Input()
   public wrapperCancerTypes: CancerType[];
+  @Input()
+  public wrapperComorbidities: DiseaseGeneInteraction[];
 
   constructor(public analysis: AnalysisService) { }
 

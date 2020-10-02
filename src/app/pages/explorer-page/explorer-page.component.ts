@@ -18,11 +18,11 @@ import {
   Dataset,
   Tissue,
   CancerType,
-  DataLevel
+  DataLevel,
+  InteractionDataset,
+  DiseaseGeneInteraction
 } from '../../interfaces';
-
-// getDatasetFilename
-import {Network, } from '../../main-network';
+import {Network, getDatasetFilename} from '../../main-network';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {AnalysisService} from '../../analysis.service';
 import html2canvas from 'html2canvas';
@@ -48,6 +48,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public showDetails = false;
   public selectedWrapper: Wrapper | null = null;
   public selectedWrapperCancerTypes: CancerType[] | [] = [];
+  public selectedWrapperComorbidities: DiseaseGeneInteraction[] | [] = [];
 
   public collapseAnalysisQuick = true;
   public collapseAnalysis = false;
@@ -62,8 +63,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public collapseLevel = true;
 
   public datasetItems: Dataset[];
+  public interactionDatasetItems: InteractionDataset[];
   public cancerTypes: CancerType[];
   public selectedDataset: Dataset;
+  public selectedInteractionDataset: InteractionDataset;
   // in comparison to "selectedDataset", "selectedCancerTypeItems" has to be a list
   public selectedCancerTypeItems: CancerType[];
 
@@ -97,16 +100,17 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public selectedAnalysisToken: string | null = null;
 
   public currentDataset: Dataset = undefined;
-  public currentCancerTypeItems: CancerType[] = undefined;
-
-  // public datasetItems: Dataset[] = undefined;
+  public currentCancerTypeItems: CancerType[] = undefined
+  public currentInteractionDataset: InteractionDataset = undefined
   public cancerTypeItems: CancerType[] = undefined;
 
   public currentViewGenes: Node[];
   public currentViewCancerNodes: CancerNode[];
   public currentViewSelectedTissue: Tissue | null = null;
   public currentViewNodes: any[];
-  public currentDataLevel: DataLevel;
+
+  // TODO remove
+  public currentDataLevel = "gene";
 
   public expressionExpanded = false;
   public selectedTissue: Tissue | null = null;
@@ -182,6 +186,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       await this.initCancerDatasets();
     }
 
+    if (!this.interactionDatasetItems) {
+      // interaction datasets are always loaded
+      await this.initInteractionDatasets();
+    }
+
     if (!this.cancerTypes) {
       // cancer types are always loaded
       await this.initCancerTypes(this.selectedDataset);
@@ -197,7 +206,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     if (!this.network) {
       // default selection
       this.selectedCancerTypeItems = [this.cancerTypes[0]];
-      await this.createNetwork(this.selectedDataset, this.selectedDataLevel, this.selectedCancerTypeItems);
+      await this.createNetwork(this.selectedDataset, this.selectedInteractionDataset, this.selectedCancerTypeItems);
       this.physicsEnabled = false;
     }
   }
@@ -208,6 +217,17 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      */
     this.datasetItems = await this.control.getCancerDatasets();
     this.selectedDataset = this.datasetItems[0];
+
+  }
+
+  public async initInteractionDatasets() {
+    /**
+     * Fetches Cancer Dataset data from API and initializes dataset tile
+     */
+    console.log("here")
+    this.interactionDatasetItems = await this.control.getInteractionDatasets();
+    this.selectedInteractionDataset = this.interactionDatasetItems[0];
+    console.log(this.interactionDatasetItems)
 
   }
 
@@ -266,12 +286,21 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     this.getRelatedCancerTypes(item);
 
+    this.getComorbidities(item);
+
     this.showDetails = true;
   }
+
   private async getRelatedCancerTypes(item: Wrapper) {
     const data = await this.control.getRelatedCancerTypes(this.currentDataset, item.data);
 
     this.selectedWrapperCancerTypes = data.cancerTypes;
+  }
+
+  private async getComorbidities(item: Wrapper) {
+    const data = await this.control.getComorbidities(item.data);
+    console.log(data)
+    this.selectedWrapperComorbidities = data.interactions;
   }
 
   public async closeSummary() {
@@ -284,11 +313,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.showDetails = false;
   }
 
-  private async getNetwork(dataset: Dataset, dataLevel: DataLevel, cancerTypes: CancerType[]) {
+  private async getNetwork(dataset: Dataset, interactionDataset: InteractionDataset, cancerTypes: CancerType[]) {
     /**
      * Fetches Network data from API
      */
-    const data = await this.control.getNetwork(dataset, dataLevel, cancerTypes);
+    const data = await this.control.getNetwork(dataset, interactionDataset, cancerTypes);
     this.nodes = data.nodes;
     this.nodesSup = data.nodesSup;
     this.cancerNodes = data.cancerNodes;
@@ -298,10 +327,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     this.currentDataset = dataset;
     this.currentCancerTypeItems = cancerTypes;
-    this.currentDataLevel = dataLevel;
+    this.currentInteractionDataset = interactionDataset;
   }
 
-  public async createNetwork(dataset: Dataset, dataLevel: DataLevel, cancerType: CancerType[]) {
+  public async createNetwork(dataset: Dataset, interactionDataset: InteractionDataset, cancerType: CancerType[]) {
     /**
      * uses getNetwork() to fetch network data
      * +
@@ -312,11 +341,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     // fetch all relevant network data and store it in component
     // genes are returned alphabetically
-    await this.getNetwork(dataset, dataLevel, cancerType);
+    await this.getNetwork(dataset, interactionDataset, cancerType);
 
     this.networkData = new Network(this.nodes, this.cancerNodes, this.interactions);
     if (!this.dumpPositions) {
-      await this.networkData.loadPositionsFromFile(this.http, dataset);
+      await this.networkData.loadPositionsFromFile(this.http, dataset, cancerType);
     }
     this.networkData.linkNodes();
 
@@ -391,9 +420,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // dump positions after they are calculated
       this.network.on('stabilizationIterationsDone', () => {
         // tslint:disable-next-line:no-console
-        // console.log(`${getDatasetFilename(dataset)}`);
+        console.log(`${getDatasetFilename(dataset, cancerType)}`);
         // tslint:disable-next-line:no-console
-        // console.log(JSON.stringify(this.network.getPositions()));
+        console.log(JSON.stringify(this.network.getPositions()));
       });
       this.network.stabilize();
     }
@@ -465,7 +494,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // add edges for node dynamically
     const data = await this.control.getNodeInteractions(
       this.currentDataset,
-      this.currentDataLevel,
+      this.currentInteractionDataset,
       this.currentCancerTypeItems,
       cancerNode);
 
@@ -694,6 +723,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      */
     const nodes = [];
     const edges = [];
+
+    console.log('data')
+    console.log(data)
 
     for (const gene of data.nodes) {
       nodes.push(this.mapGeneToNode(gene));

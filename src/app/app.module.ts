@@ -28,6 +28,7 @@ import { CancertypeTileComponent } from './components/cancertype-tile/cancertype
 import { DataLevelToggleComponent } from './components/data-level-toggle/data-level-toggle.component';
 import { ButtonComponent } from './components/button/button.component';
 import { FilterTileComponent } from './components/filter-tile/filter-tile.component';
+import { InteractionDatasetTileComponent } from './components/interaction-dataset-tile/interaction-dataset-tile.component';
 
 
 @NgModule({
@@ -50,6 +51,7 @@ import { FilterTileComponent } from './components/filter-tile/filter-tile.compon
     DataLevelToggleComponent,
     ButtonComponent,
     FilterTileComponent,
+    InteractionDatasetTileComponent,
   ],
   imports: [
     BrowserModule,

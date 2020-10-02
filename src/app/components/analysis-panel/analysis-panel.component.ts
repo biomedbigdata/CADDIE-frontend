@@ -178,6 +178,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           }));
         promises.push(this.control.getTaskResultCancerNode(this.token)
           .then((table) => {
+            console.log('table')
+            console.log(table)
             this.tableCancerNodes = table;
             this.tableCancerNodes.forEach((cancerDriverGene) => {
               cancerDriverGene.rawScore = cancerDriverGene.score;

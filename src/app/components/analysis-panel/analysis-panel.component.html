@@ -441,9 +441,9 @@
                 Name
                 <p-sortIcon [field]="'name'"></p-sortIcon>
               </th>
-              <th [pSortableColumn]="'cancerType'">
+              <th [pSortableColumn]="'type'">
                 Cancer Type
-                <p-sortIcon [field]="'cancerType'"></p-sortIcon>
+                <p-sortIcon [field]="'type'"></p-sortIcon>
               </th>
               <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
                 Score
@@ -461,7 +461,7 @@
                 <p-tableCheckbox [value]="e"></p-tableCheckbox>
               </td>
               <td>{{e.name}}</td>
-              <td>{{e.cancerType}}</td>
+              <td>{{e.type}}</td>
               <td *ngIf="tableHasScores">{{e.score | number}}</td>
               <td>
                 <span *ngIf="e.isSeed">

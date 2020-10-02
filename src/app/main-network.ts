@@ -5,11 +5,15 @@ import {
   Node,
   getGeneNodeId,
   getCancerDriverGeneNodeId,
-  Dataset
+  Dataset, CancerType
 } from './interfaces';
 
-export function getDatasetFilename(dataset: Dataset): string {
-  return `network-${JSON.stringify(dataset.name).replace(/[\[\]\",]/g, '')}.json`;
+export function getDatasetFilename(dataset: Dataset, cancerType: CancerType[]): string {
+  const dataset_str = JSON.stringify(dataset.name).replace(/[\[\]\",]/g, '');
+  const cancerNames = cancerType.map( (cancerType) => cancerType.name);
+  const cancerType_str = JSON.stringify(cancerNames.join(',')).replace(/[\[\]\",]/g, '');
+
+  return `network-${dataset_str}-${cancerType_str}.json`;
 }
 
 export class Network {
@@ -20,8 +24,8 @@ export class Network {
     public edges: Interaction[]) {
   }
 
-  public async loadPositionsFromFile(http: HttpClient, dataset: Dataset) {
-    const nodePositions = await http.get(`assets/positions/${getDatasetFilename(dataset)}`).toPromise();
+  public async loadPositionsFromFile(http: HttpClient, dataset: Dataset, cancerType: CancerType[]) {
+    const nodePositions = await http.get(`assets/positions/${getDatasetFilename(dataset, cancerType)}`).toPromise();
     this.nodes.forEach((node) => {
       const nodePosition = nodePositions[getGeneNodeId(node)];
       if (nodePosition) {

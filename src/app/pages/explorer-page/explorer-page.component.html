@@ -56,7 +56,11 @@
                     <span *ngIf="selectedWrapper.type === 'Drug'">Drug</span>
                   </span>
                 </h6>
-                <app-info-tile [wrapper]="selectedWrapper" [wrapperCancerTypes]="selectedWrapperCancerTypes"></app-info-tile>
+                <app-info-tile
+                  [wrapper]="selectedWrapper"
+                  [wrapperCancerTypes]="selectedWrapperCancerTypes"
+                  [wrapperComorbidities]="selectedWrapperComorbidities"
+                ></app-info-tile>
               </div>
 
               <div class="card-image" id="canvas-content">
@@ -138,7 +142,7 @@
       <!-- Data Selector START -->
       <div class="columns is-multiline is-centered row-data-selector">
 
-        <div class="column is-6 has-text-centered">
+        <div class="column is-12 has-text-centered">
 
           <!-- Dataset Selector START -->
           <div class="columns is-vcentered">
@@ -155,25 +159,19 @@
 
         </div>
 
-        <div class="column is-6 has-text-centered">
+        <div class="column is-12 has-text-centered">
 
           <!-- Data Level Toggle START -->
           <div class="columns is-vcentered">
             <div class="column is-4 has-text-left">
-              <h6 class="title is-6" data-tooltip="Decide whether to use genes or proteins">Data Level:</h6>
+              <h6 class="title is-6" data-tooltip="Decide whether to use genes or proteins">Interactions:</h6>
             </div>
             <div class="column">
-              <app-data-level-toggle
-                class=""
-                textGene="Gene"
-                textProtein="Protein"
-                tooltipGene="Show Gene-Gene interactions in network"
-                tooltipProtein="Show Protein-Protein interactions in network"
-
-                [value]="true"
-                (valueChange)="updateDataLevel($event)">
-
-              </app-data-level-toggle>
+              <app-interaction-dataset-tile [datasetItems]="interactionDatasetItems"
+                                            [selectedDataset]="selectedInteractionDataset"
+                                            (selectedDatasetChange)="selectedInteractionDataset = $event;
+                                            initCancerTypes(selectedDataset)">
+              </app-interaction-dataset-tile>
             </div>
             <!-- Data Level Toggle END -->
           </div>
@@ -200,7 +198,7 @@
           <!-- Network Submit Button START -->
           <app-button
             buttonText="Submit"
-            (callbackFun)="createNetwork(selectedDataset, selectedDataLevel, selectedCancerTypeItems)"
+            (callbackFun)="createNetwork(selectedDataset, selectedInteractionDataset, selectedCancerTypeItems)"
           >
           </app-button>
           <!-- Network Submit Button END -->

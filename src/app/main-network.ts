@@ -9,11 +9,11 @@ import {
 } from './interfaces';
 
 export function getDatasetFilename(dataset: Dataset, cancerType: CancerType[]): string {
-  const dataset_str = JSON.stringify(dataset.name).replace(/[\[\]\",]/g, '');
-  const cancerNames = cancerType.map( (cancerType) => cancerType.name);
-  const cancerType_str = JSON.stringify(cancerNames.join(',')).replace(/[\[\]\",]/g, '');
+  const datasetStr = JSON.stringify(dataset.name).replace(/[\[\]\",]/g, '');
+  const cancerNames = cancerType.map( (e) => e.name);
+  const cancerTypeStr = JSON.stringify(cancerNames.join(',')).replace(/[\[\]\",]/g, '');
 
-  return `network-${dataset_str}-${cancerType_str}.json`;
+  return `network-${datasetStr}-${cancerTypeStr}.json`;
 }
 
 export class Network {

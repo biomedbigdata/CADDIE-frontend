@@ -185,9 +185,19 @@
               <h6 class="title is-6">Cancer Type:</h6>
             </div>
             <div class="column">
-              <app-cancertype-tile [cancerTypeItems]="cancerTypes" [selectedCancerTypeItems]="selectedCancerTypeItems"
-                                   (selectedCancerTypeItemsChange)="selectedCancerTypeItems = $event">
+              <app-cancertype-tile [cancerTypeItems]="cancerTypes"
+                                   [selectedCancerTypeItems]="selectedCancerTypeItems"
+                                   (selectedCancerTypeItemsChange)="selectedCancerTypeItems = $event;
+                                                                    loadCancerTypeComorbiditesGraph()">
               </app-cancertype-tile>
+
+              <app-cancertype-comorbidities-tile
+                [selectedCancerTypeItems]="selectedCancerTypeItems"
+                [selectedCancerDataset]="selectedDataset"
+                [selectedCancerTypeComorbidityGraph]="selectedCancerTypeComorbidityGraph"
+              >
+              </app-cancertype-comorbidities-tile>
+
             </div>
           </div>
           <!-- Cancer Type Selector END -->
@@ -384,7 +394,13 @@
                 </div>
 
                 <div class="has-text-centered">
-                  <button (click)="analysis.startQuickAnalysis(true, selectedDataset, selectedCancerTypeItems)"
+                  <button (click)="analysis.startQuickAnalysis(
+                    true,
+                    selectedDataset,
+                    selectedInteractionDataset,
+                    selectedInteractionDataset,
+                    selectedCancerTypeItems
+                    )"
                           [disabled]="analysis.isLaunchingQuick()"
                           *ngIf="analysis.getCount() === 0"
                           class="button is-primary has-tooltip" data-tooltip="Find drugs for all genes.">
@@ -397,7 +413,13 @@
                       </span>
                   </button>
 
-                  <button (click)="analysis.startQuickAnalysis(false, selectedDataset, selectedCancerTypeItems)"
+                  <button (click)="analysis.startQuickAnalysis(
+                    false,
+                    selectedDataset,
+                    selectedInteractionDataset,
+                    selectedInteractionDataset,
+                    selectedCancerTypeItems
+                    )"
                           *ngIf="analysis.getCount() > 0"
                           [disabled]="analysis.isLaunchingQuick()"
                           class="button is-primary has-tooltip"

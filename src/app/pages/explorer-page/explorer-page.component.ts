@@ -15,11 +15,10 @@ import {
   getNodeIdsFromGeneGeneInteraction,
   getCancerDriverGeneNodeId,
   getGeneNodeId,
-  Dataset,
   Tissue,
   CancerType,
   DataLevel,
-  InteractionDataset,
+  Dataset,
   DiseaseGeneInteraction
 } from '../../interfaces';
 import {Network, getDatasetFilename} from '../../main-network';
@@ -63,10 +62,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public collapseLevel = true;
 
   public datasetItems: Dataset[];
-  public interactionDatasetItems: InteractionDataset[];
+  public interactionDatasetItems: Dataset[];
   public cancerTypes: CancerType[];
   public selectedDataset: Dataset;
-  public selectedInteractionDataset: InteractionDataset;
+  public selectedCancerTypeComorbidityGraph: {data: any, layout: any} = undefined;
+  public selectedInteractionDataset: Dataset;
   // in comparison to "selectedDataset", "selectedCancerTypeItems" has to be a list
   public selectedCancerTypeItems: CancerType[];
 
@@ -100,8 +100,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public selectedAnalysisToken: string | null = null;
 
   public currentDataset: Dataset = undefined;
-  public currentCancerTypeItems: CancerType[] = undefined
-  public currentInteractionDataset: InteractionDataset = undefined
+  public currentCancerTypeItems: CancerType[] = undefined;
+  public currentInteractionDataset: Dataset = undefined;
   public cancerTypeItems: CancerType[] = undefined;
 
   public currentViewGenes: Node[];
@@ -110,7 +110,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public currentViewNodes: any[];
 
   // TODO remove
-  public currentDataLevel = "gene";
+  public currentDataLevel = 'gene';
 
   public expressionExpanded = false;
   public selectedTissue: Tissue | null = null;
@@ -194,7 +194,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     if (!this.cancerTypes) {
       // cancer types are always loaded
       await this.initCancerTypes(this.selectedDataset);
-
     }
 
     if (!this.selectedDataLevel) {
@@ -208,6 +207,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.selectedCancerTypeItems = [this.cancerTypes[0]];
       await this.createNetwork(this.selectedDataset, this.selectedInteractionDataset, this.selectedCancerTypeItems);
       this.physicsEnabled = false;
+    }
+
+    if (this.selectedCancerTypeItems) {
+      this.loadCancerTypeComorbiditesGraph();
     }
   }
 
@@ -224,11 +227,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     /**
      * Fetches Cancer Dataset data from API and initializes dataset tile
      */
-    console.log("here")
     this.interactionDatasetItems = await this.control.getInteractionDatasets();
     this.selectedInteractionDataset = this.interactionDatasetItems[0];
-    console.log(this.interactionDatasetItems)
-
   }
 
   public async initCancerTypes(dataset: Dataset) {
@@ -237,7 +237,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      */
     this.cancerTypes = await this.control.getCancerTypes(dataset);
     this.selectedCancerTypeItems = [this.cancerTypes[1]];
-
   }
 
   public reset(event) {
@@ -299,7 +298,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   private async getComorbidities(item: Wrapper) {
     const data = await this.control.getComorbidities(item.data);
-    console.log(data)
     this.selectedWrapperComorbidities = data.interactions;
   }
 
@@ -313,7 +311,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.showDetails = false;
   }
 
-  private async getNetwork(dataset: Dataset, interactionDataset: InteractionDataset, cancerTypes: CancerType[]) {
+  private async getNetwork(dataset: Dataset, interactionDataset: Dataset, cancerTypes: CancerType[]) {
     /**
      * Fetches Network data from API
      */
@@ -330,7 +328,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.currentInteractionDataset = interactionDataset;
   }
 
-  public async createNetwork(dataset: Dataset, interactionDataset: InteractionDataset, cancerType: CancerType[]) {
+  public async createNetwork(dataset: Dataset, interactionDataset: Dataset, cancerType: CancerType[]) {
     /**
      * uses getNetwork() to fetch network data
      * +
@@ -724,9 +722,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const nodes = [];
     const edges = [];
 
-    console.log('data')
-    console.log(data)
-
     for (const gene of data.nodes) {
       nodes.push(this.mapGeneToNode(gene));
     }
@@ -893,6 +888,67 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     }
 
     this.currentViewSelectedTissue = this.selectedTissue;
+  }
+
+  public async loadCancerTypeComorbiditesGraph() {
+
+    // TODO gets just one cancer type data
+    if (this.selectedCancerTypeItems !== undefined) {
+      const data = await this.control.getComorbiditiesForCancerType(
+        this.selectedDataset,
+        this.selectedCancerTypeItems[0],
+      );
+
+      // get the top 5 occuring diseases (can be more if counts are the same)
+      const counts = Object.values(data.counts);
+      // sort in descending order
+      counts.sort((a: number, b: number) => b - a );
+      const highestValues = counts.slice(0, 5);
+      // iterate over data to filter out top 5 counts
+      const keys = [];
+      const values = [];
+      for (let[key, val] of Object.entries(data.counts)) {
+
+        // if val is among highest counts
+        if (highestValues.includes(val)) {
+          // TODO do this when inserting in db
+          // split key on comma
+          key = key.includes(',') ? key.split(',')[0] : key;
+
+          // replace every third white space with linebreak
+          let nth = 0;
+          key = key.replace(/\s/g, (match, i, original) => {
+            nth++;
+            if (nth === 3) {
+              nth = 0;
+              return '<br>';
+            } else {
+              return match;
+            }
+          });
+          keys.push(key);
+          values.push(val);
+        }
+      }
+
+      const graphData = {
+        data: [
+          { y: keys, x: values, type: 'bar', orientation: 'h'},
+        ],
+        layout: {
+          width: 600,
+          height: 400,
+          title: 'Comorbidities',
+          margin: {
+            l: 200
+          }
+        }
+      };
+
+      this.selectedCancerTypeComorbidityGraph = graphData;
+    } else {
+      this.selectedCancerTypeComorbidityGraph = undefined;
+    }
   }
 
 }

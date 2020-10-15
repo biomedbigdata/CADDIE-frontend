@@ -7,7 +7,7 @@ import {
   CancerNode,
   Dataset,
   Tissue,
-  CancerType
+  CancerType,
 } from './interfaces';
 import {Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
@@ -365,7 +365,12 @@ export class AnalysisService {
     });
   }
 
-  async startQuickAnalysis(isSuper: boolean, dataset: Dataset, cancerTypes: CancerType[]) {
+  async startQuickAnalysis(
+    isSuper: boolean,
+    dataset: Dataset,
+    geneInteractionDataset: Dataset,
+    drugInteractionDataset: Dataset,
+    cancerTypes: CancerType[]) {
     /**
      * Starts quick analysis
      */
@@ -391,10 +396,12 @@ export class AnalysisService {
       isSuper ? 'super' : 'quick',
       'drug',
       {
-        dataset: dataset.backendId,
+        dataset: dataset.name,
+        gene_interaction_dataset: geneInteractionDataset.name,
+        drug_interaction_dataset: drugInteractionDataset.name,
         cancer_types: cancerTypesIds,
         bait_datasets: dataset.data,
-        seeds: isSuper ? [] : this.getSelection().map((i) => i.data.backendId),
+        seeds: isSuper ? [] : this.getSelection().map((i) => 'g' + i.data.backendId),
       }
     );
     this.tokens.push(resp.token);

@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {InteractionDataset} from "../../interfaces";
+import {Dataset} from '../../interfaces';
+
 
 @Component({
   selector: 'app-interaction-dataset-tile',
@@ -9,10 +10,10 @@ import {InteractionDataset} from "../../interfaces";
 
 export class InteractionDatasetTileComponent {
 
-  @Input() selectedDataset: InteractionDataset;
+  @Input() selectedDataset: Dataset;
   @Output() selectedDatasetChange: EventEmitter<any> = new EventEmitter();
 
-  @Input() datasetItems: InteractionDataset[];
+  @Input() datasetItems: Dataset[];
 
   public select(selectionItem) {
     this.selectedDataset = selectionItem;

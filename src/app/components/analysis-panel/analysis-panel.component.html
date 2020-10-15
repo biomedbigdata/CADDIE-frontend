@@ -72,7 +72,7 @@
                 </td>
               </tr>
               <tr *ngIf="task.info.parameters.ignoreNonSeedBaits !== undefined && task.info.target === 'drug-target'">
-                <td>Include non-seed viral proteins</td>
+                <td>Include non-seed Genes</td>
                 <td>
                   <i *ngIf="!task.info.parameters.ignoreNonSeedBaits" class="fa fa-check"></i>
                   <i *ngIf="task.info.parameters.ignoreNonSeedBaits" class="fa fa-times"></i>
@@ -288,7 +288,7 @@
                 <p-sortIcon [field]="'score'"></p-sortIcon>
               </th>
               <th>
-                Closest viral proteins
+                Closest Cancer Genes
               </th>
               <th [pSortableColumn]="'closestDistance'">
                 Viral protein distance
@@ -328,11 +328,11 @@
                 </span>
               </td>
               <td *ngIf="tableHasScores">{{e.score | number}}</td>
-              <td title="{{previewStringArray(e.closestViralProteins, 100)}}">
-                {{previewStringArray(e.closestViralProteins, 3)}}
+              <td title="{{previewStringArray(e.closestCancerGene, 100)}}">
+                {{previewStringArray(e.closestCancerGene, 3)}}
               </td>
               <td>
-                {{e.closestDistance}}
+                {{e.closestCancerGene}}
               </td>
             </tr>
           </ng-template>
@@ -343,7 +343,7 @@
             <span class="icon"><i class="fa fa-dna"></i></span>
             <span>Proteins</span>
           </h4>
-          <a [href]="downloadLink('proteins')" class="button is-primary is-outlined is-pulled-right is-small">
+          <a [href]="downloadLink('nodes')" class="button is-primary is-outlined is-pulled-right is-small">
             <span class="icon"><i class="fa fa-download"></i></span>
             <span>Download</span>
           </a>
@@ -381,7 +381,7 @@
                 <p-sortIcon [field]="'isSeed'"></p-sortIcon>
               </th>
               <th>
-                Closest viral proteins
+                Closest Cancer Genes
               </th>
               <th [pSortableColumn]="'closestDistance'">
                 Closest distance
@@ -396,7 +396,7 @@
               </td>
               <td><a href="https://www.uniprot.org/uniprot/{{ e.proteinAc }}" target="_blank">{{ e.proteinAc }}</a></td>
               <td>{{e.name}}</td>
-              <td>{{e.proteinName}}</td>
+              <td>{{e.geneName}}</td>
               <td *ngIf="tableHasScores">{{e.score | number}}</td>
               <td>
                 <span *ngIf="e.isSeed">
@@ -407,8 +407,8 @@
                   <i class="fa fa-times"></i>
                 </span>
               </td>
-              <td title="{{previewStringArray(e.closestViralProteins, 100)}}">
-                {{previewStringArray(e.closestViralProteins, 3)}}
+              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">
+                {{previewStringArray(e.closestCancerGenes, 3)}}
               </td>
               <td>
                 {{e.closestDistance}}

@@ -29,7 +29,13 @@ import { DataLevelToggleComponent } from './components/data-level-toggle/data-le
 import { ButtonComponent } from './components/button/button.component';
 import { FilterTileComponent } from './components/filter-tile/filter-tile.component';
 import { InteractionDatasetTileComponent } from './components/interaction-dataset-tile/interaction-dataset-tile.component';
+import { CancertypeComorbiditiesTileComponent } from './components/cancertype-comorbidities-tile/cancertype-comorbidities-tile.component';
 
+
+// @ts-ignore
+import { PlotlyViaCDNModule } from 'angular-plotly.js';
+
+PlotlyViaCDNModule.plotlyVersion = '1.41.0';
 
 @NgModule({
   declarations: [
@@ -52,6 +58,7 @@ import { InteractionDatasetTileComponent } from './components/interaction-datase
     ButtonComponent,
     FilterTileComponent,
     InteractionDatasetTileComponent,
+    CancertypeComorbiditiesTileComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,6 +69,7 @@ import { InteractionDatasetTileComponent } from './components/interaction-datase
     HttpClientModule,
     BrowserAnimationsModule,
     TableModule,
+    PlotlyViaCDNModule
   ],
   providers: [AnalysisService],
   bootstrap: [AppComponent],

@@ -251,17 +251,9 @@ export interface Dataset {
   name: string;
   link: string;
   backendId: number;
-  count: number;
+  version?: string;
+  count?: number;
   data?: CancerNode[];
-}
-
-
-export interface InteractionDataset {
-  name: string;
-  link: string;
-  backendId: number;
-  version: string;
-  count: number;
 }
 
 export interface CancerType {

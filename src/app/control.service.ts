@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, InteractionDataset, Dataset, CancerNode, Node} from './interfaces';
+import {CancerType, Dataset, CancerNode, Node} from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -113,7 +113,31 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}comorbidities_node/`, {params}).toPromise();
   }
 
-  public async getNetwork(dataset: Dataset, interactionDataset: InteractionDataset, cancerTypes: CancerType[]): Promise<any> {
+  public async getComorbiditiesForCancerType(cancerDataset: Dataset, cancerType: CancerType): Promise<any> {
+    /**
+     * Returns a dict of all related comorbidities with counts representing how many genes link to comorbidity
+     *
+     * counts: {
+     *
+     * "46 XX gonadal dysgenesis": 3
+     *
+     * "Acquired hemolytic anemia": 2
+     *
+     * "Acute nephritic syndrome": 1
+     *
+     * "Acute pancreatitis": 3
+     * }
+     */
+
+    const params = new HttpParams()
+      .set('cancerDatasetBackendId', JSON.stringify(cancerDataset.backendId))
+      .set('cancerTypeBackendId', JSON.stringify(cancerType.backendId))
+    ;
+
+    return this.http.get<any>(`${environment.backend}comorbidities_cancer_type/`, {params}).toPromise();
+  }
+
+  public async getNetwork(dataset: Dataset, interactionDataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
     /**
      * returns promise of all data needed to construct a gene gene interaction network
      * used for explore network
@@ -133,15 +157,13 @@ export class ControlService {
         .set('cancerTypes', JSON.stringify(cancerTypesIdsString))
         .set('interactionDataset', JSON.stringify(interactionDataset.backendId))
       ;
-    console.log('params');
-    console.log(params);
 
     return this.http.get<any>(`${environment.backend}network/`, {params}).toPromise();
   }
 
   public async getNodeInteractions(
     dataset: Dataset,
-    interactionDataset: InteractionDataset,
+    interactionDataset: Dataset,
     cancerTypes: CancerType[],
     node: CancerNode
   ): Promise<any> {

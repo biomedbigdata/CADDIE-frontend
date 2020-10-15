@@ -6,6 +6,7 @@ import {CancerType} from '../../interfaces';
   templateUrl: './cancertype-tile.component.html',
   styleUrls: ['./cancertype-tile.component.scss']
 })
+
 export class CancertypeTileComponent implements OnInit {
 
   @Input() selectedCancerTypeItems: CancerType[];
@@ -14,12 +15,15 @@ export class CancertypeTileComponent implements OnInit {
   @Input() cancerTypeItems: CancerType[];
 
 
-  constructor() { }
+  constructor() {
+
+  }
 
   ngOnInit(): void {
   }
 
   public select(selectionItem) {
+
     this.selectedCancerTypeItems = [selectionItem];
     this.selectedCancerTypeItemsChange.emit(selectionItem);
 

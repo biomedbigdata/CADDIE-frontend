@@ -177,34 +177,34 @@
           </div>
         </div>
 
-        <div class="column is-6 has-text-centered">
+        <div class="column is-12 has-text-centered">
           <!-- Cancer Type Selector START -->
 
           <div class="columns is-vcentered">
             <div class="column is-4 has-text-left">
               <h6 class="title is-6">Cancer Type:</h6>
             </div>
-            <div class="column">
+            <div class="column is-4">
               <app-cancertype-tile [cancerTypeItems]="cancerTypes"
                                    [selectedCancerTypeItems]="selectedCancerTypeItems"
                                    (selectedCancerTypeItemsChange)="selectedCancerTypeItems = $event;
                                                                     loadCancerTypeComorbiditesGraph()">
               </app-cancertype-tile>
-
-              <app-cancertype-comorbidities-tile
-                [selectedCancerTypeItems]="selectedCancerTypeItems"
-                [selectedCancerDataset]="selectedDataset"
-                [selectedCancerTypeComorbidityGraph]="selectedCancerTypeComorbidityGraph"
-              >
-              </app-cancertype-comorbidities-tile>
-
             </div>
+          </div>
+          <div class="column is-12">
+            <app-cancertype-comorbidities-tile
+              [selectedCancerTypeItems]="selectedCancerTypeItems"
+              [selectedCancerDataset]="selectedDataset"
+              [selectedCancerTypeComorbidityGraph]="selectedCancerTypeComorbidityGraph"
+            >
+            </app-cancertype-comorbidities-tile>
           </div>
           <!-- Cancer Type Selector END -->
 
         </div>
 
-        <div class="column is-6 has-text-centered">
+        <div class="column is-12 has-text-centered">
           <!-- Network Submit Button START -->
           <app-button
             buttonText="Submit"

@@ -1,7 +1,10 @@
+@import "src/scaffold.scss";
+
 .analysis {
   position: absolute;
   height: 100%;
   width: 100%;
+  top: $navbar-height;
 }
 
 div.network {

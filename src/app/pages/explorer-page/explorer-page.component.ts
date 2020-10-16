@@ -948,6 +948,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
           margin: {
             l: 200
           },
+          xaxis: {
+            title: '# Common genes',
+          }
         }
       };
 

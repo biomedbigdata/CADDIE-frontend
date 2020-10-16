@@ -936,7 +936,13 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
       const graphData = {
         data: [
-          { y: keys, x: values, type: 'bar', orientation: 'h'},
+          { y: keys,
+            x: values,
+            type: 'bar',
+            orientation: 'h',
+            marker: {
+              color: '#686868'
+            }},
         ],
         layout: {
           width: 600,
@@ -944,7 +950,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
           title: 'Comorbidities',
           margin: {
             l: 200
-          }
+          },
         }
       };
 

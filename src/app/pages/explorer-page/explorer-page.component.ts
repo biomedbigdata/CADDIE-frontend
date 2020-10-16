@@ -899,9 +899,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         this.selectedCancerTypeItems[0],
       );
 
-      console.log('data')
-      console.log(data)
-
       // get the top 5 occuring diseases (can be more if counts are the same)
       const counts = Object.values(data.counts);
       // sort in descending order

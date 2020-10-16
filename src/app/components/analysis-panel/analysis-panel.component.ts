@@ -133,8 +133,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
       if (this.task && this.task.info.done) {
         const result = await this.control.getTaskResult(this.token);
-        console.log('result')
-        console.log(result)
         const nodeAttributes = result.nodeAttributes || {};
         const isSeed: { [key: string]: boolean } = nodeAttributes.isSeed || {};
 

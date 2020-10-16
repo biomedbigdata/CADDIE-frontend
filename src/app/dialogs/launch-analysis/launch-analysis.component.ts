@@ -9,7 +9,7 @@ import {
   QuickAlgorithmType,
   TRUSTRANK
 } from '../../analysis.service';
-import {Dataset} from '../../interfaces';
+import {CancerType, Dataset, Wrapper} from '../../interfaces';
 
 @Component({
   selector: 'app-launch-analysis',
@@ -24,6 +24,16 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public target: 'drug' | 'drug-target';
   @Input()
   public dataset: Dataset;
+
+  @Input()
+  public selectedDataset: Dataset;
+  @Input()
+  public selectedGeneInteractionDataset: Dataset;
+  @Input()
+  public selectedDrugInteractionDataset: Dataset;
+  @Input()
+  public selectedCancerTypeItems: CancerType[];
+
   @Output()
   public showChange = new EventEmitter<boolean>();
 
@@ -105,11 +115,34 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     this.showChange.emit(this.show);
   }
 
-  public async startTask() {
+  public getGraphId(wrapper: Wrapper) {
+    /**
+     * Returns the graph id (e.g. 'g' + backendId) for a wrapper object
+     */
+    if (wrapper.type === 'Drug') {
+      return 'd' + wrapper.backendId
+    } else {
+      return 'g' + wrapper.backendId
+    }
+  }
+
+  public async startTask(
+    dataset: Dataset,
+    geneInteractionDataset: Dataset,
+    drugInteractionDataset: Dataset,
+    cancerTypes: CancerType[]
+  ) {
     const parameters: any = {
-      seeds: this.analysis.getSelection().map((item) => item.backendId),
+      seeds: this.analysis.getSelection().map((item) => this.getGraphId(item)),
     };
 
+    // new input from caddie
+    parameters.dataset = dataset.name;
+    parameters.gene_interaction_dataset = geneInteractionDataset.name;
+    parameters.drug_interaction_dataset = drugInteractionDataset.name;
+    parameters.cancer_types = cancerTypes.map( (cancerType) => cancerType.backendId);;
+
+    // old input from CoVex
     parameters.strain_or_drugs = this.target === 'drug' ? 'drugs' : this.dataset.backendId;
     parameters.bait_datasets = this.dataset.data;
 

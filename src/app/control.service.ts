@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import {environment} from '../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {CancerType, Dataset, CancerNode, Node} from './interfaces';
+import {AlgorithmType, QuickAlgorithmType} from './analysis.service';
 
 @Injectable({
   providedIn: 'root'
@@ -238,7 +239,7 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}task_result/?token=${token}&view=cancer_driver_genes`).toPromise();
   }
 
-  public async postTask(algorithm: 'super' | 'quick', target, parameters, ) {
+  public async postTask(algorithm: QuickAlgorithmType | AlgorithmType, target, parameters, ) {
     /**
      * sends a task to task service
      */

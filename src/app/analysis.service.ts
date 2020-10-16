@@ -437,11 +437,7 @@ export class AnalysisService {
       return;
     }
 
-    const resp = await this.http.post<any>(`${environment.backend}task/`, {
-      algorithm,
-      target,
-      parameters,
-    }).toPromise();
+    const resp = await this.control.postTask(algorithm, target, parameters);
     this.tokens.push(resp.token);
     localStorage.setItem('tokens', JSON.stringify(this.tokens));
     this.startWatching();

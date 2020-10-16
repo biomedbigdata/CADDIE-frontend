@@ -509,7 +509,12 @@
     </section>
 
     <footer class="modal-card-foot">
-      <button (click)="startTask(); close()" class="button is-success   has-tooltip"
+      <button (click)="startTask(
+      selectedDataset,
+      selectedGeneInteractionDataset,
+      selectedDrugInteractionDataset,
+      selectedCancerTypeItems
+      ); close()" class="button is-primary has-tooltip"
               data-tooltip="Run the analysis."
               [disabled]="(target === 'drug' && hasBaits) || !analysis.canLaunchTask() || (algorithm === 'keypathwayminer' && hasBaits)">
         <span class="icon">
@@ -519,7 +524,7 @@
           Launch
         </span>
       </button>
-      <button (click)="close()" class="button   has-tooltip" data-tooltip="Close the current window.">Close
+      <button (click)="close()" class="button is-danger has-tooltip" data-tooltip="Close the current window.">Close
       </button>
     </footer>
   </div>

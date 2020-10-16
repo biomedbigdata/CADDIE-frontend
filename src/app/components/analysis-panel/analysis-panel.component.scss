@@ -3,7 +3,8 @@
 .analysis {
   position: absolute;
   height: 100%;
-  width: 100%;
+  width: calc(100% - #{$sidebar-width});
+  margin-left: $sidebar-width;
   top: $navbar-height;
 }
 

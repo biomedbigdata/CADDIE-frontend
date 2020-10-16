@@ -1,7 +1,12 @@
 <div class="is-hidden-mobile">
   <app-launch-analysis [(show)]="showAnalysisDialog"
                        [target]="analysisDialogTarget"
-                       [dataset]="selectedDataset">
+                       [dataset]="selectedDataset"
+                       [selectedDataset]="selectedDataset"
+                       [selectedGeneInteractionDataset]="selectedInteractionDataset"
+                       [selectedDrugInteractionDataset]="selectedInteractionDataset"
+                       [selectedCancerTypeItems]="selectedCancerTypeItems"
+  >
   </app-launch-analysis>
 
   <app-custom-genes [(show)]="showCustomGenesDialog" [visibleNodes]="currentViewNodes">

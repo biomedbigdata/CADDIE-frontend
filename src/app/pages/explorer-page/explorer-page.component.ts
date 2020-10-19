@@ -82,8 +82,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   // supplementary data that can be added to network but is not initially loaded to keep it simple and fast
   public nodesSup: Node[];
+  public nodesTotalN: number;
   public cancerNodesSup: CancerNode[];
   public interactionsSup: Interaction[];
+  public interactionsTotalN: number;
 
   private network: any;
   public nodeData: { nodes: any, edges: any } = {nodes: null, edges: null};
@@ -334,10 +336,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const data = await this.control.getNetwork(dataset, interactionDataset, cancerTypes);
     this.nodes = data.nodes;
     this.nodesSup = data.nodesSup;
+    this.nodesTotalN = data.nodesTotalN;
     this.cancerNodes = data.cancerNodes;
     this.cancerNodesSup = data.cancerNodesSup;
     this.interactions = data.interactions;
     this.interactionsSup = data.interactionsSup;
+    this.interactionsTotalN = data.interactionsTotalN;
 
     this.currentDataset = dataset;
     this.currentCancerTypeItems = cancerTypes;

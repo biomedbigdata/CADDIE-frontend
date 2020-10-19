@@ -239,8 +239,15 @@
             <nav class="level" *ngIf="networkData">
               <div class="level-item has-text-centered">
                 <div>
-                  <p *ngIf="currentDataLevel=='gene'" class="heading">Cancer<br>Genes</p>
-                  <p *ngIf="currentDataLevel=='protein'" class="heading">Cancer<br>Proteins</p>
+                  <p class="heading">Cancer
+                    <br>Genes
+                    <span class="icon has-tooltip-right has-text-black is-lowercase has-text-weight-normal is-size-6"
+                          data-tooltip="Displayed cancer genes and available
+                        cancer genes, see 'Filter Cancer Genes'">
+                    <i class="fas fa-info-circle"></i>
+                  </span>
+                  </p>
+
                   <p class="title"> {{ visibleCancerNodeCount }}
                     <!-- {{ networkData.cancerNodes.length }} -->
                     / {{ cancerNodesSup.length + cancerNodes.length}}</p>
@@ -248,15 +255,26 @@
               </div>
               <div class="level-item has-text-centered">
                 <div>
-                  <p *ngIf="currentDataLevel=='gene'" class="heading">Genes</p>
-                  <p *ngIf="currentDataLevel=='protein'" class="heading">Proteins</p>
-                  <p class="title">{{ networkData.nodes.length }}</p>
+                  <p *ngIf="currentDataLevel=='gene'" class="heading">
+                    Genes
+                    <span class="icon has-tooltip-right has-text-black is-lowercase has-text-weight-normal is-size-6"
+                          data-tooltip="Only subgroup of genes is shown for performance reasons">
+                    <i class="fas fa-info-circle"></i>
+                    </span>
+                  </p>
+                  <p class="title">{{ networkData.nodes.length }} / {{ nodesTotalN }}</p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
                 <div>
-                  <p class="heading">Interactions</p>
-                  <p class="title">{{ networkData.edges.length }}</p>
+                  <p class="heading">
+                    Interactions
+                    <span class="icon has-tooltip-right has-text-black is-lowercase has-text-weight-normal is-size-6"
+                          data-tooltip="Number of displayed interactions related to displayed genes.">
+                    <i class="fas fa-info-circle"></i>
+                    </span>
+                  </p>
+                  <p class="title">{{ networkData.edges.length }} / {{ interactionsTotalN }}</p>
                 </div>
               </div>
             </nav>
@@ -375,7 +393,10 @@
           <div class="card-content quick-find">
             <div class="field">
               <div class="control">
-
+                <span class="icon has-tooltip-right has-text-black"
+                      data-tooltip="Select nodes in the network as seeds or use all cancer nodes as seeds">
+                  info <i class="fas fa-info-circle"></i>
+                </span>
                 <div class="columns is-centered">
                   <div class="column is-6 has-text-centered">
                     <div class="analysis-option" [ngClass]="{'selected': analysis.getCount() === 0 }">
@@ -491,7 +512,7 @@
             <div class="field">
               <div class="control">
                 <a *ngIf="analysis.getCount() > 0" [href]="gProfilerLink()" target="_blank"
-                   class="button is-primary is-fullwidth  has-tooltip"
+                   class="button is-primary is-fullwidth has-tooltip"
                    data-tooltip="Use enrichment analysis via g:Profiler (external).">
                 <span class="icon">
                   <i class="fa fa-external-link-alt"></i>

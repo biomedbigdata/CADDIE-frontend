@@ -10,8 +10,6 @@ import {
   CancerType,
 } from './interfaces';
 import {Subject} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../environments/environment';
 import {toast} from 'bulma-toast';
 import {Injectable} from '@angular/core';
 import {ControlService} from './control.service';
@@ -69,7 +67,7 @@ export class AnalysisService {
 
   private tissues: Tissue[] = [];
 
-  constructor(private http: HttpClient, private control: ControlService) {
+  constructor(private control: ControlService) {
     const tokens = localStorage.getItem('tokens');
     const finishedTokens = localStorage.getItem('finishedTokens');
     if (tokens) {
@@ -396,7 +394,7 @@ export class AnalysisService {
       isSuper ? 'super' : 'quick',
       'drug',
       {
-        dataset: dataset.name,
+        cancer_dataset: dataset.name,
         gene_interaction_dataset: geneInteractionDataset.name,
         drug_interaction_dataset: drugInteractionDataset.name,
         cancer_types: cancerTypesIds,
@@ -409,7 +407,7 @@ export class AnalysisService {
 
     toast({
       message: 'Quick analysis started. This may take a while.' +
-        ' Once the computation finished you can view the results in the task list to the right.',
+        ' Once the computation finished you can view the results in the task list to the left.',
       duration: 10000,
       dismissible: true,
       pauseOnHover: true,

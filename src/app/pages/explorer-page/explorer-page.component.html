@@ -3,9 +3,10 @@
                        [target]="analysisDialogTarget"
                        [dataset]="selectedDataset"
                        [selectedDataset]="selectedDataset"
-                       [selectedGeneInteractionDataset]="selectedInteractionDataset"
-                       [selectedDrugInteractionDataset]="selectedInteractionDataset"
+                       [selectedGeneInteractionDataset]="selectedInteractionGeneDataset"
+                       [selectedDrugInteractionDataset]="selectedInteractionDrugDataset"
                        [selectedCancerTypeItems]="selectedCancerTypeItems"
+                       [interactionDrugDatasetItems]="interactionDrugDatasetItems"
   >
   </app-launch-analysis>
 
@@ -27,7 +28,6 @@
           <div class="card network">
             <header class="card-header">
               <p *ngIf="currentDataLevel == 'gene'" class="card-header-title">Gene-Gene Interaction Network</p>
-              <p *ngIf="currentDataLevel == 'protein'" class="card-header-title">Protein-Protein Interaction Network</p>
             </header>
             <div class="card-content">
               <div class="detail-view">
@@ -46,16 +46,10 @@
                       <span *ngIf="currentDataLevel === 'gene'">
                         Gene
                       </span>
-                      <span *ngIf="currentDataLevel === 'protein'">
-                        Protein
-                      </span>
                     </span>
                     <span *ngIf="selectedWrapper.type === 'CancerNode'">
                       <span *ngIf="currentDataLevel === 'gene'">
                         Cancer Driver Gene
-                      </span>
-                      <span *ngIf="currentDataLevel === 'protein'">
-                        Cancer Protein
                       </span>
                     </span>
                     <span *ngIf="selectedWrapper.type === 'Drug'">Drug</span>
@@ -169,12 +163,13 @@
           <!-- Data Level Toggle START -->
           <div class="columns is-vcentered">
             <div class="column is-4 has-text-left">
-              <h6 class="title is-6" data-tooltip="Decide whether to use genes or proteins">Interactions:</h6>
+              <h6 class="title is-6"
+                  data-tooltip="Select which daraset to use for gene-gene interactions">Gene Gene Interactions:</h6>
             </div>
             <div class="column">
-              <app-interaction-dataset-tile [datasetItems]="interactionDatasetItems"
-                                            [selectedDataset]="selectedInteractionDataset"
-                                            (selectedDatasetChange)="selectedInteractionDataset = $event;
+              <app-interaction-dataset-tile [datasetItems]="interactionGeneDatasetItems"
+                                            [selectedDataset]="selectedInteractionGeneDataset"
+                                            (selectedDatasetChange)="selectedInteractionGeneDataset = $event;
                                             initCancerTypes(selectedDataset)">
               </app-interaction-dataset-tile>
             </div>
@@ -213,7 +208,7 @@
           <!-- Network Submit Button START -->
           <app-button
             buttonText="Submit"
-            (callbackFun)="createNetwork(selectedDataset, selectedInteractionDataset, selectedCancerTypeItems)"
+            (callbackFun)="createNetwork(selectedDataset, selectedInteractionGeneDataset, selectedCancerTypeItems)"
           >
           </app-button>
           <!-- Network Submit Button END -->
@@ -402,8 +397,8 @@
                   <button (click)="analysis.startQuickAnalysis(
                     true,
                     selectedDataset,
-                    selectedInteractionDataset,
-                    selectedInteractionDataset,
+                    selectedInteractionGeneDataset,
+                    selectedInteractionGeneDataset,
                     selectedCancerTypeItems
                     )"
                           [disabled]="analysis.isLaunchingQuick()"
@@ -421,8 +416,8 @@
                   <button (click)="analysis.startQuickAnalysis(
                     false,
                     selectedDataset,
-                    selectedInteractionDataset,
-                    selectedInteractionDataset,
+                    selectedInteractionGeneDataset,
+                    selectedInteractionGeneDataset,
                     selectedCancerTypeItems
                     )"
                           *ngIf="analysis.getCount() > 0"
@@ -440,6 +435,82 @@
                 </div>
               </div>
 
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bar-large">
+        <header class="card-header">
+          <p class="card-header-title">
+          <span class="icon">
+            <i class="fas fa-flask" aria-hidden="true"></i>
+          </span>
+            Advanced Analysis
+          </p>
+          <a (click)="collapseAnalysis = !collapseAnalysis" data-action="collapse"
+             class="card-header-icon is-hidden-fullscreen" aria-label="more options">
+          <span class="icon">
+            <i *ngIf="collapseAnalysis" class="fas fa-angle-down" aria-hidden="true"></i>
+            <i *ngIf="!collapseAnalysis" class="fas fa-angle-left" aria-hidden="true"></i>
+          </span>
+          </a>
+        </header>
+        <div *ngIf="collapseAnalysis">
+          <div class="card-content">
+            <div class="field">
+              <div class="control">
+                <button (click)="analysisDialogTarget = 'drug-target'; showAnalysisDialog = true;"
+                        class="button is-primary is-fullwidth has-tooltip"
+                        data-tooltip="Find drug targets for the selected genes."
+                        [disabled]="analysis.getCount() === 0">
+                <span class="icon">
+                  <i class="fa fa-crosshairs"></i>
+                </span>
+                  <span>
+                  Find Drug Targets
+                </span>
+                </button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <button (click)="analysisDialogTarget = 'drug'; showAnalysisDialog = true;"
+                        class="button is-primary is-fullwidth has-tooltip"
+                        data-tooltip="Find drugs for the selected genes."
+                        [disabled]="analysis.getCount() === 0">
+                <span class="icon">
+                  <i class="fa fa-capsules"></i>
+                </span>
+                  <span>
+                  Find Drugs
+                </span>
+                </button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <a *ngIf="analysis.getCount() > 0" [href]="gProfilerLink()" target="_blank"
+                   class="button is-primary is-fullwidth  has-tooltip"
+                   data-tooltip="Use enrichment analysis via g:Profiler (external).">
+                <span class="icon">
+                  <i class="fa fa-external-link-alt"></i>
+                </span>
+                  <span>
+                  Enrichment Analysis
+                </span>
+                </a>
+                <a *ngIf="analysis.getCount() === 0" disabled
+                   class="button is-primary is-fullwidth has-tooltip"
+                   data-tooltip="Use enrichment analysis via g:Profiler (external).">
+                <span class="icon">
+                  <i class="fa fa-external-link-alt"></i>
+                </span>
+                  <span>
+                  Enrichment Analysis
+                </span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -597,82 +668,6 @@
             </a>
           </footer>
 
-        </div>
-      </div>
-
-      <div class="card bar-large">
-        <header class="card-header">
-          <p class="card-header-title">
-          <span class="icon">
-            <i class="fas fa-flask" aria-hidden="true"></i>
-          </span>
-            Advanced Analysis
-          </p>
-          <a (click)="collapseAnalysis = !collapseAnalysis" data-action="collapse"
-             class="card-header-icon is-hidden-fullscreen" aria-label="more options">
-          <span class="icon">
-            <i *ngIf="collapseAnalysis" class="fas fa-angle-down" aria-hidden="true"></i>
-            <i *ngIf="!collapseAnalysis" class="fas fa-angle-left" aria-hidden="true"></i>
-          </span>
-          </a>
-        </header>
-        <div *ngIf="collapseAnalysis">
-          <div class="card-content">
-            <div class="field">
-              <div class="control">
-                <button (click)="analysisDialogTarget = 'drug-target'; showAnalysisDialog = true;"
-                        class="button is-primary is-fullwidth has-tooltip"
-                        data-tooltip="Find drug targets for the selected genes."
-                        [disabled]="analysis.getCount() === 0">
-                <span class="icon">
-                  <i class="fa fa-crosshairs"></i>
-                </span>
-                  <span>
-                  Find Drug Targets
-                </span>
-                </button>
-              </div>
-            </div>
-            <div class="field">
-              <div class="control">
-                <button (click)="analysisDialogTarget = 'drug'; showAnalysisDialog = true;"
-                        class="button is-primary is-fullwidth has-tooltip"
-                        data-tooltip="Find drugs for the selected genes."
-                        [disabled]="analysis.getCount() === 0">
-                <span class="icon">
-                  <i class="fa fa-capsules"></i>
-                </span>
-                  <span>
-                  Find Drugs
-                </span>
-                </button>
-              </div>
-            </div>
-            <div class="field">
-              <div class="control">
-                <a *ngIf="analysis.getCount() > 0" [href]="gProfilerLink()" target="_blank"
-                   class="button is-primary is-fullwidth  has-tooltip"
-                   data-tooltip="Use enrichment analysis via g:Profiler (external).">
-                <span class="icon">
-                  <i class="fa fa-external-link-alt"></i>
-                </span>
-                  <span>
-                  Enrichment Analysis
-                </span>
-                </a>
-                <a *ngIf="analysis.getCount() === 0" disabled
-                   class="button is-primary is-fullwidth has-tooltip"
-                   data-tooltip="Use enrichment analysis via g:Profiler (external).">
-                <span class="icon">
-                  <i class="fa fa-external-link-alt"></i>
-                </span>
-                  <span>
-                  Enrichment Analysis
-                </span>
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

@@ -119,7 +119,7 @@ export interface Seeded {
 }
 
 export interface Baited {
-  closestViralProteins: string[];
+  closestCancerGenes: string[];
   closestDistance: number;
 }
 

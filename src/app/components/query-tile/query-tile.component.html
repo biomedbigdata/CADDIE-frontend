@@ -2,18 +2,12 @@
   <ng-select [items]="queryItems" bindLabel="data.name" bindValue="data" [virtualScroll]="true" class="custom"
              [placeholder]="placeholder" [hideSelected]="true" [searchFn]="querySearch" (change)="select($event)" data-tooltip="Find genes in the network.">
     <ng-template ng-option-tmp let-item="item">
-      <b *ngIf="item.type == 'node'"> {{item.data.name}}</b>
-      <b *ngIf="item.type == 'cancerNode'"> {{item.data.name}}</b> <br/>
+      <b *ngIf="item.type == 'Node'"> {{item.data.name}}</b>
+      <b *ngIf="item.type == 'CancerNode'"> {{item.data.name}}</b> <br/>
 
-      <span *ngIf="dataLevel === 'gene'">
-        <span><small *ngIf="item.type === 'cancerNode'">Cancer Driver Gene</small><small *ngIf="item.type === 'node'">Gene</small> | </span>
-        <span><small>Entrez: <b>{{item.data.entrezId}}</b></small></span>
-      </span>
-
-      <span *ngIf="dataLevel === 'protein'">
-        <span><small *ngIf="item.type === 'cancerNode'">Cancer Protein</small><small *ngIf="item.type === 'node'">Protein</small> | </span>
-        <span><small>AC: <b>{{item.data.uniprotAc}}</b></small></span> |
-      </span>
+      <span><small *ngIf="item.type === 'CancerNode'">Cancer Driver Gene</small><small *ngIf="item.type === 'Node'">Gene</small> | </span>
+      <span *ngIf="item.data.entrezId"><small>Entrez: <b>{{item.data.entrezId}}</b></small> | </span>
+      <span *ngIf="item.data.uniprotAc"><small>AC: <b>{{item.data.uniprotAc}}</b></small></span>
 
     </ng-template>
   </ng-select>

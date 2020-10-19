@@ -133,8 +133,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
       if (this.task && this.task.info.done) {
         const result = await this.control.getTaskResult(this.token);
-        console.log('result')
-        console.log(result)
         const nodeAttributes = result.nodeAttributes || {};
         const isSeed: { [key: string]: boolean } = nodeAttributes.isSeed || {};
 
@@ -162,7 +160,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableDrugs = table;
             this.tableDrugs.forEach((drug) => {
               drug.rawScore = drug.score;
-              drug.closestViralProteins = (drug.closestViralProteins as any).split(',');
+              drug.closestCancerGenes = (drug.closestCancerGenes as any).split(',');
             });
           }));
         promises.push(this.control.getTaskResultGene(this.token)
@@ -172,7 +170,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableNodes.forEach((node) => {
               node.rawScore = node.score;
               node.isSeed = isSeed[node.backendId];
-              node.closestViralProteins = (node.closestViralProteins as any).split(',');
+              node.closestCancerGenes = (node.closestCancerGenes as any).split(',');
               if (this.analysis.nodeInSelection(node)) {
                 this.tableSelectedNodes.push(node);
               }
@@ -309,7 +307,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.nodeData.nodes.update(updatedNodes);
 
             const proteinSelection = [];
-            const viralProteinSelection = [];
+            const cancerGeneSelection = [];
             for (const item of items) {
               if (item.type === 'Node') {
                 const tableItem = this.tableNodes.find((i) => getGeneNodeId(i) === item.nodeId);
@@ -319,12 +317,12 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
               } else if (item.type === 'CancerNode') {
                 const tableItem = this.tableCancerNodes.find((i) => getCancerDriverGeneNodeId(i) === item.nodeId);
                 if (tableItem) {
-                  viralProteinSelection.push(tableItem);
+                  cancerGeneSelection.push(tableItem);
                 }
               }
             }
             this.tableSelectedNodes = [...proteinSelection];
-            this.tableSelectedCancerNodes = [...viralProteinSelection];
+            this.tableSelectedCancerNodes = [...cancerGeneSelection];
           }
         });
       }
@@ -393,15 +391,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     return `${environment.backend}graph_export/?token=${this.token}`;
   }
 
-  public inferNodeType(nodeId: string): WrapperType {
-    if (nodeId.indexOf('-') !== -1 || nodeId.indexOf('_') !== -1) {
-      return 'CancerNode';
-    } else if (nodeId.startsWith('DB')) {
-      return 'Drug';
-    }
-    return 'Node';
-  }
-
   public createNetwork(result: any): { edges: any[], nodes: any[] } {
     /**
      * Create network method for analysis tab, BE CAREFUL, explorer has method with same name
@@ -434,7 +423,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       } else if (nodeTypes[node] === 'Drug') {
         wrappers[node] = getWrapperFromDrug(details[node]);
       }
-      nodes.push(this.mapNode(this.inferNodeType(node), details[node], isSeed[node], scores[node]));
+      nodes.push(this.mapNode(nodeTypes[node], details[node], isSeed[node], scores[node]));
     }
 
     for (const edge of network.edges) {

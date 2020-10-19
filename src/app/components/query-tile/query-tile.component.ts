@@ -55,7 +55,6 @@ export class QueryTileComponent {
 
   select(item) {
     this.selectItem.emit(item);
-
     if (this.removeOnSelect) {
       let newObj = this.queryItems;
       this.queryItems.forEach((wrapper: Wrapper, index, object) => {

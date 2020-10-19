@@ -62,11 +62,13 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public collapseLevel = true;
 
   public datasetItems: Dataset[];
-  public interactionDatasetItems: Dataset[];
+  public interactionGeneDatasetItems: Dataset[];
+  public interactionDrugDatasetItems: Dataset[];
   public cancerTypes: CancerType[];
   public selectedDataset: Dataset;
   public selectedCancerTypeComorbidityGraph: {data: any, layout: any} = undefined;
-  public selectedInteractionDataset: Dataset;
+  public selectedInteractionGeneDataset: Dataset;
+  public selectedInteractionDrugDataset: Dataset;
   // in comparison to "selectedDataset", "selectedCancerTypeItems" has to be a list
   public selectedCancerTypeItems: CancerType[];
 
@@ -186,9 +188,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       await this.initCancerDatasets();
     }
 
-    if (!this.interactionDatasetItems) {
+    if (!this.interactionGeneDatasetItems) {
       // interaction datasets are always loaded
-      await this.initInteractionDatasets();
+      await this.initInteractionGeneDatasets();
     }
 
     if (!this.cancerTypes) {
@@ -205,12 +207,18 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     if (!this.network) {
       // default selection
       this.selectedCancerTypeItems = [this.cancerTypes[0]];
-      await this.createNetwork(this.selectedDataset, this.selectedInteractionDataset, this.selectedCancerTypeItems);
+      await this.createNetwork(this.selectedDataset, this.selectedInteractionGeneDataset, this.selectedCancerTypeItems);
       this.physicsEnabled = false;
     }
 
     if (this.selectedCancerTypeItems) {
       this.loadCancerTypeComorbiditesGraph();
+    }
+
+    // load drug interaction datasets, do this at the end since it is not needed right away
+    if (!this.interactionDrugDatasetItems) {
+      // interaction datasets are always loaded
+      await this.initInteractionDrugDatasets();
     }
   }
 
@@ -223,12 +231,20 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   }
 
-  public async initInteractionDatasets() {
+  public async initInteractionGeneDatasets() {
     /**
      * Fetches Cancer Dataset data from API and initializes dataset tile
      */
-    this.interactionDatasetItems = await this.control.getInteractionDatasets();
-    this.selectedInteractionDataset = this.interactionDatasetItems[0];
+    this.interactionGeneDatasetItems = await this.control.getInteractionGeneDatasets();
+    this.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
+  }
+
+  public async initInteractionDrugDatasets() {
+    /**
+     * Fetches Cancer Dataset data from API and initializes dataset tile
+     */
+    this.interactionDrugDatasetItems = await this.control.getInteractionGeneDatasets();
+    this.selectedInteractionDrugDataset = this.interactionGeneDatasetItems[0];
   }
 
   public async initCancerTypes(dataset: Dataset) {
@@ -334,8 +350,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * +
      * initializes network
      */
+
+    // reset old stuff
     this.analysis.resetSelection();
     this.selectedWrapper = null;
+    //
 
     // fetch all relevant network data and store it in component
     // genes are returned alphabetically
@@ -893,10 +912,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public async loadCancerTypeComorbiditesGraph() {
 
     // TODO gets just one cancer type data
-    if (this.selectedCancerTypeItems !== undefined) {
+    if (this.selectedCancerTypeItems !== undefined && this.selectedCancerTypeItems.length > 0) {
       const data = await this.control.getComorbiditiesForCancerType(
         this.selectedDataset,
-        this.selectedCancerTypeItems[0],
+        this.selectedCancerTypeItems,
       );
 
       // get the top 5 occuring diseases (can be more if counts are the same)
@@ -931,6 +950,14 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         }
       }
 
+      // set title dynmically based on amount of selected cancer types
+      let title = '';
+      if (this.selectedCancerTypeItems.length > 1) {
+        title = 'Comorbidities for selected Cancers';
+      } else {
+        title = `Comorbidities for ${this.selectedCancerTypeItems[0].name}`;
+      }
+
       const graphData = {
         data: [
           { y: keys,
@@ -944,7 +971,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         layout: {
           width: 600,
           height: 400,
-          title: 'Comorbidities',
+          title: `${title}`,
           margin: {
             l: 200
           },

@@ -13,12 +13,6 @@
       <button (click)="close()" class="delete" aria-label="close"></button>
     </header>
     <section class="modal-card-body">
-      <div *ngIf="target === 'drug' && hasBaits">
-        <div class="notification is-warning warning">
-          You have selected <i class="fa fa-virus"></i> viral proteins.
-          When finding drugs, make sure you have selected <i class="fa fa-dna"></i> host proteins only.
-        </div>
-      </div>
 
       <div *ngIf="!analysis.canLaunchTask()">
         <div class="notification is-warning warning">
@@ -381,13 +375,6 @@
       </div>
 
       <div *ngIf="algorithm==='keypathwayminer'">
-        <div *ngIf="hasBaits">
-          <div class="notification is-warning warning">
-            You have selected <i class="fa fa-virus"></i> viral proteins.
-            If you want to use KeyPathwayMiner, please remove them because it cannot process them.
-          </div>
-        </div>
-
         <div class="field">
           <label class="label" for="keypathwayminer-k">Additional proteins</label>
           <div class="control">
@@ -499,6 +486,14 @@
                       [(value)]="multisteinerIncludeViralNonSeeds"></app-toggle>
         </div>
 
+        <div class="field">
+          <label class="label">Gene Drug Interactions</label>
+          <app-interaction-dataset-tile [datasetItems]="interactionDrugDatasetItems"
+                                        [selectedDataset]="selectedDrugInteractionDataset"
+                                        (selectedDatasetChange)="selectedDrugInteractionDataset = $event;">
+          </app-interaction-dataset-tile>
+        </div>
+
       </div>
 
       <p class="doc-link">
@@ -516,7 +511,7 @@
       selectedCancerTypeItems
       ); close()" class="button is-primary has-tooltip"
               data-tooltip="Run the analysis."
-              [disabled]="(target === 'drug' && hasBaits) || !analysis.canLaunchTask() || (algorithm === 'keypathwayminer' && hasBaits)">
+              [disabled]="!analysis.canLaunchTask()">
         <span class="icon">
           <i class="fa fa-rocket"></i>
         </span>

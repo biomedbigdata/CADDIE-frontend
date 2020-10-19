@@ -104,6 +104,8 @@ div.caddie.sidebar {
 
 div.caddie.bar-left {
   float: left;
+  position: relative;
+  z-index: 30;
 }
 
 div.caddie.bar-right {

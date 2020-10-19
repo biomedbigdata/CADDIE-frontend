@@ -40,9 +40,9 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}cancer_datasets/`).toPromise();
   }
 
-  public async getInteractionDatasets(): Promise<any> {
+  public async getInteractionGeneDatasets(): Promise<any> {
     /**
-     * Returns promise of a list of all interaction datasets
+     * Returns promise of a list of all gene interaction datasets
      * data = [
      *     {
      *         "id": 1,
@@ -60,7 +60,30 @@ export class ControlService {
      *
      */
 
-    return this.http.get<any>(`${environment.backend}interaction_datasets/`).toPromise();
+    return this.http.get<any>(`${environment.backend}interaction_gene_datasets/`).toPromise();
+  }
+
+  public async getInteractionDrugDatasets(): Promise<any> {
+    /**
+     * Returns promise of a list of all drug interaction datasets
+     * data = [
+     *     {
+     *         "id": 1,
+     *         "name": "BioGRID",
+     *         "count": xxx,
+     *         "link": sssdsd
+     *     },
+     *     {
+     *         "id": 2,
+     *         "name": "CoVex",
+     *         "count": xxx,
+     *         "link": sssdsd
+     *     }
+     * ]
+     *
+     */
+
+    return this.http.get<any>(`${environment.backend}interaction_drug_datasets/`).toPromise();
   }
 
   public async getCancerTypes(dataset: Dataset): Promise<any> {
@@ -114,7 +137,7 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}comorbidities_node/`, {params}).toPromise();
   }
 
-  public async getComorbiditiesForCancerType(cancerDataset: Dataset, cancerType: CancerType): Promise<any> {
+  public async getComorbiditiesForCancerType(cancerDataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
     /**
      * Returns a dict of all related comorbidities with counts representing how many genes link to comorbidity
      *
@@ -130,9 +153,11 @@ export class ControlService {
      * }
      */
 
+    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
+    const cancerTypesIdsString = cancerTypesIds.join(',');
     const params = new HttpParams()
       .set('cancerDatasetBackendId', JSON.stringify(cancerDataset.backendId))
-      .set('cancerTypeBackendId', JSON.stringify(cancerType.backendId))
+      .set('cancerTypeBackendIds', JSON.stringify(cancerTypesIdsString))
     ;
 
     return this.http.get<any>(`${environment.backend}comorbidities_cancer_type/`, {params}).toPromise();

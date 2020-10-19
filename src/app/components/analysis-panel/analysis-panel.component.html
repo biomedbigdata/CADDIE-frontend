@@ -143,7 +143,7 @@
         <footer class="card-footer toolbar">
           <div class="field">
             <p class="control footer-buttons">
-              <button class="button is-primary   has-tooltip"
+              <button class="button is-primary has-tooltip"
                       data-tooltip="Take a screenshot of the current network." (click)="toCanvas()">
                 <span class="icon">
                   <i class="fas fa-camera" aria-hidden="true"></i>
@@ -157,7 +157,7 @@
 
           <div class="field">
             <p class="control footer-buttons">
-              <a [href]="graphmlLink()" class="button is-success   has-tooltip" data-tooltip="Export this network as .graphml file.">
+              <a [href]="graphmlLink()" class="button is-primary has-tooltip" data-tooltip="Export this network as .graphml file.">
                 <span class="icon">
                   <i class="fas fa-download" aria-hidden="true"></i>
                 </span>
@@ -249,7 +249,7 @@
         <div *ngIf="tableDrugs.length > 0" class="table-header">
           <h4 class="is-4">
             <span class="icon"><i class="fa fa-capsules"></i></span>
-            <span>Drugs</span>
+            <span>Drugs ({{ tableDrugs.length }})</span>
           </h4>
           <a [href]="downloadLink('drugs')" class="button is-primary is-outlined is-pulled-right is-small">
             <span class="icon"><i class="fa fa-download"></i></span>
@@ -259,9 +259,9 @@
         <p-table *ngIf="tableDrugs.length > 0" [value]="tableDrugs">
           <ng-template pTemplate="header">
             <tr>
-              <th [pSortableColumn]="'drugId'">
-                ID
-                <p-sortIcon [field]="'drugId'"></p-sortIcon>
+              <th [pSortableColumn]="'dbId'">
+                DB ID
+                <p-sortIcon [field]="'dbId'"></p-sortIcon>
               </th>
               <th [pSortableColumn]="'name'">
                 Name
@@ -291,14 +291,14 @@
                 Closest Cancer Genes
               </th>
               <th [pSortableColumn]="'closestDistance'">
-                Viral protein distance
+                Cancer Gene distance
                 <p-sortIcon [field]="'closestDistance'"></p-sortIcon>
               </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-e>
             <tr>
-              <td><a href="https://www.drugbank.ca/drugs/{{ e.drugId }}" target="_blank">{{ e.drugId }}</a></td>
+              <td><a href="https://www.drugbank.ca/drugs/{{ e.dbId }}" target="_blank">{{ e.dbId }}</a></td>
               <td>{{e.name}}</td>
               <td>
                 <span *ngIf="e.status === 'approved'">
@@ -328,11 +328,11 @@
                 </span>
               </td>
               <td *ngIf="tableHasScores">{{e.score | number}}</td>
-              <td title="{{previewStringArray(e.closestCancerGene, 100)}}">
-                {{previewStringArray(e.closestCancerGene, 3)}}
+              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">
+                {{previewStringArray(e.closestCancerGenes, 3)}}
               </td>
               <td>
-                {{e.closestCancerGene}}
+                {{e.closestDistance}}
               </td>
             </tr>
           </ng-template>
@@ -341,7 +341,7 @@
         <div *ngIf="tableNodes.length > 0" class="table-header">
           <h4 class="is-4">
             <span class="icon"><i class="fa fa-dna"></i></span>
-            <span>Proteins</span>
+            <span>Genes ({{ tableNodes.length }})</span>
           </h4>
           <a [href]="downloadLink('nodes')" class="button is-primary is-outlined is-pulled-right is-small">
             <span class="icon"><i class="fa fa-download"></i></span>
@@ -365,7 +365,7 @@
                 <p-sortIcon [field]="'name'"></p-sortIcon>
               </th>
               <th [pSortableColumn]="'proteinName'">
-                Name
+                proteinName
                 <p-sortIcon [field]="'proteinName'"></p-sortIcon>
               </th>
               <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
@@ -394,9 +394,9 @@
               <td>
                 <p-tableCheckbox [value]="e"></p-tableCheckbox>
               </td>
-              <td><a href="https://www.uniprot.org/uniprot/{{ e.proteinAc }}" target="_blank">{{ e.proteinAc }}</a></td>
+              <td><a href="https://www.uniprot.org/uniprot/{{ e.uniprotAc }}" target="_blank">{{ e.uniprotAc }}</a></td>
               <td>{{e.name}}</td>
-              <td>{{e.geneName}}</td>
+              <td>{{e.proteinName}}</td>
               <td *ngIf="tableHasScores">{{e.score | number}}</td>
               <td>
                 <span *ngIf="e.isSeed">
@@ -420,7 +420,7 @@
         <div *ngIf="tableCancerNodes.length > 0" class="table-header">
           <h4 class="is-4">
             <span class="icon"><i class="fa fa-disease"></i></span>
-            <span>Cancer Driver Genes</span>
+            <span>Cancer Driver Genes ({{ tableCancerNodes.length }})</span>
           </h4>
           <a [href]="downloadLink('cancer_driver_genes')"
              class="button is-primary is-outlined is-pulled-right is-small">
@@ -469,7 +469,7 @@
                 <p-tableCheckbox [value]="e"></p-tableCheckbox>
               </td>
               <td>{{e.name}}</td>
-              <td>{{e.entrezId}}</td>
+              <td><a href="https://www.ncbi.nlm.nih.gov/gene/{{ e.entrezId }}">{{e.entrezId}}</a></td>
               <td>{{e.cancerOccurrences}}</td>
               <td>{{e.type}}</td>
               <td *ngIf="tableHasScores">{{ e.rawScore | number }}</td>

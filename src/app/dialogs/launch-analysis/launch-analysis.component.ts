@@ -33,6 +33,8 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public selectedDrugInteractionDataset: Dataset;
   @Input()
   public selectedCancerTypeItems: CancerType[];
+  @Input()
+  public interactionDrugDatasetItems: Dataset[];
 
   @Output()
   public showChange = new EventEmitter<boolean>();
@@ -86,15 +88,9 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public multisteinerMaxDeg = 0;
   public multisteinerHubPenalty = 0.0;
 
-  public hasBaits;
-
   public maxTasks = MAX_TASKS;
 
   constructor(public analysis: AnalysisService) {
-    this.hasBaits = !!analysis.getSelection().find((i) => i.type === 'CancerNode');
-    analysis.subscribeList(() => {
-      this.hasBaits = !!analysis.getSelection().find((i) => i.type === 'CancerNode');
-    });
   }
 
   ngOnInit(): void {
@@ -120,9 +116,9 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
      * Returns the graph id (e.g. 'g' + backendId) for a wrapper object
      */
     if (wrapper.type === 'Drug') {
-      return 'd' + wrapper.backendId
+      return 'd' + wrapper.backendId;
     } else {
-      return 'g' + wrapper.backendId
+      return 'g' + wrapper.backendId;
     }
   }
 
@@ -137,10 +133,10 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     };
 
     // new input from caddie
-    parameters.dataset = dataset.name;
+    parameters.cancer_dataset = dataset.name;
     parameters.gene_interaction_dataset = geneInteractionDataset.name;
     parameters.drug_interaction_dataset = drugInteractionDataset.name;
-    parameters.cancer_types = cancerTypes.map( (cancerType) => cancerType.backendId);;
+    parameters.cancer_types = cancerTypes.map( (cancerType) => cancerType.backendId );
 
     // old input from CoVex
     parameters.strain_or_drugs = this.target === 'drug' ? 'drugs' : this.dataset.backendId;

@@ -11,6 +11,7 @@ export interface Node {
   x?: number;
   y?: number;
   expressionLevel?: number;
+  uniprotAc?: string;
   proteinName?: string;
   cancer_occurrences: number;
 }
@@ -59,7 +60,8 @@ export interface CancerNode {
   // if protein
   pubmedId?: string;
   cancer_occurrences: number;
-
+  uniprotAc?: string;
+  proteinName?: string;
 }
 
 export interface Interaction {

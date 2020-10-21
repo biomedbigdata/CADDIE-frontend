@@ -82,9 +82,9 @@ export class NetworkSettings {
   };
 
   // Node size
-  private static nodeSize = 20;
-  private static cancerNodeSize = 30;
-  private static drugSize = 15;
+  private static nodeSize = 15;
+  private static cancerNodeSize = 25;
+  private static drugSize = 20;
 
   // Node shape
   private static hostShape = 'ellipse';

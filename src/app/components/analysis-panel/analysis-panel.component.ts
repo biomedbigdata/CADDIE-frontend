@@ -171,7 +171,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableSelectedNodes = [];
             this.tableNodes.forEach((node) => {
               node.rawScore = node.score;
-              node.isSeed = isSeed[node.backendId];
+              node.isSeed = isSeed[node.graphId];
               node.closestCancerGenes = (node.closestCancerGenes as any).split(',');
               if (this.analysis.nodeInSelection(node)) {
                 this.tableSelectedNodes.push(node);
@@ -183,7 +183,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableCancerNodes = table;
             this.tableCancerNodes.forEach((cancerDriverGene) => {
               cancerDriverGene.rawScore = cancerDriverGene.score;
-              cancerDriverGene.isSeed = isSeed[cancerDriverGene.backendId];
+              cancerDriverGene.isSeed = isSeed[cancerDriverGene.graphId];
             });
           }));
         await Promise.all(promises);

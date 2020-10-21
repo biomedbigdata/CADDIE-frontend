@@ -306,7 +306,7 @@
               <td>
                 {{e.name}}
                 <span *ngIf="e.links != 'nan'">
-                  <a href="{{ e.links }}" target="_blank"><i class="fas fa-link"></i></a>
+                  <a href="{{ e.links.split(',')[0] }}" target="_blank"><i class="fas fa-link"></i></a>
                 </span>
               </td>
               <td>

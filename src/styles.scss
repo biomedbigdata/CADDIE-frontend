@@ -322,9 +322,9 @@ body {
     }
     .approved-drug{
       background: $network-approved-drug-color;
-      border-radius: 50%;
-      width: $legend-circle-size;
-      height: $legend-circle-size;
+      border-radius: $legend-rectangle-radius;
+      width: $legend-rectangle-width;
+      height: $legend-rectangle-height;
       display: inline-block;
     }
     .in-trial-drug{
@@ -337,9 +337,9 @@ body {
     }
     .non-approved-drug{
       background: $network-unapproved-drug-color;
-      border-radius: 50%;
-      width: $legend-circle-size;
-      height: $legend-circle-size;
+      border-radius: $legend-rectangle-radius;
+      width: $legend-rectangle-width;
+      height: $legend-rectangle-height;
       display: inline-block;
     }
   }

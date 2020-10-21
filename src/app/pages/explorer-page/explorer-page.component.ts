@@ -29,6 +29,7 @@ import {environment} from '../../../environments/environment';
 import {NetworkSettings} from '../../network-settings';
 import {ControlService} from '../../control.service';
 import {toast} from 'bulma-toast';
+import {query} from "@angular/animations";
 
 
 declare var vis: any;
@@ -803,7 +804,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      */
     const queryString = this.analysis.getSelection()
       .filter(wrapper => wrapper.type === 'Node')
-      .map(wrapper => wrapper.data.proteinAc)
+      .map(wrapper => wrapper.data.entrezId)
       .join('%0A');
     return 'http://biit.cs.ut.ee/gprofiler/gost?' +
       'organism=hsapiens&' +

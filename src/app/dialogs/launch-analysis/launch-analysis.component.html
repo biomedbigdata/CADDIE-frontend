@@ -479,14 +479,14 @@
         </div>
 
         <div class="field" *ngIf="target === 'drug-target'">
-          <label class="label">Include non-seed viral proteins</label>
+          <label class="label">Include non-seed cancer genes</label>
           <app-toggle textOn="Include" textOff="Ignore"
                       tooltipOn="Include viral proteins that are not seeds."
                       tooltipOff="Exclude viral proteins that are not seeds."
                       [(value)]="multisteinerIncludeViralNonSeeds"></app-toggle>
         </div>
 
-        <div class="field">
+        <div class="field" *ngIf="target === 'drug'">
           <label class="label">Gene Drug Interactions</label>
           <app-interaction-dataset-tile [datasetItems]="interactionDrugDatasetItems"
                                         [selectedDataset]="selectedDrugInteractionDataset"

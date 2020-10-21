@@ -279,6 +279,10 @@
                 In Literature
                 <p-sortIcon [field]="'inLiterature'"></p-sortIcon>
               </th>
+              <th [pSortableColumn]="'inCancernet'">
+                In Cancernet
+                <p-sortIcon [field]="'inCancernet'"></p-sortIcon>
+              </th>
               <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
                 Score
                 <button class="button is-light has-tooltip tooltip-button"
@@ -299,7 +303,12 @@
           <ng-template pTemplate="body" let-e>
             <tr>
               <td><a href="https://www.drugbank.ca/drugs/{{ e.dbId }}" target="_blank">{{ e.dbId }}</a></td>
-              <td>{{e.name}}</td>
+              <td>
+                {{e.name}}
+                <span *ngIf="e.links != 'nan'">
+                  <a href="{{ e.links }}" target="_blank"><i class="fas fa-link"></i></a>
+                </span>
+              </td>
               <td>
                 <span *ngIf="e.status === 'approved'">
                   <i class="fa fa-check"></i>
@@ -324,6 +333,15 @@
                   Literature
                 </span>
                 <span *ngIf="!e.inLiterature">
+                  <i class="fa fa-times"></i>
+                </span>
+              </td>
+              <td>
+                <span *ngIf="e.inCancernet">
+                  <i class="fa fa-check has-text-primary"></i>
+                  Cancernet
+                </span>
+                <span *ngIf="!e.inCancernet">
                   <i class="fa fa-times"></i>
                 </span>
               </td>
@@ -472,7 +490,7 @@
               <td><a href="https://www.ncbi.nlm.nih.gov/gene/{{ e.entrezId }}">{{e.entrezId}}</a></td>
               <td>{{e.cancerOccurrences}}</td>
               <td>{{e.type}}</td>
-              <td *ngIf="tableHasScores">{{ e.rawScore | number }}</td>
+              <td *ngIf="tableHasScores">{{ e.score | number }}</td>
               <td>
                 <span *ngIf="e.isSeed">
                   <i class="fa fa-asterisk has-text-primary"></i>

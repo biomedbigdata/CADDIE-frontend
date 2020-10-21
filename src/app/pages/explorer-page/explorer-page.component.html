@@ -269,10 +269,6 @@
                 <div>
                   <p class="heading">
                     Interactions
-                    <span class="icon has-tooltip-right has-text-black is-lowercase has-text-weight-normal is-size-6"
-                          data-tooltip="Number of displayed interactions related to displayed genes.">
-                    <i class="fas fa-info-circle"></i>
-                    </span>
                   </p>
                   <p class="title">{{ networkData.edges.length }} / {{ interactionsTotalN }}</p>
                 </div>
@@ -324,8 +320,11 @@
               <span class="icon">
                 <i class="fas fa-filter" aria-hidden="true"></i>
               </span>
-            <span *ngIf="currentDataLevel=='gene'">Filter Cancer Driver Genes</span>
-            <span *ngIf="currentDataLevel=='protein'">Filter Cancer Proteins</span>
+            <span>Filter Cancer Driver Genes</span>
+            <span class="icon has-tooltip-right has-text-black has-text-weight-normal is-size-6"
+                  data-tooltip="Filter or load more Cancer Driver Genes into graph">
+              <i class="fas fa-info-circle"></i>
+            </span>
           </p>
           <a (click)="collapseBaitFilter = !collapseBaitFilter" data-action="collapse"
              class="card-header-icon is-hidden-fullscreen" aria-label="more options">
@@ -344,7 +343,7 @@
                                [checkboxes]="cancerNodesCheckboxes">
               </app-filter-tile>
             </div>
-
+            <br>
             <!-- "Add-to" Filter -->
             <div>
               <app-query-tile-component [queryItems]="filterAddItems"
@@ -380,6 +379,10 @@
             <i class="fas fa-flask" aria-hidden="true"></i>
           </span>
             Simple Analysis
+            <span class="icon has-tooltip-right has-text-black has-text-weight-normal is-size-6"
+              data-tooltip="Select nodes in the network as seeds or use all cancer nodes as seeds">
+              <i class="fas fa-info-circle"></i>
+            </span>
           </p>
           <a (click)="collapseAnalysisQuick = !collapseAnalysisQuick" data-action="collapse"
              class="card-header-icon is-hidden-fullscreen" aria-label="more options">
@@ -393,10 +396,6 @@
           <div class="card-content quick-find">
             <div class="field">
               <div class="control">
-                <span class="icon has-tooltip-right has-text-black"
-                      data-tooltip="Select nodes in the network as seeds or use all cancer nodes as seeds">
-                  info <i class="fas fa-info-circle"></i>
-                </span>
                 <div class="columns is-centered">
                   <div class="column is-6 has-text-centered">
                     <div class="analysis-option" [ngClass]="{'selected': analysis.getCount() === 0 }">
@@ -407,8 +406,7 @@
 
                   <div class="column is-6 has-text-centered">
                     <div class="analysis-option" [ngClass]="{'selected': analysis.getCount() > 0 }">
-                      <span *ngIf="currentDataLevel=='gene'">Selected Genes</span>
-                      <span *ngIf="currentDataLevel=='protein'">Selected Proteins</span>
+                      <span>Selected Genes</span>
                     </div>
                   </div>
 
@@ -455,7 +453,6 @@
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -468,6 +465,10 @@
             <i class="fas fa-flask" aria-hidden="true"></i>
           </span>
             Advanced Analysis
+            <span class="icon has-tooltip-right has-text-black has-text-weight-normal is-size-6"
+                  data-tooltip="Run a sophisticated analysis based on selected nodes">
+              <i class="fas fa-info-circle"></i>
+            </span>
           </p>
           <a (click)="collapseAnalysis = !collapseAnalysis" data-action="collapse"
              class="card-header-icon is-hidden-fullscreen" aria-label="more options">

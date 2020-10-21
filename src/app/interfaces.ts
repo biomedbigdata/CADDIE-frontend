@@ -6,6 +6,7 @@ export interface Node {
    */
   name: string;
   backendId: string;
+  graphId: string;
   interactions?: (CancerNode | Node)[];
   x?: number;
   y?: number;
@@ -47,6 +48,7 @@ export interface CancerNode {
    */
   name: string;
   backendId: string;
+  graphId: string;
   type: string;
   datasetName: string;
   interactions?: (Node | CancerNode)[];
@@ -68,6 +70,8 @@ export interface Interaction {
   interactorBName: string;
   interactorABackendId: string;
   interactorBBackendId: string;
+  interactorAGraphId: string;
+  interactorBGraphId: string;
   datasetName: string;
   id: string;
 }
@@ -127,7 +131,7 @@ export function getGeneNodeId(gene: Node) {
   /**
    * Returns the network node id based on a given gene
    */
-  return `${gene.backendId}`;
+  return `${gene.graphId}`;
 }
 
 export function getGeneBackendId(gene: Node) {
@@ -141,7 +145,7 @@ export function getCancerDriverGeneNodeId(cancerDriverGene: CancerNode) {
   /**
    * Returns node ID for CancerDriverGene object
    */
-  return `${cancerDriverGene.backendId}`;
+  return `${cancerDriverGene.graphId}`;
 }
 
 export function getNodeIdsFromGeneGeneInteraction(geneGeneInteraction: Interaction) {
@@ -149,8 +153,8 @@ export function getNodeIdsFromGeneGeneInteraction(geneGeneInteraction: Interacti
    * Returns js object with network node endpoints of given GeneGeneInteraction object
    */
   return {
-    from: `${geneGeneInteraction.interactorABackendId}`,
-    to: `${geneGeneInteraction.interactorBBackendId}`,
+    from: `${geneGeneInteraction.interactorAGraphId}`,
+    to: `${geneGeneInteraction.interactorBGraphId}`,
   };
 }
 
@@ -185,7 +189,7 @@ export function getDrugNodeId(drug: Drug) {
   /**
    * Returns network drug-node id given a Drug object
    */
-  return `${drug.backendId}`;
+  return `${drug.graphId}`;
 }
 
 export function getDrugBackendId(drug: Drug) {
@@ -240,6 +244,7 @@ export interface Wrapper {
 
 export interface Drug {
   backendId: string;
+  graphId: string;
   name: string;
   status: 'approved' | 'investigational';
   inTrial: boolean;

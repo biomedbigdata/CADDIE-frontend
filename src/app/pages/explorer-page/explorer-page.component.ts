@@ -334,6 +334,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Fetches Network data from API
      */
     const data = await this.control.getNetwork(dataset, interactionDataset, cancerTypes);
+    console.log(data)
     this.nodes = data.nodes;
     this.nodesSup = data.nodesSup;
     this.nodesTotalN = data.nodesTotalN;
@@ -470,6 +471,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     if (reset) {
       this.filterAddItems = [];
     }
+
+    console.log(cancerNodesSup)
 
     cancerNodesSup.forEach((cancerNode) => {
       this.filterAddItems.push(getWrapperFromCancerNode(cancerNode));

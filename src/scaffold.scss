@@ -1,5 +1,17 @@
 
-$sidebar-width: 37vw;
+$sidebar-width: 38vw;
 $navbar-height: 60px;
 $row-data-selector-height: auto;
 $network-footer-height: 75px;
+
+$network-node-color: #143d1f;
+$network-cancer-node-color: #5b005b;
+$network-approved-drug-color: #0080ff;
+$network-unapproved-drug-color: #d88c00;
+$network-seed-gene-color: #3ab159;
+$network-non-seed-gene-color: #143d1f;
+$network-seed-cancer-gene-color: #ff007f;
+$network-non-seed-cancer-gene-color: #5b005b;
+$network-selected-border-color: #ffa500;
+
+$legend-circle-size: 35px;

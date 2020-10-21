@@ -30,6 +30,8 @@
               <p *ngIf="currentDataLevel == 'gene'" class="card-header-title">Gene-Gene Interaction Network</p>
             </header>
             <div class="card-content">
+
+              <!-- Start Detail View -->
               <div class="detail-view">
                 <h6 class="is-6">
                   <span class="icon">
@@ -61,6 +63,26 @@
                   [wrapperComorbidities]="selectedWrapperComorbidities"
                 ></app-info-tile>
               </div>
+              <!-- END Detail View -->
+
+              <!-- START Legend -->
+              <div class="legend main">
+                <table>
+                  <tr>
+                    <td><span class="node"></span></td>
+                    <td>&nbsp;Gene</td>
+                  </tr>
+                  <tr>
+                    <td><span class="cancer-node"></span></td>
+                    <td>&nbsp;Cancer Gene</td>
+                  </tr>
+                  <tr>
+                    <td><span class="selected-cancer-node"></span></td>
+                    <td>&nbsp;Selected Node</td>
+                  </tr>
+                </table>
+              </div>
+              <!-- END Legend -->
 
               <div class="card-image" id="canvas-content">
                 <div class="parent">
@@ -555,7 +577,7 @@
         </header>
         <div *ngIf="collapseSelection" class="seed-selection">
           <div class="card-content overflow">
-            <table class="table selection-table" *ngIf="analysis.getCount() > 0">
+            <table class="table selection-table is-fullwidth" *ngIf="analysis.getCount() > 0">
               <thead>
               <tr>
                 <td>Type</td>
@@ -566,13 +588,13 @@
               <tbody>
               <tr *ngFor="let g of analysis.getSelection()">
                 <td>
-                 <span class="icon">
-                    <i class="fa fa-dna" *ngIf="g.type == 'Node'"></i>
-                    <i class="fa fa-disease" *ngIf="g.type =='CancerNode'"></i>
+                 <span>
+                    <i class="fa fa-dna" *ngIf="g.type == 'Node'">&nbsp;Gene</i>
+                    <i class="fa fa-disease" *ngIf="g.type =='CancerNode'">&nbsp;Cancer&nbsp;Gene</i>
+                    <i class="fa fa-capsules" *ngIf="g.type =='Drug'">&nbsp;Drug</i>
                   </span>
                 </td>
-                <td *ngIf="g.type == 'CancerNode'">{{g.data.name}}</td>
-                <td *ngIf="g.type == 'Node'">{{g.data.name}}</td>
+                <td>{{g.data.name}}</td>
                 <td>
                   <button (click)="analysis.removeItems([g])" class="button is-small is-danger is-outlined has-tooltip"
                           data-tooltip="Remove from selection.">

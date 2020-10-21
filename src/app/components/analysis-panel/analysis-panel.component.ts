@@ -416,6 +416,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     const details = attributes.details || {};
     const wrappers: { [key: string]: Wrapper } = {};
     for (const node of network.nodes) {
+      console.log('node')
+      console.log(node)
       if (nodeTypes[node] === 'Node') {
         this.genes.push(details[node]);
         wrappers[node] = getWrapperFromNode(details[node]);

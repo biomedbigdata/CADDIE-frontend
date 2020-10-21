@@ -33,7 +33,7 @@
 
     <ng-container *ngIf="wrapper.data.cancerOccurrences">
       <b><span>Related Cancer Types ({{ wrapper.data.cancerOccurrences }}):</span></b>
-      <div class="content scroll-300">
+      <div class="content scroll-120">
         <ul *ngFor="let item of wrapperCancerTypes">
           <li>{{ item.name }}</li>
         </ul>
@@ -42,7 +42,7 @@
 
     <ng-container *ngIf="wrapperComorbidities">
       <b><span>Comorbidities ({{ wrapperComorbidities.length }}):</span></b>
-      <div class="content scroll-300">
+      <div class="content scroll-120">
         <ul *ngFor="let item of wrapperComorbidities">
           <li>{{ item.diseaseName }}</li>
         </ul>
@@ -85,7 +85,7 @@
     </p>
     <ng-container *ngIf="wrapper.data.cancerOccurrences">
       <b><span>Related Cancer Types ({{ wrapper.data.cancerOccurrences }}):</span></b>
-      <div class="content scroll-300">
+      <div class="content scroll-120">
         <ul *ngFor="let item of wrapperCancerTypes">
           <li>{{ item.name }}</li>
         </ul>
@@ -94,7 +94,7 @@
 
     <ng-container *ngIf="wrapperComorbidities">
       <b><span>Comorbidities ({{ wrapperComorbidities.length }}):</span></b>
-      <div class="content scroll-300">
+      <div class="content scroll-120">
         <ul *ngFor="let item of wrapperComorbidities">
           <li>{{ item.diseaseName }}</li>
         </ul>

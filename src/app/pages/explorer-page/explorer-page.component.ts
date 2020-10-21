@@ -152,7 +152,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
           Object.assign(node, NetworkSettings.getNodeStyle(
             node.wrapper.type,
-            true,
+            undefined,
             selected,
             undefined,
             undefined,
@@ -166,7 +166,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
           const nodeSelected = this.analysis.idInSelection(node.id);
           Object.assign(node, NetworkSettings.getNodeStyle(
             node.wrapper.type,
-            true,
+            undefined,
             nodeSelected,
             undefined,
             undefined,
@@ -697,7 +697,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Creates a network node object out of a given Gene object
      */
     const wrapper = getWrapperFromNode(gene);
-    const node = NetworkSettings.getNodeStyle('Node', true, this.analysis.inSelection(wrapper));
+    const node = NetworkSettings.getNodeStyle('Node', undefined, this.analysis.inSelection(wrapper));
     let nodeLabel = gene.name;
     if (gene.name.length === 0) {
       nodeLabel = gene.backendId;
@@ -716,7 +716,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Creates a network node object out of a given CancerDriverGene object
      */
     const wrapper = getWrapperFromCancerNode(cancerDriverGene);
-    const node = NetworkSettings.getNodeStyle('CancerNode', true, this.analysis.inSelection(wrapper));
+    const node = NetworkSettings.getNodeStyle('CancerNode', undefined, this.analysis.inSelection(wrapper));
     node.id = wrapper.nodeId;
     node.label = cancerDriverGene.name;
     node.x = cancerDriverGene.x;
@@ -977,8 +977,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
             }},
         ],
         layout: {
-          width: 600,
-          height: 400,
           title: `${title}`,
           margin: {
             l: 200
@@ -986,6 +984,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
           xaxis: {
             title: '# Common genes',
           }
+        },
+        config: {
+          responsive: true
         }
       };
 

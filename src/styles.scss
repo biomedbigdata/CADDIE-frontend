@@ -81,9 +81,10 @@ img.inline {
 .network{
   .detail-view{
     position: absolute;
-    right: 0;
+    left: 0;
     background-color:white;
     z-index: 1;
+    border: 1px solid lightgray;
   }
 }
 
@@ -264,6 +265,84 @@ body {
 
 .mb-3 {
   margin-bottom: 10px;
+}
+
+.legend {
+  position: absolute;
+  bottom: 0;
+  &.main {
+    bottom: calc(0px + #{$network-footer-height});
+  }
+  td{
+    height: $legend-circle-size;
+    vertical-align: middle !important;
+    padding: 0 !important;
+    .node{
+      background: $network-node-color;
+      border-radius: 50%;
+      width: $legend-circle-size;
+      height: $legend-circle-size;
+      display: inline-block;
+    }
+    .cancer-node{
+      background: $network-cancer-node-color;
+      border-radius: 50%;
+      width: $legend-circle-size;
+      height: $legend-circle-size;
+      display: inline-block;
+    }
+    .cancer-node{
+      background: $network-cancer-node-color;
+      border-radius: 50%;
+      width: $legend-circle-size;
+      height: $legend-circle-size;
+      display: inline-block;
+    }
+    .selected-cancer-node{
+      background: $network-cancer-node-color;
+      border-radius: 50%;
+      border: 5px solid $network-selected-border-color;
+      width: $legend-circle-size;
+      height: $legend-circle-size;
+      display: inline-block;
+    }
+    .seed-node{
+      background: $network-seed-gene-color;
+      border-radius: 50%;
+      width: $legend-circle-size;
+      height: $legend-circle-size;
+      display: inline-block;
+    }
+    .seed-cancer-node{
+      background: $network-seed-cancer-gene-color;
+      border-radius: 50%;
+      width: $legend-circle-size;
+      height: $legend-circle-size;
+      display: inline-block;
+    }
+    .approved-drug{
+      background: $network-approved-drug-color;
+      border-radius: 50%;
+      width: $legend-circle-size;
+      height: $legend-circle-size;
+      display: inline-block;
+    }
+    .in-trial-drug{
+      width: 0;
+      height: 0;
+      border-left: calc(#{$legend-circle-size} / 2) solid transparent;
+      border-right: calc(#{$legend-circle-size} / 2) solid transparent;
+      border-bottom: $legend-circle-size solid $network-approved-drug-color;
+      display: inline-block;
+    }
+    .non-approved-drug{
+      background: $network-unapproved-drug-color;
+      border-radius: 50%;
+      width: $legend-circle-size;
+      height: $legend-circle-size;
+      display: inline-block;
+    }
+  }
 }
 
 

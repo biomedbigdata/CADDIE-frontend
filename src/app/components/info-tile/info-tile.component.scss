@@ -1,5 +1,14 @@
-.scroll-300{
-  max-height: 300px;
+p {
+  white-space: normal;
+  width: 200px;
+}
+
+.scroll-120{
+  max-height: 120px;
   overflow-y: auto;
   overflow-x: hidden;
+  ul {
+    white-space: normal;
+    width: 200px;
+  }
 }

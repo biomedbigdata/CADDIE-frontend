@@ -231,10 +231,10 @@
         </div>
 
         <div class="field" *ngIf="target === 'drug-target'">
-          <label class="label">Include non-seed viral proteins</label>
+          <label class="label">Include non-seed cancer genes</label>
           <app-toggle textOn="Include" textOff="Ignore"
-                      tooltipOn="Include viral proteins that are not seeds."
-                      tooltipOff="Exclude viral proteins that are not seeds."
+                      tooltipOn="Include cancer genes that are not seeds."
+                      tooltipOff="Exclude cancer genes that are not seeds."
                       [(value)]="degreeIncludeViralNonSeeds"></app-toggle>
         </div>
 
@@ -485,15 +485,14 @@
                       tooltipOff="Exclude viral proteins that are not seeds."
                       [(value)]="multisteinerIncludeViralNonSeeds"></app-toggle>
         </div>
+      </div>
 
-        <div class="field" *ngIf="target === 'drug'">
-          <label class="label">Gene Drug Interactions</label>
-          <app-interaction-dataset-tile [datasetItems]="interactionDrugDatasetItems"
-                                        [selectedDataset]="selectedDrugInteractionDataset"
-                                        (selectedDatasetChange)="selectedDrugInteractionDataset = $event;">
-          </app-interaction-dataset-tile>
-        </div>
-
+      <div class="field" *ngIf="target === 'drug'">
+        <label class="label">Gene Drug Interactions</label>
+        <app-interaction-dataset-tile [datasetItems]="interactionDrugDatasetItems"
+                                      [selectedDataset]="selectedDrugInteractionDataset"
+                                      (selectedDatasetChange)="selectedDrugInteractionDataset = $event;">
+        </app-interaction-dataset-tile>
       </div>
 
       <p class="doc-link">

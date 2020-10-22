@@ -299,7 +299,7 @@ body {
       display: inline-block;
     }
     .selected-cancer-node{
-      background: $network-cancer-node-color;
+      background: black;
       border-radius: 50%;
       border: 5px solid $network-selected-border-color;
       width: $legend-circle-size;
@@ -332,7 +332,7 @@ body {
       height: 0;
       border-left: calc(#{$legend-circle-size} / 2) solid transparent;
       border-right: calc(#{$legend-circle-size} / 2) solid transparent;
-      border-bottom: $legend-circle-size solid $network-unapproved-drug-color;
+      border-bottom: $legend-circle-size solid black;
       display: inline-block;
     }
     .non-approved-drug{

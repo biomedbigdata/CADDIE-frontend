@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
+import {HttpClient} from '@angular/common/http';;
 import {getWrapperFromNode, Node, Wrapper} from '../../interfaces';
 import {AnalysisService} from '../../analysis.service';
+import {ControlService} from "../../control.service";
 
 @Component({
   selector: 'app-custom-genes',
@@ -26,7 +26,7 @@ export class CustomGenesComponent implements OnInit {
   public selectOnly = false;
   public loading = false;
 
-  constructor(private http: HttpClient, private analysis: AnalysisService) { }
+  constructor(private analysis: AnalysisService, private control: ControlService) { }
 
   ngOnInit(): void {
   }
@@ -48,7 +48,7 @@ export class CustomGenesComponent implements OnInit {
     this.itemsFound = [];
     const genes = this.genes;
     this.changeTextList('');
-    const result = await this.http.post<any>(`${environment.backend}query_proteins/`, genes).toPromise();
+    const result = await this.control.queryGenes(genes);
     this.notFound = result.notFound;
     const details = result.details;
     const items = [];
@@ -67,7 +67,7 @@ export class CustomGenesComponent implements OnInit {
     this.itemsFound = [];
     const genes = this.genes;
     this.changeTextList('');
-    const result = await this.http.post<any>(`${environment.backend}query_proteins/`, genes).toPromise();
+    const result = await this.control.queryGenes(genes);
     this.notFound = result.notFound;
     const details = result.details;
     const geneItems = [];

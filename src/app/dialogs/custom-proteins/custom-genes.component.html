@@ -4,26 +4,26 @@
     <header class="modal-card-head">
       <p class="modal-card-title">
         <span class="icon"><i class="fa fa-dna"></i></span>
-        Add Custom Proteins
+        Add Custom Genes
       </p>
       <button (click)="close()" class="delete" aria-label="close"></button>
     </header>
     <section class="modal-card-body">
       <div class="notification is-success" *ngIf="addedCount > 0">
-        {{addedCount}} host proteins have been added to the selection.
+        {{addedCount}} genes have been added to the selection.
         <div *ngIf="itemsFound.length > addedCount && !selectOnly">
-          {{itemsFound.length - addedCount}} proteins have already been selected before.
+          {{itemsFound.length - addedCount}} genes have already been selected before.
         </div>
         <div *ngIf="itemsFound.length > addedCount && selectOnly">
-          {{itemsFound.length - addedCount}} proteins either have been selected already or did not appear in the current graph.
+          {{itemsFound.length - addedCount}} genes either have been selected already or did not appear in the current graph.
         </div>
       </div>
       <div class="notification is-warning" *ngIf="itemsFound.length > 0 && addedCount === 0">
         <div *ngIf="itemsFound.length > addedCount && !selectOnly">
-          {{itemsFound.length - addedCount}} proteins have already been selected before.
+          {{itemsFound.length - addedCount}} genes have already been selected before.
         </div>
         <div *ngIf="itemsFound.length > addedCount && selectOnly">
-          {{itemsFound.length - addedCount}} proteins either have been selected already or did not appear in the current graph.
+          {{itemsFound.length - addedCount}} genes either have been selected already or did not appear in the current graph.
         </div>
       </div>
       <div class="notification is-danger" *ngIf="notFound.length > 0">
@@ -31,9 +31,9 @@
         <ul><li class="not-found" *ngFor="let nf of notFound">{{nf}}</li></ul>
       </div>
       <div class="field">
-        <label class="label" for="protein-list">List of items (Uniprot ids or Drugbank ids)</label>
+        <label class="label" for="gene-list">List of items (Entrez ids, Uniprot ids or Drugbank ids)</label>
         <div class="control">
-          <textarea class="input" [ngModel]="textList" (ngModelChange)="changeTextList($event)" id="protein-list">
+          <textarea class="input" [ngModel]="textList" (ngModelChange)="changeTextList($event)" id="gene-list">
           </textarea>
         </div>
       </div>
@@ -42,7 +42,7 @@
       </p>
     </section>
     <footer class="modal-card-foot">
-      <button (click)="addGenes();" class="button is-success   has-tooltip"
+      <button (click)="addGenes();" class="button is-success has-tooltip"
               data-tooltip="Add all to the selection."
               [disabled]="genes.length === 0 || loading">
         <span class="icon">
@@ -52,7 +52,7 @@
           Add
         </span>
       </button>
-      <button (click)="addVisibleGenes();" class="button is-success   has-tooltip"
+      <button (click)="addVisibleGenes();" class="button is-success has-tooltip"
               data-tooltip="Add to selection if they appear in the current network."
               [disabled]="genes.length === 0 || loading">
         <span class="icon">

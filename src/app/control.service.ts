@@ -283,5 +283,12 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}drug_interactions/?token=${token}&view=cancer_driver_genes`).toPromise();
   }
 
+  public async queryGenes(genes): Promise<any> {
+    /**
+     * returns genes for genes in list if gene is in db
+     */
+    return this.http.post<any>(`${environment.backend}query_genes/`, genes).toPromise();
+  }
+
 
 }

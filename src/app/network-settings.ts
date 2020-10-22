@@ -218,8 +218,6 @@ export class NetworkSettings {
     if (nodeType === 'Node') {
       nodeColor = NetworkSettings.getColor(nodeType);
       nodeFont = NetworkSettings.getFont('Node');
-      console.log('isSeed')
-      console.log(isSeed)
       if (isSeed != undefined) {
         if (!isSeed) {
           nodeColor = NetworkSettings.getColor('nonSeedGene');

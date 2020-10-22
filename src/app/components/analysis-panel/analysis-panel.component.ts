@@ -416,8 +416,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     const details = attributes.details || {};
     const wrappers: { [key: string]: Wrapper } = {};
     for (const node of network.nodes) {
-      console.log('node')
-      console.log(node)
       if (nodeTypes[node] === 'Node') {
         this.genes.push(details[node]);
         wrappers[node] = getWrapperFromNode(details[node]);
@@ -460,11 +458,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       wrapper = getWrapperFromDrug(drug);
       drugType = drug.status;
       drugInTrial = drug.inTrial;
-      if (drugType === 'approved') {
-        nodeLabel = drug.name;
-      } else {
-        nodeLabel = drug.backendId;
-      }
+      nodeLabel = drug.name;
     } else if (nodeType === 'CancerNode') {
       const cancerDriverGene = details as CancerNode;
       wrapper = getWrapperFromCancerNode(cancerDriverGene);
@@ -520,8 +514,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     this.drugNodes = [];
     this.drugEdges = [];
     if (this.showDrugs) {
-      const result = await this.http.get<any>(
-        `${environment.backend}drug_interactions/?token=${this.token}`).toPromise().catch(
+      const result = await this.control.getDrugInteractions(this.token).catch(
         (err: HttpErrorResponse) => {
           // simple logging, but you can do a lot more, see below
           toast({
@@ -536,7 +529,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           this.showDrugs = false;
           return;
         });
-
+      console.log('result')
+      console.log(result)
       const drugs = result.drugs;
       const edges = result.edges;
 
@@ -552,11 +546,12 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         });
       } else {
         for (const drug of drugs) {
+          console.log(drug);
           this.drugNodes.push(this.mapNode('Drug', drug, false, null));
         }
 
         for (const interaction of edges) {
-          const edge = {from: interaction.proteinAc, to: interaction.drugId};
+          const edge = {from: interaction.geneGraphId, to: interaction.drugGraphId};
           this.drugEdges.push(this.mapEdge(edge, 'to-drug'));
         }
         this.nodeData.nodes.add(Array.from(this.drugNodes.values()));

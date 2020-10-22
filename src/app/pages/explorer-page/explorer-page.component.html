@@ -32,7 +32,7 @@
             <div class="card-content">
 
               <!-- Start Detail View -->
-              <div class="detail-view">
+              <div class="detail-view" *ngIf="selectedWrapper">
                 <h6 class="is-6">
                   <span class="icon">
                     <i *ngIf="!selectedWrapper" class="fas fa-info" aria-hidden="true"></i>
@@ -504,7 +504,7 @@
           <div class="card-content">
             <div class="field">
               <div class="control">
-                <button (click)="analysisDialogTarget = 'drug-target'; showAnalysisDialog = true;"
+                <button (click)="analysisDialogTarget = 'drug-target'; showAnalysisDialog = true; closeSummary();"
                         class="button is-primary is-fullwidth has-tooltip"
                         data-tooltip="Find drug targets for the selected genes."
                         [disabled]="analysis.getCount() === 0">
@@ -519,7 +519,7 @@
             </div>
             <div class="field">
               <div class="control">
-                <button (click)="analysisDialogTarget = 'drug'; showAnalysisDialog = true;"
+                <button (click)="analysisDialogTarget = 'drug'; showAnalysisDialog = true; closeSummary();"
                         class="button is-primary is-fullwidth has-tooltip"
                         data-tooltip="Find drugs for the selected genes."
                         [disabled]="analysis.getCount() === 0">

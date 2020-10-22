@@ -29,7 +29,6 @@ import {environment} from '../../../environments/environment';
 import {NetworkSettings} from '../../network-settings';
 import {ControlService} from '../../control.service';
 import {toast} from 'bulma-toast';
-import {query} from "@angular/animations";
 
 
 declare var vis: any;
@@ -785,6 +784,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Changes view to analysis window if event is given, else uses current data
      */
     if ($event) {
+      this.closeSummary();
       this.currentViewNodes = $event[0];
       this.currentViewGenes = $event[1][0];
       this.currentViewCancerNodes = $event[1][1];

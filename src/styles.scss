@@ -332,7 +332,7 @@ body {
       height: 0;
       border-left: calc(#{$legend-circle-size} / 2) solid transparent;
       border-right: calc(#{$legend-circle-size} / 2) solid transparent;
-      border-bottom: $legend-circle-size solid $network-approved-drug-color;
+      border-bottom: $legend-circle-size solid $network-unapproved-drug-color;
       display: inline-block;
     }
     .non-approved-drug{

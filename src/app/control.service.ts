@@ -276,5 +276,12 @@ export class ControlService {
     }).toPromise();
   }
 
+  public async getDrugInteractions(token): Promise<any> {
+    /**
+     * returns drugs that have interactions with analysis result nodes
+     */
+    return this.http.get<any>(`${environment.backend}drug_interactions/?token=${token}&view=cancer_driver_genes`).toPromise();
+  }
+
 
 }

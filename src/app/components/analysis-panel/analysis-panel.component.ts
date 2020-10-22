@@ -133,8 +133,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
       if (this.task && this.task.info.done) {
         const result = await this.control.getTaskResult(this.token);
-        console.log('result')
-        console.log(result)
         const nodeAttributes = result.nodeAttributes || {};
         const isSeed: { [key: string]: boolean } = nodeAttributes.isSeed || {};
 
@@ -529,8 +527,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           this.showDrugs = false;
           return;
         });
-      console.log('result')
-      console.log(result)
       const drugs = result.drugs;
       const edges = result.edges;
 
@@ -546,7 +542,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         });
       } else {
         for (const drug of drugs) {
-          console.log(drug);
           this.drugNodes.push(this.mapNode('Drug', drug, false, null));
         }
 

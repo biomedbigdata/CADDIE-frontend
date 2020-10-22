@@ -6,7 +6,7 @@ export class NetworkSettings {
   // Node color
   private static node = '#143d1f';
   private static cancerNode = '#5b005b';
-  private static approvedDrugColor = '#0080ff'; //a3185e
+  private static approvedDrugColor = '#0080ff'; // a3185e
   private static unapprovedDrugColor = '#d88c00';
   private static nonSeedGeneColor = '#143d1f';
   private static seedGeneColor = '#3ab159';
@@ -199,7 +199,7 @@ export class NetworkSettings {
   }
 
   static getNodeStyle(nodeType: WrapperType,
-                      isSeed: boolean = undefined,
+                      isSeed: boolean,
                       isSelected: boolean,
                       drugType?: string,
                       drugInTrial?: boolean,
@@ -218,7 +218,7 @@ export class NetworkSettings {
     if (nodeType === 'Node') {
       nodeColor = NetworkSettings.getColor(nodeType);
       nodeFont = NetworkSettings.getFont('Node');
-      if (isSeed != undefined) {
+      if (isSeed !== undefined) {
         if (!isSeed) {
           nodeColor = NetworkSettings.getColor('nonSeedGene');
         } else {
@@ -229,7 +229,7 @@ export class NetworkSettings {
       nodeColor = NetworkSettings.getColor(nodeType);
       if (nodeType === 'CancerNode') {
         nodeFont = NetworkSettings.getFont('CancerNode');
-        if (isSeed != undefined) {
+        if (isSeed !== undefined) {
           if (!isSeed) {
             nodeColor = NetworkSettings.getColor('nonSeedCancerDriverGenes');
           } else {

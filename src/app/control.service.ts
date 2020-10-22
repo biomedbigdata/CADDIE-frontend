@@ -287,7 +287,7 @@ export class ControlService {
     /**
      * returns genes for genes in list if gene is in db
      */
-    return this.http.post<any>(`${environment.backend}query_genes/`, genes).toPromise();
+    return this.http.post<any>(`${environment.backend}query_nodes/`, genes).toPromise();
   }
 
 

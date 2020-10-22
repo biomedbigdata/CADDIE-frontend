@@ -1,8 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {HttpClient} from '@angular/common/http';;
 import {getWrapperFromNode, Node, Wrapper} from '../../interfaces';
 import {AnalysisService} from '../../analysis.service';
-import {ControlService} from "../../control.service";
+import {ControlService} from '../../control.service';
 
 @Component({
   selector: 'app-custom-genes',

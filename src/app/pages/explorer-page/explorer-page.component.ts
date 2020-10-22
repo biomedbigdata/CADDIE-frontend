@@ -800,7 +800,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * uses collected analysis data (getSelection())
      */
     const queryString = this.analysis.getSelection()
-      .filter(wrapper => wrapper.type === 'Node')
+      .filter(wrapper => wrapper.type === 'Node' || wrapper.type === 'CancerNode')
       .map(wrapper => wrapper.data.entrezId)
       .join('%0A');
     return 'http://biit.cs.ut.ee/gprofiler/gost?' +

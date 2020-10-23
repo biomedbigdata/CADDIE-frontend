@@ -7,33 +7,27 @@ export class LoadingOverlayService {
 
   constructor() { }
 
-  html_string = `<button class="button is-loading loadingOverlay">Loading</button>`
+  htmlString = `<button class="button is-loading loadingOverlay">Loading</button>`;
 
-  public addTo(element_id: string) {
+  public addTo(elementId: string) {
 
-    /**
-     * Convert a template string into HTML DOM nodes
-     * @param  {String} str The template string
-     * @return {Node}       The template HTML
-     */
-    const stringToHTML = function (str) {
+    const stringToHTML = (str) => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(str, 'text/html');
       return doc.body;
     };
 
-    const element = document.getElementById(element_id);
+    const element = document.getElementById(elementId);
     // convert template string to node, get first child since result is wrapped in "body" tag
-    const node = stringToHTML(this.html_string).firstChild
+    const node = stringToHTML(this.htmlString).firstChild;
     // append html
-    element.appendChild(node)
-
+    element.appendChild(node);
   }
 
-  public removeFrom(element_id: string) {
-    const element = document.querySelector(`#${element_id}`);
+  public removeFrom(elementId: string) {
+    const element = document.querySelector(`#${elementId}`);
     const loadingOverlay = element.querySelector(`.loadingOverlay`);
-    element.removeChild(loadingOverlay)
+    element.removeChild(loadingOverlay);
   }
 
 }

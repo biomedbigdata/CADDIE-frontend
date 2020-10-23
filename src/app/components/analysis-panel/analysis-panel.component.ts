@@ -104,8 +104,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
      * refreshes page in case task is completed
      */
 
-    this.task = await this.control.getTask(this.token);
+    this.loadingOverlay.addTo('analysis-content');
+
     if (this.token) {
+      this.task = await this.control.getTask(this.token);
       this.analysis.switchSelection(this.token);
 
       if (this.task.info.algorithm === 'degree') {
@@ -139,8 +141,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       }
 
       if (this.task && this.task.info.done) {
-        this.loadingOverlay.addTo('analysis-content')
-
         const result = await this.control.getTaskResult(this.token);
         const nodeAttributes = result.nodeAttributes || {};
         const isSeed: { [key: string]: boolean } = nodeAttributes.isSeed || {};
@@ -337,8 +337,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       }
     }
     this.emitVisibleItems(true);
-    
-    this.loadingOverlay.removeFrom('analysis-content')
+    this.loadingOverlay.removeFrom('analysis-content');
   }
 
   public emitVisibleItems(on: boolean) {

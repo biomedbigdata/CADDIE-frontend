@@ -5,18 +5,6 @@
 @import url('https://fonts.googleapis.com/css?family=Varela+Round');
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
-$family-sans-serif: "Varela Round", sans-serif;
-$primary: #408B25;
-$success: #48C774;
-$danger: #EF476F;
-$link: $primary;
-$info: $primary;
-
-@import "~bulma/bulma.sass";
-@import '~bulma-tooltip';
-@import "~primeng/resources/primeng.min.css";
-@import "~primeicons/primeicons.css";
-
 @import "scaffold";
 
 
@@ -73,6 +61,7 @@ img.inline {
 
 .analysis-option{
   padding: 10px 30px;
+  border: 3px solid grey;
   &.selected{
     border: 3px solid $primary;
   }

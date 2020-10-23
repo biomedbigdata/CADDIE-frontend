@@ -7,7 +7,7 @@ export class LoadingOverlayService {
 
   constructor() { }
 
-  htmlString = `<button class="button is-loading loadingOverlay">Loading</button>`;
+  htmlString = `<button class="button is-loading loadingOverlay" alt="loading...">Loading</button>`;
 
   public addTo(elementId: string) {
 

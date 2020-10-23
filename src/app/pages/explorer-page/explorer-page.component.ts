@@ -238,6 +238,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Fetches Cancer Dataset data from API and initializes dataset tile
      */
     this.interactionGeneDatasetItems = await this.control.getInteractionGeneDatasets();
+
+    // TODO remove me, I am just here until we update the database on the server
+    this.interactionGeneDatasetItems = [this.interactionGeneDatasetItems[0]]
+
     this.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
   }
 
@@ -246,6 +250,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Fetches Cancer Dataset data from API and initializes dataset tile
      */
     this.interactionDrugDatasetItems = await this.control.getInteractionGeneDatasets();
+
+    // TODO remove me, I am only here until we manage to run "make_graphs.py" on the server
+    this.interactionDrugDatasetItems = [this.interactionDrugDatasetItems[0]]
+
     this.selectedInteractionDrugDataset = this.interactionGeneDatasetItems[0];
   }
 
@@ -408,6 +416,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     });
 
     this.network.on('doubleClick', (properties) => {
+      // select node on double click, this will also open summary on first click
       const nodeIds: Array<string> = properties.nodes;
       if (nodeIds.length > 0) {
         const nodeId = nodeIds[0];
@@ -422,6 +431,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     });
 
     this.network.on('click', (properties) => {
+      // open summary for node on click
       const nodeIds: Array<string> = properties.nodes;
       if (nodeIds.length > 0) {
         const nodeId = nodeIds[0];

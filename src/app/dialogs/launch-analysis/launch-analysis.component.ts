@@ -128,9 +128,13 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     drugInteractionDataset: Dataset,
     cancerTypes: CancerType[]
   ) {
+    console.log('Selection')
+    console.log(this.analysis.getSelection())
     const parameters: any = {
       seeds: this.analysis.getSelection().map((item) => this.getGraphId(item)),
     };
+    console.log('parameters')
+    console.log(parameters)
 
     // new input from caddie
     parameters.cancer_dataset = dataset.name;

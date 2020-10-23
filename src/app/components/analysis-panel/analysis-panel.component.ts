@@ -104,11 +104,11 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
      * refreshes page in case task is completed
      */
 
-    this.loadingOverlay.addTo('analysis-content');
-
     if (this.token) {
       this.task = await this.control.getTask(this.token);
       this.analysis.switchSelection(this.token);
+
+      this.loadingOverlay.addTo('analysis-content');
 
       if (this.task.info.algorithm === 'degree') {
         this.tableDrugScoreTooltip =
@@ -334,10 +334,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableSelectedCancerNodes = [...cancerGeneSelection];
           }
         });
+        this.loadingOverlay.removeFrom('analysis-content');
       }
     }
     this.emitVisibleItems(true);
-    this.loadingOverlay.removeFrom('analysis-content');
   }
 
   public emitVisibleItems(on: boolean) {

@@ -12,7 +12,7 @@ import {
 import {Subject} from 'rxjs';
 import {toast} from 'bulma-toast';
 import {Injectable} from '@angular/core';
-import {ControlService} from './control.service';
+import {ControlService} from './services/control/control.service';
 
 export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'closeness' | 'degree' | 'proximity' | 'betweenness';
 export type QuickAlgorithmType = 'quick' | 'super';

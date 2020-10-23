@@ -1,6 +1,6 @@
 <div *ngIf="token">
   <div class="card analysis">
-    <header class="card-header">
+    <header class="card-header is-relative">
       <p class="card-header-title">
         <span class="icon">
           <i class="fas fa-flask" aria-hidden="true"></i>
@@ -13,7 +13,7 @@
         </span>
       </a>
     </header>
-    <div class="card-content">
+    <div class="card-content" id="analysis-content">
       <div class="tabs is-centered">
         <ul>
           <li [class.is-active]="tab === 'table'"><a (click)="tab = 'table'">Table</a></li>

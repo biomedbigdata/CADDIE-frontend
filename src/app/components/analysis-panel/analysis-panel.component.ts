@@ -34,7 +34,8 @@ import {
 import html2canvas from 'html2canvas';
 import {toast} from 'bulma-toast';
 import {NetworkSettings} from '../../network-settings';
-import {ControlService} from '../../control.service';
+import {ControlService} from '../../services/control/control.service';
+import {LoadingOverlayService} from '../../services/loading-overlay/loading-overlay.service';
 
 declare var vis: any;
 
@@ -83,7 +84,12 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   public tableDrugScoreTooltip = '';
   public tableProteinScoreTooltip = '';
 
-  constructor(private http: HttpClient, public analysis: AnalysisService, private control: ControlService) {
+  constructor(
+    private http: HttpClient,
+    public analysis: AnalysisService,
+    private control: ControlService,
+    private loadingOverlay: LoadingOverlayService
+  ) {
   }
 
   async ngOnInit() {
@@ -97,8 +103,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     /**
      * refreshes page in case task is completed
      */
+
+    this.task = await this.control.getTask(this.token);
     if (this.token) {
-      this.task = await this.control.getTask(this.token);
       this.analysis.switchSelection(this.token);
 
       if (this.task.info.algorithm === 'degree') {
@@ -132,6 +139,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       }
 
       if (this.task && this.task.info.done) {
+        this.loadingOverlay.addTo('analysis-content')
+
         const result = await this.control.getTaskResult(this.token);
         const nodeAttributes = result.nodeAttributes || {};
         const isSeed: { [key: string]: boolean } = nodeAttributes.isSeed || {};
@@ -328,6 +337,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       }
     }
     this.emitVisibleItems(true);
+    
+    this.loadingOverlay.removeFrom('analysis-content')
   }
 
   public emitVisibleItems(on: boolean) {

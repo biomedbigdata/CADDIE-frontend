@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import {environment} from '../environments/environment';
+import {environment} from '../../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, Dataset, CancerNode, Node} from './interfaces';
-import {AlgorithmType, QuickAlgorithmType} from './analysis.service';
+import {CancerType, Dataset, CancerNode, Node} from '../../interfaces';
+import {AlgorithmType, QuickAlgorithmType} from '../../analysis.service';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import {ControlService} from '../../control.service';
+import {ControlService} from '../../services/control/control.service';
 
 @Component({
   selector: 'app-home-page',

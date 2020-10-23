@@ -27,7 +27,8 @@ import {AnalysisService} from '../../analysis.service';
 import html2canvas from 'html2canvas';
 import {environment} from '../../../environments/environment';
 import {NetworkSettings} from '../../network-settings';
-import {ControlService} from '../../control.service';
+import {ControlService} from '../../services/control/control.service';
+import {LoadingOverlayService} from '../../services/loading-overlay/loading-overlay.service';
 import {toast} from 'bulma-toast';
 
 
@@ -50,12 +51,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public selectedWrapperComorbidities: DiseaseGeneInteraction[] | [] = [];
 
   public collapseAnalysisQuick = true;
-  public collapseAnalysis = false;
+  public collapseAnalysis = true;
   public collapseDetails = true;
   public collapseTask = true;
   public collapseSelection = true;
-  public collapseBaitFilter = true;
-  public collapseQuery = true;
+  public collapseBaitFilter = false;
+  public collapseQuery = false;
   public collapseData = true;
   public collapseOverview = true;
   public collapseType = true;
@@ -127,7 +128,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   @ViewChild('network', {static: false}) networkEl: ElementRef;
 
-  constructor(private http: HttpClient, public analysis: AnalysisService, private control: ControlService) {
+  constructor(
+    private http: HttpClient,
+    public analysis: AnalysisService,
+    private control: ControlService,
+    private loadingOverlay: LoadingOverlayService,
+  ) {
 
     this.showDetails = false;
 
@@ -240,7 +246,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.interactionGeneDatasetItems = await this.control.getInteractionGeneDatasets();
 
     // TODO remove me, I am just here until we update the database on the server
-    this.interactionGeneDatasetItems = [this.interactionGeneDatasetItems[0]]
+    this.interactionGeneDatasetItems = [this.interactionGeneDatasetItems[0]];
 
     this.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
   }
@@ -252,7 +258,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.interactionDrugDatasetItems = await this.control.getInteractionGeneDatasets();
 
     // TODO remove me, I am only here until we manage to run "make_graphs.py" on the server
-    this.interactionDrugDatasetItems = [this.interactionDrugDatasetItems[0]]
+    this.interactionDrugDatasetItems = [this.interactionDrugDatasetItems[0]];
 
     this.selectedInteractionDrugDataset = this.interactionGeneDatasetItems[0];
   }
@@ -362,6 +368,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * +
      * initializes network
      */
+    this.loadingOverlay.addTo('canvas-content')
 
     // reset old stuff
     this.analysis.resetSelection();
@@ -470,6 +477,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     // fill adding option in the filter menu
     this.fillFilterItems(this.cancerNodesSup);
+
+    this.loadingOverlay.removeFrom('canvas-content')
   }
 
   public fillFilterItems(cancerNodesSup: CancerNode[], reset: boolean = true) {

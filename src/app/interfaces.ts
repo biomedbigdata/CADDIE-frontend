@@ -62,6 +62,7 @@ export interface CancerNode {
   cancer_occurrences: number;
   uniprotAc?: string;
   proteinName?: string;
+  expressionLevel?: number;
 }
 
 export interface Interaction {

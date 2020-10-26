@@ -77,16 +77,11 @@ export class AnalysisService {
       this.finishedTokens = JSON.parse(finishedTokens);
     }
     this.startWatching();
-
-    this.tissues = [{
-        id: 1, name: 'test'
-      }];
-
-    /*
-    this.http.get<Tissue[]>(`${environment.backend}tissues/`).subscribe((tissues) => {
+    console.log("getting tissues")
+    this.control.tissues().subscribe((tissues) => {
       this.tissues = tissues;
     });
-    */
+
 
   }
 

@@ -18,11 +18,11 @@ export class AddExpressedProteinsComponent implements OnChanges {
   @Input()
   public visibleNodes: Array<any> = [];
   @Input()
-  public currentViewProteins: Array<Node> = [];
+  public currentViewGenes: Array<Node> = [];
   @Input()
   public selectedTissue: Tissue | null = null;
 
-  public proteins = [];
+  public genes = [];
   public threshold = 5;
   public addedCount: number | null = null;
   public loading = false;
@@ -34,7 +34,7 @@ export class AddExpressedProteinsComponent implements OnChanges {
     this.setThreshold(this.threshold);
   }
 
-  public async addProteins() {
+  public async addGenes() {
     this.loading = true;
     const result = await this.http.post<any>(`${environment.backend}query_tissue_proteins/`,
       {tissueId: this.selectedTissue.id, threshold: this.threshold}).toPromise();
@@ -46,18 +46,18 @@ export class AddExpressedProteinsComponent implements OnChanges {
     this.loading = false;
   }
 
-  public addVisibleProteins() {
+  public addVisibleGenes() {
     this.loading = true;
-    this.addedCount = this.analysis.addExpressedGenes(this.visibleNodes, this.currentViewProteins, this.threshold);
+    this.addedCount = this.analysis.addExpressedGenes(this.visibleNodes, this.currentViewGenes, this.threshold);
     this.loading = false;
   }
 
   public setThreshold(threshold: number) {
     this.threshold = threshold;
-    if (!this.currentViewProteins) {
+    if (!this.currentViewGenes) {
       return;
     }
-    this.proteins = this.currentViewProteins.filter(p => p.expressionLevel >= threshold);
+    this.genes = this.currentViewGenes.filter(p => p.expressionLevel >= threshold);
   }
 
   public close() {

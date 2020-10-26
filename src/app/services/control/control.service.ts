@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, Dataset, CancerNode, Node} from '../../interfaces';
+import {CancerType, Dataset, CancerNode, Node, Tissue} from '../../interfaces';
 import {AlgorithmType, QuickAlgorithmType} from '../../analysis.service';
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -290,5 +291,40 @@ export class ControlService {
     return this.http.post<any>(`${environment.backend}query_nodes/`, genes).toPromise();
   }
 
+  public tissueExpressionGenes(tissue: Tissue, genes: Node[], cancerGenes: CancerNode[]): Observable<any> {
+
+    const genesBackendIds = genes.map( (gene) => gene.backendId).join(',');
+    const cancerGenesBackendIds = cancerGenes.map( (gene) => gene.backendId).join(',');
+    const params = new HttpParams()
+      .set('tissue', `${tissue.id}`)
+      .set('genes', JSON.stringify(genesBackendIds))
+      .set('cancerGenes', JSON.stringify(cancerGenesBackendIds));
+    console.log('params')
+    console.log(params)
+    return this.http.get(`${environment.backend}tissue_expression/`, {params})
+  }
+
+  public tissueExpression(tissue: Tissue, dataset: Dataset, cancerTypes: CancerType[]): Observable<any> {
+    /**
+     * Fetches genes with expression levels for input data
+     * returns list of objects with key "gene" and gene-information as well as
+     * key "level" with expression level number or null
+     */
+    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
+    const cancerTypesIdsString = cancerTypesIds.join(',');
+    const params = new HttpParams()
+      .set('tissue', `${tissue.id}`)
+      .set('data', JSON.stringify(dataset.backendId))
+      .set('cancerTypes', JSON.stringify(cancerTypesIdsString));
+
+    return this.http.get(`${environment.backend}tissue_expression/`, {params})
+  }
+
+  public tissues(): Observable<any> {
+    /**
+     * Lists all available tissues with id and name
+     */
+    return this.http.get<Tissue[]>(`${environment.backend}tissues/`)
+  }
 
 }

@@ -570,6 +570,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // TODO not good to iterate through everything
     this.filterNodes();
 
+    // check if tissue is selected, if yes, refresh so new node gets color gradient
+    // TODO just do this for new node
+    if (this.selectedTissue) {
+      this.selectTissue(this.selectedTissue)
+    }
+
   }
 
   public async filterNodes() {
@@ -864,73 +870,133 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     if (!tissue) {
       // if no tissue selected, we reset all nodes in network
       this.selectedTissue = null;
-      const updatedNodes = [];
-      for (const gene of this.nodes) {
-        const item = getWrapperFromNode(gene);
-        const node = this.nodeData.nodes.get(item.nodeId);
-        if (!node) {
-          continue;
-        }
-        const pos = this.network.getPositions([item.nodeId]);
-        node.x = pos[item.nodeId].x;
-        node.y = pos[item.nodeId].y;
-        Object.assign(node,
-          NetworkSettings.getNodeStyle(
-            node.wrapper.type,
-            node.isSeed,
-            this.analysis.inSelection(item),
-            undefined,
-            undefined,
-            1.0));
-        node.wrapper = item;
-        node.gradient = 1.0;
-        gene.expressionLevel = undefined;
-        (node.wrapper.data as Node).expressionLevel = undefined;
-        updatedNodes.push(node);
-      }
+      // reset each normal genes and cancer genes
+      const updatedNodes = [
+        ...this._resetTissueExpression('Node'),
+        ...this._resetTissueExpression('CancerNode')
+      ];
       this.nodeData.nodes.update(updatedNodes);
+
     } else {
       // ELSE tissue is selected, fetch data based on min expression value
       this.selectedTissue = tissue;
 
       const minExp = 0.3;
 
-      const params = new HttpParams().set('tissue', `${tissue.id}`).set('data', JSON.stringify(this.currentDataset));
-      this.http.get<any>(
-        `${environment.backend}tissue_expression/`, {params})
-        .subscribe((levels) => {
-          const updatedNodes = [];
-          const maxExpr = Math.max(...levels.map(lvl => lvl.level));
-          for (const lvl of levels) {
-            const item = getWrapperFromNode(lvl.protein);
-            const node = this.nodeData.nodes.get(item.nodeId);
-            if (!node) {
-              continue;
-            }
-            const gradient = lvl.level !== null ? (Math.pow(lvl.level / maxExpr, 1 / 3) * (1 - minExp) + minExp) : -1;
-            const pos = this.network.getPositions([item.nodeId]);
-            node.x = pos[item.nodeId].x;
-            node.y = pos[item.nodeId].y;
-            Object.assign(node,
-              NetworkSettings.getNodeStyle(
-                node.wrapper.type,
-                node.isSeed,
-                this.analysis.inSelection(item),
-                undefined,
-                undefined,
-                gradient));
-            node.wrapper = item;
-            node.gradient = gradient;
-            this.nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
-            (node.wrapper.data as Node).expressionLevel = lvl.level;
-            updatedNodes.push(node);
-          }
+      // fetch all data
+      this.control.tissueExpressionGenes(tissue, this.nodes, this.cancerNodes)
+        .subscribe((response) => {
+          // response is object with key "cancerGenes" and "genes"
+          // each which is list of objects with "gene" and "level" (expression value)
+          const maxExpr = Math.max(...[...response.genes, ...response.cancerGenes].map(lvl => lvl.level));
+
+          // fetch each normal genes and cancer genes
+          const updatedGenes = this._interpretTissueExpressionResponse(
+            response.genes, maxExpr, minExp, 'Node'
+          );
+          const updatedCancerGenes = this._interpretTissueExpressionResponse(
+            response.cancerGenes, maxExpr, minExp, 'CancerNode'
+          );
+
+          const updatedNodes = [...updatedGenes, ...updatedCancerGenes];
           this.nodeData.nodes.update(updatedNodes);
         });
-
     }
 
     this.currentViewSelectedTissue = this.selectedTissue;
+  }
+
+  private _resetTissueExpression(nodeType: ('Node' | 'CancerNode')): Node[] {
+    /**
+     * resets the color gradient from tissue expression to normal network colors
+     * We have to differentiate between Nodes and CancerNodes to not mix up the types in the network
+     */
+    const updatedNodes = [];
+    let nodes;
+    if (nodeType === 'Node') {
+      nodes = this.nodes
+    } else {
+      nodes = this.cancerNodes
+    }
+    for (const gene of nodes) {
+      let item;
+      if (nodeType === 'Node') {
+        item = getWrapperFromNode(gene as Node);
+      } else {
+        item = getWrapperFromCancerNode(gene as CancerNode);
+      }
+
+      const node = this.nodeData.nodes.get(item.nodeId);
+      if (!node) {
+        continue;
+      }
+      const pos = this.network.getPositions([item.nodeId]);
+      node.x = pos[item.nodeId].x;
+      node.y = pos[item.nodeId].y;
+      Object.assign(node,
+        NetworkSettings.getNodeStyle(
+          node.wrapper.type,
+          node.isSeed,
+          this.analysis.inSelection(item),
+          undefined,
+          undefined,
+          1.0));
+      node.wrapper = item;
+      node.gradient = 1.0;
+      gene.expressionLevel = undefined;
+      (node.wrapper.data as Node).expressionLevel = undefined;
+      updatedNodes.push(node);
+    }
+    return updatedNodes;
+  }
+
+  private _interpretTissueExpressionResponse(
+    /**
+     * Reads the result of the "TissueExpressionView" and converts it into input for the network
+     * Main function is to calculate the color gradient based on expression value
+     * We have to differentiate between Node and CancerNode to not mix up the types in the network
+     */
+    gene_list: { gene: (Node | CancerNode), level: number }[],
+    maxExpr: number,
+    minExp: number,
+    nodeType: ('Node' | 'CancerNode')
+  ): Node[] {
+    const updatedNodes = [];
+    for (const lvl of gene_list) {
+      let item;
+      let nodes;
+      if (nodeType === 'Node') {
+        item = getWrapperFromNode(lvl.gene as Node);
+        nodes = this.nodes
+      } else {
+        item = getWrapperFromCancerNode(lvl.gene as CancerNode);
+        nodes = this.cancerNodes
+      }
+
+      const node = this.nodeData.nodes.get(item.nodeId);
+      if (!node) {
+        continue;
+      }
+      // calculate color gradient
+      const gradient = lvl.level !== null ? (Math.pow(lvl.level / maxExpr, 1 / 3) * (1 - minExp) + minExp) : -1;
+      const pos = this.network.getPositions([item.nodeId]);
+      node.x = pos[item.nodeId].x;
+      node.y = pos[item.nodeId].y;
+      Object.assign(node,
+        NetworkSettings.getNodeStyle(
+          node.wrapper.type,
+          node.isSeed,
+          this.analysis.inSelection(item),
+          undefined,
+          undefined,
+          gradient));
+      node.wrapper = item;
+      node.gradient = gradient;
+      nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
+      (node.wrapper.data as (Node | CancerNode)).expressionLevel = lvl.level;
+      updatedNodes.push(node);
+    }
+    return updatedNodes
   }
 
   public async loadCancerTypeComorbiditesGraph() {

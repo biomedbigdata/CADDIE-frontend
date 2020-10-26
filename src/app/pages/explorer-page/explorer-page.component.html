@@ -16,7 +16,7 @@
   <app-add-expressed-genes [(show)]="showThresholdDialog"
                            [selectedTissue]="currentViewSelectedTissue"
                            [visibleNodes]="currentViewNodes"
-                           [currentViewProteins]="currentViewGenes">
+                           [currentViewGenes]="currentViewGenes">
   </app-add-expressed-genes>
 
   <div class="caddie explorer">
@@ -102,7 +102,6 @@
                 </span> <span>Screenshot</span>
                 </button>
 
-                <!--
                 <div class="footer-buttons dropdown is-up" [class.is-active]="expressionExpanded">
                   <div class="dropdown-trigger">
                     <button (click)="expressionExpanded=!expressionExpanded"
@@ -136,7 +135,7 @@
                     </div>
                   </div>
                 </div>
-                -->
+
                 <app-toggle class="footer-buttons" textOn="Animation On" textOff="Off"
                             tooltipOn="Enable the network animation."
                             tooltipOff="Disable the network animation and freeze nodes."

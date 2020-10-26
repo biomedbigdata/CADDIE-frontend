@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {CancerType, Dataset, CancerNode, Node, Tissue} from '../../interfaces';
-import {AlgorithmType, QuickAlgorithmType} from '../../analysis.service';
-import {Observable} from "rxjs";
+import {AlgorithmType, QuickAlgorithmType} from '../analysis/analysis.service';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -299,9 +299,7 @@ export class ControlService {
       .set('tissue', `${tissue.id}`)
       .set('genes', JSON.stringify(genesBackendIds))
       .set('cancerGenes', JSON.stringify(cancerGenesBackendIds));
-    console.log('params')
-    console.log(params)
-    return this.http.get(`${environment.backend}tissue_expression/`, {params})
+    return this.http.get(`${environment.backend}tissue_expression/`, {params});
   }
 
   public tissueExpression(tissue: Tissue, dataset: Dataset, cancerTypes: CancerType[]): Observable<any> {
@@ -317,14 +315,14 @@ export class ControlService {
       .set('data', JSON.stringify(dataset.backendId))
       .set('cancerTypes', JSON.stringify(cancerTypesIdsString));
 
-    return this.http.get(`${environment.backend}tissue_expression/`, {params})
+    return this.http.get(`${environment.backend}tissue_expression/`, {params});
   }
 
   public tissues(): Observable<any> {
     /**
      * Lists all available tissues with id and name
      */
-    return this.http.get<Tissue[]>(`${environment.backend}tissues/`)
+    return this.http.get<Tissue[]>(`${environment.backend}tissues/`);
   }
 
   public query_tissue_genes(tissue: Tissue, threshold: number): Promise<any> {

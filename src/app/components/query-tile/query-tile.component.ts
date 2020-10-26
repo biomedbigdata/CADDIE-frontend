@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {Node, Wrapper, CancerNode, DataLevel} from '../../interfaces';
+import {Node, Wrapper, CancerNode} from '../../interfaces';
 
 @Component({
   selector: 'app-query-tile-component',

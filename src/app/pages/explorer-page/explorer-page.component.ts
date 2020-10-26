@@ -22,7 +22,7 @@ import {
 } from '../../interfaces';
 import {Network, getDatasetFilename} from '../../main-network';
 import {HttpClient} from '@angular/common/http';
-import {AnalysisService} from '../../analysis.service';
+import {AnalysisService} from '../../services/analysis/analysis.service';
 import html2canvas from 'html2canvas';
 import {NetworkSettings} from '../../network-settings';
 import {ControlService} from '../../services/control/control.service';
@@ -561,7 +561,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // check if tissue is selected, if yes, refresh so new node gets color gradient
     // TODO just do this for new node
     if (this.selectedTissue) {
-      this.selectTissue(this.selectedTissue)
+      this.selectTissue(this.selectedTissue);
     }
 
   }
@@ -895,9 +895,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const updatedNodes = [];
     let nodes;
     if (nodeType === 'Node') {
-      nodes = this.nodes
+      nodes = this.nodes;
     } else {
-      nodes = this.cancerNodes
+      nodes = this.cancerNodes;
     }
     for (const gene of nodes) {
       let item;
@@ -937,21 +937,21 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Main function is to calculate the color gradient based on expression value
      * We have to differentiate between Node and CancerNode to not mix up the types in the network
      */
-    gene_list: { gene: (Node | CancerNode), level: number }[],
+    geneList: { gene: (Node | CancerNode), level: number }[],
     maxExpr: number,
     minExp: number,
     nodeType: ('Node' | 'CancerNode')
   ): Node[] {
     const updatedNodes = [];
-    for (const lvl of gene_list) {
+    for (const lvl of geneList) {
       let item;
       let nodes;
       if (nodeType === 'Node') {
         item = getWrapperFromNode(lvl.gene as Node);
-        nodes = this.nodes
+        nodes = this.nodes;
       } else {
         item = getWrapperFromCancerNode(lvl.gene as CancerNode);
-        nodes = this.cancerNodes
+        nodes = this.cancerNodes;
       }
 
       const node = this.nodeData.nodes.get(item.nodeId);
@@ -977,7 +977,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       (node.wrapper.data as (Node | CancerNode)).expressionLevel = lvl.level;
       updatedNodes.push(node);
     }
-    return updatedNodes
+    return updatedNodes;
   }
 
   public async loadCancerTypeComorbiditesGraph() {

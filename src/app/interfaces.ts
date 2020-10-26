@@ -1,4 +1,4 @@
-import {AlgorithmType, QuickAlgorithmType} from './analysis.service';
+import {AlgorithmType, QuickAlgorithmType} from './services/analysis/analysis.service';
 
 export interface Node {
   /**
@@ -15,8 +15,6 @@ export interface Node {
   proteinName?: string;
   cancer_occurrences: number;
 }
-
-export type DataLevel = 'gene' | 'protein';
 
 export interface Tissue {
   /**

@@ -21,7 +21,7 @@ import {ToggleComponent} from './components/toggle/toggle.component';
 import {InfoTileComponent} from './components/info-tile/info-tile.component';
 import {CustomGenesComponent} from './dialogs/custom-proteins/custom-genes.component';
 
-import {AnalysisService} from './analysis.service';
+import {AnalysisService} from './services/analysis/analysis.service';
 import { CitationPageComponent } from './pages/citation-page/citation-page.component';
 import { AddExpressedProteinsComponent } from './dialogs/add-expressed-proteins/add-expressed-proteins.component';
 import { CancertypeTileComponent } from './components/cancertype-tile/cancertype-tile.component';

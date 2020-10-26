@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {getWrapperFromNode, Node, Wrapper} from '../../interfaces';
-import {AnalysisService} from '../../analysis.service';
+import {AnalysisService} from '../../services/analysis/analysis.service';
 import {ControlService} from '../../services/control/control.service';
 
 @Component({

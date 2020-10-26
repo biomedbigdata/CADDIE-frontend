@@ -8,11 +8,11 @@ import {
   Dataset,
   Tissue,
   CancerType,
-} from './interfaces';
+} from '../../interfaces';
 import {Subject} from 'rxjs';
 import {toast} from 'bulma-toast';
 import {Injectable} from '@angular/core';
-import {ControlService} from './services/control/control.service';
+import {ControlService} from '../control/control.service';
 
 export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'closeness' | 'degree' | 'proximity' | 'betweenness';
 export type QuickAlgorithmType = 'quick' | 'super';
@@ -77,7 +77,6 @@ export class AnalysisService {
       this.finishedTokens = JSON.parse(finishedTokens);
     }
     this.startWatching();
-    console.log("getting tissues")
     this.control.tissues().subscribe((tissues) => {
       this.tissues = tissues;
     });

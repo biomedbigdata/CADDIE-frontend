@@ -3,9 +3,9 @@
                        [target]="analysisDialogTarget"
                        [dataset]="selectedDataset"
                        [selectedDataset]="selectedDataset"
-                       [selectedGeneInteractionDataset]="selectedInteractionGeneDataset"
+                       [selectedGeneInteractionDataset]="currentGeneInteractionDataset"
                        [selectedDrugInteractionDataset]="selectedInteractionDrugDataset"
-                       [selectedCancerTypeItems]="selectedCancerTypeItems"
+                       [currentCancerTypeItems]="currentCancerTypeItems"
                        [interactionDrugDatasetItems]="interactionDrugDatasetItems"
   >
   </app-launch-analysis>
@@ -16,7 +16,10 @@
   <app-add-expressed-genes [(show)]="showThresholdDialog"
                            [selectedTissue]="currentViewSelectedTissue"
                            [visibleNodes]="currentViewNodes"
-                           [currentViewGenes]="currentViewGenes">
+                           [currentViewGenes]="currentViewGenes"
+                           [currentViewCancerGenes]="currentViewCancerGenes"
+                           [currentCancerTypeItems]="currentCancerTypeItems"
+  >
   </app-add-expressed-genes>
 
   <div class="caddie explorer">
@@ -27,7 +30,7 @@
         <div class="caddie network" id="network">
           <div class="card network">
             <header class="card-header">
-              <p *ngIf="currentDataLevel == 'gene'" class="card-header-title">Gene-Gene Interaction Network</p>
+              <p class="card-header-title">Gene-Gene Interaction Network</p>
             </header>
             <div class="card-content">
 
@@ -45,12 +48,12 @@
                   <span *ngIf="!selectedWrapper">No item selected</span>
                   <span *ngIf="selectedWrapper">
                     <span *ngIf="selectedWrapper.type === 'Node'">
-                      <span *ngIf="currentDataLevel === 'gene'">
+                      <span>
                         Gene
                       </span>
                     </span>
                     <span *ngIf="selectedWrapper.type === 'CancerNode'">
-                      <span *ngIf="currentDataLevel === 'gene'">
+                      <span>
                         Cancer Driver Gene
                       </span>
                     </span>
@@ -275,7 +278,7 @@
               </div>
               <div class="level-item has-text-centered">
                 <div>
-                  <p *ngIf="currentDataLevel=='gene'" class="heading">
+                  <p class="heading">
                     Genes
                     <span class="icon has-tooltip-right has-text-black is-lowercase has-text-weight-normal is-size-6"
                           data-tooltip="Only subgroup of genes is shown for performance reasons">
@@ -321,7 +324,6 @@
             <div class="field">
               <div class="control">
                 <app-query-tile-component [queryItems]="queryItems"
-                                          [dataLevel]="currentDataLevel"
                                           (selectItem)="queryAction($event)"
                                           placeholder="Search..."
                                           removeOnSelect="false"
@@ -367,7 +369,6 @@
             <!-- "Add-to" Filter -->
             <div>
               <app-query-tile-component [queryItems]="filterAddItems"
-                                        [dataLevel]="currentDataLevel"
                                         (selectItem)="addFilterNode($event)"
                                         placeholder="Add..."
                                         removeOnSelect="true"
@@ -612,7 +613,7 @@
               </tbody>
             </table>
             <i *ngIf="analysis.getCount() === 0">
-              Double-click on a protein to select it for the analysis.
+              Double-click on a node to select it for the analysis.
             </i>
           </div>
 
@@ -622,35 +623,31 @@
             <span class="icon">
               <i class="fa fa-plus"></i>
             </span>
-              <span *ngIf="currentDataLevel=='gene'">Add genes</span>
-              <span *ngIf="currentDataLevel=='protein'">Add proteins</span>
+              <span>Add genes</span>
             </a>
             <a (click)="analysis.removeAllNodes()"
                class="card-footer-item has-text-danger" data-tooltip="Remove all genes.">
             <span class="icon">
               <i class="fa fa-minus"></i>
             </span>
-              <span *ngIf="currentDataLevel=='gene'">Remove genes</span>
-              <span *ngIf="currentDataLevel=='protein'">Remove proteins</span>
+              <span>Remove genes</span>
             </a>
           </footer>
 
           <footer class="card-footer">
-            <a (click)="analysis.addVisibleCancerDriverGenes(currentViewNodes, currentViewCancerNodes)"
+            <a (click)="analysis.addVisibleCancerDriverGenes(currentViewNodes, currentViewCancerGenes)"
                class="card-footer-item has-text-success" data-tooltip="Add all visible cancer driver genes.">
             <span class="icon">
               <i class="fa fa-plus"></i>
             </span>
-              <span *ngIf="currentDataLevel=='gene'">Add cancer driver genes</span>
-              <span *ngIf="currentDataLevel=='protein'">Add cancer proteins</span>
+              <span>Add cancer driver genes</span>
             </a>
             <a (click)="analysis.removeAllCancerDriverNodes()"
                class="card-footer-item has-text-danger" data-tooltip="Remove all cancer driver genes.">
             <span class="icon">
               <i class="fa fa-minus"></i>
             </span>
-              <span *ngIf="currentDataLevel=='gene'">Remove cancer driver genes</span>
-              <span *ngIf="currentDataLevel=='protein'">Remove cancer proteins</span>
+              <span>Remove cancer driver genes</span>
             </a>
           </footer>
 

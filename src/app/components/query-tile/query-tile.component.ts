@@ -10,7 +10,6 @@ export class QueryTileComponent {
 
   @Output() selectItem: EventEmitter<any> = new EventEmitter();
   @Input() queryItems: Wrapper[];
-  @Input() dataLevel: DataLevel;
   @Input() placeholder: string;
   @Input() removeOnSelect = false;
 
@@ -20,26 +19,25 @@ export class QueryTileComponent {
   querySearch = (term: string, item: Wrapper) => {
     term = term.toLowerCase();
 
-    if (this.dataLevel === 'gene') {
-      if (item.type === 'Node') {
-        const data = item.data as Node;
-        return data.name.toLowerCase().indexOf(term) > -1 ||
-          data.backendId.toString().toLowerCase().indexOf(term) > -1 ||
-          item.type.toLowerCase().indexOf(term) > -1 ||
-          data.proteinName.toLocaleLowerCase().indexOf(term) > -1 ||
-          data.uniprotAc.toLocaleLowerCase().indexOf(term) > -1 ;
-      } else {
-        // type is cancerNode
-        const data = item.data as CancerNode;
-        return data.name.toLowerCase().indexOf(term) > -1 ||
-          data.type.toLowerCase().indexOf(term) > -1 ||
-          item.type.toLowerCase().indexOf(term) > -1 ||
-          data.backendId.toString().toLowerCase().indexOf(term) > -1 ||
-          data.proteinName.toLocaleLowerCase().indexOf(term) > -1 ||
-          data.uniprotAc.toLocaleLowerCase().indexOf(term) > -1 ;
-      }
+    if (item.type === 'Node') {
+      const data = item.data as Node;
+      return data.name.toLowerCase().indexOf(term) > -1 ||
+        data.backendId.toString().toLowerCase().indexOf(term) > -1 ||
+        item.type.toLowerCase().indexOf(term) > -1 ||
+        data.proteinName.toLocaleLowerCase().indexOf(term) > -1 ||
+        data.uniprotAc.toLocaleLowerCase().indexOf(term) > -1 ;
+    } else {
+      // type is cancerNode
+      const data = item.data as CancerNode;
+      return data.name.toLowerCase().indexOf(term) > -1 ||
+        data.type.toLowerCase().indexOf(term) > -1 ||
+        item.type.toLowerCase().indexOf(term) > -1 ||
+        data.backendId.toString().toLowerCase().indexOf(term) > -1 ||
+        data.proteinName.toLocaleLowerCase().indexOf(term) > -1 ||
+        data.uniprotAc.toLocaleLowerCase().indexOf(term) > -1 ;
     }
   }
+
 
   select(item) {
     this.selectItem.emit(item);

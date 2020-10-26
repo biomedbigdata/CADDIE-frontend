@@ -327,4 +327,16 @@ export class ControlService {
     return this.http.get<Tissue[]>(`${environment.backend}tissues/`)
   }
 
+  public query_tissue_genes(tissue: Tissue, threshold: number): Promise<any> {
+    /**
+     * Lists all available tissues with id and name
+     */
+
+    return this.http.post<any>(`${environment.backend}query_tissue_genes/`,
+      {
+        tissueId: JSON.stringify(tissue.id),
+        threshold: JSON.stringify(threshold)
+      }).toPromise();
+  }
+
 }

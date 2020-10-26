@@ -32,7 +32,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   @Input()
   public selectedDrugInteractionDataset: Dataset;
   @Input()
-  public selectedCancerTypeItems: CancerType[];
+  public currentCancerTypeItems: CancerType[];
   @Input()
   public interactionDrugDatasetItems: Dataset[];
 

@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {AnalysisService} from '../../analysis.service';
-import {getWrapperFromNode, Node, Tissue} from '../../interfaces';
-import {environment} from '../../../environments/environment';
+import {getWrapperFromNode, getWrapperFromCancerNode, Node, Tissue, CancerNode, CancerType} from '../../interfaces';
 import {HttpClient} from '@angular/common/http';
+import {ControlService} from "../../services/control/control.service";
 
 @Component({
   selector: 'app-add-expressed-genes',
@@ -20,14 +20,18 @@ export class AddExpressedProteinsComponent implements OnChanges {
   @Input()
   public currentViewGenes: Array<Node> = [];
   @Input()
+  public currentViewCancerGenes: Array<CancerNode> = [];
+  @Input()
   public selectedTissue: Tissue | null = null;
+  @Input()
+  public currentCancerTypeItems: CancerType[];
 
   public genes = [];
   public threshold = 5;
   public addedCount: number | null = null;
   public loading = false;
 
-  constructor(private http: HttpClient, private analysis: AnalysisService) {
+  constructor(private http: HttpClient, private analysis: AnalysisService, private control: ControlService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -36,11 +40,15 @@ export class AddExpressedProteinsComponent implements OnChanges {
 
   public async addGenes() {
     this.loading = true;
-    const result = await this.http.post<any>(`${environment.backend}query_tissue_proteins/`,
-      {tissueId: this.selectedTissue.id, threshold: this.threshold}).toPromise();
+    const result = await this.control.query_tissue_genes(this.selectedTissue, this.threshold)
+    console.log('result')
+    console.log(result)
     const items = [];
-    for (const detail of result) {
+    for (const detail of result.genes) {
       items.push(getWrapperFromNode(detail));
+    }
+    for (const detail of result.cancerGenes) {
+      items.push(getWrapperFromCancerNode(detail));
     }
     this.addedCount = this.analysis.addItems(items);
     this.loading = false;
@@ -48,7 +56,12 @@ export class AddExpressedProteinsComponent implements OnChanges {
 
   public addVisibleGenes() {
     this.loading = true;
-    this.addedCount = this.analysis.addExpressedGenes(this.visibleNodes, this.currentViewGenes, this.threshold);
+    let count = 0;
+    count += this.analysis.addExpressedGenes(
+      this.visibleNodes, this.currentViewGenes, this.threshold, 'Node');
+    count += this.analysis.addExpressedGenes(
+      this.visibleNodes, this.currentViewCancerGenes, this.threshold, 'CancerNode');
+    this.addedCount = count
     this.loading = false;
   }
 
@@ -57,7 +70,7 @@ export class AddExpressedProteinsComponent implements OnChanges {
     if (!this.currentViewGenes) {
       return;
     }
-    this.genes = this.currentViewGenes.filter(p => p.expressionLevel >= threshold);
+    this.genes = [...this.currentViewGenes, ...this.currentViewCancerGenes].filter(p => p.expressionLevel >= threshold);
   }
 
   public close() {

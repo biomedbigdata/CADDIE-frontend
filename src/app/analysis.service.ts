@@ -221,7 +221,12 @@ export class AnalysisService {
     this.selectListSubject.next({items: newSelection, selected: null});
   }
 
-  public addExpressedGenes(nodes, proteins: Node[], threshold: number): number {
+  public addExpressedGenes(
+    nodes,
+    genes: (Node | CancerNode)[],
+    threshold: number,
+    nodeType: ('Node' | 'CancerNode')
+): number {
     /**
      * Returns amount of genes which have higher expression than threshold
      * +
@@ -229,10 +234,11 @@ export class AnalysisService {
      */
     const items: Wrapper[] = [];
     const visibleIds = new Set<string>(nodes.getIds());
-    for (const protein of proteins) {
-      const wrapper = getWrapperFromNode(protein);
+    for (const gene of genes) {
+      const wrapper = nodeType === 'Node' ? getWrapperFromNode(gene as Node) :
+        getWrapperFromCancerNode(gene as CancerNode);
       const found = visibleIds.has(wrapper.nodeId);
-      if (found && !this.inSelection(wrapper) && protein.expressionLevel > threshold) {
+      if (found && !this.inSelection(wrapper) && gene.expressionLevel > threshold) {
         items.push(wrapper);
         this.selectedItems.set(wrapper.nodeId, wrapper);
       }

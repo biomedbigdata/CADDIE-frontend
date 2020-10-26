@@ -17,15 +17,13 @@ import {
   getGeneNodeId,
   Tissue,
   CancerType,
-  DataLevel,
   Dataset,
   DiseaseGeneInteraction
 } from '../../interfaces';
 import {Network, getDatasetFilename} from '../../main-network';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {AnalysisService} from '../../analysis.service';
 import html2canvas from 'html2canvas';
-import {environment} from '../../../environments/environment';
 import {NetworkSettings} from '../../network-settings';
 import {ControlService} from '../../services/control/control.service';
 import {LoadingOverlayService} from '../../services/loading-overlay/loading-overlay.service';
@@ -41,9 +39,6 @@ declare var vis: any;
   styleUrls: ['./explorer-page.component.scss'],
 })
 export class ExplorerPageComponent implements OnInit, AfterViewInit {
-
-  // level of display, either gene-gene interactions or protein-protein
-  public selectedDataLevel: DataLevel;
 
   public showDetails = false;
   public selectedWrapper: Wrapper | null = null;
@@ -106,16 +101,14 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   public currentDataset: Dataset = undefined;
   public currentCancerTypeItems: CancerType[] = undefined;
-  public currentInteractionDataset: Dataset = undefined;
+  public currentGeneInteractionDataset: Dataset = undefined;
+  public currentDrugInteractionDataset: Dataset = undefined;
   public cancerTypeItems: CancerType[] = undefined;
 
   public currentViewGenes: Node[];
-  public currentViewCancerNodes: CancerNode[];
+  public currentViewCancerGenes: CancerNode[];
   public currentViewSelectedTissue: Tissue | null = null;
   public currentViewNodes: any[];
-
-  // TODO remove
-  public currentDataLevel = 'gene';
 
   public expressionExpanded = false;
   public selectedTissue: Tissue | null = null;
@@ -206,11 +199,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       await this.initCancerTypes(this.selectedDataset);
     }
 
-    if (!this.selectedDataLevel) {
-      // data level is always set
-      this.selectedDataLevel = 'gene';
-    }
-
     // init network if this.network is not set
     if (!this.network) {
       // default selection
@@ -255,12 +243,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     /**
      * Fetches Cancer Dataset data from API and initializes dataset tile
      */
-    this.interactionDrugDatasetItems = await this.control.getInteractionGeneDatasets();
+    this.interactionDrugDatasetItems = await this.control.getInteractionDrugDatasets();
 
-    // TODO remove me, I am only here until we manage to run "make_graphs.py" on the server
+    // TODO remove me, I am just here until we update the database on the server
     this.interactionDrugDatasetItems = [this.interactionDrugDatasetItems[0]];
 
-    this.selectedInteractionDrugDataset = this.interactionGeneDatasetItems[0];
+    this.selectedInteractionDrugDataset = this.interactionDrugDatasetItems[0];
   }
 
   public async initCancerTypes(dataset: Dataset) {
@@ -359,7 +347,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     this.currentDataset = dataset;
     this.currentCancerTypeItems = cancerTypes;
-    this.currentInteractionDataset = interactionDataset;
+    this.currentGeneInteractionDataset = interactionDataset;
   }
 
   public async createNetwork(dataset: Dataset, interactionDataset: Dataset, cancerType: CancerType[]) {
@@ -506,7 +494,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     if (reset) {
       this.queryItems = [];
       this.currentViewGenes = [];
-      this.currentViewCancerNodes = [];
+      this.currentViewCancerGenes = [];
     }
 
     const newQueryItems = [];
@@ -524,7 +512,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     this.currentViewNodes = this.nodeData.nodes;
     this.currentViewGenes.push(...this.nodes);
-    this.currentViewCancerNodes.push(...this.cancerNodes);
+    this.currentViewCancerGenes.push(...this.cancerNodes);
   }
 
   public async addNetworkNode(cancerNode: CancerNode) {
@@ -534,7 +522,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // add edges for node dynamically
     const data = await this.control.getNodeInteractions(
       this.currentDataset,
-      this.currentInteractionDataset,
+      this.currentGeneInteractionDataset,
       this.currentCancerTypeItems,
       cancerNode);
 
@@ -706,13 +694,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  public updateDataLevel(level) {
-    /**
-     * Updates the data level variable if button is pressed
-     */
-    this.selectedDataLevel = level;
-  }
-
   private mapGeneToNode(gene: Node): any {
     /**
      * Creates a network node object out of a given Gene object
@@ -809,12 +790,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.closeSummary();
       this.currentViewNodes = $event[0];
       this.currentViewGenes = $event[1][0];
-      this.currentViewCancerNodes = $event[1][1];
+      this.currentViewCancerGenes = $event[1][1];
       this.currentViewSelectedTissue = $event[1][2];
     } else {
       this.currentViewNodes = this.nodeData.nodes;
       this.currentViewGenes = this.nodes;
-      this.currentViewCancerNodes = this.cancerNodes;
+      this.currentViewCancerGenes = this.cancerNodes;
       this.currentViewSelectedTissue = this.selectedTissue;
     }
   }

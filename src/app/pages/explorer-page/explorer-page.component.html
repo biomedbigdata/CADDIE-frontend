@@ -595,6 +595,8 @@
               <tr>
                 <td>Type</td>
                 <td>Name</td>
+                <td>Entrez ID</td>
+                <td>Uniprot Ac</td>
                 <td>Actions</td>
               </tr>
               </thead>
@@ -608,6 +610,8 @@
                   </span>
                 </td>
                 <td>{{g.data.name}}</td>
+                <td>{{g.data.entrezId}}</td>
+                <td>{{g.data.uniprotAc}}</td>
                 <td>
                   <button (click)="analysis.removeItems([g])" class="button is-small is-danger is-outlined has-tooltip"
                           data-tooltip="Remove from selection.">

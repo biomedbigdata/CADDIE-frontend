@@ -290,11 +290,12 @@ export class ControlService {
      */
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
     const cancerTypesIdsString = cancerTypesIds.join(',');
-    const params = new HttpParams()
-      .set('nodes', JSON.stringify(nodes))
-      .set('cancerDataset', JSON.stringify(cancer_dataset.backendId))
-      .set('cancerTypes', JSON.stringify(cancerTypesIdsString));
-    return this.http.post<any>(`${environment.backend}query_nodes/`, {params}).toPromise();
+
+    return this.http.post<any>(`${environment.backend}query_nodes/`, {
+      nodes: JSON.stringify(nodes),
+      cancerDataset: JSON.stringify(cancer_dataset.backendId),
+      cancerTypes:  JSON.stringify(cancerTypesIdsString)
+    }).toPromise();
   }
 
   public tissueExpressionGenes(tissue: Tissue, genes: Node[], cancerGenes: CancerNode[]): Observable<any> {

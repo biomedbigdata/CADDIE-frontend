@@ -1,5 +1,13 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {getWrapperFromNode, Node, Wrapper} from '../../interfaces';
+import {
+  CancerType,
+  Dataset,
+  getWrapperFromNode,
+  getWrapperFromCancerNode,
+  Node,
+  CancerNode,
+  Wrapper
+} from '../../interfaces';
 import {AnalysisService} from '../../services/analysis/analysis.service';
 import {ControlService} from '../../services/control/control.service';
 
@@ -16,6 +24,10 @@ export class CustomGenesComponent implements OnInit {
   public showChange = new EventEmitter<boolean>();
   @Input()
   public visibleNodes: Array<any> = [];
+  @Input()
+  public currentCancerDataset: Dataset;
+  @Input()
+  public currentCancerTypeItems: CancerType[];
 
   public textList = '';
   public genes: Array<string> = [];
@@ -47,12 +59,17 @@ export class CustomGenesComponent implements OnInit {
     this.itemsFound = [];
     const genes = this.genes;
     this.changeTextList('');
-    const result = await this.control.queryGenes(genes);
+    // result contains 'genes' and 'cancerGenes' and 'notFound'
+    const result = await this.control.queryGenes(genes, this.currentCancerDataset, this.currentCancerTypeItems);
+    console.log(result)
+    console.log('result')
     this.notFound = result.notFound;
-    const details = result.details;
     const items = [];
-    for (const detail of details) {
+    for (const detail of result.genes) {
       items.push(getWrapperFromNode(detail));
+    }
+    for (const detail of result.cancerGenes) {
+      items.push(getWrapperFromCancerNode(detail));
     }
     this.itemsFound = items;
     this.addedCount = this.analysis.addItems(items);
@@ -66,17 +83,21 @@ export class CustomGenesComponent implements OnInit {
     this.itemsFound = [];
     const genes = this.genes;
     this.changeTextList('');
-    const result = await this.control.queryGenes(genes);
+    // result contains 'genes' and 'cancerGenes' and 'notFound'
+    const result = await this.control.queryGenes(genes, this.currentCancerDataset, this.currentCancerTypeItems);
+    console.log(result)
+    console.log('result')
     this.notFound = result.notFound;
-    const details = result.details;
-    const geneItems = [];
     const items = [];
-    for (const detail of details) {
-      geneItems.push(detail as Node);
+    for (const detail of result.genes) {
       items.push(getWrapperFromNode(detail));
     }
+    for (const detail of result.cancerGenes) {
+      items.push(getWrapperFromCancerNode(detail));
+    }
     this.itemsFound = items;
-    this.addedCount = this.analysis.addVisibleGenes(this.visibleNodes, geneItems);
+    this.addedCount = this.analysis.addVisibleGenes(this.visibleNodes, result.genes);
+    this.addedCount += this.analysis.addVisibleCancerDriverGenes(this.visibleNodes, result.cancerGenes);
     this.selectOnly = true;
     this.loading = false;
   }

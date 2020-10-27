@@ -10,7 +10,12 @@
   >
   </app-launch-analysis>
 
-  <app-custom-genes [(show)]="showCustomGenesDialog" [visibleNodes]="currentViewNodes">
+  <app-custom-genes
+    [(show)]="showCustomGenesDialog"
+    [visibleNodes]="currentViewNodes"
+    [currentCancerDataset]="currentDataset"
+    [currentCancerTypeItems]="currentCancerTypeItems"
+  >
   </app-custom-genes>
 
   <app-add-expressed-genes [(show)]="showThresholdDialog"

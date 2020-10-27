@@ -507,7 +507,6 @@ export class AnalysisService {
             } else if (task.info.failed) {
               this.finishedTokens.push(task.token);
               this.showToast(task, 'FAILED');
-
               localStorage.setItem('finishedTokens', JSON.stringify(this.finishedTokens));
             } else {
             }

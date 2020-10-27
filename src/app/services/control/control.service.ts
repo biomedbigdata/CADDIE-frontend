@@ -284,15 +284,23 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}drug_interactions/?token=${token}&view=cancer_driver_genes`).toPromise();
   }
 
-  public async queryGenes(genes): Promise<any> {
+  public async queryGenes(nodes, cancer_dataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
     /**
      * returns genes for genes in list if gene is in db
      */
-    return this.http.post<any>(`${environment.backend}query_nodes/`, genes).toPromise();
+    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
+    const cancerTypesIdsString = cancerTypesIds.join(',');
+    const params = new HttpParams()
+      .set('nodes', JSON.stringify(nodes))
+      .set('cancerDataset', JSON.stringify(cancer_dataset.backendId))
+      .set('cancerTypes', JSON.stringify(cancerTypesIdsString));
+    return this.http.post<any>(`${environment.backend}query_nodes/`, {params}).toPromise();
   }
 
   public tissueExpressionGenes(tissue: Tissue, genes: Node[], cancerGenes: CancerNode[]): Observable<any> {
-
+    /**
+     * Returns the expression in the given tissue for given nodes and cancerNodes
+     */
     const genesBackendIds = genes.map( (gene) => gene.backendId).join(',');
     const cancerGenesBackendIds = cancerGenes.map( (gene) => gene.backendId).join(',');
     const params = new HttpParams()

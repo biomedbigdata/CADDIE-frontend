@@ -184,8 +184,6 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
       parameters.result_size = this.betweennessResultSize;
     } else if (this.algorithm === 'keypathwayminer') {
       parameters.k = this.keypathwayminerK;
-      // set seeds, backend deals usually with graphIds, but in this case we want to send the names to KPM
-      parameters.seeds = this.analysis.getSelection().map((item) => item.data.name );
     } else if (this.algorithm === 'multisteiner') {
       parameters.num_trees = this.multisteinerNumTrees;
       parameters.tolerance = this.multisteinerTolerance;

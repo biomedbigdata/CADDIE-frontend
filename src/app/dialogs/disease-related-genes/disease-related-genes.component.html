@@ -1,0 +1,65 @@
+<div class="modal" [class.is-active]="show">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">
+        <span class="icon"><i class="fa fa-dna"></i></span>
+        Add Disease Genes
+      </p>
+      <button (click)="close()" class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="notification is-warning" *ngIf="addedCount === 0">
+        No genes have been selected or added.
+      </div>
+      <div class="notification is-warning" *ngIf="addedCount > 0">
+        {{addedCount}} genes have been selected or added.
+      </div>
+      <p>
+          Select diseases and either select related genes from our database or from the current network.
+      </p>
+      <br>
+      <div class="mb-3">
+        <ng-select
+          [multiple]="true"
+          [items]="diseases"
+          [(ngModel)]="selectedDiseases"
+          [virtualScroll]="true"
+          placeholder="Select..."
+          bindLabel="name"
+          (ngModelChange)="select($event)"
+          appendTo="body"
+        >
+
+          <!-- [disabled]="item.disabled" -->
+          <ng-option *ngFor="let item of diseases" [value]="item.backendId" >{{item.name}}</ng-option>
+        </ng-select>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button (click)="addGenes();" class="button is-success has-tooltip"
+              data-tooltip="Add all disease related genes from database to the selection."
+              [disabled]="!selectedDiseases || loading">
+        <span class="icon">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>
+          Add genes from database
+        </span>
+      </button>
+      <button (click)="addVisibleGenes();" class="button is-success has-tooltip"
+              data-tooltip="Add to selection if they appear in the current network."
+              [disabled]="!selectedDiseases || loading">
+        <span class="icon">
+          <i class="fas fa-expand"></i>
+        </span>
+        <span>
+          Select genes in Network
+        </span>
+      </button>
+      <button (click)="close()" class="button   has-tooltip" data-tooltip="Close the current window.">
+        Close
+      </button>
+    </footer>
+  </div>
+</div>

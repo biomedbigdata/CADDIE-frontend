@@ -18,7 +18,8 @@ import {
   Tissue,
   CancerType,
   Dataset,
-  DiseaseGeneInteraction
+  DiseaseGeneInteraction,
+  Disease
 } from '../../interfaces';
 import {Network, getDatasetFilename} from '../../main-network';
 import {HttpClient} from '@angular/common/http';
@@ -93,6 +94,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public filterAddItems: Wrapper[] = [];
   public showAnalysisDialog = false;
   public showThresholdDialog = false;
+  public showDiseaseSelectionDialog = false;
   public analysisDialogTarget: 'drug' | 'drug-target';
 
   public showCustomGenesDialog = false;
@@ -216,6 +218,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // interaction datasets are always loaded
       await this.initInteractionDrugDatasets();
     }
+
   }
 
   public async initCancerDatasets() {

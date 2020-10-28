@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, Dataset, CancerNode, Node, Tissue} from '../../interfaces';
+import {CancerType, Dataset, CancerNode, Node, Tissue, Disease} from '../../interfaces';
 import {AlgorithmType, QuickAlgorithmType} from '../analysis/analysis.service';
 import {Observable} from 'rxjs';
 
@@ -39,6 +39,25 @@ export class ControlService {
      */
 
     return this.http.get<any>(`${environment.backend}cancer_datasets/`).toPromise();
+  }
+
+  public async getDiseases(): Promise<any> {
+    /**
+     * Returns promise of a list of all diseases
+     * response.diseases = [
+     *     {
+     *         "backendId": 1,
+     *         "name": "xxxx",
+     *     },
+     *     {
+     *         "backendId": 2,
+     *         "name": "yyyy",
+     *     }
+     * ]
+     *
+     */
+
+    return this.http.get<any>(`${environment.backend}diseases/`).toPromise();
   }
 
   public async getInteractionGeneDatasets(): Promise<any> {
@@ -344,6 +363,39 @@ export class ControlService {
         tissueId: JSON.stringify(tissue.id),
         threshold: JSON.stringify(threshold)
       }).toPromise();
+  }
+
+  public queryDiseaseGenesByCancer(diseases: Disease[], dataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
+    /**
+     * Returns all genes and cancer genes related to input diseases and cancer dataset / type
+     * Returns found genes and cancerGenes
+     */
+    const diseaseIds = diseases.map( (disease) => disease.backendId);
+    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
+
+    const params = new HttpParams()
+      .set('diseases', JSON.stringify(diseaseIds))
+      .set('data', JSON.stringify(dataset.backendId))
+      .set('cancer_types', JSON.stringify(cancerTypesIds));
+
+    return this.http.get(`${environment.backend}query_disease_genes/`, {params}).toPromise();
+  }
+
+  public queryDiseaseGenesByGenes(diseases: Disease[], genes: Node[], cancerGenes: CancerNode[]): Promise<any> {
+    /**
+     * Lookup for input genes and cancer genes if they occur in the given diseases
+     * Returns Mapping where True indicates, that gene occurs in Diseases
+     */
+    const diseaseIds = diseases.map( (disease) => disease.backendId);
+    const geneIds = genes.map( (gene) => gene.backendId);
+    const cancerGeneIds = cancerGenes.map( (cancerGene) => cancerGene.backendId);
+
+    const params = new HttpParams()
+      .set('diseases', JSON.stringify(diseaseIds))
+      .set('genes', JSON.stringify(geneIds))
+      .set('cancer_genes', JSON.stringify(cancerGeneIds));
+
+    return this.http.get(`${environment.backend}query_disease_genes/`, {params}).toPromise();
   }
 
 }

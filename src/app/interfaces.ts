@@ -262,6 +262,13 @@ export interface Dataset {
   data?: CancerNode[];
 }
 
+export interface Disease {
+  backendId: string;
+  name: string;
+  mondoId: string;
+  icd10: string;
+}
+
 export interface CancerType {
   name: string;
   backendId: number;

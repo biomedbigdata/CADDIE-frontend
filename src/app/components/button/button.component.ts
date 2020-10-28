@@ -9,6 +9,7 @@ export class ButtonComponent implements OnInit {
 
   @Input() buttonText: string;
   @Input() icon: string;
+  @Input() disabled: boolean = false;
   @Output() callbackFun = new EventEmitter<any>();
 
   constructor() { }

@@ -27,6 +27,15 @@
   >
   </app-add-expressed-genes>
 
+  <app-disease-related-genes [(show)]="showDiseaseSelectionDialog"
+                             [visibleNodes]="currentViewNodes"
+                             [currentCancerDataset]="currentDataset"
+                             [currentViewGenes]="currentViewGenes"
+                             [currentViewCancerGenes]="currentViewCancerGenes"
+                             [currentCancerTypeItems]="currentCancerTypeItems"
+  >
+  </app-disease-related-genes>
+
   <div class="caddie explorer">
 
     <div class="caddie right-window">
@@ -144,6 +153,8 @@
                   </div>
                 </div>
 
+
+
                 <app-toggle class="footer-buttons" textOn="Animation On" textOff="Off"
                             tooltipOn="Enable the network animation."
                             tooltipOff="Disable the network animation and freeze nodes."
@@ -237,6 +248,9 @@
           <app-button
             buttonText="Submit"
             (callbackFun)="createNetwork(selectedDataset, selectedInteractionGeneDataset, selectedCancerTypeItems)"
+            [disabled]="(currentDataset == selectedDataset) &&
+              (currentGeneInteractionDataset == selectedInteractionGeneDataset) &&
+              (currentCancerTypeItems == selectedCancerTypeItems)"
           >
           </app-button>
           <!-- Network Submit Button END -->
@@ -701,6 +715,29 @@
               <span>
               Tissue genes
             </span>
+            </a>
+          </footer>
+
+          <footer class="card-footer">
+            <a (click)="showDiseaseSelectionDialog = true"
+               class="card-footer-item has-text-primary"
+               data-tooltip="Add genes based on their occurance in diseases.">
+            <span class="icon">
+              <i class="fa fa-upload"></i>
+            </span>
+              <span>
+              Disease genes
+            </span>
+            </a>
+            <a (click)="showThresholdDialog = true"
+               class="card-footer-item has-text-primary"
+               data-tooltip="Add genes expressed in the tissue.">
+            <span class="icon">
+              <i class="fa fa-angle-double-up"></i>
+            </span>
+              <span>
+                Tissue genes
+              </span>
             </a>
           </footer>
 

@@ -696,15 +696,14 @@
           </footer>
 
           <footer class="card-footer">
-            <a (click)="showCustomGenesDialog = true"
-               class="card-footer-item has-text-primary"
-               data-tooltip="Add a custom list of genes.">
+            <a (click)="analysis.addItems(wrapCancerNodes(cancerNodes));
+            analysis.addItems(wrapCancerNodes(cancerNodesSup))"
+               class="card-footer-item has-text-success"
+               data-tooltip="Add cancer driver genes for selected cancer tpyes">
             <span class="icon">
-              <i class="fa fa-upload"></i>
+              <i class="fa fa-plus"></i>
             </span>
-              <span>
-              Custom genes
-            </span>
+              <span>Add cancer driver genes from DB</span>
             </a>
             <a (click)="showThresholdDialog = true"
                class="card-footer-item has-text-primary"
@@ -729,15 +728,15 @@
               Disease genes
             </span>
             </a>
-            <a (click)="showThresholdDialog = true"
+            <a (click)="showCustomGenesDialog = true"
                class="card-footer-item has-text-primary"
-               data-tooltip="Add genes expressed in the tissue.">
+               data-tooltip="Add a custom list of genes.">
             <span class="icon">
-              <i class="fa fa-angle-double-up"></i>
+              <i class="fa fa-upload"></i>
             </span>
               <span>
-                Tissue genes
-              </span>
+              Custom genes
+            </span>
             </a>
           </footer>
 

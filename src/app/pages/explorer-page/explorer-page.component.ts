@@ -293,6 +293,13 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     });
   }
 
+  public wrapCancerNodes(cancerNodes: CancerNode[]): Wrapper[] {
+    /**
+     * Wraps a list of cancer nodes into wrapper objects
+     */
+    return cancerNodes.map( (cancerNode) => getWrapperFromCancerNode(cancerNode))
+  }
+
   public async openSummary(item: Wrapper, zoom: boolean) {
     /**
      * Zooms to node in network via zoomToNode() and opens the info tile with node information

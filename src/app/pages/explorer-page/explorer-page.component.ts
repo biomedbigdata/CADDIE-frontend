@@ -716,8 +716,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     }
     node.label = nodeLabel;
     node.id = wrapper.nodeId;
-    node.x = gene.x;
-    node.y = gene.y;
+    // node.x = gene.x;
+    // node.y = gene.y;
     node.wrapper = wrapper;
     node.isCancer = false;
     return node;
@@ -731,8 +731,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const node = NetworkSettings.getNodeStyle('CancerNode', undefined, this.analysis.inSelection(wrapper));
     node.id = wrapper.nodeId;
     node.label = cancerDriverGene.name;
-    node.x = cancerDriverGene.x;
-    node.y = cancerDriverGene.y;
+    // node.x = cancerDriverGene.x;
+    // node.y = cancerDriverGene.y;
     node.wrapper = wrapper;
     return node;
   }

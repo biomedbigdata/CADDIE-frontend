@@ -42,6 +42,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public algorithm: AlgorithmType | QuickAlgorithmType;
 
   public algorithms: Array<Algorithm> = [];
+  public includeNutraceuticalDrugs: boolean = true;
 
   // Trustrank Parameters
   public trustrankIncludeIndirectDrugs = false;
@@ -137,6 +138,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.gene_interaction_dataset = geneInteractionDataset.name;
     parameters.drug_interaction_dataset = drugInteractionDataset.name;
     parameters.cancer_types = cancerTypes.map( (cancerType) => cancerType.backendId );
+    parameters.includeNutraceuticalDrugs = this.includeNutraceuticalDrugs;
 
     // old input from CoVex
     parameters.target = this.target === 'drug' ? 'drugs' : this.dataset.backendId;

@@ -17,25 +17,19 @@ export class QueryTileComponent {
   }
 
   querySearch = (term: string, item: Wrapper) => {
+    // convert string to lowercase as later all attributes
     term = term.toLowerCase();
+    const data = item.data;
 
-    if (item.type === 'Node') {
-      const data = item.data as Node;
-      return data.name.toLowerCase().indexOf(term) > -1 ||
-        data.backendId.toString().toLowerCase().indexOf(term) > -1 ||
-        item.type.toLowerCase().indexOf(term) > -1 ||
-        data.proteinName.toLocaleLowerCase().indexOf(term) > -1 ||
-        data.uniprotAc.toLocaleLowerCase().indexOf(term) > -1 ;
-    } else {
-      // type is cancerNode
-      const data = item.data as CancerNode;
-      return data.name.toLowerCase().indexOf(term) > -1 ||
-        data.type.toLowerCase().indexOf(term) > -1 ||
-        item.type.toLowerCase().indexOf(term) > -1 ||
-        data.backendId.toString().toLowerCase().indexOf(term) > -1 ||
-        data.proteinName.toLocaleLowerCase().indexOf(term) > -1 ||
-        data.uniprotAc.toLocaleLowerCase().indexOf(term) > -1 ;
-    }
+    // check if string occurs in any of the attributes
+    // we alcoways need to check if attribute is set, oterhwise we will get a type error
+    const testType = item.type ? item.type.toLowerCase().indexOf(term) > -1 : false;
+    const testName = data.name ? data.name.toLowerCase().indexOf(term) > -1 : false;
+    const testEntrez = data.entrezId ? data.entrezId.toString().toLowerCase().indexOf(term) > -1 : false;
+    const testProteinName = data.proteinName ? data.proteinName.toLowerCase().indexOf(term) > -1 : false;
+    const testUniprotAc = data.uniprotAc ? data.uniprotAc.toLowerCase().indexOf(term) > -1 : false;
+
+    return (testType || testName || testEntrez || testProteinName || testUniprotAc)
   }
 
 

@@ -382,7 +382,7 @@
                   <i class="fa fa-times"></i>
                 </span>
               </td>
-              <td *ngIf="tableHasScores">{{e.score | number}}</td>
+              <td *ngIf="tableHasScores">{{e.score | number : '1.0-5'}}</td>
               <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">
                 {{previewStringArray(e.closestCancerGenes, 3)}}
               </td>
@@ -452,7 +452,7 @@
               <td><a href="https://www.uniprot.org/uniprot/{{ e.uniprotAc }}" target="_blank">{{ e.uniprotAc }}</a></td>
               <td>{{e.name}}</td>
               <td>{{e.proteinName}}</td>
-              <td *ngIf="tableHasScores">{{e.score | number}}</td>
+              <td *ngIf="tableHasScores">{{e.score | number : '1.0-5'}}</td>
               <td>
                 <span *ngIf="e.isSeed">
                   <i class="fa fa-check"></i>
@@ -527,7 +527,7 @@
               <td><a href="https://www.ncbi.nlm.nih.gov/gene/{{ e.entrezId }}">{{e.entrezId}}</a></td>
               <td>{{e.cancerOccurrences}}</td>
               <td>{{e.type}}</td>
-              <td *ngIf="tableHasScores">{{ e.score | number }}</td>
+              <td *ngIf="tableHasScores">{{ e.score | number : '1.0-5' }}</td>
               <td>
                 <span *ngIf="e.isSeed">
                   <i class="fa fa-asterisk has-text-primary"></i>

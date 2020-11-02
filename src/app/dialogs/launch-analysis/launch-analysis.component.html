@@ -495,6 +495,17 @@
         </app-interaction-dataset-tile>
       </div>
 
+      <div class="field" *ngIf="target === 'drug'">
+        <label class="label">Nutraceutical Drugs</label>
+        <app-toggle textOn="Include" textOff="Ignore" tooltipOn="Include nutraceutical drugs."
+                    tooltipOff="Exclude nutraceutical drugs from the analysis."
+                    [(value)]="includeNutraceuticalDrugs">
+        </app-toggle>
+        <p class="help">
+          Specifies whether nutraceutical drugs should be considered in the drug search.
+        </p>
+      </div>
+
       <p class="doc-link">
         <a href="https://docs.google.com/document/d/1_SRnIx_UC8FR59rMyrf_r45fCIt3naP4t1qefYNp9vk" target="_blank">
           Check the documentation for more info

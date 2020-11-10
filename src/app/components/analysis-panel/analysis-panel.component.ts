@@ -62,11 +62,12 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   private drugNodes: any[] = [];
   private drugEdges: any[] = [];
   public showDrugs = false;
+  public mutationGradient = false;
   public tab: 'meta' | 'network' | 'table' = 'table';
   public physicsEnabled = true;
 
-  private genes: any;
-  public cancerGenes: any;
+  public nodes: any;
+  public cancerNodes: any;
 
   public tableDrugs: Array<Drug & Scored & Baited> = [];
   public tableNodes: Array<Node & Scored & Seeded & Baited> = [];
@@ -342,7 +343,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public emitVisibleItems(on: boolean) {
     if (on) {
-      this.visibleItems.emit([this.nodeData.nodes, [this.genes, this.cancerGenes, this.selectedTissue]]);
+      this.visibleItems.emit([this.nodeData.nodes, [this.nodes, this.cancerNodes, this.selectedTissue]]);
     } else {
       this.visibleItems.emit(null);
     }
@@ -414,8 +415,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
     const attributes = result.nodeAttributes || {};
 
-    this.genes = [];
-    this.cancerGenes = [];
+    this.nodes = [];
+    this.cancerNodes = [];
     const network = result.network;
 
     const nodeTypes = attributes.nodeTypes || {};
@@ -425,10 +426,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     const wrappers: { [key: string]: Wrapper } = {};
     for (const node of network.nodes) {
       if (nodeTypes[node] === 'Node') {
-        this.genes.push(details[node]);
+        this.nodes.push(details[node]);
         wrappers[node] = getWrapperFromNode(details[node]);
       } else if (nodeTypes[node] === 'CancerNode') {
-        this.cancerGenes.push(details[node]);
+        this.cancerNodes.push(details[node]);
         wrappers[node] = getWrapperFromCancerNode(details[node]);
       } else if (nodeTypes[node] === 'Drug') {
         wrappers[node] = getWrapperFromDrug(details[node]);
@@ -465,7 +466,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       const drug = details as Drug;
       wrapper = getWrapperFromDrug(drug);
       drugType = drug.status;
-      drugInTrial = drug.inTrial;
+      drugInTrial = false;
       nodeLabel = drug.name;
     } else if (nodeType === 'CancerNode') {
       const cancerDriverGene = details as CancerNode;
@@ -565,6 +566,134 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     }
   }
 
+  public colorMutationGradient(active: boolean) {
+    /**
+     * Handle mutation button and colors the node based on nMutations
+     */
+    // remove potential tissue selection
+    this.mutationGradient = active;
+    this.selectedTissue = null;
+    if (!active) {
+      // if user deactivated mutation color gradient, we reset all nodes in network
+      // reset each normal genes and cancer genes
+      const updatedNodes = [
+        ...this._resetNetworkColorGradient('Node'),
+        ...this._resetNetworkColorGradient('CancerNode')
+      ];
+      this.nodeData.nodes.update(updatedNodes);
+
+    } else {
+      // else gradient is activated, color nodes
+      const mutations_counts = [];
+
+      for (const node of [...this.nodes, ...this.cancerNodes]) {
+        node.nMutations !== null ? mutations_counts.push(node.nMutations) : false;
+      }
+      const maxCount = Math.max(...mutations_counts)
+      const minCount = Math.min(...mutations_counts)
+
+      const updatedGenes = this._interpretGeneMutations(maxCount, minCount, 'Node')
+      const updatedCancerGenes = this._interpretGeneMutations(maxCount, minCount, 'CancerNode')
+
+      const updatedNodes = [...updatedGenes, ...updatedCancerGenes];
+      this.nodeData.nodes.update(updatedNodes);
+
+    }
+
+  }
+
+  private _resetNetworkColorGradient(nodeType: ('Node' | 'CancerNode')): Node[] {
+    /**
+     * resets the color gradient from tissue expression to normal network colors
+     * We have to differentiate between Nodes and CancerNodes to not mix up the types in the network
+     */
+    const updatedNodes = [];
+    let nodes;
+    if (nodeType === 'Node') {
+      nodes = this.nodes;
+    } else {
+      nodes = this.cancerNodes;
+    }
+    for (const gene of nodes) {
+      let item;
+      if (nodeType === 'Node') {
+        item = getWrapperFromNode(gene as Node);
+      } else {
+        item = getWrapperFromCancerNode(gene as CancerNode);
+      }
+
+      const node = this.nodeData.nodes.get(item.nodeId);
+      if (!node) {
+        continue;
+      }
+      const pos = this.network.getPositions([item.nodeId]);
+      node.x = pos[item.nodeId].x;
+      node.y = pos[item.nodeId].y;
+      Object.assign(node,
+        NetworkSettings.getNodeStyle(
+          node.wrapper.type,
+          node.isSeed,
+          this.analysis.inSelection(item),
+          undefined,
+          undefined,
+          1.0));
+      node.wrapper = item;
+      node.gradient = 1.0;
+      gene.expressionLevel = undefined;
+      (node.wrapper.data as Node).expressionLevel = undefined;
+      updatedNodes.push(node);
+    }
+    return updatedNodes;
+  }
+
+  private _interpretGeneMutations(
+    /**
+     * Reads the nMutations of each gene and applies the color gradient
+     */
+    maxCount: number,
+    minCount: number,
+    nodeType: ('Node' | 'CancerNode')
+  ): Node[] {
+    const updatedNodes = [];
+    let nodes;
+    if (nodeType === 'Node') {
+      nodes = this.nodes;
+    } else {
+      nodes = this.cancerNodes;
+    }
+
+    for (const n of nodes) {
+      let item;
+      if (nodeType === 'Node') {
+        item = getWrapperFromNode(n as Node);
+      } else {
+        item = getWrapperFromCancerNode(n as CancerNode);
+      }
+
+      const node = this.nodeData.nodes.get(item.nodeId);
+      if (!node) {
+        continue;
+      }
+      // calculate color gradient
+      const gradient = n.nMutations !== null ? (Math.pow(n.nMutations/ maxCount, 1/2)) : -1;
+      const pos = this.network.getPositions([item.nodeId]);
+      node.x = pos[item.nodeId].x;
+      node.y = pos[item.nodeId].y;
+      Object.assign(node,
+        NetworkSettings.getNodeStyle(
+          node.wrapper.type,
+          node.isSeed,
+          this.analysis.inSelection(item),
+          undefined,
+          undefined,
+          gradient));
+      node.wrapper = item;
+      node.gradient = gradient;
+      updatedNodes.push(node);
+    }
+    return updatedNodes;
+  }
+
   public updatePhysicsEnabled(bool: boolean) {
     /**
      * Controls the physics enabled button in the analysis network
@@ -657,10 +786,11 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   }
 
   public selectTissue(tissue: Tissue | null) {
+    this.mutationGradient = false;
     if (!tissue) {
       this.selectedTissue = null;
       const updatedNodes = [];
-      for (const protein of this.genes) {
+      for (const protein of this.nodes) {
         const item = getWrapperFromNode(protein);
         const node = this.nodeData.nodes.get(item.nodeId);
         if (!node) {
@@ -687,39 +817,74 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     } else {
       this.selectedTissue = tissue;
       const minExp = 0.3;
-      this.http.get<Array<{ protein: Node, level: number }>>(
-        `${environment.backend}tissue_expression/?tissue=${tissue.id}&token=${this.token}`)
-        .subscribe((levels) => {
-          const updatedNodes = [];
-          const maxExpr = Math.max(...levels.map(lvl => lvl.level));
-          for (const lvl of levels) {
-            const item = getWrapperFromNode(lvl.protein);
-            const node = this.nodeData.nodes.get(item.nodeId);
-            if (!node) {
-              continue;
-            }
-            const gradient = lvl.level !== null ? (Math.pow(lvl.level / maxExpr, 1 / 3) * (1 - minExp) + minExp) : -1;
-            const pos = this.network.getPositions([item.nodeId]);
-            node.x = pos[item.nodeId].x;
-            node.y = pos[item.nodeId].y;
-            Object.assign(node,
-              NetworkSettings.getNodeStyle(
-                node.wrapper.type,
-                node.isSeed,
-                this.analysis.inSelection(item),
-                undefined,
-                undefined,
-                gradient));
-            node.wrapper = item;
-            node.gradient = gradient;
-            this.genes.find(prot => getGeneNodeId(prot) === item.nodeId).expressionLevel = lvl.level;
-            (node.wrapper.data as Node).expressionLevel = lvl.level;
-            updatedNodes.push(node);
-          }
+      this.control.tissueExpressionGenes(tissue, this.nodes, this.cancerNodes)
+        .subscribe((response) => {
+          // response is object with key "cancerGenes" and "genes"
+          // each which is list of objects with "gene" and "level" (expression value)
+          const maxExpr = Math.max(...[...response.genes, ...response.cancerGenes].map(lvl => lvl.level));
+
+          // fetch each normal genes and cancer genes
+          const updatedGenes = this._interpretTissueExpressionResponse(
+            response.genes, maxExpr, minExp, 'Node'
+          );
+          const updatedCancerGenes = this._interpretTissueExpressionResponse(
+            response.cancerGenes, maxExpr, minExp, 'CancerNode'
+          );
+
+          const updatedNodes = [...updatedGenes, ...updatedCancerGenes];
           this.nodeData.nodes.update(updatedNodes);
         });
     }
     this.emitVisibleItems(true);
+  }
+
+  private _interpretTissueExpressionResponse(
+    /**
+     * Reads the result of the "TissueExpressionView" and converts it into input for the network
+     * Main function is to calculate the color gradient based on expression value
+     * We have to differentiate between Node and CancerNode to not mix up the types in the network
+     */
+    geneList: { gene: (Node | CancerNode), level: number }[],
+    maxExpr: number,
+    minExp: number,
+    nodeType: ('Node' | 'CancerNode')
+  ): Node[] {
+    const updatedNodes = [];
+    for (const lvl of geneList) {
+      let item;
+      let nodes;
+      if (nodeType === 'Node') {
+        item = getWrapperFromNode(lvl.gene as Node);
+        nodes = this.nodes;
+      } else {
+        item = getWrapperFromCancerNode(lvl.gene as CancerNode);
+        nodes = this.cancerNodes;
+      }
+
+      const node = this.nodeData.nodes.get(item.nodeId);
+      if (!node) {
+        continue;
+      }
+      // calculate color gradient
+      const gradient = lvl.level !== null ? (Math.pow(lvl.level / maxExpr, 1 / 3) * (1 - minExp) + minExp) : -1;
+      const pos = this.network.getPositions([item.nodeId]);
+      node.x = pos[item.nodeId].x;
+      node.y = pos[item.nodeId].y;
+      Object.assign(node,
+        NetworkSettings.getNodeStyle(
+          node.wrapper.type,
+          node.isSeed,
+          this.analysis.inSelection(item),
+          undefined,
+          undefined,
+          gradient));
+      node.wrapper = item;
+      node.gradient = gradient;
+      nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
+      (node.wrapper.data as (Node | CancerNode)).expressionLevel = lvl.level;
+      updatedNodes.push(node);
+    }
+    return updatedNodes;
   }
 
 }

@@ -154,6 +154,11 @@
                 </div>
 
 
+                <app-toggle class="footer-buttons" textOn="Mutation Gradient On" textOff="Off"
+                            tooltipOn="Colors the nodes based on the amount of mutations."
+                            tooltipOff="Resets the node colors."
+                            [value]="mutationGradient" (valueChange)="colorMutationGradient($event)"></app-toggle>
+
 
                 <app-toggle class="footer-buttons" textOn="Animation On" textOff="Off"
                             tooltipOn="Enable the network animation."

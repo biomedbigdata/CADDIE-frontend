@@ -36,7 +36,7 @@ export class NetworkSettings {
   private static geneFontColor = '#FFFFFF';
   private static cancerGeneFontColor = '#FFFFFF';
   private static drugFontColor = '#FFFFFF';
-  private static drugInTrialFontColor = 'black';
+  private static drugCancerFontColor = 'black';
 
   // Network Layout
   private static analysisLayout = {
@@ -91,8 +91,8 @@ export class NetworkSettings {
   // Node shape
   private static hostShape = 'ellipse';
   private static virusShape = 'ellipse';
-  private static drugNotInTrialShape = 'box';
-  private static drugInTrialShape = 'triangle';
+  private static drugShape = 'box';
+  private static drugCancerShape = 'triangle';
 
   static getNodeSize(wrapperType: WrapperType) {
     if (wrapperType === 'Node') {
@@ -104,16 +104,16 @@ export class NetworkSettings {
     }
   }
 
-  static getNodeShape(wrapperType: WrapperType, drugInTrial?: boolean) {
+  static getNodeShape(wrapperType: WrapperType, cancerDrug?: boolean) {
     if (wrapperType === 'Node') {
       return this.hostShape;
     } else if (wrapperType === 'CancerNode') {
       return this.virusShape;
     } else if (wrapperType === 'Drug') {
-      if (drugInTrial) {
-        return this.drugInTrialShape;
+      if (cancerDrug) {
+        return this.drugCancerShape;
       } else {
-        return this.drugNotInTrialShape;
+        return this.drugShape;
       }
     }
   }
@@ -184,16 +184,16 @@ export class NetworkSettings {
     }
   }
 
-  static getFont(wrapperType: WrapperType, drugInTrial?: boolean) {
+  static getFont(wrapperType: WrapperType, cancerDrug?: boolean) {
     if (wrapperType === 'Node') {
       return {color: this.geneFontColor, size: this.GeneFontSize};
     } else if (wrapperType === 'CancerNode') {
       return {color: this.cancerGeneFontColor, size: this.cancerGeneFontSize};
     } else if (wrapperType === 'Drug') {
-      if (!drugInTrial) {
+      if (!cancerDrug) {
         return {color: this.drugFontColor, size: this.drugFontSize};
       } else {
-        return {color: this.drugInTrialFontColor, size: this.drugFontSize};
+        return {color: this.drugCancerFontColor, size: this.drugFontSize};
       }
     }
   }
@@ -202,7 +202,7 @@ export class NetworkSettings {
                       isSeed: boolean,
                       isSelected: boolean,
                       drugType?: string,
-                      drugInTrial?: boolean,
+                      cancerDrug?: boolean,
                       gradient?: number): any {
     if (!gradient) {
       gradient = 1.0;
@@ -243,7 +243,7 @@ export class NetworkSettings {
       } else {
         nodeColor = NetworkSettings.getColor('unapprovedDrug');
       }
-      if (drugInTrial) {
+      if (cancerDrug) {
         nodeShape = NetworkSettings.getNodeShape('Drug', true);
         nodeFont = NetworkSettings.getFont('Drug', true);
       } else {

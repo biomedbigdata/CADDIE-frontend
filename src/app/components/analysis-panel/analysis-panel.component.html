@@ -165,12 +165,12 @@
                 <td>&nbsp;Approved Drug</td>
               </tr>
               <tr>
-                <td><span class="in-trial-drug"></span></td>
-                <td>&nbsp;Drug in Trial</td>
-              </tr>
-              <tr>
                 <td><span class="non-approved-drug"></span></td>
                 <td>&nbsp;Unapproved Drug</td>
+              </tr>
+              <tr>
+                <td><span class="cancer-drug"></span></td>
+                <td>&nbsp;Cancer Drug</td>
               </tr>
             </table>
           </div>
@@ -251,6 +251,11 @@
               </div>
             </div>
           </div>
+
+          <app-toggle class="footer-buttons" textOn="Mutation Gradient On" textOff="Off"
+                      tooltipOn="Colors the nodes based on the amount of mutations."
+                      tooltipOff="Resets the node colors."
+                      [value]="mutationGradient" (valueChange)="colorMutationGradient($event)"></app-toggle>
 
           <app-toggle *ngIf="task.info.target === 'drug-target'" class="footer-buttons" textOn="Drugs On" textOff="Off"
                       tooltipOn="Display drugs in the network" tooltipOff="Hide drugs in the network"

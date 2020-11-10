@@ -26,6 +26,10 @@
       <b><span>Protein Name:</span></b>
       {{ wrapper.data.proteinName }}
     </p>
+    <p *ngIf="wrapper.data.nMutations">
+      <b><span>Mutations:</span></b>
+      {{ wrapper.data.nMutations }}
+    </p>
     <p *wrapper.data.interactions>
       <b><span>Node Degree:</span></b>
       {{ wrapper.data.interactions.length }}
@@ -78,6 +82,10 @@
     <p *ngIf="wrapper.data.proteinName">
       <b><span>Protein Name:</span></b>
         {{ wrapper.data.proteinName }}
+    </p>
+    <p *ngIf="wrapper.data.nMutations">
+      <b><span>Mutations:</span></b>
+      {{ wrapper.data.nMutations }}
     </p>
     <p *ngIf="wrapper.data.interactions">
       <b><span>Node Degree:</span></b>

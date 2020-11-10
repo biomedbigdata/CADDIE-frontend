@@ -4,8 +4,6 @@ import {
   Dataset,
   getWrapperFromNode,
   getWrapperFromCancerNode,
-  Node,
-  CancerNode,
   Wrapper
 } from '../../interfaces';
 import {AnalysisService} from '../../services/analysis/analysis.service';
@@ -61,8 +59,6 @@ export class CustomGenesComponent implements OnInit {
     this.changeTextList('');
     // result contains 'genes' and 'cancerGenes' and 'notFound'
     const result = await this.control.queryGenes(genes, this.currentCancerDataset, this.currentCancerTypeItems);
-    console.log(result)
-    console.log('result')
     this.notFound = result.notFound;
     const items = [];
     for (const detail of result.genes) {
@@ -85,8 +81,6 @@ export class CustomGenesComponent implements OnInit {
     this.changeTextList('');
     // result contains 'genes' and 'cancerGenes' and 'notFound'
     const result = await this.control.queryGenes(genes, this.currentCancerDataset, this.currentCancerTypeItems);
-    console.log(result)
-    console.log('result')
     this.notFound = result.notFound;
     const items = [];
     for (const detail of result.genes) {

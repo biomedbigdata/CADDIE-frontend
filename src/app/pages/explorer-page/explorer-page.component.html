@@ -390,8 +390,9 @@
                                [checkboxes]="cancerNodesCheckboxes">
               </app-filter-tile>
             </div>
+
+            <!-- "Add-to" Filter
             <br>
-            <!-- "Add-to" Filter -->
             <div>
               <app-query-tile-component [queryItems]="filterAddItems"
                                         (selectItem)="addFilterNode($event)"
@@ -401,7 +402,7 @@
               </app-query-tile-component>
 
             </div>
-
+            -->
           </div>
           <footer class="card-footer">
             <a (click)="reset($event);" class="card-footer-item has-text-danger"

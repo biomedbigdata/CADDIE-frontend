@@ -44,8 +44,8 @@ export class DiseaseRelatedGenesComponent implements AfterViewInit {
 
   async ngAfterViewInit() {
     if (!this.diseases.length) {
-      const disease_data = await this.control.getDiseases()
-      this.diseases = disease_data.diseases
+      const diseaseData = await this.control.getDiseases();
+      this.diseases = diseaseData.diseases;
     }
   }
 
@@ -98,7 +98,6 @@ export class DiseaseRelatedGenesComponent implements AfterViewInit {
   }
 
   public select(selectionItem) {
-    console.log(selectionItem)
     this.selectedDiseases = selectionItem;
 
   }

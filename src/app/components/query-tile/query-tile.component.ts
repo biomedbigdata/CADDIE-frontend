@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {Node, Wrapper, CancerNode} from '../../interfaces';
+import {Wrapper} from '../../interfaces';
 
 @Component({
   selector: 'app-query-tile-component',
@@ -29,7 +29,7 @@ export class QueryTileComponent {
     const testProteinName = data.proteinName ? data.proteinName.toLowerCase().indexOf(term) > -1 : false;
     const testUniprotAc = data.uniprotAc ? data.uniprotAc.toLowerCase().indexOf(term) > -1 : false;
 
-    return (testType || testName || testEntrez || testProteinName || testUniprotAc)
+    return (testType || testName || testEntrez || testProteinName || testUniprotAc);
   }
 
 

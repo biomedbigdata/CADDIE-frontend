@@ -19,7 +19,6 @@ import {
   CancerType,
   Dataset,
   DiseaseGeneInteraction,
-  Disease
 } from '../../interfaces';
 import {Network, getDatasetFilename} from '../../main-network';
 import {HttpClient} from '@angular/common/http';
@@ -29,7 +28,6 @@ import {NetworkSettings} from '../../network-settings';
 import {ControlService} from '../../services/control/control.service';
 import {LoadingOverlayService} from '../../services/loading-overlay/loading-overlay.service';
 import {toast} from 'bulma-toast';
-import {max} from "rxjs/operators";
 
 
 declare var vis: any;
@@ -300,7 +298,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     /**
      * Wraps a list of cancer nodes into wrapper objects
      */
-    return cancerNodes.map( (cancerNode) => getWrapperFromCancerNode(cancerNode))
+    return cancerNodes.map( (cancerNode) => getWrapperFromCancerNode(cancerNode));
   }
 
   public async openSummary(item: Wrapper, zoom: boolean) {
@@ -719,8 +717,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     }
     node.label = nodeLabel;
     node.id = wrapper.nodeId;
-    // node.x = gene.x;
-    // node.y = gene.y;
+    node.x = gene.x;
+    node.y = gene.y;
     node.wrapper = wrapper;
     node.isCancer = false;
     return node;
@@ -734,8 +732,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const node = NetworkSettings.getNodeStyle('CancerNode', undefined, this.analysis.inSelection(wrapper));
     node.id = wrapper.nodeId;
     node.label = cancerDriverGene.name;
-    // node.x = cancerDriverGene.x;
-    // node.y = cancerDriverGene.y;
+    node.x = cancerDriverGene.x;
+    node.y = cancerDriverGene.y;
     node.wrapper = wrapper;
     return node;
   }
@@ -874,16 +872,18 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     } else {
       // else gradient is activated, color nodes
-      const mutations_counts = [];
+      const mutationsCounts = [];
 
       for (const node of [...this.nodes, ...this.cancerNodes]) {
-        node.nMutations !== null ? mutations_counts.push(node.nMutations) : false;
+        if (node.nMutations !== null) {
+          mutationsCounts.push(node.nMutations);
+        }
       }
-      const maxCount = Math.max(...mutations_counts)
-      const minCount = Math.min(...mutations_counts)
+      const maxCount = Math.max(...mutationsCounts);
+      const minCount = Math.min(...mutationsCounts);
 
-      const updatedGenes = this._interpretGeneMutations(maxCount, minCount, 'Node')
-      const updatedCancerGenes = this._interpretGeneMutations(maxCount, minCount, 'CancerNode')
+      const updatedGenes = this._interpretGeneMutations(maxCount, minCount, 'Node');
+      const updatedCancerGenes = this._interpretGeneMutations(maxCount, minCount, 'CancerNode');
 
       const updatedNodes = [...updatedGenes, ...updatedCancerGenes];
       this.nodeData.nodes.update(updatedNodes);
@@ -1012,7 +1012,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         continue;
       }
       // calculate color gradient
-      const gradient = n.nMutations !== null ? (Math.pow(n.nMutations/ maxCount, 1/2)) : -1;
+      const gradient = n.nMutations !== null ? ( Math.pow( n.nMutations / maxCount, 1 / 2 ) ) : -1;
       const pos = this.network.getPositions([item.nodeId]);
       node.x = pos[item.nodeId].x;
       node.y = pos[item.nodeId].y;

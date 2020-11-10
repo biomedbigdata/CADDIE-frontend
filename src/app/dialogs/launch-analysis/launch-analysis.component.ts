@@ -42,7 +42,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public algorithm: AlgorithmType | QuickAlgorithmType;
 
   public algorithms: Array<Algorithm> = [];
-  public includeNutraceuticalDrugs: boolean = true;
+  public includeNutraceuticalDrugs = true;
 
   // Trustrank Parameters
   public trustrankIncludeIndirectDrugs = false;

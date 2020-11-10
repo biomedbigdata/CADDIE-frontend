@@ -225,7 +225,7 @@ export class AnalysisService {
     genes: (Node | CancerNode)[],
     lookup,
     nodeType: ('Node' | 'CancerNode')
-  ):number {
+  ): number {
     /**
      * Sets these genes to 'this.selectedItems'
      */

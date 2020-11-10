@@ -303,7 +303,7 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}drug_interactions/?token=${token}&view=cancer_driver_genes`).toPromise();
   }
 
-  public async queryGenes(nodes, cancer_dataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
+  public async queryGenes(nodes, cancerDataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
     /**
      * returns genes for genes in list if gene is in db
      */
@@ -312,7 +312,7 @@ export class ControlService {
 
     return this.http.post<any>(`${environment.backend}query_nodes/`, {
       nodes: JSON.stringify(nodes),
-      cancerDataset: JSON.stringify(cancer_dataset.backendId),
+      cancerDataset: JSON.stringify(cancerDataset.backendId),
       cancerTypes:  JSON.stringify(cancerTypesIdsString)
     }).toPromise();
   }

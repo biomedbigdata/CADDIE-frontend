@@ -9,7 +9,7 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpErrorResponse} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {AnalysisService, algorithmNames} from '../../services/analysis/analysis.service';
 import {
@@ -86,7 +86,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   public tableProteinScoreTooltip = '';
 
   constructor(
-    private http: HttpClient,
     public analysis: AnalysisService,
     private control: ControlService,
     private loadingOverlay: LoadingOverlayService
@@ -584,16 +583,18 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
     } else {
       // else gradient is activated, color nodes
-      const mutations_counts = [];
+      const mutationsCounts = [];
 
       for (const node of [...this.nodes, ...this.cancerNodes]) {
-        node.nMutations !== null ? mutations_counts.push(node.nMutations) : false;
+        if (node.nMutations !== null) {
+          mutationsCounts.push(node.nMutations);
+        }
       }
-      const maxCount = Math.max(...mutations_counts)
-      const minCount = Math.min(...mutations_counts)
+      const maxCount = Math.max(...mutationsCounts);
+      const minCount = Math.min(...mutationsCounts);
 
-      const updatedGenes = this._interpretGeneMutations(maxCount, minCount, 'Node')
-      const updatedCancerGenes = this._interpretGeneMutations(maxCount, minCount, 'CancerNode')
+      const updatedGenes = this._interpretGeneMutations(maxCount, minCount, 'Node');
+      const updatedCancerGenes = this._interpretGeneMutations(maxCount, minCount, 'CancerNode');
 
       const updatedNodes = [...updatedGenes, ...updatedCancerGenes];
       this.nodeData.nodes.update(updatedNodes);
@@ -670,12 +671,12 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         item = getWrapperFromCancerNode(n as CancerNode);
       }
 
-      const node = this.nodeData.nodes.get(item.nodeId);
-      if (!node) {
+      const node = this.nodeData.nodes.get( item.nodeId );
+      if ( !node ) {
         continue;
       }
       // calculate color gradient
-      const gradient = n.nMutations !== null ? (Math.pow(n.nMutations/ maxCount, 1/2)) : -1;
+      const gradient = n.nMutations !== null ? ( Math.pow( n.nMutations / maxCount,  1 / 2) ) : -1;
       const pos = this.network.getPositions([item.nodeId]);
       node.x = pos[item.nodeId].x;
       node.y = pos[item.nodeId].y;

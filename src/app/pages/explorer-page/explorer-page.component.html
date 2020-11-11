@@ -194,7 +194,7 @@
             </div>
             <div class="column">
               <app-dataset-tile [datasetItems]="datasetItems" [selectedDataset]="selectedDataset"
-                                (selectedDatasetChange)="selectedDataset = $event; initCancerTypes(selectedDataset)">
+                                (selectedDatasetChange)="selectedDataset = $event; initCancerTypes(selectedDataset);">
               </app-dataset-tile>
             </div>
           </div>
@@ -214,7 +214,8 @@
               <app-interaction-dataset-tile [datasetItems]="interactionGeneDatasetItems"
                                             [selectedDataset]="selectedInteractionGeneDataset"
                                             (selectedDatasetChange)="selectedInteractionGeneDataset = $event;
-                                            initCancerTypes(selectedDataset)">
+                                            createNetwork(selectedDataset, selectedInteractionGeneDataset, selectedCancerTypeItems)
+">
               </app-interaction-dataset-tile>
             </div>
             <!-- Data Level Toggle END -->
@@ -228,11 +229,13 @@
             <div class="column is-4 has-text-left">
               <h6 class="title is-6">Cancer Type:</h6>
             </div>
-            <div class="column is-4">
+            <div class="column is-6">
               <app-cancertype-tile [cancerTypeItems]="cancerTypes"
                                    [selectedCancerTypeItems]="selectedCancerTypeItems"
                                    (selectedCancerTypeItemsChange)="selectedCancerTypeItems = $event;
-                                                                    loadCancerTypeComorbiditesGraph()">
+                                                                    loadCancerTypeComorbiditesGraph();
+                                   selectedCancerTypeItems.length ? createNetwork(selectedDataset, selectedInteractionGeneDataset, selectedCancerTypeItems) : false
+              ">
               </app-cancertype-tile>
             </div>
           </div>
@@ -248,8 +251,9 @@
 
         </div>
 
+        <!-- Network Submit Button START -->
+        <!--
         <div class="column is-12 has-text-centered">
-          <!-- Network Submit Button START -->
           <app-button
             buttonText="Submit"
             (callbackFun)="createNetwork(selectedDataset, selectedInteractionGeneDataset, selectedCancerTypeItems)"
@@ -258,10 +262,12 @@
               (currentCancerTypeItems == selectedCancerTypeItems)"
           >
           </app-button>
-          <!-- Network Submit Button END -->
         </div>
+      -->
+      <!-- Network Submit Button END -->
 
-      </div>
+
+    </div>
       <!-- Data Selector END -->
 
 
@@ -304,7 +310,7 @@
                 <div>
                   <p class="heading">
                     Genes
-                    <span class="icon has-tooltip-right has-text-black is-lowercase has-text-weight-normal is-size-6"
+                    <span class="icon has-tooltip-bottom has-text-black is-lowercase has-text-weight-normal is-size-6"
                           data-tooltip="Only subgroup of genes is shown for performance reasons.
                           For the overview, just genes adjacent to cancer driver genes are considered">
                     <i class="fas fa-info-circle"></i>

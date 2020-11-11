@@ -205,7 +205,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // init network if this.network is not set
     if (!this.network) {
       // default selection
-      this.selectedCancerTypeItems = [this.cancerTypes[0]];
       await this.createNetwork(this.selectedDataset, this.selectedInteractionGeneDataset, this.selectedCancerTypeItems);
       this.physicsEnabled = false;
     }
@@ -261,7 +260,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      */
     this.cancerTypes = await this.control.getCancerTypes(dataset);
     this.selectedCancerTypeItems = [this.cancerTypes[1]];
-  }
+    // update network if exists
+    if (this.network) {
+      await this.createNetwork(this.selectedDataset, this.selectedInteractionGeneDataset, this.selectedCancerTypeItems);
+      }
+    }
 
   public reset(event) {
     /**
@@ -1111,12 +1114,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
             nth++;
             if (nth === 3) {
               nth = 0;
-              return '<br>';
+              return '&nbsp;<br>';
             } else {
               return match;
             }
           });
-          keys.push(key);
+          keys.push(key+'&nbsp;');
           values.push(val);
         }
       }
@@ -1128,6 +1131,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       } else {
         title = `Comorbidities for ${this.selectedCancerTypeItems[0].name}`;
       }
+      title += `<br> (${data.nCancerGenes} Cancer Genes)`
 
       const graphData = {
         data: [

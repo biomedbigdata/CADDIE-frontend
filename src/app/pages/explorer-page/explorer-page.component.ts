@@ -422,6 +422,13 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // stop network animation when stable state is reached
     this.network.on('stabilizationIterationsDone', () => {
       this.updatePhysicsEnabled(false);
+
+      // save the positions after stabilization
+      const positions = this.network.getPositions();
+      for (const node of nodes) {
+        node.x = positions[node.id].x;
+        node.y = positions[node.id].y;
+      };
     });
 
     this.network.on('doubleClick', (properties) => {

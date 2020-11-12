@@ -64,9 +64,10 @@ export class NetworkSettings {
   };
   private static mainEdges = {
     smooth: false,
-  //  length: 250,
+//    length: 500,
   };
   private static mainPhysics = {
+    enabled: true,
     solver: 'barnesHut',
     barnesHut: {
       theta: 1,
@@ -79,8 +80,8 @@ export class NetworkSettings {
     },
     stabilization: {
       enabled: true,
-      iterations: 500
-    },
+      iterations: 250
+    }
   };
 
   // Node size

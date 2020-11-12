@@ -1,5 +1,5 @@
 <div class="container is-fluid navbar-container">
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <img routerLink="/" src="assets/caddie_logo.png" class="menu-icon is-hoverable navbar-item logo" alt="logo"/>
       <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" (click)="toggleMobileMenu()">
@@ -11,7 +11,7 @@
 
     <div class="navbar-menu" [class.is-active]="mobileWindowExpanded">
       <div class="navbar-start">
-        <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{exact: true}" class="navbar-item is-hoverable">
+        <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{exact: true}" class="navbar-item is-hoverable has-text-light">
           <span class="icon"><i class="fa fa-home"></i></span>
           <span>Home</span>
         </a>
@@ -23,17 +23,17 @@
           <span class="icon"><i class="fa fa-feather"></i></span>
           <span>Cite</span>
         </a>
-        <a routerLink="/download" routerLinkActive="is-active" class="navbar-item is-hoverable">
+        <a routerLink="/download" routerLinkActive="is-active" class="navbar-item is-hoverable has-text-light">
           <span class="icon"><i class="fa fa-download"></i></span>
           <span>Download</span>
         </a>
-        <a routerLink="/about" routerLinkActive="is-active" class="navbar-item is-hoverable">
+        <a routerLink="/about" routerLinkActive="is-active" class="navbar-item is-hoverable has-text-light">
           <span class="icon"><i class="fa fa-question"></i></span>
           <span>About</span>
         </a>
       </div>
       <div class="navbar-end">
-        <div class="navbar-item">
+        <div class="navbar-item has-text-light">
           <div class="field is-grouped">
             <p class="control">
                Version 0.1

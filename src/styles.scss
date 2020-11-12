@@ -31,10 +31,14 @@ body {
 }
 
 .navbar-container {
-  background-color: $navbar-background-color;
+  background-color: $primary;
   nav.navbar {
     height: $navbar-height;
-    background-color: $navbar-background-color;
+    // background-color: $navbar-background-color;
+    .logo{
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 15%;
+    }
   }
 }
 

@@ -4,12 +4,13 @@
   position: absolute;
   height: 100%;
   width: calc(100% - #{$sidebar-width});
-  margin-left: $sidebar-width;
+  min-width: calc(100vw - #{$sidebar-width-max});
+  right: 0;
   top: $navbar-height;
 }
 
 div.network {
-  height: calc(100vh - 210px - 52px);
+  height: calc(100vh - #{$network-footer-height} - #{$navbar-height} - 48px - 41px - 1.5rem);
 }
 
 .tab-content {

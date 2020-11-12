@@ -1022,7 +1022,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         continue;
       }
       // calculate color gradient
-      const gradient = n.nMutations !== null ? ( Math.pow( n.nMutations / maxCount, 1 / 2 ) ) : -1;
+      const gradient = n.nMutations !== null ? ( Math.pow( n.nMutations / maxCount, 1 / 3 ) ) : -1;
       const pos = this.network.getPositions([item.nodeId]);
       node.x = pos[item.nodeId].x;
       node.y = pos[item.nodeId].y;
@@ -1099,12 +1099,14 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         this.selectedCancerTypeItems,
       );
 
+      const k = 5;
+
       // get the top 5 occuring diseases (can be more if counts are the same)
       const counts = Object.values(data.counts);
       // sort in descending order
       counts.sort((a: number, b: number) => b - a );
-      const highestValues = counts.slice(0, 5);
-      // iterate over data to filter out top 5 counts
+      const highestValues = counts.slice(0, k);
+      // iterate over data to filter out top k counts
       const keys = [];
       const values = [];
       for (let[key, val] of Object.entries(data.counts)) {
@@ -1131,6 +1133,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         }
       }
 
+      // make sure that lists are just k long, this might not be given if we have duplicates in the highest values
+      // drop possible more values
+      keys.length = k;
+      values.length = k;
+
       // set title dynmically based on amount of selected cancer types
       let title = '';
       if (this.selectedCancerTypeItems.length > 1) {
@@ -1147,7 +1154,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
             type: 'bar',
             orientation: 'h',
             marker: {
-              color: '#686868'
+              color: '#8c4c8c'
             }},
         ],
         layout: {
@@ -1156,7 +1163,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
             l: 200
           },
           xaxis: {
-            title: '# Common genes',
+            title: 'Common Cancer Genes',
           }
         },
         config: {

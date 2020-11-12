@@ -30,9 +30,14 @@ body {
   height: 100%;
 }
 
-nav.navbar {
-  height: $navbar-height;
+.navbar-container {
+  background-color: $navbar-background-color;
+  nav.navbar {
+    height: $navbar-height;
+    background-color: $navbar-background-color;
+  }
 }
+
 
 row-data-selector {
   height: $row-data-selector-height;
@@ -102,12 +107,14 @@ div.caddie.sidebar {
   overflow-y: auto;
   overflow-x: hidden;
   width: $sidebar-width;
+  max-width: $sidebar-width-max;
 }
 
 div.caddie.bar-left {
   float: left;
   position: relative;
   z-index: 30;
+  padding-top: 10px;
 }
 
 div.caddie.bar-right {
@@ -139,6 +146,7 @@ div.card-content.overflow {
 div.caddie.right-window {
   float: right;
   width: calc(100vw - #{$sidebar-width} - 2 * 20px);
+  min-width: calc(100vw - #{$sidebar-width-max} - 2 * 20px);
   height: 100%;
 }
 
@@ -154,7 +162,7 @@ div.card.network {
 }
 
 div.network {
-  height: calc(100vh - #{$network-footer-height} - 120px);
+  height: calc(100vh - #{$network-footer-height} - #{$navbar-height} - 48px);
 }
 
 div.parent {

@@ -149,8 +149,9 @@ div.card-content.overflow {
 
 div.caddie.right-window {
   float: right;
-  width: calc(100vw - #{$sidebar-width} - 2 * 20px);
-  min-width: calc(100vw - #{$sidebar-width-max} - 2 * 20px);
+  // 20px is for the padding right
+  width: calc(100vw - #{$sidebar-width} - 20px);
+  min-width: calc(100vw - #{$sidebar-width-max} - 20px);
   height: 100%;
 }
 

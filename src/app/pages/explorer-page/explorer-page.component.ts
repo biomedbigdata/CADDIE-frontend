@@ -428,7 +428,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       for (const node of nodes) {
         node.x = positions[node.id].x;
         node.y = positions[node.id].y;
-      };
+      }
     });
 
     this.network.on('doubleClick', (properties) => {
@@ -1128,7 +1128,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
               return match;
             }
           });
-          keys.push(key+'&nbsp;');
+          keys.push(key + '&nbsp;');
           values.push(val);
         }
       }
@@ -1145,7 +1145,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       } else {
         title = `Comorbidities for ${this.selectedCancerTypeItems[0].name}`;
       }
-      title += `<br> (${data.nCancerGenes} Cancer Genes)`
+      title += `<br> (${data.nCancerGenes} Cancer Genes)`;
 
       const graphData = {
         data: [

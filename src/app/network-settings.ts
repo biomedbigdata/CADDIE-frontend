@@ -56,8 +56,22 @@ export class NetworkSettings {
     solver: 'repulsion',
   };
   private static analysisBigPhysics = {
-    enabled: false,
-  };
+    enabled: true,
+    solver: 'barnesHut',
+    barnesHut: {
+      theta: 1,
+      gravitationalConstant: -10000,
+      centralGravity: 1,
+      springLength: 300,
+      springConstant: 0.8,
+      damping: 0.5,
+      avoidOverlap: 1,
+    },
+    stabilization: {
+      enabled: true,
+      iterations: 250
+    }
+  }
 
   private static mainLayout = {
     improvedLayout: false,
@@ -71,9 +85,9 @@ export class NetworkSettings {
     solver: 'barnesHut',
     barnesHut: {
       theta: 1,
-      gravitationalConstant: -30000,
-      centralGravity: 0.0,
-      springLength: 500,
+      gravitationalConstant: -10000,
+      centralGravity: 5,
+      springLength: 300,
       springConstant: 0.8,
       damping: 0.5,
       avoidOverlap: 1,
@@ -120,6 +134,8 @@ export class NetworkSettings {
   }
 
   static getOptions(network: 'main' | 'analysis' | 'analysis-big') {
+    console.log('network')
+    console.log(network)
     if (network === 'main') {
       return {
         layout: this.mainLayout,
@@ -203,7 +219,7 @@ export class NetworkSettings {
                       isSeed: boolean,
                       isSelected: boolean,
                       drugType?: string,
-                      cancerDrug?: boolean,
+                      isCancerDrug?: boolean,
                       gradient?: number): any {
     if (!gradient) {
       gradient = 1.0;
@@ -244,7 +260,7 @@ export class NetworkSettings {
       } else {
         nodeColor = NetworkSettings.getColor('unapprovedDrug');
       }
-      if (cancerDrug) {
+      if (isCancerDrug) {
         nodeShape = NetworkSettings.getNodeShape('Drug', true);
         nodeFont = NetworkSettings.getFont('Drug', true);
       } else {

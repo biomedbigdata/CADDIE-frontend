@@ -250,7 +250,7 @@ export interface Drug {
   graphId: string;
   name: string;
   status: 'approved' | 'investigational';
-  inTrial: boolean;
+  isCancerDrug: boolean;
   inLiterature: boolean;
   trialLinks: string[];
 }

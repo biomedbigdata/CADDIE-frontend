@@ -142,6 +142,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
       if (this.task && this.task.info.done) {
         const result = await this.control.getTaskResult(this.token);
+        console.log('result')
+        console.log(result)
         const nodeAttributes = result.nodeAttributes || {};
         const isSeed: { [key: string]: boolean } = nodeAttributes.isSeed || {};
 
@@ -157,11 +159,15 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         this.nodeData.edges = new vis.DataSet(edges);
 
         const container = this.networkEl.nativeElement;
-        const isBig = nodes.length > 100 || edges.length > 100;
+        const isBig = nodes.length > 200 || edges.length > 200;
         const options = NetworkSettings.getOptions(isBig ? 'analysis-big' : 'analysis');
-        this.physicsEnabled = !isBig;
+        // this.physicsEnabled = !isBig;
 
         this.network = new vis.Network(container, this.nodeData, options);
+
+        this.network.on('stabilizationIterationsDone', () => {
+          this.updatePhysicsEnabled(false);
+        });
 
         const promises: Promise<any>[] = [];
         promises.push(this.control.getTaskResultDrug(this.token)
@@ -248,10 +254,12 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
                 continue;
               }
               let drugType;
-              let drugInTrial;
+              let isCancerDrug;
               if (item.type === 'Drug') {
+                console.log('item')
+                console.log(item)
                 drugType = item.data.status;
-                drugInTrial = item.data.inTrial;
+                isCancerDrug = item.data.isCancerDrug;
               }
               const pos = this.network.getPositions([item.nodeId]);
               node.x = pos[item.nodeId].x;
@@ -261,7 +269,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
                 node.isSeed,
                 selected,
                 drugType,
-                drugInTrial,
+                isCancerDrug,
                 node.gradient));
               updatedNodes.push(node);
             }
@@ -299,17 +307,19 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.nodeData.nodes.forEach((node) => {
               const nodeSelected = this.analysis.idInSelection(node.id);
               let drugType;
-              let drugInTrial;
+              let isCancerDrug;
               if (node.wrapper.type === 'drug') {
+                console.log('node')
+                console.log(node)
                 drugType = node.wrapper.data.status;
-                drugInTrial = node.wrapper.data.inTrial;
+                isCancerDrug = node.wrapper.data.isCancerDrug;
               }
               Object.assign(node, NetworkSettings.getNodeStyle(
                 node.wrapper.type,
                 node.isSeed,
                 nodeSelected,
                 drugType,
-                drugInTrial,
+                isCancerDrug,
                 node.gradient));
               updatedNodes.push(node);
             });
@@ -453,7 +463,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     let nodeLabel;
     let wrapper: Wrapper;
     let drugType;
-    let drugInTrial;
+    let isCancerDrug;
     if (nodeType === 'Node') {
       const gene = details as Node;
       wrapper = getWrapperFromNode(gene);
@@ -465,7 +475,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       const drug = details as Drug;
       wrapper = getWrapperFromDrug(drug);
       drugType = drug.status;
-      drugInTrial = false;
+      isCancerDrug = drug.isCancerDrug;
       nodeLabel = drug.name;
     } else if (nodeType === 'CancerNode') {
       const cancerDriverGene = details as CancerNode;
@@ -473,7 +483,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       nodeLabel = cancerDriverGene.name;
     }
 
-    const node = NetworkSettings.getNodeStyle(nodeType, isSeed, this.analysis.inSelection(wrapper), drugType, drugInTrial);
+    const node = NetworkSettings.getNodeStyle(nodeType, isSeed, this.analysis.inSelection(wrapper), drugType, isCancerDrug);
     node.id = wrapper.nodeId;
     node.label = nodeLabel;
     node.nodeType = nodeType;

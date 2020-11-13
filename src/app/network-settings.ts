@@ -71,7 +71,7 @@ export class NetworkSettings {
       enabled: true,
       iterations: 250
     }
-  }
+  };
 
   private static mainLayout = {
     improvedLayout: false,
@@ -134,8 +134,6 @@ export class NetworkSettings {
   }
 
   static getOptions(network: 'main' | 'analysis' | 'analysis-big') {
-    console.log('network')
-    console.log(network)
     if (network === 'main') {
       return {
         layout: this.mainLayout,

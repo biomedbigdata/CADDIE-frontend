@@ -142,8 +142,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
       if (this.task && this.task.info.done) {
         const result = await this.control.getTaskResult(this.token);
-        console.log('result')
-        console.log(result)
         const nodeAttributes = result.nodeAttributes || {};
         const isSeed: { [key: string]: boolean } = nodeAttributes.isSeed || {};
 
@@ -256,8 +254,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
               let drugType;
               let isCancerDrug;
               if (item.type === 'Drug') {
-                console.log('item')
-                console.log(item)
                 drugType = item.data.status;
                 isCancerDrug = item.data.isCancerDrug;
               }
@@ -309,8 +305,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
               let drugType;
               let isCancerDrug;
               if (node.wrapper.type === 'drug') {
-                console.log('node')
-                console.log(node)
                 drugType = node.wrapper.data.status;
                 isCancerDrug = node.wrapper.data.isCancerDrug;
               }

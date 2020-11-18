@@ -36,6 +36,7 @@ import { DownloadPageComponent } from './pages/download-page/download-page.compo
 // @ts-ignore
 import { PlotlyViaCDNModule } from 'angular-plotly.js';
 import { DiseaseRelatedGenesComponent } from './dialogs/disease-related-genes/disease-related-genes.component';
+import { CategorySelectorComponent } from './components/category-selector/category-selector.component';
 
 PlotlyViaCDNModule.plotlyVersion = '1.41.0';
 
@@ -63,6 +64,7 @@ PlotlyViaCDNModule.plotlyVersion = '1.41.0';
     CancertypeComorbiditiesTileComponent,
     DownloadPageComponent,
     DiseaseRelatedGenesComponent,
+    CategorySelectorComponent,
   ],
   imports: [
     BrowserModule,

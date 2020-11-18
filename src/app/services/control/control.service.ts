@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, Dataset, CancerNode, Node, Tissue, Disease} from '../../interfaces';
+import {CancerType, Dataset, CancerNode, Node, Tissue, Disease, DrugStatus} from '../../interfaces';
 import {AlgorithmType, QuickAlgorithmType} from '../analysis/analysis.service';
 import {Observable} from 'rxjs';
 
@@ -253,7 +253,7 @@ export class ControlService {
     /**
      * returns promise of tasks status
      */
-    return this.http.get<any>(`${environment.backend}tasks/?tokens=${JSON.stringify(tokens)}`).toPromise();
+    return this.http.post<any>(`${environment.backend}tasks/`, {tokens: JSON.stringify(tokens)}).toPromise();
   }
 
   public async getTaskResult(token): Promise<any> {
@@ -296,11 +296,20 @@ export class ControlService {
     }).toPromise();
   }
 
-  public async getDrugInteractions(token): Promise<any> {
+  public async getDrugInteractions(token, drugStatus: DrugStatus): Promise<any> {
     /**
      * returns drugs that have interactions with analysis result nodes
+     *
+     * SPECIAL CASE: drug status backend ID can be -1, which means 'all'
+     * this is being dealt with in the backend
      */
-    return this.http.get<any>(`${environment.backend}drug_interactions/?token=${token}&view=cancer_driver_genes`).toPromise();
+
+    const params = new HttpParams()
+      .set('token', JSON.stringify(token))
+      .set('drugStatus', JSON.stringify(drugStatus.backendId))
+    ;
+
+    return this.http.get<any>(`${environment.backend}drug_interactions/`, {params}).toPromise();
   }
 
   public async queryGenes(nodes, cancerDataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
@@ -324,7 +333,7 @@ export class ControlService {
     const genesBackendIds = genes.map( (gene) => gene.backendId).join(',');
     const cancerGenesBackendIds = cancerGenes.map( (gene) => gene.backendId).join(',');
     const params = new HttpParams()
-      .set('tissue', `${tissue.id}`)
+      .set('tissue', `${tissue.backendId}`)
       .set('genes', JSON.stringify(genesBackendIds))
       .set('cancerGenes', JSON.stringify(cancerGenesBackendIds));
     return this.http.get(`${environment.backend}tissue_expression/`, {params});
@@ -339,7 +348,7 @@ export class ControlService {
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
     const cancerTypesIdsString = cancerTypesIds.join(',');
     const params = new HttpParams()
-      .set('tissue', `${tissue.id}`)
+      .set('tissue', `${tissue.backendId}`)
       .set('data', JSON.stringify(dataset.backendId))
       .set('cancerTypes', JSON.stringify(cancerTypesIdsString));
 
@@ -353,6 +362,13 @@ export class ControlService {
     return this.http.get<Tissue[]>(`${environment.backend}tissues/`);
   }
 
+  public getDrugStatus(): Observable<any> {
+    /**
+     * Lists all available drug status with id and name
+     */
+    return this.http.get<DrugStatus[]>(`${environment.backend}drug_status/`);
+  }
+
   public query_tissue_genes(tissue: Tissue, threshold: number): Promise<any> {
     /**
      * Lists all available tissues with id and name
@@ -360,7 +376,7 @@ export class ControlService {
 
     return this.http.post<any>(`${environment.backend}query_tissue_genes/`,
       {
-        tissueId: JSON.stringify(tissue.id),
+        tissueId: JSON.stringify(tissue.backendId),
         threshold: JSON.stringify(threshold)
       }).toPromise();
   }

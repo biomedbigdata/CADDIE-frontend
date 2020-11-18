@@ -16,9 +16,9 @@
     <div class="card-content" id="analysis-content">
       <div class="tabs is-centered">
         <ul>
-          <li [class.is-active]="tab === 'table'"><a (click)="tab = 'table'">Table</a></li>
-          <li [class.is-active]="tab === 'network'"><a (click)="tab = 'network'">Network</a></li>
-          <li [class.is-active]="tab === 'meta'"><a (click)="tab = 'meta'">Parameters</a></li>
+          <li [class.is-active]="tab === 'table'"><a (click)="tab = 'table';  visibleTab.emit(tab)">Table</a></li>
+          <li [class.is-active]="tab === 'network'"><a (click)="tab = 'network'; visibleTab.emit(tab)">Network</a></li>
+          <li [class.is-active]="tab === 'meta'"><a (click)="tab = 'meta';  visibleTab.emit(tab)">Parameters</a></li>
         </ul>
       </div>
       <div class="content tab-content meta" *ngIf="task && task.info.done" [class.is-visible]="tab === 'meta'">
@@ -205,65 +205,45 @@
             </p>
           </div>
 
-<!--          <div class="field">-->
-<!--            <p class="control footer-buttons">-->
-<!--              <button class="button is-danger   has-tooltip" data-tooltip="Delete the current analysis."-->
-<!--                      (click)="analysis.removeTask(token); close()">-->
-<!--                <span class="icon">-->
-<!--                  <i class="fas fa-trash" aria-hidden="true"></i>-->
-<!--                </span>-->
-<!--                <span>-->
-<!--                  Delete Analysis-->
-<!--                </span>-->
-<!--              </button>-->
-<!--            </p>-->
-<!--          </div>-->
+          <app-category-selector
+            [expanded]="expressionExpanded"
+            [selectedElement]="selectedTissue"
+            [elements]="analysis.getTissues()"
+            (callbackFun)="selectTissue($event)"
+            label="Tissue"
+          ></app-category-selector>
 
-          <div class="footer-buttons dropdown is-up" [class.is-active]="expressionExpanded">
-            <div class="dropdown-trigger">
-              <button (click)="expressionExpanded=!expressionExpanded"
-                      class="button   is-primary" [class.is-outlined]="!selectedTissue"
-                      aria-haspopup="true" aria-controls="dropdown-menu">
-                <span *ngIf="!selectedTissue">Tissue</span>
-                <span *ngIf="selectedTissue">{{selectedTissue.name}}</span>
-                <span class="icon is-small">
-                  <i class="fas"
-                     [class.fa-angle-up]="expressionExpanded"
-                     [class.fa-angle-left]="!expressionExpanded" aria-hidden="true"></i>
-                </span>
-              </button>
-            </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
-              <div class="dropdown-content tissue-dropdown">
-                <div class="scroll-area">
-                  <a (click)="selectTissue(null)"
-                     [class.is-active]="!selectedTissue"
-                     class="dropdown-item">
-                    None
-                  </a>
-                  <a *ngFor="let tissue of analysis.getTissues()"
-                     (click)="selectTissue(tissue)"
-                     [class.is-active]="selectedTissue && tissue.id === selectedTissue.id"
-                     class="dropdown-item">
-                    {{tissue.name}}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+          <app-category-selector
+            [expanded]="drugStatusExpanded"
+            [selectedElement]="selectedDrugStatus"
+            [elements]="analysis.getDrugStatus()"
+            (callbackFun)="toggleDrugs($event)"
+            label="Drugs"
+          ></app-category-selector>
 
           <app-toggle class="footer-buttons" textOn="Mutation Gradient On" textOff="Off"
                       tooltipOn="Colors the nodes based on the amount of mutations."
                       tooltipOff="Resets the node colors."
                       [value]="mutationGradient" (valueChange)="colorMutationGradient($event)"></app-toggle>
 
-          <app-toggle *ngIf="task.info.target === 'drug-target'" class="footer-buttons" textOn="Drugs On" textOff="Off"
-                      tooltipOn="Display drugs in the network" tooltipOff="Hide drugs in the network"
-                      [value]="showDrugs" (valueChange)="toggleDrugs($event)"></app-toggle>
-
           <app-toggle class="footer-buttons" textOn="Animation On" textOff="Off"
                       tooltipOn="Enable the network animation." tooltipOff="Disable the network animation and freeze nodes."
                       [value]="physicsEnabled" (valueChange)="updatePhysicsEnabled($event)"></app-toggle>
+
+          <div class="field">
+            <p class="control footer-buttons">
+              <button class="button is-danger   has-tooltip" data-tooltip="Delete the current analysis."
+                      (click)="analysis.removeTask(token); close()">
+                <span class="icon">
+                  <i class="fas fa-trash" aria-hidden="true"></i>
+                </span>
+                <span>
+                  Delete Analysis
+                </span>
+              </button>
+            </p>
+          </div>
+
         </footer>
       </div>
       <div class="content tab-content scrollable" *ngIf="task && task.info.done" [class.is-visible]="tab === 'table'">

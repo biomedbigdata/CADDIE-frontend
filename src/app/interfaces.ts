@@ -21,7 +21,12 @@ export interface Tissue {
   /**
    * Interface for tissue
    */
-  id: number;
+  backendId: number;
+  name: string;
+}
+
+export interface DrugStatus {
+  backendId: number;
   name: string;
 }
 
@@ -249,7 +254,8 @@ export interface Drug {
   backendId: string;
   graphId: string;
   name: string;
-  status: 'approved' | 'investigational';
+  dbId: string;
+  status: 'approved' | 'unapproved';
   isCancerDrug: boolean;
   inLiterature: boolean;
   trialLinks: string[];
@@ -272,6 +278,11 @@ export interface Disease {
 }
 
 export interface CancerType {
+  name: string;
+  backendId: number;
+}
+
+export interface BackendObject {
   name: string;
   backendId: number;
 }

@@ -49,7 +49,7 @@
             <div class="card-content">
 
               <!-- Start Detail View -->
-              <div class="detail-view" *ngIf="selectedWrapper">
+              <div class="detail-view" *ngIf="selectedWrapper" [class.analysis-info]="selectedAnalysisToken && visibleAnalysisTab==='network'">
                 <h6 class="is-6">
                   <span class="icon">
                     <i *ngIf="!selectedWrapper" class="fas fa-info" aria-hidden="true"></i>
@@ -78,6 +78,7 @@
                   [wrapper]="selectedWrapper"
                   [wrapperCancerTypes]="selectedWrapperCancerTypes"
                   [wrapperComorbidities]="selectedWrapperComorbidities"
+                  [nodeDegree]="getNodeDegree(selectedWrapper.nodeId)"
                 ></app-info-tile>
               </div>
               <!-- END Detail View -->
@@ -144,7 +145,7 @@
                         </a>
                         <a *ngFor="let tissue of analysis.getTissues()"
                            (click)="selectTissue(tissue)"
-                           [class.is-active]="selectedTissue && tissue.id === selectedTissue.id"
+                           [class.is-active]="selectedTissue && tissue.backendId === selectedTissue.backendId"
                            class="dropdown-item">
                           {{tissue.name}}
                         </a>
@@ -176,7 +177,10 @@
       <div class="analysis-view" *ngIf="selectedAnalysisToken">
         <app-analysis-panel [(token)]="selectedAnalysisToken"
                             (showDetailsChange)="selectedWrapper = $event"
-                            (visibleItems)="analysisWindowChanged($event)"></app-analysis-panel>
+                            (visibleItems)="analysisWindowChanged($event)"
+                            (visibleTab)="visibleAnalysisTab = $event"
+        >
+        </app-analysis-panel>
       </div>
     </div>
 
@@ -237,8 +241,14 @@
                                    selectedCancerTypeItems.length ? createNetwork(selectedDataset, selectedInteractionGeneDataset, selectedCancerTypeItems) : false
               ">
               </app-cancertype-tile>
+              <div *ngIf="nCancerGenesInSelectedCancerTypes" class="info">
+                <p>{{ nCancerGenesInSelectedCancerTypes }} cancer driver genes found.</p>
+              </div>
+            </div>
+            <div class="column is-2">
             </div>
           </div>
+
           <div>
             <app-cancertype-comorbidities-tile
               [selectedCancerTypeItems]="selectedCancerTypeItems"
@@ -301,9 +311,9 @@
                   </span>
                   </p>
 
-                  <p class="title"> {{ visibleCancerNodeCount }}
-                    <!-- {{ networkData.cancerNodes.length }} -->
-                    / {{ cancerNodesSup.length + cancerNodes.length}}</p>
+                  <p class="title">
+                    <span *ngIf="visibleCancerNodeCount!=cancerNodes.length">{{ visibleCancerNodeCount }} / </span>
+                    {{ cancerNodes.length}}</p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
@@ -316,7 +326,9 @@
                     <i class="fas fa-info-circle"></i>
                     </span>
                   </p>
-                  <p class="title">{{ networkData.nodes.length }} / {{ nodesTotalN }}</p>
+                  <p class="title">
+                    <span *ngIf="visibleNodeCount!=nodes.length">{{ visibleNodeCount }} / </span>
+                    {{ nodes.length }}</p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
@@ -324,7 +336,9 @@
                   <p class="heading">
                     Interactions
                   </p>
-                  <p class="title">{{ networkData.edges.length }} / {{ interactionsTotalN }}</p>
+                  <p class="title">
+                    <span *ngIf="currentViewEdges.size != interactionsTotalN">{{ currentViewEdges.size }} / </span>
+                    {{ interactionsTotalN }}</p>
                 </div>
               </div>
             </nav>
@@ -709,14 +723,24 @@
           </footer>
 
           <footer class="card-footer">
-            <a (click)="analysis.addItems(wrapCancerNodes(cancerNodes));
-            analysis.addItems(wrapCancerNodes(cancerNodesSup))"
-               class="card-footer-item has-text-success"
-               data-tooltip="Add cancer driver genes for selected cancer tpyes">
+<!--            <a (click)="analysis.addItems(wrapCancerNodes(cancerNodes));-->
+<!--            analysis.addItems(wrapCancerNodes(cancerNodesSup))"-->
+<!--               class="card-footer-item has-text-success"-->
+<!--               data-tooltip="Add cancer driver genes for selected cancer tpyes">-->
+<!--            <span class="icon">-->
+<!--              <i class="fa fa-plus"></i>-->
+<!--            </span>-->
+<!--              <span>Add cancer driver genes from DB</span>-->
+<!--            </a>-->
+
+            <a (click)="analysis.invertSelection(currentViewNodes)" class="card-footer-item has-text-primary"
+               data-tooltip="Invert the current selection.">
             <span class="icon">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-sync"></i>
             </span>
-              <span>Add cancer driver genes from DB</span>
+              <span>
+              Invert
+            </span>
             </a>
             <a (click)="showThresholdDialog = true"
                class="card-footer-item has-text-primary"
@@ -754,15 +778,6 @@
           </footer>
 
           <footer class="card-footer">
-            <a (click)="analysis.invertSelection(currentViewNodes)" class="card-footer-item has-text-primary"
-               data-tooltip="Invert the current selection.">
-            <span class="icon">
-              <i class="fa fa-sync"></i>
-            </span>
-              <span>
-              Invert
-            </span>
-            </a>
             <a (click)="analysis.resetSelection()" class="card-footer-item has-text-danger"
                data-tooltip="Remove all entries from the selection.">
             <span class="icon">

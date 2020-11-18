@@ -32,7 +32,7 @@
     </p>
     <p *wrapper.data.interactions>
       <b><span>Node Degree:</span></b>
-      {{ wrapper.data.interactions.length }}
+      {{ nodeDegree }}
     </p>
 
     <ng-container *ngIf="wrapper.data.cancerOccurrences">
@@ -89,7 +89,7 @@
     </p>
     <p *ngIf="wrapper.data.interactions">
       <b><span>Node Degree:</span></b>
-      {{ wrapper.data.interactions.length }}
+      {{ nodeDegree }}
     </p>
     <ng-container *ngIf="wrapper.data.cancerOccurrences">
       <b><span>Related Cancer Types ({{ wrapper.data.cancerOccurrences }}):</span></b>
@@ -144,7 +144,7 @@
     </div>
     <p *ngIf="wrapper.data.interactions">
       <b><span>Node Degree:</span></b>
-      {{ wrapper.data.interactions.length }}
+      {{ nodeDegree }}
     </p>
   </div>
 

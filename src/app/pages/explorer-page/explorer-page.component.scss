@@ -58,4 +58,17 @@
   .card.network{
     height: 100%;
   }
+  footer {
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+.info {
+  font-size: 12px;
+}
+
+.analysis-info {
+  z-index: 30;
+  margin-top: 40px;
 }

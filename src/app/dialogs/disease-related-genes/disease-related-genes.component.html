@@ -13,7 +13,9 @@
         No genes have been selected or added.
       </div>
       <div class="notification is-warning" *ngIf="addedCount > 0">
-        {{addedCount}} genes have been selected or added.
+        {{addedCount}}
+        <span *ngIf="addedCount > 1">genes have</span>
+        <span *ngIf="addedCount == 1">gene has</span> been selected or added.
       </div>
       <p>
           Select diseases and either select related genes from our database or from the current network.

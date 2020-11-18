@@ -29,7 +29,7 @@ import {
   Tissue,
   Scored,
   Seeded,
-  Baited
+  Baited, DrugStatus
 } from '../../interfaces';
 import html2canvas from 'html2canvas';
 import {toast} from 'bulma-toast';
@@ -54,6 +54,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   @Output() tokenChange = new EventEmitter<string | null>();
   @Output() showDetailsChange = new EventEmitter<Wrapper>();
   @Output() visibleItems = new EventEmitter<[any[], [Node[], CancerNode[], Tissue]]>();
+  @Output() visibleTab = new EventEmitter<string>();
 
   public task: Task | null = null;
 
@@ -79,6 +80,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public expressionExpanded = false;
   public selectedTissue: Tissue | null = null;
+
+  public drugStatusExpanded = false;
+  public selectedDrugStatus: DrugStatus | null = null;
 
   public algorithmNames = algorithmNames;
 
@@ -470,7 +474,11 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       wrapper = getWrapperFromDrug(drug);
       drugType = drug.status;
       isCancerDrug = drug.isCancerDrug;
-      nodeLabel = drug.name;
+      if (drugType === 'approved') {
+        nodeLabel = drug.name;
+      } else {
+        nodeLabel = drug.dbId;
+      }
     } else if (nodeType === 'CancerNode') {
       const cancerDriverGene = details as CancerNode;
       wrapper = getWrapperFromCancerNode(cancerDriverGene);
@@ -515,18 +523,18 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     }
   }
 
-  public async toggleDrugs(bool: boolean) {
+  public async toggleDrugs(drugStatus: DrugStatus | null) {
     /**
      * fetches and displays drug data in the network (in case task.info.target === 'drug-target')
      * otherwise the drug toggle button is replaced by the animation on / off button
      */
-    this.showDrugs = bool;
+    this.showDrugs = drugStatus !== null;
     this.nodeData.nodes.remove(this.drugNodes);
     this.nodeData.edges.remove(this.drugEdges);
     this.drugNodes = [];
     this.drugEdges = [];
     if (this.showDrugs) {
-      const result = await this.control.getDrugInteractions(this.token).catch(
+      const result = await this.control.getDrugInteractions(this.token, drugStatus).catch(
         (err: HttpErrorResponse) => {
           // simple logging, but you can do a lot more, see below
           toast({
@@ -565,6 +573,13 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         }
         this.nodeData.nodes.add(Array.from(this.drugNodes.values()));
         this.nodeData.edges.add(Array.from(this.drugEdges.values()));
+
+        // active physics for some seconds in order to sort the drugs into the network.
+        this.updatePhysicsEnabled(true);
+        setTimeout(() => {
+          this.updatePhysicsEnabled(false);
+        }, 5000);
+
       }
     }
   }

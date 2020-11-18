@@ -101,6 +101,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public showCustomGenesDialog = false;
 
   public selectedAnalysisToken: string | null = null;
+  public visibleAnalysisTab: string | null = null;
 
   public currentDataset: Dataset = undefined;
   public currentCancerTypeItems: CancerType[] = undefined;
@@ -112,13 +113,17 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public currentViewCancerGenes: CancerNode[];
   public currentViewSelectedTissue: Tissue | null = null;
   public currentViewNodes: any[];
+  public currentViewEdges: Set<string>;
 
   public expressionExpanded = false;
   public selectedTissue: Tissue | null = null;
 
   public visibleCancerNodeCount = 0;
+  public visibleNodeCount = 0;
 
   public networkFullscreenStatus = false;
+
+  public nCancerGenesInSelectedCancerTypes: number;
 
 
 
@@ -534,6 +539,30 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.currentViewNodes = this.nodeData.nodes;
     this.currentViewGenes.push(...this.nodes);
     this.currentViewCancerGenes.push(...this.cancerNodes);
+
+    if (this.network) {
+      this.currentViewEdges = new Set([]);
+      this.nodeData.nodes.forEach((node) => {
+        for (const edge of this.network.getConnectedEdges(node.id)) {
+          this.currentViewEdges.add(edge);
+        }
+      });
+    }
+  }
+
+  public getNodeDegree(graphId: string): number {
+    /**
+     * returns the node degree of a given node in the current network
+     */
+    // TODO info tile gets called like many times when opening once
+    try {
+      // do this just to check if node is in network
+      this.network.getPosition(graphId);
+      // this function somehow just crashes without throwing an error, a behaviour we cannot catch
+      return this.network.getConnectedEdges(graphId).length;
+    } catch (err) {
+      return 0;
+    }
   }
 
   public async addNetworkNode(cancerNode: CancerNode) {
@@ -667,6 +696,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.nodeData.nodes.add(Array.from(addNodes.values()));
 
     this.visibleCancerNodeCount = filteredCancerDriverGenes.length;
+    this.visibleNodeCount = filteredGenes.length;
 
     // update query options
     this.fillQueryItems(filteredGenes, filteredCancerDriverGenes);
@@ -1098,7 +1128,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         this.selectedDataset,
         this.selectedCancerTypeItems,
       );
-
+      this.nCancerGenesInSelectedCancerTypes = data.nCancerGenes;
       const k = 5;
 
       // get the top 5 occuring diseases (can be more if counts are the same)
@@ -1141,11 +1171,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // set title dynmically based on amount of selected cancer types
       let title = '';
       if (this.selectedCancerTypeItems.length > 1) {
-        title = 'Comorbidities for selected Cancers';
+        title = 'Comorbidities for selected Cancer Types';
       } else {
         title = `Comorbidities for ${this.selectedCancerTypeItems[0].name}`;
       }
-      title += `<br> (${data.nCancerGenes} Cancer Genes)`;
+      // title += `<br> (${this.nCancerGenesInSelectedCancerTypes} Cancer Genes)`;
 
       const graphData = {
         data: [

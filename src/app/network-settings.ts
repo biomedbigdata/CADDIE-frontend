@@ -61,7 +61,7 @@ export class NetworkSettings {
     barnesHut: {
       theta: 1,
       gravitationalConstant: -10000,
-      centralGravity: 1,
+      centralGravity: 5,
       springLength: 300,
       springConstant: 0.8,
       damping: 0.5,

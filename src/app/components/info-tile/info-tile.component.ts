@@ -9,14 +9,13 @@ import {AnalysisService} from '../../services/analysis/analysis.service';
 })
 export class InfoTileComponent implements OnInit {
 
-  @Input()
-  public wrapper: Wrapper;
-  @Input()
-  public wrapperCancerTypes: CancerType[];
-  @Input()
-  public wrapperComorbidities: DiseaseGeneInteraction[];
+  @Input() wrapper: Wrapper;
+  @Input() wrapperCancerTypes: CancerType[];
+  @Input() wrapperComorbidities: DiseaseGeneInteraction[];
+  @Input() nodeDegree: number;  // we need to pass this since we need network object to calculate it
 
-  constructor(public analysis: AnalysisService) { }
+  constructor(public analysis: AnalysisService) {
+  }
 
   ngOnInit(): void {
   }

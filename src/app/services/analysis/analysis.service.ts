@@ -8,6 +8,7 @@ import {
   Dataset,
   Tissue,
   CancerType,
+  DrugStatus
 } from '../../interfaces';
 import {Subject} from 'rxjs';
 import {toast} from 'bulma-toast';
@@ -67,6 +68,8 @@ export class AnalysisService {
 
   private tissues: Tissue[] = [];
 
+  private drugStatus: DrugStatus[] = [];
+
   constructor(private control: ControlService) {
     const tokens = localStorage.getItem('tokens');
     const finishedTokens = localStorage.getItem('finishedTokens');
@@ -76,11 +79,17 @@ export class AnalysisService {
     if (finishedTokens) {
       this.finishedTokens = JSON.parse(finishedTokens);
     }
+
     this.startWatching();
     this.control.tissues().subscribe((tissues) => {
       this.tissues = tissues;
     });
 
+    this.control.getDrugStatus().subscribe((status) => {
+      // add option 'all' with backend ID -1
+      status.push({backendId: -1, name: 'all'});
+      this.drugStatus = status;
+    });
 
   }
 
@@ -122,6 +131,13 @@ export class AnalysisService {
      * return all tissues saved in this object
      */
     return this.tissues;
+  }
+
+  public getDrugStatus(): DrugStatus[] {
+    /**
+     * return all Drug status objects saved in this object
+     */
+    return this.drugStatus;
   }
 
   public switchSelection(id: string) {

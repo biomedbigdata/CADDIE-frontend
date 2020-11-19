@@ -655,7 +655,23 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         toAdd.push(wrapper);
       }
     });
+
+    if (toAdd.length > 60) {
+      // we warn user if many nodes are to be added
+      if (!window.confirm(
+        `Adding many nodes might slow the webpage down, continue?
+        Less than 60 nodes are recommended`
+      )) {
+        // stop if user declines
+        return;
+      }
+    }
+
+    this.loadingOverlay.addTo('canvas-content');
+
     await this.addNetworkNodes(toAdd);
+
+    this.loadingOverlay.removeFrom('canvas-content');
   }
 
   public async addNetworkNodes(wrapperList: Wrapper[]) {

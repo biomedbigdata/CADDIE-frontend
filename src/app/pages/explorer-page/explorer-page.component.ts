@@ -410,7 +410,13 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const {nodes, edges} = this.mapDataToNodes(this.networkData);
     this.nodeData.nodes = new vis.DataSet(nodes);
     this.nodeData.edges = new vis.DataSet(edges);
-    this.filterNodes();
+
+    // add all nodes to query
+    this.fillQueryItems(this.nodes, this.cancerNodes)
+
+    // set initial view counts
+    this.visibleCancerNodeCount = this.cancerNodes.length;
+    this.visibleNodeCount = this.nodes.length;
 
     const container = this.networkEl.nativeElement;
     const options = NetworkSettings.getOptions('main');
@@ -704,35 +710,37 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     }
 
     // add all the nodes
+    const nodeItems = [];
+    const cancerNodeItems = [];
     for (const data of dataList) {
       const type = data.type;
       const item = data.item;
       // add node dynamically to network
       let node;
       if (type === 'CancerNode') {
-        node = this.mapCancerDriverGeneToNode(item as CancerNode);
         this.networkData.cancerNodes.push(item as CancerNode);
-        // add node to cancer nodes
-        this.fillQueryItems([], [item as CancerNode], false);
+        node = this.mapCancerDriverGeneToNode(item as CancerNode);
+        cancerNodeItems.push(item);
       } else {
-        node = this.mapGeneToNode(item as Node);
         this.networkData.nodes.push(item as Node);
-        this.fillQueryItems([item as Node], [], false);
+        node = this.mapGeneToNode(item as Node);
+        nodeItems.push(item);
       }
-
       // add data to network interface
       this.networkData.edges.push(...data.interactions);
 
       // add data to network
       this.nodeData.nodes.add(node);
     }
+    // add node to query items
+    this.fillQueryItems(nodeItems, cancerNodeItems, false);
 
     // now add edges in a second step to make sure we dont miss any connection
     for (const data of dataList) {
       const edgesToAdd = [];
       for (const interaction of data.interactions) {
         if ((this.nodeData.nodes.get(interaction.interactorAGraphId) !== null) &&
-          (this.nodeData.nodes.get(interaction.interactorAGraphId) !== null)) {
+          (this.nodeData.nodes.get(interaction.interactorBGraphId) !== null)) {
           edgesToAdd.push(this.mapEdge(interaction));
         }
       }
@@ -743,9 +751,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // connect the edges
     this.networkData.linkNodes();
 
-    // TODO not good to iterate through everything
-    // in case filter option is in use
-    this.filterNodes();
+    this.visibleCancerNodeCount += cancerNodeItems.length;
+    this.visibleNodeCount += nodeItems.length;
 
     // check if tissue is selected, if yes, refresh so new node gets color gradient
     // TODO just do this for new node

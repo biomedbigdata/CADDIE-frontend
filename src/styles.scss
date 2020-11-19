@@ -426,3 +426,12 @@ body {
     }
   }
 }
+
+.row-cancer-gene {
+  background-color: rgba(91, 0, 91, 0.2);
+}
+
+.scrollable {
+  overflow-y: auto;
+  height: calc(100vh - #{$navbar-height})
+}

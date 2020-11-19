@@ -240,9 +240,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      */
     this.interactionGeneDatasetItems = await this.control.getInteractionGeneDatasets();
 
-    // TODO remove me, I am just here until we update the database on the server
-    this.interactionGeneDatasetItems = [this.interactionGeneDatasetItems[0]];
-
     this.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
   }
 
@@ -251,9 +248,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Fetches Cancer Dataset data from API and initializes dataset tile
      */
     this.interactionDrugDatasetItems = await this.control.getInteractionDrugDatasets();
-
-    // TODO remove me, I am just here until we update the database on the server
-    this.interactionDrugDatasetItems = [this.interactionDrugDatasetItems[0]];
 
     this.selectedInteractionDrugDataset = this.interactionDrugDatasetItems[0];
   }

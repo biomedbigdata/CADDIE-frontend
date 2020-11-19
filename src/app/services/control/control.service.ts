@@ -414,4 +414,16 @@ export class ControlService {
     return this.http.get(`${environment.backend}query_disease_genes/`, {params}).toPromise();
   }
 
+  public drugLookup(searchString: string, dataset: Dataset): Promise<any> {
+    /**
+     * Returns all genes and cancer genes related to input diseases and cancer dataset / type
+     * Returns found genes and cancerGenes
+     */
+
+    const params = new HttpParams()
+      .set('text', JSON.stringify(searchString))
+      .set('dataset', JSON.stringify(dataset.backendId))
+    return this.http.get(`${environment.backend}drug_interaction_lookup/`, {params}).toPromise();
+  }
+
 }

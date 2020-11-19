@@ -319,10 +319,6 @@
                 In Trial
                 <p-sortIcon [field]="'inTrial'"></p-sortIcon>
               </th>
-              <th [pSortableColumn]="'inLiterature'">
-                In Literature
-                <p-sortIcon [field]="'inLiterature'"></p-sortIcon>
-              </th>
               <th [pSortableColumn]="'inCancernet'">
                 In Cancernet
                 <p-sortIcon [field]="'inCancernet'"></p-sortIcon>
@@ -349,9 +345,6 @@
               <td><a href="https://www.drugbank.ca/drugs/{{ e.dbId }}" target="_blank">{{ e.dbId }}</a></td>
               <td>
                 {{e.name}}
-                <span *ngIf="e.links != 'nan'">
-                  <a href="{{ e.links.split(',')[0] }}" target="_blank"><i class="fas fa-link"></i></a>
-                </span>
               </td>
               <td>
                 <span *ngIf="e.status === 'approved'">
@@ -368,15 +361,6 @@
                   Trial
                 </span>
                 <span *ngIf="!e.inTrial">
-                  <i class="fa fa-times"></i>
-                </span>
-              </td>
-              <td>
-                <span *ngIf="e.inLiterature">
-                  <i class="fa fa-book has-text-primary"></i>
-                  Literature
-                </span>
-                <span *ngIf="!e.inLiterature">
                   <i class="fa fa-times"></i>
                 </span>
               </td>

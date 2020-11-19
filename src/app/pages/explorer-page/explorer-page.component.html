@@ -102,6 +102,25 @@
               </div>
               <!-- END Legend -->
 
+              <!-- START Gradient Legend -->
+              <div class="legend main gradient" *ngIf="mutationGradient || selectedTissue">
+                <div class="color-gradient-gene bar"></div>
+                <div class="color-gradient-cancer-gene bar"></div>
+                <span class="annotation-max">High <br>
+                  <span *ngIf="mutationGradient">Mutation</span>
+                  <span *ngIf="selectedTissue">Expression</span>
+                </span>
+                <span class="annotation-min">Low <br>
+                  <span *ngIf="mutationGradient">Mutation</span>
+                  <span *ngIf="selectedTissue">Expression</span>
+                </span>
+                <div>
+                  <div class="box-unknown has-background-grey-light"></div>
+                  <span class="annotation-unknown">Unkown</span>
+                </div>
+              </div>
+              <!-- END Gradient Legend -->
+
               <div class="card-image" id="canvas-content">
                 <div class="parent">
                   <div class="network center image1" #network>
@@ -112,61 +131,42 @@
                 </div>
               </div>
 
-              <footer class="card-footer toolbar">
-                <button (click)="toCanvas()" class="button is-primary has-tooltip"
+              <footer class="card-footer toolbar network-footer-container">
+                <button (click)="toCanvas()" class="button is-primary has-tooltip is-inline-block footer-buttons"
                         data-tooltip="Take a screenshot of the current network.">
                 <span class="icon">
                   <i class="fas fa-camera" aria-hidden="true"></i>
                 </span> <span>Screenshot</span>
                 </button>
 
-                <div class="footer-buttons dropdown is-up" [class.is-active]="expressionExpanded">
-                  <div class="dropdown-trigger">
-                    <button (click)="expressionExpanded=!expressionExpanded"
-                            class="button is-primary" [class.is-outlined]="!selectedTissue"
-                            aria-haspopup="true" aria-controls="dropdown-menu"
-                            data-tooltip="Tissue expression data is provided by the GTEx project.">
-                      <span *ngIf="!selectedTissue">Tissue</span>
-                      <span *ngIf="selectedTissue">{{selectedTissue.name}}</span>
-                      <span class="icon is-small">
-                      <i class="fas"
-                         [class.fa-angle-up]="expressionExpanded"
-                         [class.fa-angle-left]="!expressionExpanded" aria-hidden="true"></i>
-                    </span>
-                    </button>
-                  </div>
-                  <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                    <div class="dropdown-content tissue-dropdown">
-                      <div class="scroll-area">
-                        <a (click)="selectTissue(null)"
-                           [class.is-active]="!selectedTissue"
-                           class="dropdown-item">
-                          None
-                        </a>
-                        <a *ngFor="let tissue of analysis.getTissues()"
-                           (click)="selectTissue(tissue)"
-                           [class.is-active]="selectedTissue && tissue.backendId === selectedTissue.backendId"
-                           class="dropdown-item">
-                          {{tissue.name}}
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <app-category-selector
+                  [expanded]="expressionExpanded"
+                  [selectedElement]="selectedTissue"
+                  [elements]="analysis.getTissues()"
+                  (callbackFun)="selectTissue($event)"
+                  label="Tissue"
+                  class="footer-buttons is-inline-block"
+                ></app-category-selector>
 
-
-                <app-toggle class="footer-buttons" textOn="Mutation Gradient On" textOff="Off"
+                <app-toggle class="footer-buttons is-inline-block" textOn="Mutation On" textOff="Off"
                             tooltipOn="Colors the nodes based on the amount of mutations."
                             tooltipOff="Resets the node colors."
                             [value]="mutationGradient" (valueChange)="colorMutationGradient($event)"></app-toggle>
 
-
-                <app-toggle class="footer-buttons" textOn="Animation On" textOff="Off"
+                <app-toggle class="footer-buttons is-inline-block"
+                            textOn="Animation On"
+                            textOff="Off"
                             tooltipOn="Enable the network animation."
                             tooltipOff="Disable the network animation and freeze nodes."
-                            [value]="physicsEnabled" (valueChange)="updatePhysicsEnabled($event)"></app-toggle>
+                            [value]="physicsEnabled"
+                            (valueChange)="updatePhysicsEnabled($event)"></app-toggle>
 
-                <app-button buttonText="Fullscreen" (callbackFun)="networkFullscreen()" icon="fa fa-arrows"></app-button>
+                <app-button
+                  buttonText="Fullscreen"
+                  (callbackFun)="networkFullscreen()"
+                  icon="fa fa-arrows"
+                  class="is-inline-block footer-buttons">
+                </app-button>
 
               </footer>
             </div>
@@ -242,7 +242,7 @@
               ">
               </app-cancertype-tile>
               <div *ngIf="nCancerGenesInSelectedCancerTypes" class="info">
-                <p>{{ nCancerGenesInSelectedCancerTypes }} cancer driver genes found.</p>
+                <p>{{ nCancerGenesInSelectedCancerTypes }} cancer driver genes found</p>
               </div>
             </div>
             <div class="column is-2">

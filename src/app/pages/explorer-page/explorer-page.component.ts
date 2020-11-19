@@ -126,7 +126,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public nCancerGenesInSelectedCancerTypes: number;
 
 
-
   @ViewChild('network', {static: false}) networkEl: ElementRef;
 
   constructor(

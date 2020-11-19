@@ -31,12 +31,13 @@ import { FilterTileComponent } from './components/filter-tile/filter-tile.compon
 import { InteractionDatasetTileComponent } from './components/interaction-dataset-tile/interaction-dataset-tile.component';
 import { CancertypeComorbiditiesTileComponent } from './components/cancertype-comorbidities-tile/cancertype-comorbidities-tile.component';
 import { DownloadPageComponent } from './pages/download-page/download-page.component';
-
+import { DiseaseRelatedGenesComponent } from './dialogs/disease-related-genes/disease-related-genes.component';
+import { CategorySelectorComponent } from './components/category-selector/category-selector.component';
+import { DrugLookupPageComponent } from './pages/drug-lookup-page/drug-lookup-page.component';
 
 // @ts-ignore
 import { PlotlyViaCDNModule } from 'angular-plotly.js';
-import { DiseaseRelatedGenesComponent } from './dialogs/disease-related-genes/disease-related-genes.component';
-import { CategorySelectorComponent } from './components/category-selector/category-selector.component';
+
 
 PlotlyViaCDNModule.plotlyVersion = '1.41.0';
 
@@ -65,6 +66,7 @@ PlotlyViaCDNModule.plotlyVersion = '1.41.0';
     DownloadPageComponent,
     DiseaseRelatedGenesComponent,
     CategorySelectorComponent,
+    DrugLookupPageComponent,
   ],
   imports: [
     BrowserModule,

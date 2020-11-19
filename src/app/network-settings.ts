@@ -57,20 +57,13 @@ export class NetworkSettings {
   };
   private static analysisBigPhysics = {
     enabled: true,
-    solver: 'barnesHut',
-    barnesHut: {
-      theta: 1,
-      gravitationalConstant: -10000,
-      centralGravity: 5,
-      springLength: 300,
-      springConstant: 0.8,
-      damping: 0.5,
-      avoidOverlap: 1,
-    },
     stabilization: {
       enabled: true,
-      iterations: 250
-    }
+    },
+    repulsion: {
+      centralGravity: 0,
+    },
+    solver: 'repulsion',
   };
 
   private static mainLayout = {

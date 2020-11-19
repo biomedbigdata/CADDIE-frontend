@@ -235,10 +235,15 @@ div.field.has-addons.add-remove-toggle {
   color: $danger;
 }
 
-.footer-buttons {
-  margin-left: 20px;
-  margin-right: 10px;
+.network-footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  .footer-buttons {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
 }
+
 
 .toolbar {
   padding: 5px;
@@ -369,4 +374,55 @@ body {
 #analysis-content{
   position: relative;
   height: 100%;
+}
+
+.legend.gradient{
+  height: 200px;
+  width: 150px;
+  position: absolute;
+  bottom: 0;
+  right: -20px;
+  &.main {
+    bottom: calc(10px + #{$network-footer-height});
+  }
+  .bar{
+    display: inline-block;
+    height: 100%;
+    width: 10%;
+    &.color-gradient-cancer-gene{
+      background-image: linear-gradient($network-cancer-node-color, rgba(91,0,91, .05));
+    }
+    &.color-gradient-gene{
+      background-image: linear-gradient($network-node-color, rgba(20, 61, 31, .05));
+    }
+    &.color-gradient-cancer-gene-seed{
+      background-image: linear-gradient($network-seed-cancer-gene-color, rgba(58, 177, 89, .05));
+    }
+    &.color-gradient-gene-seed{
+      background-image: linear-gradient($network-seed-gene-color, rgba(255, 0, 127, .05));
+    }
+  }
+  .box-unknown{
+    width: 20%;
+    height: 20px;
+  }
+  .annotation-max {
+    position: absolute;
+    top: 0;
+  }
+  .annotation-min{
+    position: absolute;
+    bottom: 0;
+  }
+  .annotation-unknown{
+    position: absolute;
+    bottom: -30px;
+    left: 20%;
+  }
+  &.analysis-panel {
+    bottom: 30px;
+    .bar{
+      width: 5%;
+    }
+  }
 }

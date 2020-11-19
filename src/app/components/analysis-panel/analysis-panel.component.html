@@ -176,8 +176,29 @@
           </div>
           <!-- END Legend -->
 
+          <!-- START Gradient Legend -->
+          <div class="legend gradient analysis-panel" *ngIf="mutationGradient || selectedTissue">
+            <div class="color-gradient-gene bar"></div>
+            <div class="color-gradient-gene-seed bar"></div>
+            <div class="color-gradient-cancer-gene bar"></div>
+            <div class="color-gradient-cancer-gene-seed bar"></div>
+            <span class="annotation-max">High <br>
+                  <span *ngIf="mutationGradient">Mutation</span>
+                  <span *ngIf="selectedTissue">Expression</span>
+                </span>
+            <span class="annotation-min">Low <br>
+                  <span *ngIf="mutationGradient">Mutation</span>
+                  <span *ngIf="selectedTissue">Expression</span>
+                </span>
+            <div>
+              <div class="box-unknown has-background-grey-light"></div>
+              <span class="annotation-unknown">Unkown</span>
+            </div>
+          </div>
+          <!-- END Gradient Legend -->
+
         </div>
-        <footer class="card-footer toolbar">
+        <footer class="card-footer toolbar network-footer-container">
           <div class="field">
             <p class="control footer-buttons">
               <button class="button is-primary has-tooltip"
@@ -214,6 +235,7 @@
           ></app-category-selector>
 
           <app-category-selector
+            *ngIf="task.info.target === 'drug-target'"
             [expanded]="drugStatusExpanded"
             [selectedElement]="selectedDrugStatus"
             [elements]="analysis.getDrugStatus()"

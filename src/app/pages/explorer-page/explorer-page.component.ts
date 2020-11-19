@@ -423,10 +423,15 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
       // save the positions after stabilization
       const positions = this.network.getPositions();
-      for (const node of nodes) {
+
+      // update in network
+      this.networkData.updateNodePositions(positions);
+      // update in reference
+      this.nodeData.nodes.forEach((node) => {
         node.x = positions[node.id].x;
         node.y = positions[node.id].y;
-      }
+      });
+
     });
 
     this.network.on('doubleClick', (properties) => {

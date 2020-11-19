@@ -24,22 +24,26 @@ export class Network {
     public edges: Interaction[]) {
   }
 
-  public async loadPositionsFromFile(http: HttpClient, dataset: Dataset, cancerType: CancerType[]) {
-    const nodePositions = await http.get(`assets/positions/${getDatasetFilename(dataset, cancerType)}`).toPromise();
+  public updateNodePositions(positions) {
     this.nodes.forEach((node) => {
-      const nodePosition = nodePositions[getGeneNodeId(node)];
+      const nodePosition = positions[getGeneNodeId(node)];
       if (nodePosition) {
         node.x = nodePosition.x;
         node.y = nodePosition.y;
       }
     });
     this.cancerNodes.forEach((node) => {
-      const nodePosition = nodePositions[getCancerDriverGeneNodeId(node)];
+      const nodePosition = positions[getCancerDriverGeneNodeId(node)];
       if (nodePosition) {
         node.x = nodePosition.x;
         node.y = nodePosition.y;
       }
     });
+  }
+
+  public async loadPositionsFromFile(http: HttpClient, dataset: Dataset, cancerType: CancerType[]) {
+    const nodePositions = await http.get(`assets/positions/${getDatasetFilename(dataset, cancerType)}`).toPromise();
+    this.updateNodePositions(nodePositions);
   }
 
   public getNode(backendId: string): Node | undefined {

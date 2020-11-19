@@ -211,7 +211,7 @@ export class ControlService {
     dataset: Dataset,
     interactionDataset: Dataset,
     cancerTypes: CancerType[],
-    node: CancerNode
+    node: CancerNode | Node
   ): Promise<any> {
     /**
      * returns promise of all data needed to construct a gene gene interaction network
@@ -422,7 +422,7 @@ export class ControlService {
 
     const params = new HttpParams()
       .set('text', JSON.stringify(searchString))
-      .set('dataset', JSON.stringify(dataset.backendId))
+      .set('dataset', JSON.stringify(dataset.backendId));
     return this.http.get(`${environment.backend}drug_interaction_lookup/`, {params}).toPromise();
   }
 

@@ -338,7 +338,7 @@
                   </p>
                   <p class="title">
                     <span *ngIf="currentViewEdges.size != interactionsTotalN">{{ currentViewEdges.size }} / </span>
-                    {{ interactionsTotalN }}</p>
+                    {{ this.nodeData.edges.length }}</p>
                 </div>
               </div>
             </nav>
@@ -778,6 +778,15 @@
           </footer>
 
           <footer class="card-footer">
+            <a (click)="addSelectionToNetwork()" class="card-footer-item has-text-primary"
+               data-tooltip="Add genes from selection to network.">
+            <span class="icon">
+              <i class="fa fa-project-diagram"></i>
+            </span>
+              <span>
+              Add to Network
+            </span>
+            </a>
             <a (click)="analysis.resetSelection()" class="card-footer-item has-text-danger"
                data-tooltip="Remove all entries from the selection.">
             <span class="icon">
@@ -788,7 +797,6 @@
             </span>
             </a>
           </footer>
-
         </div>
       </div>
 

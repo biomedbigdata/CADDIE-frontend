@@ -558,57 +558,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public async addNetworkNode(cancerNode: CancerNode) {
-    /**
-     * Fetches interactionn information from API and fills information in
-     */
-    // add edges for node dynamically
-    const data = await this.control.getNodeInteractions(
-      this.currentDataset,
-      this.currentGeneInteractionDataset,
-      this.currentCancerTypeItems,
-      cancerNode);
-
-    const edgesToAdd = [];
-    for (const interaction of data.interactions) {
-      edgesToAdd.push(this.mapEdge(interaction));
-    }
-
-    // add node dynamically to network
-    const node = this.mapCancerDriverGeneToNode(cancerNode);
-
-    // add data to network
-    this.nodeData.nodes.add(node);
-    this.nodeData.edges.add(edgesToAdd);
-
-    // add data to network interface
-    this.networkData.cancerNodes.push(cancerNode);
-    this.networkData.edges.push(...data.interactions);
-
-    // TODO just do this for new node to speed up
-    this.networkData.linkNodes();
-
-    // add node to cancer nodes
-    this.fillQueryItems([], [cancerNode], false);
-
-    // remove node out of cancer nodes supplement
-    this.cancerNodesSup.forEach((item, index, object) => {
-      if (cancerNode.backendId.toString() === item.backendId.toString()) {
-        object.splice(index, 1);
-      }
-    });
-
-    // TODO not good to iterate through everything
-    this.filterNodes();
-
-    // check if tissue is selected, if yes, refresh so new node gets color gradient
-    // TODO just do this for new node
-    if (this.selectedTissue) {
-      this.selectTissue(this.selectedTissue);
-    }
-
-  }
-
   public async filterNodes() {
     /**
      * Function related to the Filter tile
@@ -632,7 +581,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const filteredCancerDriverGenes = [];
     this.cancerNodesCheckboxes.forEach((cb) => {
 
-      // find node which has a , TODO improve time here by storing them in an object for lookup simplification
+      // TODO improve time here by storing them in an object for lookup simplification
       const cancerDriverGenes: Array<CancerNode> = [];
       this.networkData.cancerNodes.forEach((cancerDriverGene) => {
         if (cancerDriverGene.name === cb.data.name) {
@@ -680,7 +629,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
           const node = this.mapGeneToNode(gene);
           addNodes.set(node.id, node);
         }
-      } else if (found) {
+      } else if (found && !showAll) {
         removeIds.add(nodeId);
       }
     }
@@ -695,19 +644,97 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.fillQueryItems(filteredGenes, filteredCancerDriverGenes);
   }
 
-  public addFilterNode(item: any) {
-    if (item) {
-      this.cancerNodesCheckboxes.push({
-        checked: false,
-        data: item.data
-      });
+  public async addSelectionToNetwork() {
+    const selection: Wrapper[] = this.analysis.getSelection();
+    const toAdd: Wrapper[] = [];
+    selection.forEach( (wrapper) => {
+      // see if node in network
+      const node = this.nodeData.nodes.get(wrapper.nodeId);
+      // if node is not in network
+      if (node === null) {
+        toAdd.push(wrapper);
+      }
+    });
+    await this.addNetworkNodes(toAdd);
+  }
+
+  public async addNetworkNodes(wrapperList: Wrapper[]) {
+    /**
+     * Fetches interaction information from API and fills information in
+     *
+     * We need to split the data fetching process and the adding process in case newly nodes are connected to nodes
+     * that are still to be added
+     */
+
+    const dataList = [];
+    for (const wrapper of wrapperList) {
+      const item = wrapper.data as CancerNode | Node;
+      const type = wrapper.type as 'CancerNode' | 'Node';
+
+      // add edges for node dynamically
+      const data = await this.control.getNodeInteractions(
+        this.currentDataset,
+        this.currentGeneInteractionDataset,
+        this.currentCancerTypeItems,
+        item);
+      data.type = type;
+      data.item = item;
+      dataList.push(data);
     }
 
-    this.addNetworkNode(item.data);
+    // add all the nodes
+    for (const data of dataList) {
+      const type = data.type;
+      const item = data.item;
+      // add node dynamically to network
+      let node;
+      if (type === 'CancerNode') {
+        node = this.mapCancerDriverGeneToNode(item as CancerNode);
+        this.networkData.cancerNodes.push(item as CancerNode);
+        // add node to cancer nodes
+        this.fillQueryItems([], [item as CancerNode], false);
+      } else {
+        node = this.mapGeneToNode(item as Node);
+        this.networkData.nodes.push(item as Node);
+        this.fillQueryItems([item as Node], [], false);
+      }
+
+      // add data to network interface
+      this.networkData.edges.push(...data.interactions);
+
+      // add data to network
+      this.nodeData.nodes.add(node);
+    }
+
+    // now add edges in a second step to make sure we dont miss any connection
+    for (const data of dataList) {
+      const edgesToAdd = [];
+      for (const interaction of data.interactions) {
+        if ((this.nodeData.nodes.get(interaction.interactorAGraphId) !== null) &&
+          (this.nodeData.nodes.get(interaction.interactorAGraphId) !== null)) {
+          edgesToAdd.push(this.mapEdge(interaction));
+        }
+      }
+      this.nodeData.edges.add(edgesToAdd);
+    }
+
+    // TODO just do this for new nodes to speed up
+    // connect the edges
+    this.networkData.linkNodes();
+
+    // TODO not good to iterate through everything
+    // in case filter option is in use
+    this.filterNodes();
+
+    // check if tissue is selected, if yes, refresh so new node gets color gradient
+    // TODO just do this for new node
+    if (this.selectedTissue) {
+      this.selectTissue(this.selectedTissue);
+    }
 
     toast({
-      message: `Cancer Node ${item.data.name} added to filter options`,
-      duration: 5000,
+      message: `${dataList.length} nodes added to the network.`,
+      duration: 10000,
       dismissible: true,
       pauseOnHover: true,
       type: 'is-success',

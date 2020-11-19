@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import {ControlService} from '../../services/control/control.service';
 import {CancerType, Dataset, Node, Drug} from '../../interfaces';
-import {toast} from "bulma-toast";
-import {environment} from "../../../environments/environment";
+import {toast} from 'bulma-toast';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-drug-lookup-page',
@@ -32,7 +32,7 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
     await this.initInteractionDrugDatasets();
   }
 
-  public onKey(event) {this.searchString = event.target.value;}
+  public onKey(event) { this.searchString = event.target.value; }
 
   public async initInteractionDrugDatasets() {
     /**
@@ -43,11 +43,10 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
   }
 
   public async lookDrugUp(searchString: string, drugDataset: Dataset) {
-    if (searchString == undefined) {
-      return
+    if (searchString === undefined) {
+      return;
     }
     this.searchResult = await this.control.drugLookup(searchString, drugDataset);
-    console.log(this.searchResult);
     if (!this.searchResult.found) {
       toast({
         message: `No Drug was found for '${searchString}'.`,
@@ -57,16 +56,16 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
         type: 'is-danger',
         position: 'top-center',
         animate: {in: 'fadeIn', out: 'fadeOut'}
-      })
+      });
     }
   }
 
-  public extractNames(object_list: CancerType[] | Dataset[]) {
-    if (object_list === undefined) {
+  public extractNames(objectList: CancerType[] | Dataset[]) {
+    if (objectList === undefined) {
       return [];
     }
     // @ts-ignore
-    const names = object_list.map((x) => x.name);
+    const names = objectList.map((x) => x.name);
     return names;
   }
 

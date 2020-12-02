@@ -19,7 +19,7 @@ export class QueryTileComponent {
   querySearch = (term: string, item: Wrapper) => {
     // convert string to lowercase as later all attributes
     if (term === undefined) {
-      return false
+      return false;
     }
     term = term.toLowerCase();
     const data = item.data;

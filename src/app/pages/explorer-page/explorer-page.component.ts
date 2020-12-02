@@ -257,7 +257,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Fetches Cancer Type data from API and initializes cancer type tile
      */
     this.cancerTypes = await this.control.getCancerTypes(dataset);
-    this.selectedCancerTypeItems = [this.cancerTypes[1]];
+    this.selectedCancerTypeItems = [this.cancerTypes[0]];
     // update network if exists
     if (this.network) {
       await this.createNetwork(this.selectedDataset, this.selectedInteractionGeneDataset, this.selectedCancerTypeItems);
@@ -412,7 +412,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.nodeData.edges = new vis.DataSet(edges);
 
     // add all nodes to query
-    this.fillQueryItems(this.nodes, this.cancerNodes)
+    this.fillQueryItems(this.nodes, this.cancerNodes);
 
     // set initial view counts
     this.visibleCancerNodeCount = this.cancerNodes.length;

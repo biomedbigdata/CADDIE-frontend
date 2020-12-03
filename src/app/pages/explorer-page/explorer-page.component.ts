@@ -124,6 +124,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   public nCancerGenesInSelectedCancerTypes: number;
 
+  public nodeDegree: number;
+
 
   @ViewChild('network', {static: false}) networkEl: ElementRef;
 
@@ -316,16 +318,15 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     this.selectedWrapper = item;
 
-    this.getRelatedCancerTypes(item);
+    this.getRelatedCancerTypes(this.selectedWrapper);
 
-    this.getComorbidities(item);
+    this.getComorbidities(this.selectedWrapper);
 
     this.showDetails = true;
   }
 
   private async getRelatedCancerTypes(item: Wrapper) {
     const data = await this.control.getRelatedCancerTypes(this.currentDataset, item.data);
-
     this.selectedWrapperCancerTypes = data.cancerTypes;
   }
 
@@ -464,6 +465,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         const node = this.nodeData.nodes.get(nodeId);
         const wrapper = node.wrapper;
         this.openSummary(wrapper, false);
+        this.getNodeDegree(wrapper.nodeId);
       } else {
         this.closeSummary();
       }
@@ -555,7 +557,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public getNodeDegree(graphId: string): number {
+  public getNodeDegree(graphId: string) {
     /**
      * returns the node degree of a given node in the current network
      */
@@ -564,9 +566,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // do this just to check if node is in network
       this.network.getPosition(graphId);
       // this function somehow just crashes without throwing an error, a behaviour we cannot catch
-      return this.network.getConnectedEdges(graphId).length;
+      this.nodeDegree = this.network.getConnectedEdges(graphId).length;
+
     } catch (err) {
-      return 0;
+      this.nodeDegree = undefined;
     }
   }
 

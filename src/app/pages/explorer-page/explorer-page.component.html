@@ -78,7 +78,7 @@
                   [wrapper]="selectedWrapper"
                   [wrapperCancerTypes]="selectedWrapperCancerTypes"
                   [wrapperComorbidities]="selectedWrapperComorbidities"
-                  [nodeDegree]="getNodeDegree(selectedWrapper.nodeId)"
+                  [nodeDegree]="nodeDegree"
                 ></app-info-tile>
               </div>
               <!-- END Detail View -->
@@ -176,7 +176,7 @@
 
       <div class="analysis-view" *ngIf="selectedAnalysisToken">
         <app-analysis-panel [(token)]="selectedAnalysisToken"
-                            (showDetailsChange)="selectedWrapper = $event"
+                            (showDetailsChange)="selectedWrapper = $event; nodeDegree = $event.nodeDegree"
                             (visibleItems)="analysisWindowChanged($event)"
                             (visibleTab)="visibleAnalysisTab = $event"
         >

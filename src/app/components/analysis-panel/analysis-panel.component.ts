@@ -29,7 +29,8 @@ import {
   Tissue,
   Scored,
   Seeded,
-  Baited, DrugStatus
+  Baited,
+  DrugStatus
 } from '../../interfaces';
 import html2canvas from 'html2canvas';
 import {toast} from 'bulma-toast';
@@ -241,6 +242,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           if (selectedNodes.length > 0) {
             const selectedNode = selectedNodes[0];
             const wrapper = selectedNode.wrapper;
+            wrapper.nodeDegree = this.getNodeDegree(wrapper.data.graphId);
             this.showDetailsChange.emit(wrapper);
           } else {
             this.showDetailsChange.emit(null);
@@ -910,6 +912,21 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public formatStringList(stingList) {
     return stingList.join(', ');
+  }
+
+  public getNodeDegree(graphId: string): number {
+    /**
+     * returns the node degree of a given node in the current network
+     */
+    // TODO info tile gets called like many times when opening once
+    try {
+      // do this just to check if node is in network
+      this.network.getPosition(graphId);
+      // this function somehow just crashes without throwing an error, a behaviour we cannot catch
+      return this.network.getConnectedEdges(graphId).length;
+    } catch (err) {
+      return 0;
+    }
   }
 
 }

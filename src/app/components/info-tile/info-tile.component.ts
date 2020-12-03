@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Wrapper, CancerType, DiseaseGeneInteraction} from '../../interfaces';
 import {AnalysisService} from '../../services/analysis/analysis.service';
 
@@ -7,7 +7,7 @@ import {AnalysisService} from '../../services/analysis/analysis.service';
   templateUrl: './info-tile.component.html',
   styleUrls: ['./info-tile.component.scss']
 })
-export class InfoTileComponent implements OnInit {
+export class InfoTileComponent {
 
   @Input() wrapper: Wrapper;
   @Input() wrapperCancerTypes: CancerType[];
@@ -15,9 +15,6 @@ export class InfoTileComponent implements OnInit {
   @Input() nodeDegree: number;  // we need to pass this since we need network object to calculate it
 
   constructor(public analysis: AnalysisService) {
-  }
-
-  ngOnInit(): void {
   }
 
   public beautify(url: string): string {

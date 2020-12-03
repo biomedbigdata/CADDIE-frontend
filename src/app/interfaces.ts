@@ -248,6 +248,7 @@ export interface Wrapper {
   nodeId: string;
   type: WrapperType;
   data: any;
+  nodeDegree?: number;
 }
 
 export interface Drug {

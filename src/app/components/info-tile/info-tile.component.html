@@ -30,7 +30,7 @@
       <b><span>Mutation Score:</span></b>
       {{ wrapper.data.mutationScore | number : '1.0-3'  }}
     </p>
-    <p *wrapper.data.interactions>
+    <p *ngIf="nodeDegree">
       <b><span>Node Degree:</span></b>
       {{ nodeDegree }}
     </p>
@@ -54,7 +54,6 @@
     </ng-container>
 
   </div>
-
 
   <div *ngIf="wrapper.type === 'CancerNode'">
     <p>
@@ -87,7 +86,7 @@
       <b><span>Mutation Score:</span></b>
       {{ wrapper.data.mutationScore | number : '1.0-3'  }}
     </p>
-    <p *ngIf="wrapper.data.interactions">
+    <p *ngIf="nodeDegree">
       <b><span>Node Degree:</span></b>
       {{ nodeDegree }}
     </p>
@@ -113,6 +112,7 @@
   </div>
 
 
+
   <div *ngIf="wrapper.type === 'Drug'">
     <p>
       <b><span>Name: </span></b>
@@ -123,6 +123,7 @@
       <b>DrugBank ID: </b>
       <a href="https://www.drugbank.ca/drugs/{{ wrapper.data.dbId }}" target="_blank"> {{ wrapper.data.dbId }}</a>
     </p>
+
     <p *ngIf="wrapper.data.status === 'unapproved' ">
       <b>Status: </b> Unapproved
       <span class="icon is-small"><i class="fas fa-search investigational"></i></span>
@@ -130,25 +131,50 @@
       <b>Status: </b> Approved
       <span class="icon is-small"><i class="fas fa-check"></i></span>
     </p>
-    <p *ngIf="wrapper.data.inCancernet">
-      <b>In Cancernet </b> <span class="icon is-small"><i class="fas fa-check"></i></span>
-    </p>
-    <div *ngIf="wrapper.data.inTrial && wrapper.data.links.length > 0" class="list">
-      <div *ngFor="let link of wrapper.data.links" class="list-item">
-        <a [href]="link" target="_blank">{{beautify(link)}}</a>
-      </div>
-      <small class="list-item"><i>Links provided by WHO</i></small>
-    </div>
-    <p *ngIf="wrapper.data.interactions">
-      <b><span>Node Degree:</span></b>
+
+
+
+<!--    <div *ngIf="wrapper.data.inTrial && wrapper.data.links.length > 0" class="list">-->
+<!--      <div *ngFor="let link of wrapper.data.links" class="list-item">-->
+<!--        <a [href]="link" target="_blank">{{beautify(link)}}</a>-->
+<!--      </div>-->
+<!--      <small class="list-item"><i>Links provided by WHO</i></small>-->
+<!--    </div>-->
+    <p *ngIf="nodeDegree">
+      <b><span>Node Degree: </span></b>
       {{ nodeDegree }}
     </p>
+
+    <p *ngIf="wrapper.data.isNutraceutical">
+      <b>Is Nutraceutical: </b> <span class="icon is-small"><i class="fas fa-check"></i></span>
+    </p>
+    <p *ngIf="!wrapper.data.isNutraceutical">
+      <b>Is Nutraceutical: </b> <span class="icon is-small"><i class="fas fa-times"></i></span>
+    </p>
+
+    <p *ngIf="wrapper.data.isAtcAntineoplasticAndImmunomodulatingAgent"
+       class="has-tooltip-right" data-tooltip="ATC Class L antineoplastic and immunomodulating agents">
+      <b>ATC L: </b> <span class="icon is-small"><i class="fas fa-check"></i></span>
+    </p>
+    <p *ngIf="!wrapper.data.isAtcAntineoplasticAndImmunomodulatingAgent"
+       class="has-tooltip-right" data-tooltip="ATC Class L antineoplastic and immunomodulating agents">
+      <b>ATC L: </b> <span class="icon is-small"><i class="fas fa-times"></i></span>
+    </p>
+
+    <p *ngIf="wrapper.data.inCancernet">
+      <b>In Cancernet: </b> <span class="icon is-small"><i class="fas fa-check"></i></span>
+    </p>
+    <p *ngIf="!wrapper.data.inCancernet">
+      <b>In Cancernet: </b> <span class="icon is-small"><i class="fas fa-times"></i></span>
+    </p>
+
+
   </div>
 
   <div class="field has-addons add-remove-toggle" *ngIf="wrapper.type !== 'Drug'">
     <app-toggle [value]="analysis.inSelection(wrapper)"
                 (valueChange)="$event ? analysis.addItems([wrapper]) : analysis.removeItems([wrapper])" textOn="Selected"
-                textOff="Deselected" tooltipOn="Add protein to selection." tooltipOff="Remove protein from selection."></app-toggle>
+                textOff="Deselected" tooltipOn="Add node to selection." tooltipOff="Remove node from selection."></app-toggle>
   </div>
 </div>
 <div *ngIf="!wrapper">

@@ -46,7 +46,7 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
     if (searchString === undefined) {
       return;
     }
-    this.searchResult = await this.control.drugLookup(searchString, drugDataset);
+    this.searchResult = await this.control.drugLookup(searchString.trim(), drugDataset);
     if (!this.searchResult.found) {
       toast({
         message: `No Drug was found for '${searchString}'.`,

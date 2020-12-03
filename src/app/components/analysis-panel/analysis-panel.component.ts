@@ -908,6 +908,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     return updatedNodes;
   }
 
+  public formatStringList(stingList) {
+    return stingList.join(', ');
+  }
+
 }
 
 

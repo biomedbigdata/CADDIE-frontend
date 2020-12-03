@@ -47,30 +47,37 @@ export class NetworkSettings {
   };
   private static analysisPhysics = {
     enabled: true,
+    solver: 'barnesHut',
+    barnesHut: {
+      theta: 0.1,
+      gravitationalConstant: -50000,
+      centralGravity: 5,
+      springLength: 100,
+      springConstant: 0.8,
+      damping: 0.5,
+      avoidOverlap: 1,
+    },
     stabilization: {
       enabled: true,
-    },
-    repulsion: {
-      centralGravity: 0,
-    },
-    solver: 'repulsion',
+      iterations: 250
+    }
   };
   private static analysisBigPhysics = {
     enabled: true,
     solver: 'barnesHut',
     barnesHut: {
-      theta: 1,
-      gravitationalConstant: -5000,
+      theta: 0.5,
+      gravitationalConstant: -50000,
       centralGravity: 5,
       springLength: 200,
-      springConstant: 0.8,
+      springConstant: 0.4,
       damping: 0.5,
       avoidOverlap: 1,
     },
-    repulsion: {
-      centralGravity: 0,
-    },
-    // solver: 'repulsion',
+    stabilization: {
+      enabled: true,
+      iterations: 250
+    }
   };
 
   private static mainLayout = {
@@ -84,8 +91,8 @@ export class NetworkSettings {
     enabled: true,
     solver: 'barnesHut',
     barnesHut: {
-      theta: 1,
-      gravitationalConstant: -10000,
+      theta: 0.5,
+      gravitationalConstant: -50000,
       centralGravity: 5,
       springLength: 300,
       springConstant: 0.8,

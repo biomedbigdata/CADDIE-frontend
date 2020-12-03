@@ -43,7 +43,7 @@
               </tr>
               <tr *ngIf="task.info.parameters.cancerTypeNames !== undefined">
                 <td>Cancer Types</td>
-                <td>{{task.info.parameters.cancerTypeNames}}</td>
+                <td>{{formatStringList(task.info.parameters.cancerTypeNames)}}</td>
               </tr>
 
               <tr *ngIf="task.info.parameters.resultSize !== undefined">

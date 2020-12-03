@@ -52,8 +52,15 @@
             <th>
               Approved
             </th>
-            <th>
-              In Literature
+            <th [pSortableColumn]="'isNutraceutical'">
+              Is Nutraceutical
+              <p-sortIcon [field]="'isNutraceutical'"></p-sortIcon>
+            </th>
+            <th [pSortableColumn]="'isATCAntineoplasticAndImmunomodulatingAgent'"
+                class="has-tooltip"
+                data-tooltip="ATC Class L (Antineoplastic or Immunomodulating Agents)">
+              Antineoplastic or Immunomod.
+              <p-sortIcon [field]="'isATCAntineoplasticAndImmunomodulatingAgent'"></p-sortIcon>
             </th>
             <th>
               In Cancernet
@@ -76,11 +83,20 @@
                 </span>
             </td>
             <td>
-                <span *ngIf="e.inLiterature">
-                  <i class="fa fa-book has-text-primary"></i>
-                  Literature
+                <span *ngIf="e.isNutraceutical">
+                  <i class="fa fa-leaf has-text-primary"></i>
+                  Nutraceutical
                 </span>
-              <span *ngIf="!e.inLiterature">
+              <span *ngIf="!e.isNutraceutical">
+                  <i class="fa fa-times"></i>
+                </span>
+            </td>
+            <td>
+                <span *ngIf="e.isAtcAntineoplasticAndImmunomodulatingAgent">
+                  <i class="fa fa-check has-text-primary"></i>
+                  Antineoplastic or Immunomodulating Agent
+                </span>
+              <span *ngIf="!e.isAtcAntineoplasticAndImmunomodulatingAgent">
                   <i class="fa fa-times"></i>
                 </span>
             </td>

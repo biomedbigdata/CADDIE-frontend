@@ -256,7 +256,7 @@ export interface Drug {
   name: string;
   dbId: string;
   status: 'approved' | 'unapproved';
-  isCancerDrug: boolean;
+  isAtcAntineoplasticAndImmunomodulatingAgent: boolean;
   inLiterature: boolean;
   trialLinks: string[];
 }

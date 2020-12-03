@@ -29,6 +29,23 @@
           <div>
             <table class="table is-narrow">
               <tbody>
+              <tr *ngIf="task.info.parameters.cancerDataset !== undefined">
+                <td>Cancer Dataset</td>
+                <td>{{task.info.parameters.cancerDataset}}</td>
+              </tr>
+              <tr *ngIf="task.info.parameters.geneInteractionDataset !== undefined">
+                <td>Gene Interaction Dataset</td>
+                <td>{{task.info.parameters.geneInteractionDataset}}</td>
+              </tr>
+              <tr *ngIf="task.info.parameters.drugInteractionDataset !== undefined && task.info.target === 'drug'">
+                <td>Drug Interaction Dataset</td>
+                <td>{{task.info.parameters.drugInteractionDataset}}</td>
+              </tr>
+              <tr *ngIf="task.info.parameters.cancerTypeNames !== undefined">
+                <td>Cancer Types</td>
+                <td>{{task.info.parameters.cancerTypeNames}}</td>
+              </tr>
+
               <tr *ngIf="task.info.parameters.resultSize !== undefined">
                 <td>Result Size</td>
                 <td>{{task.info.parameters.resultSize}}</td>
@@ -64,6 +81,13 @@
                   <i *ngIf="!task.info.parameters.includeIndirectDrugs" class="fa fa-times"></i>
                 </td>
               </tr>
+              <tr *ngIf="task.info.parameters.includeNutraceuticalDrugs !== undefined && task.info.target === 'drug'">
+                <td>Include nutraceutical drugs</td>
+                <td>
+                  <i *ngIf="task.info.parameters.includeNutraceuticalDrugs" class="fa fa-check"></i>
+                  <i *ngIf="!task.info.parameters.includeNutraceuticalDrugs" class="fa fa-times"></i>
+                </td>
+              </tr>
               <tr *ngIf="task.info.parameters.includeNonApprovedDrugs !== undefined && task.info.target === 'drug'">
                 <td>Include non-approved drugs</td>
                 <td>
@@ -78,6 +102,7 @@
                   <i *ngIf="task.info.parameters.ignoreNonSeedBaits" class="fa fa-times"></i>
                 </td>
               </tr>
+
               </tbody>
             </table>
           </div>
@@ -170,7 +195,7 @@
               </tr>
               <tr>
                 <td><span class="cancer-drug"></span></td>
-                <td>&nbsp;Cancer Drug</td>
+                <td class="has-tooltip-right" data-tooltip="antineoplastic or immunomodulating agent">&nbsp;ATC Class L</td>
               </tr>
             </table>
           </div>
@@ -315,9 +340,19 @@
                 Approved
                 <p-sortIcon [field]="'status'"></p-sortIcon>
               </th>
-              <th [pSortableColumn]="'inTrial'">
-                In Trial
-                <p-sortIcon [field]="'inTrial'"></p-sortIcon>
+<!--              <th [pSortableColumn]="'inTrial'">-->
+<!--                In Trial-->
+<!--                <p-sortIcon [field]="'inTrial'"></p-sortIcon>-->
+<!--              </th>-->
+              <th [pSortableColumn]="'isNutraceutical'">
+                Is Nutraceutical
+                <p-sortIcon [field]="'isNutraceutical'"></p-sortIcon>
+              </th>
+              <th [pSortableColumn]="'isAtcAntineoplasticAndImmunomodulatingAgent'"
+                  class="has-tooltip"
+                  data-tooltip="ATC Class L (Antineoplastic or Immunomodulating Agents)">
+                Antineoplastic or Immunomod.
+                <p-sortIcon [field]="'isAtcAntineoplasticAndImmunomodulatingAgent'"></p-sortIcon>
               </th>
               <th [pSortableColumn]="'inCancernet'">
                 In Cancernet
@@ -355,12 +390,31 @@
                   <i class="fa fa-times"></i>
                 </span>
               </td>
+<!--              <td>-->
+<!--                <span *ngIf="e.inTrial">-->
+<!--                  <i class="fa fa-microscope has-text-primary"></i>-->
+<!--                  Trial-->
+<!--                </span>-->
+<!--                <span *ngIf="!e.inTrial">-->
+<!--                  <i class="fa fa-times"></i>-->
+<!--                </span>-->
+<!--              </td>-->
+
               <td>
-                <span *ngIf="e.inTrial">
-                  <i class="fa fa-microscope has-text-primary"></i>
-                  Trial
+                <span *ngIf="e.isNutraceutical">
+                  <i class="fa fa-leaf has-text-primary"></i>
+                  Nutraceutical
                 </span>
-                <span *ngIf="!e.inTrial">
+                <span *ngIf="!e.isNutraceutical">
+                  <i class="fa fa-times"></i>
+                </span>
+              </td>
+              <td>
+                <span *ngIf="e.isAtcAntineoplasticAndImmunomodulatingAgent">
+                  <i class="fa fa-check has-text-primary"></i>
+
+                </span>
+                <span *ngIf="!e.isAtcAntineoplasticAndImmunomodulatingAgent">
                   <i class="fa fa-times"></i>
                 </span>
               </td>

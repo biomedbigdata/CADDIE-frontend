@@ -210,7 +210,7 @@ export class NetworkSettings {
                       isSeed: boolean,
                       isSelected: boolean,
                       drugType?: string,
-                      isCancerDrug?: boolean,
+                      isATCClassL?: boolean,
                       gradient?: number): any {
     if (!gradient) {
       gradient = 1.0;
@@ -251,7 +251,7 @@ export class NetworkSettings {
       } else {
         nodeColor = NetworkSettings.getColor('unapprovedDrug');
       }
-      if (isCancerDrug) {
+      if (isATCClassL) {
         nodeShape = NetworkSettings.getNodeShape('Drug', true);
         nodeFont = NetworkSettings.getFont('Drug', true);
       } else {

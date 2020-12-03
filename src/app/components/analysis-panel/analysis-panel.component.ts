@@ -256,10 +256,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
                 continue;
               }
               let drugType;
-              let isCancerDrug;
+              let isATCCLassL;
               if (item.type === 'Drug') {
                 drugType = item.data.status;
-                isCancerDrug = item.data.isCancerDrug;
+                isATCCLassL = item.data.isAtcAntineoplasticAndImmunomodulatingAgent;
               }
               const pos = this.network.getPositions([item.nodeId]);
               node.x = pos[item.nodeId].x;
@@ -269,7 +269,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
                 node.isSeed,
                 selected,
                 drugType,
-                isCancerDrug,
+                isATCCLassL,
                 node.gradient));
               updatedNodes.push(node);
             }
@@ -307,17 +307,17 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.nodeData.nodes.forEach((node) => {
               const nodeSelected = this.analysis.idInSelection(node.id);
               let drugType;
-              let isCancerDrug;
+              let isATCClassL;
               if (node.wrapper.type === 'drug') {
                 drugType = node.wrapper.data.status;
-                isCancerDrug = node.wrapper.data.isCancerDrug;
+                isATCClassL = node.wrapper.data.isAtcAntineoplasticAndImmunomodulatingAgent;
               }
               Object.assign(node, NetworkSettings.getNodeStyle(
                 node.wrapper.type,
                 node.isSeed,
                 nodeSelected,
                 drugType,
-                isCancerDrug,
+                isATCClassL,
                 node.gradient));
               updatedNodes.push(node);
             });
@@ -461,7 +461,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     let nodeLabel;
     let wrapper: Wrapper;
     let drugType;
-    let isCancerDrug;
+    let isATCClassL;
     if (nodeType === 'Node') {
       const gene = details as Node;
       wrapper = getWrapperFromNode(gene);
@@ -473,7 +473,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       const drug = details as Drug;
       wrapper = getWrapperFromDrug(drug);
       drugType = drug.status;
-      isCancerDrug = drug.isCancerDrug;
+      isATCClassL = drug.isAtcAntineoplasticAndImmunomodulatingAgent;
       if (drugType === 'approved') {
         nodeLabel = drug.name;
       } else {
@@ -485,7 +485,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       nodeLabel = cancerDriverGene.name;
     }
 
-    const node = NetworkSettings.getNodeStyle(nodeType, isSeed, this.analysis.inSelection(wrapper), drugType, isCancerDrug);
+    const node = NetworkSettings.getNodeStyle(nodeType, isSeed, this.analysis.inSelection(wrapper),
+      drugType, isATCClassL);
     node.id = wrapper.nodeId;
     node.label = nodeLabel;
     node.nodeType = nodeType;

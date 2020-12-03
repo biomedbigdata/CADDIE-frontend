@@ -107,7 +107,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public currentCancerTypeItems: CancerType[] = undefined;
   public currentGeneInteractionDataset: Dataset = undefined;
   public currentDrugInteractionDataset: Dataset = undefined;
-  public cancerTypeItems: CancerType[] = undefined;
 
   public currentViewGenes: Node[];
   public currentViewCancerGenes: CancerNode[];
@@ -310,10 +309,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * +
      * loads cancer types information for selected node from api endpoint
      */
-    this.selectedWrapper = item;
+
     if (zoom) {
       this.zoomToNode(item.nodeId);
     }
+
+    this.selectedWrapper = item;
 
     this.getRelatedCancerTypes(item);
 
@@ -808,7 +809,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     node.x = gene.x;
     node.y = gene.y;
     node.wrapper = wrapper;
-    node.isCancer = false;
+    node.isATCClassL = false;
     return node;
   }
 

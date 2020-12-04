@@ -26,7 +26,8 @@
       <b><span>Protein Name:</span></b>
       {{ wrapper.data.proteinName }}
     </p>
-    <p *ngIf="wrapper.data.mutationScore">
+    <p *ngIf="wrapper.data.mutationScore"
+       class="has-tooltip-right" data-tooltip="Based on number of mutations. See 'About' for more information">
       <b><span>Mutation Score:</span></b>
       {{ wrapper.data.mutationScore | number : '1.0-3'  }}
     </p>
@@ -82,7 +83,8 @@
       <b><span>Protein Name:</span></b>
         {{ wrapper.data.proteinName }}
     </p>
-    <p *ngIf="wrapper.data.mutationScore">
+    <p *ngIf="wrapper.data.mutationScore"
+       class="has-tooltip-right" data-tooltip="Based on number of mutations. See 'About' for more information">
       <b><span>Mutation Score:</span></b>
       {{ wrapper.data.mutationScore | number : '1.0-3'  }}
     </p>

@@ -187,6 +187,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableSelectedNodes = [];
             this.tableNodes.forEach((node) => {
               node.rawScore = node.score;
+              node.rawMutationScore = node.mutationScore;
               node.isSeed = isSeed[node.graphId];
               node.closestCancerGenes = (node.closestCancerGenes as any).split(',');
               if (this.analysis.nodeInSelection(node)) {
@@ -199,6 +200,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableCancerNodes = table;
             this.tableCancerNodes.forEach((cancerDriverGene) => {
               cancerDriverGene.rawScore = cancerDriverGene.score;
+              cancerDriverGene.rawMutationScore = cancerDriverGene.mutationScore;
               cancerDriverGene.isSeed = isSeed[cancerDriverGene.graphId];
             });
           }));
@@ -368,38 +370,54 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     this.emitVisibleItems(false);
   }
 
+
+
   public toggleNormalization(normalize: boolean) {
     /**
      * toggles normalization in analysis table
      */
+
+    const capitalizeFirstLetter = (s: string) => {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    };
+
     this.tableNormalize = normalize;
 
-    const normalizeFn = (table) => {
+    const normalizeFn = (table, key: string) => {
+      const rawKey = `raw${capitalizeFirstLetter(key)}`;
       let max = 0;
+      // get maximum
       table.forEach(i => {
-        if (i.rawScore > max) {
-          max = i.rawScore;
+        if (i[rawKey] > max) {
+          max = i[rawKey];
         }
       });
+      // set normalized score
       table.forEach(i => {
-        i.score = i.rawScore / max;
+        i[key] = i[rawKey] / max;
       });
     };
 
-    const unnormalizeFn = (table) => {
+    const unnormalizeFn = (table, key: string) => {
+      const rawKey = `raw${capitalizeFirstLetter(key)}`;
+      // reset normalized score
       table.forEach(i => {
-        i.score = i.rawScore;
+        i[key] = i[rawKey];
       });
     };
 
     if (normalize) {
-      normalizeFn(this.tableDrugs);
-      normalizeFn(this.tableNodes);
-      normalizeFn(this.tableCancerNodes);
+      normalizeFn(this.tableDrugs, 'score');
+      normalizeFn(this.tableNodes, 'score');
+      normalizeFn(this.tableCancerNodes, 'score');
+      normalizeFn(this.tableNodes, 'mutationScore');
+      normalizeFn(this.tableCancerNodes, 'mutationScore');
     } else {
-      unnormalizeFn(this.tableDrugs);
-      unnormalizeFn(this.tableNodes);
-      unnormalizeFn(this.tableCancerNodes);
+      unnormalizeFn(this.tableDrugs, 'score');
+      unnormalizeFn(this.tableNodes, 'score');
+      unnormalizeFn(this.tableCancerNodes, 'score');
+      unnormalizeFn(this.tableNodes, 'mutationScore');
+      unnormalizeFn(this.tableCancerNodes, 'mutationScore');
     }
   }
 

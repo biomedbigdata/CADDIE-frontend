@@ -124,6 +124,9 @@ export interface Task {
 export interface Scored {
   score: number;  // Normalized or unnormalized (whichever user selects, will be displayed in the table)
   rawScore: number;  // Unnormalized (kept to restore unnormalized value)
+
+  mutationScore: number;  // Normalized or unnormalized (whichever user selects, will be displayed in the table)
+  rawMutationScore: number;  // Unnormalized (kept to restore unnormalized value)
 }
 
 export interface Seeded {

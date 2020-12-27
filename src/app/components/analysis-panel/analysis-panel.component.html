@@ -95,13 +95,21 @@
                   <i *ngIf="!task.info.parameters.includeNonApprovedDrugs" class="fa fa-times"></i>
                 </td>
               </tr>
+              <tr *ngIf="task.info.parameters.onlyAtcLDrugs !== undefined && task.info.target === 'drug'">
+                <td>Include only ATC class L drugs</td>
+                <td>
+                  <i *ngIf="task.info.parameters.onlyAtcLDrugs" class="fa fa-check"></i>
+                  <i *ngIf="!task.info.parameters.onlyAtcLDrugs" class="fa fa-times"></i>
+                </td>
+              </tr>
               <tr *ngIf="task.info.parameters.ignoreNonSeedBaits !== undefined && task.info.target === 'drug-target'">
-                <td>Include non-seed Genes</td>
+                <td>Include non-seed Cancer Genes</td>
                 <td>
                   <i *ngIf="!task.info.parameters.ignoreNonSeedBaits" class="fa fa-check"></i>
                   <i *ngIf="task.info.parameters.ignoreNonSeedBaits" class="fa fa-times"></i>
                 </td>
               </tr>
+
 
               </tbody>
             </table>
@@ -127,7 +135,7 @@
               </tbody>
             </table>
             <p>
-              Algorithm: <strong>{{algorithmNames['closeness']}}</strong>
+              Algorithm: <strong>{{algorithmNames['harmonic']}}</strong>
             </p>
             <table class="table is-narrow">
               <tbody>

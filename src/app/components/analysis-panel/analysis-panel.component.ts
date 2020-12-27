@@ -122,7 +122,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         this.tableProteinScoreTooltip =
           'Normalized number of direct interactions of the protein with the seeds. ' +
           'The higher the score, the more relevant the protein.';
-      } else if (this.task.info.algorithm === 'closeness' || this.task.info.algorithm === 'quick' || this.task.info.algorithm === 'super') {
+      } else if (this.task.info.algorithm === 'harmonic' || this.task.info.algorithm === 'quick' || this.task.info.algorithm === 'super') {
         this.tableDrugScoreTooltip =
           'Normalized inverse mean distance of the drug to the seeds. ' +
           'The higher the score, the more relevant the drug.';
@@ -206,7 +206,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           }));
         await Promise.all(promises);
 
-        this.tableHasScores = ['trustrank', 'closeness', 'degree', 'proximity', 'betweenness', 'quick', 'super']
+        this.tableHasScores = ['trustrank', 'harmonic', 'degree', 'proximity', 'betweenness', 'quick', 'super']
           .indexOf(this.task.info.algorithm) !== -1;
         if (this.tableHasScores) {
           if (this.task.info.algorithm !== 'proximity') {

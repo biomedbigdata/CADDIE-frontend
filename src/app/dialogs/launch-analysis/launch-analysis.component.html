@@ -92,11 +92,11 @@
         </div>
 
         <div class="field" *ngIf="target === 'drug-target'">
-          <label class="label">Include non-seed viral proteins</label>
+          <label class="label">Include non-seed cancer driver genes</label>
           <app-toggle textOn="Include" textOff="Ignore"
-                      tooltipOn="Include viral proteins that are not seeds."
-                      tooltipOff="Exclude viral proteins that are not seeds."
-                      [(value)]="trustrankIncludeViralNonSeeds">
+                      tooltipOn="Include cancer driver genes that are not seeds."
+                      tooltipOff="Exclude cancer driver genes that are not seeds."
+                      [(value)]="trustrankIncludeCancerNonSeeds">
           </app-toggle>
         </div>
 
@@ -124,12 +124,12 @@
 
       </div>
 
-      <div *ngIf="algorithm==='closeness'">
+      <div *ngIf="algorithm==='harmonic'">
 
         <div class="field">
-          <label class="label" for="closeness-rs">Result Size</label>
+          <label class="label" for="harmonic-rs">Result Size</label>
           <div class="control">
-            <input [(ngModel)]="closenessResultSize" id="closeness-rs" class="input" type="number"
+            <input [(ngModel)]="harmonicResultSize" id="harmonic-rs" class="input" type="number"
                    placeholder="Result size" required>
           </div>
         </div>
@@ -138,7 +138,7 @@
           <label class="label">Indirect Drugs</label>
           <app-toggle textOn="Include" textOff="Ignore" tooltipOn="Include indirect drugs."
                       tooltipOff="Exclude indirect drugs from the result."
-                      [(value)]="closenessIncludeIndirectDrugs">
+                      [(value)]="harmonicIncludeIndirectDrugs">
           </app-toggle>
           <p class="help">
             Specifies whether also drugs targeting interactors of the seed nodes should be considered.
@@ -149,14 +149,14 @@
           <label class="label">Non-approved Drugs</label>
           <app-toggle textOn="Include" textOff="Ignore" tooltipOn="Include non-approved drugs."
                       tooltipOff="Exclude non-approved drugs from the result."
-                      [(value)]="closenessIncludeNonApprovedDrugs">
+                      [(value)]="harmonicIncludeNonApprovedDrugs">
           </app-toggle>
         </div>
 
         <div class="field">
-          <label class="label" for="closeness-md">Maximum degree</label>
+          <label class="label" for="harmonic-md">Maximum degree</label>
           <div class="control">
-            <input [(ngModel)]="closenessMaxDeg" id="closeness-md" class="input" type="number"
+            <input [(ngModel)]="harmonicMaxDeg" id="harmonic-md" class="input" type="number"
                    placeholder="Maximum degree" min="0" max="1" required>
           </div>
           <p class="help">
@@ -165,9 +165,9 @@
         </div>
 
         <div class="field">
-          <label class="label" for="closeness-hp">Hub penalty</label>
+          <label class="label" for="harmonic-hp">Hub penalty</label>
           <div class="control">
-            <input [(ngModel)]="closenessHubPenalty" id="closeness-hp" class="input" type="number"
+            <input [(ngModel)]="harmonicHubPenalty" id="harmonic-hp" class="input" type="number"
                    placeholder="Maximum degree" min="0" max="1" required>
           </div>
           <p class="help">
@@ -176,11 +176,11 @@
         </div>
 
         <div class="field" *ngIf="target === 'drug-target'">
-          <label class="label">Include non-seed viral proteins</label>
+          <label class="label">Include non-seed cancer driver genes</label>
           <app-toggle textOn="Include" textOff="Ignore"
-                      tooltipOn="Include viral proteins that are not seeds."
-                      tooltipOff="Exclude viral proteins that are not seeds."
-                      [(value)]="closenessIncludeViralNonSeeds"></app-toggle>
+                      tooltipOn="Include cancer driver genes that are not seeds."
+                      tooltipOff="Exclude cancer driver genes that are not seeds."
+                      [(value)]="harmonicIncludeCancerNonSeeds"></app-toggle>
         </div>
 
         <div class="box">
@@ -190,9 +190,9 @@
             </div>
             <div class="media-content">
               <div class="content">
-                <h6 class="is-6">About Closeness Centrality</h6>
+                <h6 class="is-6">About harmonic Centrality</h6>
                 <p>
-                  Closeness Centrality is a node centrality measure that ranks the nodes in a network based on the
+                  harmonic Centrality is a node centrality measure that ranks the nodes in a network based on the
                   lengths of their shortest paths to all other nodes in the network.
                 </p>
               </div>
@@ -235,7 +235,7 @@
           <app-toggle textOn="Include" textOff="Ignore"
                       tooltipOn="Include cancer genes that are not seeds."
                       tooltipOff="Exclude cancer genes that are not seeds."
-                      [(value)]="degreeIncludeViralNonSeeds"></app-toggle>
+                      [(value)]="degreeIncludeCancerNonSeeds"></app-toggle>
         </div>
 
         <div class="box">
@@ -348,11 +348,11 @@
         </div>
 
         <div class="field">
-          <label class="label">Include non-seed viral proteins</label>
+          <label class="label">Include non-seed cancer driver genes</label>
           <app-toggle textOn="Include" textOff="Ignore"
-                      tooltipOn="Include viral proteins that are not seeds."
-                      tooltipOff="Exclude viral proteins that are not seeds."
-                      [(value)]="betweennessIncludeViralNonSeeds"></app-toggle>
+                      tooltipOn="Include cancer driver genes that are not seeds."
+                      tooltipOff="Exclude cancer driver genes that are not seeds."
+                      [(value)]="betweennessIncludeCancerNonSeeds"></app-toggle>
         </div>
 
         <div class="box">
@@ -479,11 +479,11 @@
         </div>
 
         <div class="field" *ngIf="target === 'drug-target'">
-          <label class="label">Include non-seed cancer genes</label>
+          <label class="label">Include non-seed cancer driver genes</label>
           <app-toggle textOn="Include" textOff="Ignore"
-                      tooltipOn="Include viral proteins that are not seeds."
-                      tooltipOff="Exclude viral proteins that are not seeds."
-                      [(value)]="multisteinerIncludeViralNonSeeds"></app-toggle>
+                      tooltipOn="Include cancer driver genes that are not seeds."
+                      tooltipOff="Exclude vcancer driver genes that are not seeds."
+                      [(value)]="multisteinerIncludeCancerNonSeeds"></app-toggle>
         </div>
       </div>
 
@@ -503,6 +503,17 @@
         </app-toggle>
         <p class="help">
           Specifies whether nutraceutical drugs should be considered in the drug search.
+        </p>
+      </div>
+
+      <div class="field" *ngIf="target === 'drug'">
+        <label class="label">Only ATC class L</label>
+        <app-toggle textOn="Yes" textOff="No" tooltipOn="Include only ATC class L drugs."
+                    tooltipOff="Include only ATC class L drugs from the analysis."
+                    [(value)]="includeAtcLDrugs">
+        </app-toggle>
+        <p class="help">
+          Set this to only consider ATC class L drugs for the search.
         </p>
       </div>
 

@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 import {
   Algorithm,
   AlgorithmType,
-  AnalysisService, BETWEENNESS_CENTRALITY, CLOSENESS_CENTRALITY,
+  AnalysisService, BETWEENNESS_CENTRALITY, HARMONIC_CENTRALITY,
   DEGREE_CENTRALITY,
   KEYPATHWAYMINER, MAX_TASKS,
   MULTISTEINER, NETWORK_PROXIMITY,
@@ -43,27 +43,28 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
 
   public algorithms: Array<Algorithm> = [];
   public includeNutraceuticalDrugs = true;
+  public includeAtcLDrugs = false;
 
   // Trustrank Parameters
   public trustrankIncludeIndirectDrugs = false;
   public trustrankIncludeNonApprovedDrugs = false;
-  public trustrankIncludeViralNonSeeds = true;
+  public trustrankIncludeCancerNonSeeds = true;
   public trustrankDampingFactor = 0.85;
   public trustrankMaxDeg = 0;
   public trustrankHubPenalty = 0.0;
   public trustrankResultSize = 20;
 
-  // Closeness Parameters
-  public closenessIncludeIndirectDrugs = false;
-  public closenessIncludeNonApprovedDrugs = false;
-  public closenessIncludeViralNonSeeds = true;
-  public closenessMaxDeg = 0;
-  public closenessHubPenalty = 0.0;
-  public closenessResultSize = 20;
+  // harmonic Parameters
+  public harmonicIncludeIndirectDrugs = false;
+  public harmonicIncludeNonApprovedDrugs = false;
+  public harmonicIncludeCancerNonSeeds = true;
+  public harmonicMaxDeg = 0;
+  public harmonicHubPenalty = 0.0;
+  public harmonicResultSize = 20;
 
   // Degree Parameters
   public degreeIncludeNonApprovedDrugs = false;
-  public degreeIncludeViralNonSeeds = true;
+  public degreeIncludeCancerNonSeeds = true;
   public degreeMaxDeg = 0;
   public degreeResultSize = 20;
 
@@ -74,7 +75,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public proximityResultSize = 20;
 
   // Betweenness Parameters
-  public betweennessIncludeViralNonSeeds = true;
+  public betweennessIncludeCancerNonSeeds = true;
   public betweennessMaxDeg = 0;
   public betweennessHubPenalty = 0.0;
   public betweennessResultSize = 20;
@@ -85,7 +86,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   // Multisteiner Parameters
   public multisteinerNumTrees = 5;
   public multisteinerTolerance = 10;
-  public multisteinerIncludeViralNonSeeds = true;
+  public multisteinerIncludeCancerNonSeeds = true;
   public multisteinerMaxDeg = 0;
   public multisteinerHubPenalty = 0.0;
 
@@ -99,10 +100,10 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.target === 'drug-target') {
-      this.algorithms = [MULTISTEINER, KEYPATHWAYMINER, TRUSTRANK, CLOSENESS_CENTRALITY, DEGREE_CENTRALITY, BETWEENNESS_CENTRALITY];
+      this.algorithms = [MULTISTEINER, KEYPATHWAYMINER, TRUSTRANK, HARMONIC_CENTRALITY, DEGREE_CENTRALITY, BETWEENNESS_CENTRALITY];
       this.algorithm = MULTISTEINER.slug;
     } else if (this.target === 'drug') {
-      this.algorithms = [TRUSTRANK, CLOSENESS_CENTRALITY, DEGREE_CENTRALITY, NETWORK_PROXIMITY];
+      this.algorithms = [TRUSTRANK, HARMONIC_CENTRALITY, DEGREE_CENTRALITY, NETWORK_PROXIMITY];
       this.algorithm = TRUSTRANK.slug;
     }
   }
@@ -139,6 +140,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.drug_interaction_dataset = drugInteractionDataset.name;
     parameters.cancer_types = cancerTypes.map( (cancerType) => cancerType.backendId );
     parameters.includeNutraceuticalDrugs = this.includeNutraceuticalDrugs;
+    parameters.onlyAtcLDrugs = this.includeAtcLDrugs;
 
     // old input from CoVex
     parameters.target = this.target === 'drug' ? 'drugs' : this.dataset.backendId;
@@ -148,24 +150,24 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
       parameters.damping_factor = this.trustrankDampingFactor;
       parameters.include_indirect_drugs = this.trustrankIncludeIndirectDrugs;
       parameters.include_non_approved_drugs = this.trustrankIncludeNonApprovedDrugs;
-      parameters.ignore_non_seed_baits = !this.trustrankIncludeViralNonSeeds;
+      parameters.ignore_non_seed_baits = !this.trustrankIncludeCancerNonSeeds;
       if (this.trustrankMaxDeg && this.trustrankMaxDeg > 0) {
         parameters.max_deg = this.trustrankMaxDeg;
       }
       parameters.hub_penalty = this.trustrankHubPenalty;
       parameters.result_size = this.trustrankResultSize;
-    } else if (this.algorithm === 'closeness') {
-      parameters.include_indirect_drugs = this.closenessIncludeIndirectDrugs;
-      parameters.include_non_approved_drugs = this.closenessIncludeNonApprovedDrugs;
-      parameters.ignore_non_seed_baits = !this.closenessIncludeViralNonSeeds;
-      if (this.closenessMaxDeg && this.closenessMaxDeg > 0) {
-        parameters.max_deg = this.closenessMaxDeg;
+    } else if (this.algorithm === 'harmonic') {
+      parameters.include_indirect_drugs = this.harmonicIncludeIndirectDrugs;
+      parameters.include_non_approved_drugs = this.harmonicIncludeNonApprovedDrugs;
+      parameters.ignore_non_seed_baits = !this.harmonicIncludeCancerNonSeeds;
+      if (this.harmonicMaxDeg && this.harmonicMaxDeg > 0) {
+        parameters.max_deg = this.harmonicMaxDeg;
       }
-      parameters.hub_penalty = this.closenessHubPenalty;
-      parameters.result_size = this.closenessResultSize;
+      parameters.hub_penalty = this.harmonicHubPenalty;
+      parameters.result_size = this.harmonicResultSize;
     } else if (this.algorithm === 'degree') {
       parameters.include_non_approved_drugs = this.degreeIncludeNonApprovedDrugs;
-      parameters.ignore_non_seed_baits = !this.degreeIncludeViralNonSeeds;
+      parameters.ignore_non_seed_baits = !this.degreeIncludeCancerNonSeeds;
       if (this.degreeMaxDeg && this.degreeMaxDeg > 0) {
         parameters.max_deg = this.degreeMaxDeg;
       }
@@ -178,7 +180,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
       parameters.hub_penalty = this.proximityHubPenalty;
       parameters.result_size = this.proximityResultSize;
     } else if (this.algorithm === 'betweenness') {
-      parameters.ignore_non_seed_baits = !this.betweennessIncludeViralNonSeeds;
+      parameters.ignore_non_seed_baits = !this.betweennessIncludeCancerNonSeeds;
       if (this.betweennessMaxDeg && this.betweennessMaxDeg > 0) {
         parameters.max_deg = this.betweennessMaxDeg;
       }
@@ -189,7 +191,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     } else if (this.algorithm === 'multisteiner') {
       parameters.num_trees = this.multisteinerNumTrees;
       parameters.tolerance = this.multisteinerTolerance;
-      parameters.ignore_non_seed_baits = !this.multisteinerIncludeViralNonSeeds;
+      parameters.ignore_non_seed_baits = !this.multisteinerIncludeCancerNonSeeds;
       if (this.multisteinerMaxDeg && this.multisteinerMaxDeg > 0) {
         parameters.max_deg = this.multisteinerMaxDeg;
       }

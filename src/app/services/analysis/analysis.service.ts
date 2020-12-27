@@ -15,14 +15,14 @@ import {toast} from 'bulma-toast';
 import {Injectable} from '@angular/core';
 import {ControlService} from '../control/control.service';
 
-export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'closeness' | 'degree' | 'proximity' | 'betweenness';
+export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'harmonic' | 'degree' | 'proximity' | 'betweenness';
 export type QuickAlgorithmType = 'quick' | 'super';
 
 export const algorithmNames = {
   trustrank: 'TrustRank',
   keypathwayminer: 'KeyPathwayMiner',
   multisteiner: 'Multi-Steiner',
-  closeness: 'Closeness Centrality',
+  harmonic: 'Harmonic Centrality',
   degree: 'Degree Centrality',
   proximity: 'Network Proximity',
   betweenness: 'Betweenness Centrality',
@@ -36,7 +36,7 @@ export interface Algorithm {
 }
 
 export const TRUSTRANK: Algorithm = {slug: 'trustrank', name: algorithmNames.trustrank};
-export const CLOSENESS_CENTRALITY: Algorithm = {slug: 'closeness', name: algorithmNames.closeness};
+export const HARMONIC_CENTRALITY: Algorithm = {slug: 'harmonic', name: algorithmNames.harmonic};
 export const DEGREE_CENTRALITY: Algorithm = {slug: 'degree', name: algorithmNames.degree};
 export const NETWORK_PROXIMITY: Algorithm = {slug: 'proximity', name: algorithmNames.proximity};
 export const BETWEENNESS_CENTRALITY: Algorithm = {slug: 'betweenness', name: algorithmNames.betweenness};

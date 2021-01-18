@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {AnalysisService} from '../../services/analysis/analysis.service';
 import {getWrapperFromNode, getWrapperFromCancerNode, Node, Tissue, CancerNode, CancerType} from '../../interfaces';
 import {ControlService} from '../../services/control/control.service';
@@ -6,7 +6,8 @@ import {ControlService} from '../../services/control/control.service';
 @Component({
   selector: 'app-add-expressed-genes',
   templateUrl: './add-expressed-proteins.component.html',
-  styleUrls: ['./add-expressed-proteins.component.scss']
+  styleUrls: ['./add-expressed-proteins.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddExpressedProteinsComponent implements OnChanges {
 

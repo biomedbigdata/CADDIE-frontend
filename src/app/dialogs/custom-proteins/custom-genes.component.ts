@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {
   CancerType,
   Dataset,
@@ -12,7 +12,8 @@ import {ControlService} from '../../services/control/control.service';
 @Component({
   selector: 'app-custom-genes',
   templateUrl: './custom-genes.component.html',
-  styleUrls: ['./custom-genes.component.scss']
+  styleUrls: ['./custom-genes.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomGenesComponent implements OnInit {
 

@@ -1,11 +1,12 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {Wrapper, CancerType, DiseaseGeneInteraction} from '../../interfaces';
 import {AnalysisService} from '../../services/analysis/analysis.service';
 
 @Component({
   selector: 'app-info-tile',
   templateUrl: './info-tile.component.html',
-  styleUrls: ['./info-tile.component.scss']
+  styleUrls: ['./info-tile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InfoTileComponent {
 
@@ -14,7 +15,13 @@ export class InfoTileComponent {
   @Input() wrapperComorbidities: DiseaseGeneInteraction[];
   @Input() nodeDegree: number;  // we need to pass this since we need network object to calculate it
 
+  wrapperCurrentType = '';
+
   constructor(public analysis: AnalysisService) {
+  }
+
+  public setWrapperCurrentType() {
+    this.wrapperCurrentType = this.wrapper.type;
   }
 
   public beautify(url: string): string {

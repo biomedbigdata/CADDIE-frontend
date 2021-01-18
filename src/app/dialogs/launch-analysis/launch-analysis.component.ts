@@ -1,4 +1,13 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {
   Algorithm,
   AlgorithmType,
@@ -14,7 +23,8 @@ import {CancerType, Dataset, Wrapper} from '../../interfaces';
 @Component({
   selector: 'app-launch-analysis',
   templateUrl: './launch-analysis.component.html',
-  styleUrls: ['./launch-analysis.component.scss']
+  styleUrls: ['./launch-analysis.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LaunchAnalysisComponent implements OnInit, OnChanges {
 
@@ -44,6 +54,8 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public algorithms: Array<Algorithm> = [];
   public includeNutraceuticalDrugs = true;
   public includeAtcLDrugs = false;
+  public filterPaths = true;
+  public mutationWeights = false;
 
   // Trustrank Parameters
   public trustrankIncludeIndirectDrugs = false;
@@ -141,6 +153,8 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.cancer_types = cancerTypes.map( (cancerType) => cancerType.backendId );
     parameters.includeNutraceuticalDrugs = this.includeNutraceuticalDrugs;
     parameters.onlyAtcLDrugs = this.includeAtcLDrugs;
+    parameters.filterPaths = this.filterPaths;
+    parameters.mutationWeights = this.mutationWeights;
 
     // old input from CoVex
     parameters.target = this.target === 'drug' ? 'drugs' : this.dataset.backendId;

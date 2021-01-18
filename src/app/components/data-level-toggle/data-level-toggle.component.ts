@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'app-data-level-toggle',
   templateUrl: './data-level-toggle.component.html',
-  styleUrls: ['./data-level-toggle.component.scss']
+  styleUrls: ['./data-level-toggle.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataLevelToggleComponent implements OnInit {
 

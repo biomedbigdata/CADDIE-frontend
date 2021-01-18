@@ -74,6 +74,13 @@
                 <td>Hub Penality</td>
                 <td>{{task.info.parameters.hubPenalty}}</td>
               </tr>
+              <tr *ngIf="task.info.parameters.mutationWeights !== undefined">
+                <td>Mutation Weights</td>
+                <td>
+                  <i *ngIf="task.info.parameters.mutationWeights" class="fa fa-check"></i>
+                  <i *ngIf="!task.info.parameters.mutationWeights" class="fa fa-times"></i>
+                </td>
+              </tr>
               <tr *ngIf="task.info.parameters.includeIndirectDrugs !== undefined && task.info.target === 'drug'">
                 <td>Include indirect drugs</td>
                 <td>
@@ -193,15 +200,15 @@
                 <td><span class="selected-cancer-node"></span></td>
                 <td>&nbsp;Selected Node</td>
               </tr>
-              <tr>
+              <tr *ngIf="task.info.target === 'drug'">
                 <td><span class="approved-drug"></span></td>
                 <td>&nbsp;Approved Drug</td>
               </tr>
-              <tr>
+              <tr *ngIf="task.info.target === 'drug'">
                 <td><span class="non-approved-drug"></span></td>
                 <td>&nbsp;Unapproved Drug</td>
               </tr>
-              <tr>
+              <tr *ngIf="task.info.target === 'drug'">
                 <td><span class="cancer-drug"></span></td>
                 <td class="has-tooltip-right" data-tooltip="antineoplastic or immunomodulating agent">&nbsp;ATC Class L</td>
               </tr>
@@ -225,7 +232,7 @@
                 </span>
             <div>
               <div class="box-unknown has-background-grey-light"></div>
-              <span class="annotation-unknown">Unkown</span>
+              <span class="annotation-unknown">Unknown</span>
             </div>
           </div>
           <!-- END Gradient Legend -->

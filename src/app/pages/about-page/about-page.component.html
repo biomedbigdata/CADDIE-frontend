@@ -5,69 +5,75 @@
       <div class="column is-8 is-offset-2">
         <div class="container has-text-centered">
           <img src="assets/caddie_logo.png">
-          <h2 class="subtitle is-3"> A Coronavirus Explorer </h2>
+          <h2 class="subtitle is-3"> Cancer Driver Drug Interaction Explorer </h2>
         </div>
         <div class="content">
           <p>
             <br>
-            CoVex (Coronavirus Explorer) is a unique online network and systems medicine platform for data analysis that
-            integrates virus-human interactions for SARS-CoV-2 and SARS-CoV-1. It implements different network-based
-            approaches for the identification of new drug targets and new repurposable drugs.<br>
+            The Cancer Driver Drug Interaction Explorer (CADDIE) is a systems medicine platform which uses network biology algorithms for drug repurposing in cancer.
+            A variety of different data resources have been implemented for cancer driver gene information as well as interaction data
+            for gene-gene interactions and gene-drug interactions.
+            We further integrated background data about the genes like comorbidities and mutation data to improve
+            the algorithms and to facilitate the interpretation of the results.
             <br>
-            For instructions and help check the documentation:
-            <a href="https://docs.google.com/document/d/1_SRnIx_UC8FR59rMyrf_r45fCIt3naP4t1qefYNp9vk">CoVex Documentation</a><br>
-            <br>
-            For detailed information please visit our blog: <a href="https://www.exbio.de/exbio-vs-covid-part-1/">ExBio vs Covid</a><br>
-            <br>
-            We are constantly updating and integrating new data as it becomes available.
-            <br>
-            If you are interested to make your virus-human interactome data available via our platform, please contact
-            us.
+            We provide a user friendly graphical interface which allows to inspect and to understand the biological context of the predictions.
+            CADDIE can be used to repurpose drugs as well as to find new drug targets. For more information and examples, please refer to
+            <a href="https://drive.google.com/file/d/1OHJXf8Ui8UIGL6DVNoQlRMAHY5dC_lVS/view?usp=sharing" target="_blank">our work</a>.
+
+
           </p>
           <h2 class="subtitle">General workflow of the platform</h2>
+
+          <div class="container has-text-centered width-500">
+            <img src="assets/workflow.png">
+          </div>
           <ol>
-            <li>Select the viral interaction dataset (SARS-CoV1-Pfefferle, SARS-CoV1-VirHostNet, SARS-CoV2-Gordon).</li>
-            <li>Select proteins of interest as seed proteins.</li>
-            <li>Perform network analysis (multi-Steiner, TrustRank, KeyPathwayMiner, harmonic centrality).</li>
-            <li>Platform usage: basic and advanced options</li>
-            <li>Inspect the resulting subnetworks.</li>
-            <li>Find drugs associated with the subnetwork (TrustRank, harmonic centrality).</li>
-            <li>Download your results.</li>
+            <li>Choose which source should be used for cancer driver genes, gene-gene interactions as well as which cancer type should be highlighted.</li>
+            <li>Select seed nodes in the network. The algorithms will find putative drug-targets or drugs based on these seed nodes.</li>
+            <li>Run the analysis on our server and inspect the results as soon as it is done. A network visualization helps to interpret the results and all data can be
+            downloaded for further processing.</li>
           </ol>
-          <p>CoVex also provides a quick analysis option to perform steps 3 to 5 (starting from the seed proteins) to
-            return
-            a list of drugs ranked by default using TrustRank.</p>
+
+          <h2>Source code</h2>
+          <p>
+            The source code is available upon request: michael.hartung_AT_tum.de
+          </p>
+
           <h2>Help/Contact information</h2>
           <ul>
-            <li>General support and inquiries: CoVex dev team (covex_AT_wzw.tum.de)</li>
-            <li>Systems and network medicine: Sepideh Sadegh (sadegh_AT_wzw.tum.de)</li>
-            <li>Web platform: Julian Matschinske (julian.matschinske_AT_wzw.tum.de)</li>
+            <li>General support and inquiries: Michael Hartung (michael.hartung_AT_tum.de)</li>
             <li>Project coordination: Prof. Dr. Jan Baumbach (jan.baumbach_AT_wzw.tum.de)</li>
-            <li>Lab website: <a href="http://www.exbio.de">http://www.exbio.de</a></li>
+<!--            <li>Lab website: <a href="http://www.exbio.de">http://www.exbio.de</a></li>-->
           </ul>
 
           <br>
           <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
 
-          <div class="has-text-centered">
-            <h2 class="subtitle"> Impressum</h2>
-            <p>Prof. Dr. Jan Baumbach
-              Chair of Experimental Bioinformatics
-              <br>
-              <i class="fa fa-phone"></i> Phone: +49-8161-71-2136<br>
-              <i class="fa fa-phone"></i> Fax: +49-8161-71-2186<br>
-              <i class="fa fa-envelope"> </i> Email: exbio_AT_wzw.tum.de<br>
-              <i class="fa fa-map-marker"></i> Address: ​​​Prof. Dr. Jan Baumbach
-              <br>
-              Chair of Experimental Bioinformatics
-              <br>
-              TUM School of Life Sciences Weihenstephan
-              <br>
-              Technical University of Munich<br>
-              Maximus-von-Imhof-Forum 3<br>
-              85354 Freising<br>
-              Germany </p>
-          </div>
+<!--          <div class="has-text-centered">-->
+<!--            <h2 class="subtitle"> Impressum</h2>-->
+<!--            <p>-->
+<!--              Prof. Dr. Jan Baumbach-->
+<!--              Chair of Experimental Bioinformatics-->
+<!--              <br>-->
+<!--              <i class="fa fa-phone"></i> Phone: +49-8161-71-2136<br>-->
+<!--              <i class="fa fa-phone"></i> Fax: +49-8161-71-2186<br>-->
+<!--              <i class="fa fa-envelope"> </i> Email: exbio_AT_wzw.tum.de<br>-->
+<!--              <i class="fa fa-map-marker"></i> Address: ​​​Prof. Dr. Jan Baumbach-->
+<!--              <br>-->
+<!--              Chair of Experimental Bioinformatics-->
+<!--              <br>-->
+<!--              TUM School of Life Sciences Weihenstephan-->
+<!--              <br>-->
+<!--              Technical University of Munich<br>-->
+<!--              Maximus-von-Imhof-Forum 3<br>-->
+<!--              85354 Freising<br>-->
+<!--              Germany </p>-->
+<!--          </div>-->
         </div>
       </div>
     </div>

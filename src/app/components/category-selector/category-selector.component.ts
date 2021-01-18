@@ -1,11 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BackendObject} from '../../interfaces';
 
 
 @Component({
   selector: 'app-category-selector',
   templateUrl: './category-selector.component.html',
-  styleUrls: ['./category-selector.component.scss']
+  styleUrls: ['./category-selector.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CategorySelectorComponent implements OnInit {
 

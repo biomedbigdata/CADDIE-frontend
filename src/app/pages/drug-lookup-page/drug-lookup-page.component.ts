@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import {Component, OnInit, AfterViewInit} from '@angular/core';
 import {ControlService} from '../../services/control/control.service';
 import {CancerType, Dataset, Node, Drug} from '../../interfaces';
 import {toast} from 'bulma-toast';
@@ -7,7 +7,7 @@ import {environment} from '../../../environments/environment';
 @Component({
   selector: 'app-drug-lookup-page',
   templateUrl: './drug-lookup-page.component.html',
-  styleUrls: ['./drug-lookup-page.component.scss']
+  styleUrls: ['./drug-lookup-page.component.scss'],
 })
 export class DrugLookupPageComponent implements OnInit, AfterViewInit {
 

@@ -116,7 +116,7 @@
                 </span>
                 <div>
                   <div class="box-unknown has-background-grey-light"></div>
-                  <span class="annotation-unknown">Unkown</span>
+                  <span class="annotation-unknown">Unknown</span>
                 </div>
               </div>
               <!-- END Gradient Legend -->
@@ -818,7 +818,7 @@
         </header>
         <div *ngIf="collapseTask">
           <div class="card-content overflow" *ngIf="analysis.tasks && analysis.tasks.length > 0">
-            <app-task-list [(token)]="selectedAnalysisToken"></app-task-list>
+            <app-task-list [(token)]="selectedAnalysisToken" [taskList]="analysis.tasks"></app-task-list>
           </div>
           <footer class="card-footer">
             <a *ngIf="analysis.tasks && analysis.tasks.length > 0"

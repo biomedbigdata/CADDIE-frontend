@@ -1,4 +1,4 @@
-<div *ngIf="wrapper">
+<div *ngIf="wrapper && wrapper.type !== wrapperCurrentType">
   <div *ngIf="wrapper.type === 'Node'">
     <p>
       <b><span>Gene Name: </span></b>
@@ -178,7 +178,9 @@
                 (valueChange)="$event ? analysis.addItems([wrapper]) : analysis.removeItems([wrapper])" textOn="Selected"
                 textOff="Deselected" tooltipOn="Add node to selection." tooltipOff="Remove node from selection."></app-toggle>
   </div>
+
 </div>
 <div *ngIf="!wrapper">
   Please select a node for further information.
 </div>
+

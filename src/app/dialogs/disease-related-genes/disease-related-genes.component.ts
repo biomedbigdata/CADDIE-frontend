@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, Input, Output} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {
   CancerNode,
   CancerType,
@@ -14,7 +14,8 @@ import {ControlService} from '../../services/control/control.service';
 @Component({
   selector: 'app-disease-related-genes',
   templateUrl: './disease-related-genes.component.html',
-  styleUrls: ['./disease-related-genes.component.scss']
+  styleUrls: ['./disease-related-genes.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DiseaseRelatedGenesComponent implements AfterViewInit {
 

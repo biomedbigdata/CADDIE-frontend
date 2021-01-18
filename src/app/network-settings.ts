@@ -84,6 +84,7 @@ export class NetworkSettings {
     improvedLayout: false,
   };
   private static mainEdges = {
+    selfReferenceSize: 0,
     smooth: false,
 //    length: 500,
   };

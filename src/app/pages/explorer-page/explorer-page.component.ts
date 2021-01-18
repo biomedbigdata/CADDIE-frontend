@@ -126,6 +126,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   public nodeDegree: number;
 
+  private doubleClickTime: Date = new Date();
+  private t0: Date = new Date();
+  private threshold = 200;
+
 
   @ViewChild('network', {static: false}) networkEl: ElementRef;
 
@@ -423,6 +427,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     const container = this.networkEl.nativeElement;
     const options = NetworkSettings.getOptions('main');
 
+    // destroy old network if exists
+    if (this.network !== undefined) {
+      this.network.destroy();
+    }
+
     this.network = new vis.Network(container, this.nodeData, options);
 
     // stop network animation when stable state is reached
@@ -442,38 +451,20 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
     });
 
-    this.network.on('doubleClick', (properties) => {
-      // select node on double click, this will also open summary on first click
-      const nodeIds: Array<string> = properties.nodes;
-      if (nodeIds.length > 0) {
-        const nodeId = nodeIds[0];
-        const node = this.nodeData.nodes.get(nodeId);
-        const wrapper = node.wrapper;
-        if (this.analysis.inSelection(wrapper)) {
-          this.analysis.removeItems([wrapper]);
-        } else {
-          this.analysis.addItems([wrapper]);
-        }
-      }
-    });
 
     this.network.on('click', (properties) => {
-      // open summary for node on click
-      const nodeIds: Array<string> = properties.nodes;
-      if (nodeIds.length > 0) {
-        const nodeId = nodeIds[0];
-        const node = this.nodeData.nodes.get(nodeId);
-        const wrapper = node.wrapper;
-        this.openSummary(wrapper, false);
-        this.getNodeDegree(wrapper.nodeId);
-      } else {
-        this.closeSummary();
-      }
+      this.onClick(properties);
     });
+
+    this.network.on('doubleClick', (properties) => {
+      this.doubleClickTime = new Date();
+      this.onDoubleClick(properties);
+    });
+
+
     this.network.on('deselectNode', (properties) => {
       this.closeSummary();
     });
-
 
     if (this.dumpPositions) {
       // dump positions after they are calculated
@@ -557,7 +548,51 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public getNodeDegree(graphId: string) {
+  public onClick(properties) {
+    this.t0 = new Date();
+
+    // @ts-ignore
+    if (this.t0 - this.doubleClickTime > this.threshold) {
+      const $this = this;
+      setTimeout(() =>   {
+        // @ts-ignore
+        if ($this.t0 - $this.doubleClickTime > $this.threshold) {
+          $this.doOnClick(properties);
+        }
+      }, this.threshold);
+    }
+  }
+
+  public doOnClick(properties) {
+    // open summary for node on click
+    const nodeIds: Array<string> = properties.nodes;
+    if (nodeIds.length > 0) {
+      const nodeId = nodeIds[0];
+      const node = this.nodeData.nodes.get(nodeId);
+      const wrapper = node.wrapper;
+      this.openSummary(wrapper, false);
+      // this.getNodeDegree(wrapper.nodeId);
+    } else {
+      this.closeSummary();
+    }
+  }
+
+  public onDoubleClick(properties) {
+    // select node on double click, this will also open summary on first click
+    const nodeIds: Array<string> = properties.nodes;
+    if (nodeIds.length > 0) {
+      const nodeId = nodeIds[0];
+      const node = this.nodeData.nodes.get(nodeId);
+      const wrapper = node.wrapper;
+      if (this.analysis.inSelection(wrapper)) {
+        this.analysis.removeItems([wrapper]);
+      } else {
+        this.analysis.addItems([wrapper]);
+      }
+    }
+  }
+
+  public async getNodeDegree(graphId: string) {
     /**
      * returns the node degree of a given node in the current network
      */
@@ -820,6 +855,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     /**
      * Creates a network node object out of a given CancerDriverGene object
      */
+
     const wrapper = getWrapperFromCancerNode(cancerDriverGene);
     const node = NetworkSettings.getNodeStyle('CancerNode', undefined, this.analysis.inSelection(wrapper));
     node.id = wrapper.nodeId;
@@ -1036,6 +1072,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * resets the color gradient from tissue expression to normal network colors
      * We have to differentiate between Nodes and CancerNodes to not mix up the types in the network
      */
+
     const updatedNodes = [];
     let nodes;
     if (nodeType === 'Node') {
@@ -1223,9 +1260,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // set title dynmically based on amount of selected cancer types
       let title = '';
       if (this.selectedCancerTypeItems.length > 1) {
-        title = 'Comorbidities for selected Cancer Types';
+        title = 'Comorbidities in selected Cancer Types';
       } else {
-        title = `Comorbidities for ${this.selectedCancerTypeItems[0].name}`;
+        title = `Comorbidities in ${this.selectedCancerTypeItems[0].name}`;
       }
       // title += `<br> (${this.nCancerGenesInSelectedCancerTypes} Cancer Genes)`;
 
@@ -1235,10 +1272,16 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
             x: values,
             type: 'bar',
             orientation: 'h',
+            transforms: [{
+              type: 'sort',
+              target: 'x',
+              order: 'ascending'
+            }],
             marker: {
               color: '#8c4c8c'
             }},
         ],
+
         layout: {
           title: `${title}`,
           margin: {

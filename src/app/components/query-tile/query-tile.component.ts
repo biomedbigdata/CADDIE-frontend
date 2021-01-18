@@ -1,10 +1,11 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
 import {Wrapper} from '../../interfaces';
 
 @Component({
   selector: 'app-query-tile-component',
   templateUrl: './query-tile.component.html',
-  styleUrls: ['./query-tile.component.scss']
+  styleUrls: ['./query-tile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueryTileComponent {
 

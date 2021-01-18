@@ -1,10 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CancerNode} from '../../interfaces';
 
 @Component({
   selector: 'app-filter-tile',
   templateUrl: './filter-tile.component.html',
-  styleUrls: ['./filter-tile.component.scss']
+  styleUrls: ['./filter-tile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterTileComponent implements OnInit {
 

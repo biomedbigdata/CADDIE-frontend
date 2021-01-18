@@ -381,13 +381,13 @@
                 </button>
                 <p-sortIcon [field]="'score'"></p-sortIcon>
               </th>
-              <th>
-                Closest Cancer Genes
-              </th>
-              <th [pSortableColumn]="'closestDistance'">
-                Cancer Gene distance
-                <p-sortIcon [field]="'closestDistance'"></p-sortIcon>
-              </th>
+<!--              <th>-->
+<!--                Closest Cancer Genes-->
+<!--              </th>-->
+<!--              <th [pSortableColumn]="'closestDistance'">-->
+<!--                Cancer Gene distance-->
+<!--                <p-sortIcon [field]="'closestDistance'"></p-sortIcon>-->
+<!--              </th>-->
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-e>
@@ -443,12 +443,12 @@
                 </span>
               </td>
               <td *ngIf="tableHasScores">{{e.score | number : '1.0-5'}}</td>
-              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">
-                {{previewStringArray(e.closestCancerGenes, 3)}}
-              </td>
-              <td>
-                {{e.closestDistance}}
-              </td>
+<!--              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">-->
+<!--                {{previewStringArray(e.closestCancerGenes, 3)}}-->
+<!--              </td>-->
+<!--              <td>-->
+<!--                {{e.closestDistance}}-->
+<!--              </td>-->
             </tr>
           </ng-template>
         </p-table>
@@ -500,13 +500,13 @@
                 Seed
                 <p-sortIcon [field]="'isSeed'"></p-sortIcon>
               </th>
-              <th>
-                Closest Cancer Genes
-              </th>
-              <th [pSortableColumn]="'closestDistance'">
-                Closest distance
-                <p-sortIcon [field]="'closestDistance'"></p-sortIcon>
-              </th>
+<!--              <th>-->
+<!--                Closest Cancer Genes-->
+<!--              </th>-->
+<!--              <th [pSortableColumn]="'closestDistance'">-->
+<!--                Closest distance-->
+<!--                <p-sortIcon [field]="'closestDistance'"></p-sortIcon>-->
+<!--              </th>-->
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-e>
@@ -528,12 +528,12 @@
                   <i class="fa fa-times"></i>
                 </span>
               </td>
-              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">
-                {{previewStringArray(e.closestCancerGenes, 3)}}
-              </td>
-              <td>
-                {{e.closestDistance}}
-              </td>
+<!--              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">-->
+<!--                {{previewStringArray(e.closestCancerGenes, 3)}}-->
+<!--              </td>-->
+<!--              <td>-->
+<!--                {{e.closestDistance}}-->
+<!--              </td>-->
             </tr>
           </ng-template>
         </p-table>

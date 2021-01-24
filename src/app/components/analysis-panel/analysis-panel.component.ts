@@ -30,7 +30,7 @@ import {
   Scored,
   Seeded,
   Baited,
-  DrugStatus
+  DrugStatus, Dataset
 } from '../../interfaces';
 import html2canvas from 'html2canvas';
 import {toast} from 'bulma-toast';
@@ -239,11 +239,13 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           }
         });
 
-        this.network.on('click', (properties) => {
+        this.network.on('click', async (properties) => {
           const selectedNodes = this.nodeData.nodes.get(properties.nodes);
           if (selectedNodes.length > 0) {
             const selectedNode = selectedNodes[0];
             const wrapper = selectedNode.wrapper;
+            wrapper.comorbidities = await this.getComorbidities(wrapper);
+            wrapper.cancerTypes = await this.getRelatedCancerTypes(wrapper);
             wrapper.nodeDegree = this.getNodeDegree(wrapper.data.graphId);
             this.showDetailsChange.emit(wrapper);
           } else {
@@ -603,6 +605,18 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
       }
     }
+  }
+
+  private async getRelatedCancerTypes(item: Wrapper) {
+    const dataset: Dataset = {backendId: this.task.info.parameters.cancerDatasetId,
+      name: this.task.info.parameters.cancerDataset, link: ''};
+    const data = await this.control.getRelatedCancerTypes(dataset, item.data);
+    return data.cancerTypes;
+  }
+
+  private async getComorbidities(item: Wrapper) {
+    const data = await this.control.getComorbidities(item.data);
+    return data.interactions;
   }
 
   public colorMutationGradient(active: boolean) {

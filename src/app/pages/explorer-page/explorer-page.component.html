@@ -176,7 +176,9 @@
 
       <div class="analysis-view" *ngIf="selectedAnalysisToken">
         <app-analysis-panel [(token)]="selectedAnalysisToken"
-                            (showDetailsChange)="selectedWrapper = $event; nodeDegree = $event.nodeDegree"
+                            (showDetailsChange)="selectedWrapper = $event; nodeDegree = $event.nodeDegree;
+                            selectedWrapperComorbidities = $event.comorbidities;
+                            selectedWrapperCancerTypes = $event.cancerTypes;"
                             (visibleItems)="analysisWindowChanged($event)"
                             (visibleTab)="visibleAnalysisTab = $event"
         >

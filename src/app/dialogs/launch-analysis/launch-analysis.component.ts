@@ -148,8 +148,11 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
 
     // new input from caddie
     parameters.cancer_dataset = dataset.name;
+    parameters.cancer_dataset_id = dataset.backendId;
     parameters.gene_interaction_dataset = geneInteractionDataset.name;
+    parameters.gene_interaction_dataset_id = geneInteractionDataset.backendId;
     parameters.drug_interaction_dataset = drugInteractionDataset.name;
+    parameters.drug_interaction_dataset_id = drugInteractionDataset.backendId;
     parameters.cancer_types = cancerTypes.map( (cancerType) => cancerType.backendId );
     parameters.includeNutraceuticalDrugs = this.includeNutraceuticalDrugs;
     parameters.onlyAtcLDrugs = this.includeAtcLDrugs;

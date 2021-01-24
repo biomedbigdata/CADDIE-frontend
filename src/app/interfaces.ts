@@ -252,6 +252,8 @@ export interface Wrapper {
   type: WrapperType;
   data: any;
   nodeDegree?: number;
+  cancerTypes?: CancerType[];
+  comorbidities?: string[];
 }
 
 export interface Drug {

@@ -31,7 +31,7 @@
         <ul><li class="not-found" *ngFor="let nf of notFound">{{nf}}</li></ul>
       </div>
       <div class="field">
-        <label class="label" for="gene-list">List of items (Entrez ids, Uniprot ids or Drugbank ids)</label>
+        <label class="label" for="gene-list">List of items (Entrez ids or Uniprot ids)</label>
         <div class="control">
           <textarea class="input" [ngModel]="textList" (ngModelChange)="changeTextList($event)" id="gene-list">
           </textarea>

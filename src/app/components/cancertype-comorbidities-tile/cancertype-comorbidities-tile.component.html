@@ -1,3 +1,7 @@
-<div *ngIf="selectedCancerTypeComorbidityGraph">
-  <plotly-plot [data]="selectedCancerTypeComorbidityGraph.data" [layout]="selectedCancerTypeComorbidityGraph.layout"></plotly-plot>
+<div *ngIf="selectedCancerTypeComorbidityGraph" id="comorbidities-plot">
+  <plotly-plot
+    [data]="selectedCancerTypeComorbidityGraph.data"
+    [layout]="selectedCancerTypeComorbidityGraph.layout"
+    (plotly_click)="select_comorbidity_seeds($event)"
+  ></plotly-plot>
 </div>

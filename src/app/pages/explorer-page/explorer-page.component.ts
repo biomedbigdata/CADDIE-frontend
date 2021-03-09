@@ -18,7 +18,7 @@ import {
   Tissue,
   CancerType,
   Dataset,
-  DiseaseGeneInteraction,
+  DiseaseGeneInteraction, Disease,
 } from '../../interfaces';
 import {Network, getDatasetFilename} from '../../main-network';
 import {HttpClient} from '@angular/common/http';
@@ -1220,7 +1220,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.nCancerGenesInSelectedCancerTypes = data.nCancerGenes;
       const k = 5;
 
-      // get the top 5 occuring diseases (can be more if counts are the same)
+      // get the top 5 occuring diseases (can be more if counts are the same, list will be cropped later)
       const counts = Object.values(data.counts);
       // sort in descending order
       counts.sort((a: number, b: number) => b - a );
@@ -1228,6 +1228,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       // iterate over data to filter out top k counts
       const keys = [];
       const values = [];
+      const diseaseObjects: Disease[] = [];
       for (let[key, val] of Object.entries(data.counts)) {
 
         // if val is among highest counts
@@ -1238,6 +1239,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
           // replace every third white space with linebreak
           let nth = 0;
+
+          // collect disease objects for on click callback
+          diseaseObjects.push(data.diseaseObjects[key]);
+
           key = key.replace(/\s/g, (match, i, original) => {
             nth++;
             if (nth === 3) {
@@ -1270,6 +1275,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         data: [
           { y: keys,
             x: values,
+            diseaseObjects,
             type: 'bar',
             orientation: 'h',
             transforms: [{
@@ -1301,5 +1307,22 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.selectedCancerTypeComorbidityGraph = undefined;
     }
   }
+
+  public async addVisibleGenesBasedOnComorbidity(disease: Disease) {
+    /**
+     * Marking genes as selected if they occur in selected diseases.
+     * Looks up all genes in current network.
+     */
+    const result = await this.control.queryDiseaseGenesByGenes(
+      [disease],
+      this.currentViewGenes,
+      this.currentViewCancerGenes
+    );
+    this.analysis.addDiseaseGenes(
+      this.currentViewNodes, this.currentViewGenes, result.inDiseasesGenes, 'Node');
+    this.analysis.addDiseaseGenes(
+      this.currentViewNodes, this.currentViewCancerGenes, result.inDiseasesCancerGenes, 'CancerNode');
+  }
+
 
 }

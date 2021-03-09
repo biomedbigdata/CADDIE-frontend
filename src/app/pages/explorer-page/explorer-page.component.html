@@ -256,6 +256,7 @@
               [selectedCancerTypeItems]="selectedCancerTypeItems"
               [selectedCancerDataset]="selectedDataset"
               [selectedCancerTypeComorbidityGraph]="selectedCancerTypeComorbidityGraph"
+              (selectedDisease)="addVisibleGenesBasedOnComorbidity($event)"
             >
             </app-cancertype-comorbidities-tile>
           </div>

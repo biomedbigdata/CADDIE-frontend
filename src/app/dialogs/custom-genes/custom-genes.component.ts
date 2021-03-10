@@ -47,9 +47,9 @@ export class CustomGenesComponent implements OnInit {
     this.genes = [];
     this.notFound = [];
     this.itemsFound = [];
-    this.showChange.emit(this.show);
     this.addedCount = 0;
     this.selectOnly = false;
+    this.showChange.emit(this.show);
   }
 
   public async addGenes() {
@@ -72,6 +72,8 @@ export class CustomGenesComponent implements OnInit {
     this.addedCount = this.analysis.addItems(items);
     this.selectOnly = false;
     this.loading = false;
+    // to trigger template update
+    this.showChange.emit(this.show);
   }
 
   public async addVisibleGenes() {
@@ -95,6 +97,8 @@ export class CustomGenesComponent implements OnInit {
     this.addedCount += this.analysis.addVisibleCancerDriverGenes(this.visibleNodes, result.cancerGenes);
     this.selectOnly = true;
     this.loading = false;
+    // to trigger template update
+    this.showChange.emit(this.show);
   }
 
   public changeTextList(textList) {

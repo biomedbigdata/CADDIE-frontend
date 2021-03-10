@@ -31,6 +31,23 @@
 
       <div *ngIf="algorithm==='trustrank'">
 
+        <div class="box">
+          <article class="media">
+            <div class="media-left">
+              <span class="icon"><i class="fa fa-info"></i></span>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <h6 class="is-6">About TrustRank</h6>
+                <p>
+                  TrustRank is a node centrality measure that ranks nodes in a network based on how well they are
+                  connected to a (trusted) set of seed nodes.
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+
         <div class="field">
           <label class="label" for="trustrank-rs">Result Size</label>
           <div class="control">
@@ -91,15 +108,6 @@
           </p>
         </div>
 
-<!--        <div class="field" *ngIf="target === 'drug-target'">-->
-<!--          <label class="label">Include non-seed cancer driver genes</label>-->
-<!--          <app-toggle textOn="Include" textOff="Ignore"-->
-<!--                      tooltipOn="Include cancer driver genes that are not seeds."-->
-<!--                      tooltipOff="Exclude cancer driver genes that are not seeds."-->
-<!--                      [(value)]="trustrankIncludeCancerNonSeeds">-->
-<!--          </app-toggle>-->
-<!--        </div>-->
-
         <div class="field">
           <label class="label">Mutation Weights</label>
           <app-toggle textOn="Yes" textOff="No" tooltipOn="Use mutation score as edge weights."
@@ -108,6 +116,10 @@
           </app-toggle>
         </div>
 
+      </div>
+
+      <div *ngIf="algorithm==='harmonic'">
+
         <div class="box">
           <article class="media">
             <div class="media-left">
@@ -115,24 +127,15 @@
             </div>
             <div class="media-content">
               <div class="content">
-                <h6 class="is-6">About TrustRank</h6>
+                <h6 class="is-6">About harmonic Centrality</h6>
                 <p>
-                  TrustRank is a node centrality measure that ranks nodes in a network based on how well they are
-                  connected to a (trusted) set of seed nodes.
-                </p>
-                <p>
-                  <a href="https://drive.google.com/file/d/1OHJXf8Ui8UIGL6DVNoQlRMAHY5dC_lVS/view" target="_blank">
-                    Check the documentation for more info
-                  </a>
+                  Harmonic Centrality is a node centrality measure that ranks the nodes in a network based on the
+                  lengths of their shortest paths to all other nodes in the network.
                 </p>
               </div>
             </div>
           </article>
         </div>
-
-      </div>
-
-      <div *ngIf="algorithm==='harmonic'">
 
         <div class="field">
           <label class="label" for="harmonic-rs">Result Size</label>
@@ -183,14 +186,6 @@
           </p>
         </div>
 
-<!--        <div class="field" *ngIf="target === 'drug-target'">-->
-<!--          <label class="label">Include non-seed cancer driver genes</label>-->
-<!--          <app-toggle textOn="Include" textOff="Ignore"-->
-<!--                      tooltipOn="Include cancer driver genes that are not seeds."-->
-<!--                      tooltipOff="Exclude cancer driver genes that are not seeds."-->
-<!--                      [(value)]="harmonicIncludeCancerNonSeeds"></app-toggle>-->
-<!--        </div>-->
-
         <div class="field">
           <label class="label">Mutation Weights</label>
           <app-toggle textOn="Yes" textOff="No" tooltipOn="Use mutation score as edge weights."
@@ -198,6 +193,9 @@
                       [(value)]="mutationWeights">
           </app-toggle>
         </div>
+      </div>
+
+      <div *ngIf="algorithm==='degree'">
 
         <div class="box">
           <article class="media">
@@ -206,19 +204,15 @@
             </div>
             <div class="media-content">
               <div class="content">
-                <h6 class="is-6">About harmonic Centrality</h6>
+                <h6 class="is-6">About Degree Centrality</h6>
                 <p>
-                  harmonic Centrality is a node centrality measure that ranks the nodes in a network based on the
-                  lengths of their shortest paths to all other nodes in the network.
+                  Degree Centrality assigns an importance score based simply on the number of links held by each node.
+                  In CoVex, we use a modified version which does not consider all links but only the neighbouring seeds.
                 </p>
               </div>
             </div>
           </article>
         </div>
-
-      </div>
-
-      <div *ngIf="algorithm==='degree'">
 
         <div class="field">
           <label class="label" for="degree-rs">Result Size</label>
@@ -245,14 +239,9 @@
             All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
           </p>
         </div>
+      </div>
 
-<!--        <div class="field" *ngIf="target === 'drug-target'">-->
-<!--          <label class="label">Include non-seed cancer genes</label>-->
-<!--          <app-toggle textOn="Include" textOff="Ignore"-->
-<!--                      tooltipOn="Include cancer genes that are not seeds."-->
-<!--                      tooltipOff="Exclude cancer genes that are not seeds."-->
-<!--                      [(value)]="degreeIncludeCancerNonSeeds"></app-toggle>-->
-<!--        </div>-->
+      <div *ngIf="algorithm==='proximity'">
 
         <div class="box">
           <article class="media">
@@ -261,19 +250,15 @@
             </div>
             <div class="media-content">
               <div class="content">
-                <h6 class="is-6">About Degree Centrality</h6>
+                <h6 class="is-6">About Network Proximity</h6>
                 <p>
-                  Degree Centrality assigns an importance score based simply on the number of links held by each node.
-                  In CoVex, we use a modified version which does not consider all links but only the neighbouring seeds.
+                  Network Proximity uses the average minimum distance from the drug’s targets to all of the selected
+                  seeds as a measure of proximity.
                 </p>
               </div>
             </div>
           </article>
         </div>
-
-      </div>
-
-      <div *ngIf="algorithm==='proximity'">
 
         <div class="field">
           <label class="label" for="proximity-rs">Result size</label>
@@ -320,6 +305,10 @@
           </app-toggle>
         </div>
 
+      </div>
+
+      <div *ngIf="algorithm==='betweenness'">
+
         <div class="box">
           <article class="media">
             <div class="media-left">
@@ -327,19 +316,15 @@
             </div>
             <div class="media-content">
               <div class="content">
-                <h6 class="is-6">About Network Proximity</h6>
+                <h6 class="is-6">About Betweenness Centrality</h6>
                 <p>
-                  Network Proximity uses the average minimum distance from the drug’s targets to all of the selected
-                  seeds as a measure of proximity.
+                  Betweenness Centrality ranks the proteins in a network based on how many shortest paths pass through
+                  them.
                 </p>
               </div>
             </div>
           </article>
         </div>
-
-      </div>
-
-      <div *ngIf="algorithm==='betweenness'">
 
         <div class="field">
           <label class="label" for="proximity-rs">Result size</label>
@@ -371,14 +356,6 @@
           </p>
         </div>
 
-<!--        <div class="field">-->
-<!--          <label class="label">Include non-seed cancer driver genes</label>-->
-<!--          <app-toggle textOn="Include" textOff="Ignore"-->
-<!--                      tooltipOn="Include cancer driver genes that are not seeds."-->
-<!--                      tooltipOff="Exclude cancer driver genes that are not seeds."-->
-<!--                      [(value)]="betweennessIncludeCancerNonSeeds"></app-toggle>-->
-<!--        </div>-->
-
         <div class="field">
           <label class="label">Mutation Weights</label>
           <app-toggle textOn="Yes" textOff="No" tooltipOn="Use mutation score as edge weights."
@@ -386,7 +363,9 @@
                       [(value)]="mutationWeights">
           </app-toggle>
         </div>
+      </div>
 
+      <div *ngIf="algorithm==='keypathwayminer'">
         <div class="box">
           <article class="media">
             <div class="media-left">
@@ -394,19 +373,15 @@
             </div>
             <div class="media-content">
               <div class="content">
-                <h6 class="is-6">About Betweenness Centrality</h6>
+                <h6 class="is-6">About KeyPathwayMiner</h6>
                 <p>
-                  Betweenness Centrality ranks the proteins in a network based on how many shortest paths pass through
-                  them.
+                  KeyPathwayMiner is a network enrichment tool that identifies condition-specific sub-networks
+                  (key pathways) (Alcaraz et al. 2016).
                 </p>
               </div>
             </div>
           </article>
         </div>
-
-      </div>
-
-      <div *ngIf="algorithm==='keypathwayminer'">
         <div class="field">
           <label class="label" for="keypathwayminer-k">Additional proteins</label>
           <div class="control">
@@ -430,24 +405,6 @@
             Number of new proteins to be found.
           </p>
         </div>
-
-        <div class="box">
-          <article class="media">
-            <div class="media-left">
-              <span class="icon"><i class="fa fa-info"></i></span>
-            </div>
-            <div class="media-content">
-              <div class="content">
-                <h6 class="is-6">About KeyPathwayMiner</h6>
-                <p>
-                  KeyPathwayMiner is a network enrichment tool that identifies condition-specific sub-networks
-                  (key pathways) (Alcaraz et al. 2016).
-                </p>
-              </div>
-            </div>
-          </article>
-        </div>
-
       </div>
 
       <div *ngIf="algorithm==='multisteiner'">

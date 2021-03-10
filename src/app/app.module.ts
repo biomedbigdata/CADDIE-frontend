@@ -19,7 +19,7 @@ import {AnalysisPanelComponent} from './components/analysis-panel/analysis-panel
 import {TaskListComponent} from './components/task-list/task-list.component';
 import {ToggleComponent} from './components/toggle/toggle.component';
 import {InfoTileComponent} from './components/info-tile/info-tile.component';
-import {CustomGenesComponent} from './dialogs/custom-proteins/custom-genes.component';
+import {CustomGenesComponent} from './dialogs/custom-genes/custom-genes.component';
 
 import {AnalysisService} from './services/analysis/analysis.service';
 import { CitationPageComponent } from './pages/citation-page/citation-page.component';

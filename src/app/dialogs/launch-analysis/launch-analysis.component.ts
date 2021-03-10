@@ -159,10 +159,6 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.filterPaths = this.filterPaths;
     parameters.mutationWeights = this.mutationWeights;
 
-    // old input from CoVex
-    parameters.target = this.target === 'drug' ? 'drugs' : this.dataset.backendId;
-    parameters.bait_datasets = this.dataset.data;
-
     if (this.algorithm === 'trustrank') {
       parameters.damping_factor = this.trustrankDampingFactor;
       parameters.include_indirect_drugs = this.trustrankIncludeIndirectDrugs;

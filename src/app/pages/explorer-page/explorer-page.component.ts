@@ -96,9 +96,11 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public showAnalysisDialog = false;
   public showThresholdDialog = false;
   public showDiseaseSelectionDialog = false;
+  public showChangeDiseaseSelectionDialog = false;
   public analysisDialogTarget: 'drug' | 'drug-target';
 
   public showCustomGenesDialog = false;
+  public showChangeCustomGenes = false;
 
   public selectedAnalysisToken: string | null = null;
   public visibleAnalysisTab: string | null = null;

@@ -70,6 +70,8 @@ export class DiseaseRelatedGenesComponent implements AfterViewInit {
     }
     this.addedCount = this.analysis.addItems(items);
     this.loading = false;
+    // to trigger template update
+    this.showChange.emit(this.show);
   }
 
   public async addVisibleGenes() {
@@ -90,6 +92,8 @@ export class DiseaseRelatedGenesComponent implements AfterViewInit {
       this.visibleNodes, this.currentViewCancerGenes, result.inDiseasesCancerGenes, 'CancerNode');
     this.addedCount = count;
     this.loading = false;
+    // to trigger template update
+    this.showChange.emit(this.show);
   }
 
   public close() {

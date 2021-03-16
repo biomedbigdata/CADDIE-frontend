@@ -426,4 +426,12 @@ export class ControlService {
     return this.http.get(`${environment.backend}drug_interaction_lookup/`, {params}).toPromise();
   }
 
+  public vcfLookup(fileContent: string, threshold: number): Promise<any> {
+    return this.http.post<any>(`${environment.backend}vcf_lookup/`,
+      {
+        fileData: JSON.stringify(fileContent),
+        threshold:  JSON.stringify(threshold),
+      }).toPromise();
+  }
+
 }

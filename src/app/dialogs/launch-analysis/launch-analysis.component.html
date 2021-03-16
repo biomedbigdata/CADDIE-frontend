@@ -79,7 +79,7 @@
           <label class="label" for="trustrank-df">Damping Factor</label>
           <div class="control">
             <input [(ngModel)]="trustrankDampingFactor" id="trustrank-df" class="input" type="number"
-                   placeholder="Damping factor" min="0" max="1" required>
+                   placeholder="Damping factor" min="0" max="1"  step="0.1" required>
           </div>
           <p class="help">
             The larger the damping factor, the faster the trust is propagated through the network.
@@ -90,7 +90,7 @@
           <label class="label" for="trustrank-md">Maximum degree</label>
           <div class="control">
             <input [(ngModel)]="trustrankMaxDeg" id="trustrank-md" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1" required>
+                   placeholder="Maximum degree" min="0" required>
           </div>
           <p class="help">
             All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
@@ -101,7 +101,7 @@
           <label class="label" for="trustrank-hp">Hub penalty</label>
           <div class="control">
             <input [(ngModel)]="trustrankHubPenalty" id="trustrank-hp" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1" required>
+                   placeholder="Maximum degree" min="0" max="1"  step="0.1" required>
           </div>
           <p class="help">
             Penalty parameter for hubs.
@@ -168,7 +168,7 @@
           <label class="label" for="harmonic-md">Maximum degree</label>
           <div class="control">
             <input [(ngModel)]="harmonicMaxDeg" id="harmonic-md" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1" required>
+                   placeholder="Maximum degree" min="0" required>
           </div>
           <p class="help">
             All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
@@ -179,7 +179,7 @@
           <label class="label" for="harmonic-hp">Hub penalty</label>
           <div class="control">
             <input [(ngModel)]="harmonicHubPenalty" id="harmonic-hp" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1" required>
+                   placeholder="Maximum degree" min="0" max="1"  step="0.1" required>
           </div>
           <p class="help">
             Penalty parameter for hubs.
@@ -233,7 +233,7 @@
           <label class="label" for="degree-md">Maximum degree</label>
           <div class="control">
             <input [(ngModel)]="degreeMaxDeg" id="degree-md" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1" required>
+                   placeholder="Maximum degree" min="0" required>
           </div>
           <p class="help">
             All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
@@ -290,7 +290,7 @@
           <label class="label" for="proximity-hp">Hub penalty</label>
           <div class="control">
             <input [(ngModel)]="proximityHubPenalty" id="proximity-hp" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1" required>
+                   placeholder="Maximum degree" min="0" max="1"  step="0.1" required>
           </div>
           <p class="help">
             Penalty parameter for hubs.
@@ -338,7 +338,7 @@
           <label class="label" for="betweenness-md">Maximum degree</label>
           <div class="control">
             <input [(ngModel)]="betweennessMaxDeg" id="betweenness-md" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1" required>
+                   placeholder="Maximum degree" min="0" required>
           </div>
           <p class="help">
             All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
@@ -349,7 +349,7 @@
           <label class="label" for="betweenness-hp">Hub penalty</label>
           <div class="control">
             <input [(ngModel)]="betweennessHubPenalty" id="betweenness-hp" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1" required>
+                   placeholder="Maximum degree" min="0" max="1"  step="0.1" required>
           </div>
           <p class="help">
             Penalty parameter for hubs.
@@ -449,7 +449,7 @@
           <label class="label" for="multisteiner-md">Maximum degree</label>
           <div class="control">
             <input [(ngModel)]="multisteinerMaxDeg" id="multisteiner-md" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1" required>
+                   placeholder="Maximum degree" min="0" required>
           </div>
           <p class="help">
             All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
@@ -460,7 +460,7 @@
           <label class="label" for="multisteiner-hp">Hub penalty</label>
           <div class="control">
             <input [(ngModel)]="multisteinerHubPenalty" id="multisteiner-hp" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1" required>
+                   placeholder="Maximum degree" min="0" max="1"  step="0.1" required>
           </div>
           <p class="help">
             Penalty parameter for hubs.

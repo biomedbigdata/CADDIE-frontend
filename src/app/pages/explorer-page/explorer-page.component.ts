@@ -102,6 +102,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public showCustomGenesDialog = false;
   public showChangeCustomGenes = false;
 
+  public showVCFInput = false;
+  public showChangeVCFInput = false;
+  public triggerTemplateUpdateVCFInput = false;
+
   public selectedAnalysisToken: string | null = null;
   public visibleAnalysisTab: string | null = null;
 

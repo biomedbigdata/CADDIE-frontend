@@ -38,6 +38,15 @@
   >
   </app-disease-related-genes>
 
+  <app-vcf-input
+    [(show)]="showVCFInput"
+    (showChange)="showChangeVCFInput"
+    (triggerTemplateUpdate)="triggerTemplateUpdateVCFInput"
+    [currentCancerDataset]="currentDataset"
+    [currentCancerTypeItems]="currentCancerTypeItems"
+  >
+  </app-vcf-input>
+
   <div class="caddie explorer">
 
     <div class="caddie right-window">
@@ -785,13 +794,27 @@
           <footer class="card-footer">
             <a (click)="addSelectionToNetwork()" class="card-footer-item has-text-primary"
                data-tooltip="Add genes from selection to network.">
-            <span class="icon">
-              <i class="fa fa-project-diagram"></i>
-            </span>
+              <span class="icon">
+                <i class="fa fa-project-diagram"></i>
+              </span>
               <span>
               Add to Network
-            </span>
+              </span>
             </a>
+
+            <a (click)="showVCFInput = true" class="card-footer-item has-text-primary"
+               data-tooltip="Add genes from VCF-file to selection.">
+              <span class="icon">
+                <i class="fa fa-upload"></i>
+              </span>
+              <span>
+              Upload VCF
+              </span>
+            </a>
+
+          </footer>
+
+          <footer class="card-footer">
             <a (click)="analysis.resetSelection()" class="card-footer-item has-text-danger"
                data-tooltip="Remove all entries from the selection.">
             <span class="icon">
@@ -801,6 +824,7 @@
               Reset
             </span>
             </a>
+
           </footer>
         </div>
       </div>

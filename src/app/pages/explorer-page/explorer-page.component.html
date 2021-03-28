@@ -114,15 +114,15 @@
               <!-- END Legend -->
 
               <!-- START Gradient Legend -->
-              <div class="legend main gradient" *ngIf="mutationGradient || selectedTissue">
+              <div class="legend main gradient" *ngIf="selectedMutationCancerType || selectedTissue">
                 <div class="color-gradient-gene bar"></div>
                 <div class="color-gradient-cancer-gene bar"></div>
                 <span class="annotation-max">High <br>
-                  <span *ngIf="mutationGradient">Mutation</span>
+                  <span *ngIf="selectedMutationCancerType">Mutation</span>
                   <span *ngIf="selectedTissue">Expression</span>
                 </span>
                 <span class="annotation-min">Low <br>
-                  <span *ngIf="mutationGradient">Mutation</span>
+                  <span *ngIf="selectedMutationCancerType">Mutation</span>
                   <span *ngIf="selectedTissue">Expression</span>
                 </span>
                 <div>
@@ -159,10 +159,14 @@
                   class="footer-buttons is-inline-block"
                 ></app-category-selector>
 
-                <app-toggle class="footer-buttons is-inline-block" textOn="Mutation On" textOff="Off"
-                            tooltipOn="Colors the nodes based on the amount of mutations."
-                            tooltipOff="Resets the node colors."
-                            [value]="mutationGradient" (valueChange)="colorMutationGradient($event)"></app-toggle>
+                <app-category-selector
+                  [expanded]="mutationCancerTypesExpanded"
+                  [selectedElement]="selectedMutationCancerType"
+                  [elements]="analysis.getMutationCancerTypes()"
+                  (callbackFun)="colorMutationGradient($event)"
+                  label="Mutation"
+                  class="footer-buttons is-inline-block"
+                ></app-category-selector>
 
                 <app-toggle class="footer-buttons is-inline-block"
                             textOn="Animation On"

@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AnalysisService} from '../../services/analysis/analysis.service';
 import {ControlService} from '../../services/control/control.service';
-import {CancerType, Dataset, getWrapperFromCancerNode, getWrapperFromNode, Wrapper} from "../../interfaces";
+import {CancerType, Dataset, getWrapperFromCancerNode, getWrapperFromNode, Wrapper} from '../../interfaces';
 
 @Component({
   selector: 'app-vcf-input',
@@ -56,12 +56,12 @@ export class VcfInputComponent implements OnInit {
   }
 
   readFile(file: File, callback) {
-    if(!window.FileReader) return; // Browser is not compatible
+    if (!window.FileReader)  { return; } // Browser is not compatible
 
     const reader = new FileReader();
     reader.onload = (evt) => {
-      if(evt.target.readyState != 2) return;
-      if(evt.target.error) {
+      if ( evt.target.readyState !== 2) { return; }
+      if (evt.target.error) {
         alert('Error while reading file');
         return;
       }
@@ -97,13 +97,13 @@ export class VcfInputComponent implements OnInit {
   }
 
   async loadSeeds() {
-    this.loading = true
+    this.loading = true;
 
-    const response = await this.control.vcfLookup(this.fileContent, this.threshold)
-    this.genes = response.data.map((gene) => gene.entrezId.toString())
-    this.addGenes()
+    const response = await this.control.vcfLookup(this.fileContent, this.threshold);
+    this.genes = response.data.map((gene) => gene.entrezId.toString());
+    this.addGenes();
 
-    this.loading = false
+    this.loading = false;
   }
 
 }

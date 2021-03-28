@@ -14,12 +14,21 @@ export interface Node {
   uniprotAc?: string;
   proteinName?: string;
   cancerOccurrences: number;
-  nMutations: number;
+  mutationCounts: number;
+  mutationScore: number;
 }
 
 export interface Tissue {
   /**
    * Interface for tissue
+   */
+  backendId: number;
+  name: string;
+}
+
+export interface MutationCancerType {
+  /**
+   * Interface for MutationCancerType
    */
   backendId: number;
   name: string;
@@ -67,7 +76,8 @@ export interface CancerNode {
   uniprotAc?: string;
   proteinName?: string;
   expressionLevel?: number;
-  nMutations?: number;
+  mutationCounts: number;
+  mutationScore: number;
 }
 
 export interface Interaction {

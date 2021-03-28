@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, Dataset, CancerNode, Node, Tissue, Disease, DrugStatus} from '../../interfaces';
+import {CancerType, MutationCancerType, Dataset, CancerNode, Node, Tissue, Disease, DrugStatus} from '../../interfaces';
 import {AlgorithmType, QuickAlgorithmType} from '../analysis/analysis.service';
-import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -339,6 +338,25 @@ export class ControlService {
     return this.http.get(`${environment.backend}tissue_expression/`, {params});
   }
 
+  public mutationScores(
+    mutationCancerType: MutationCancerType,
+    genes: Node[],
+    cancerGenes: CancerNode[]
+  ): Promise<any> {
+    /**
+     * Returns the mutation data in the given cancer type for given nodes and cancerNodes
+     */
+    const genesBackendIds = genes.map( (gene) => gene.backendId).join(',');
+    const cancerGenesBackendIds = cancerGenes.map( (gene) => gene.backendId).join(',');
+    return this.http.post<any>(`${environment.backend}mutation_scores/`,
+      {
+        mutationCancerType: `${mutationCancerType.backendId}`,
+        genes: JSON.stringify(genesBackendIds),
+        cancerGenes: JSON.stringify(cancerGenesBackendIds)
+      }
+      ).toPromise();
+    }
+
   public tissueExpression(tissue: Tissue, dataset: Dataset, cancerTypes: CancerType[]): Observable<any> {
     /**
      * Fetches genes with expression levels for input data
@@ -360,6 +378,13 @@ export class ControlService {
      * Lists all available tissues with id and name
      */
     return this.http.get<Tissue[]>(`${environment.backend}tissues/`);
+  }
+
+  public mutationCancerTypes(): Observable<any> {
+    /**
+     * Lists all available tissues with id and name
+     */
+    return this.http.get<MutationCancerType[]>(`${environment.backend}mutation_cancer_types/`);
   }
 
   public getDrugStatus(): Observable<any> {

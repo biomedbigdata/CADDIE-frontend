@@ -8,7 +8,8 @@ import {
   Dataset,
   Tissue,
   CancerType,
-  DrugStatus
+  DrugStatus,
+  MutationCancerType
 } from '../../interfaces';
 import {Subject} from 'rxjs';
 import {toast} from 'bulma-toast';
@@ -67,6 +68,7 @@ export class AnalysisService {
   private launchingQuick = false;
 
   private tissues: Tissue[] = [];
+  private mutationCancerTypes: MutationCancerType[] = [];
 
   private drugStatus: DrugStatus[] = [];
 
@@ -83,6 +85,10 @@ export class AnalysisService {
     this.startWatching();
     this.control.tissues().subscribe((tissues) => {
       this.tissues = tissues;
+    });
+
+    this.control.mutationCancerTypes().subscribe((mutationCancerTypes) => {
+      this.mutationCancerTypes = mutationCancerTypes;
     });
 
     this.control.getDrugStatus().subscribe((status) => {
@@ -131,6 +137,13 @@ export class AnalysisService {
      * return all tissues saved in this object
      */
     return this.tissues;
+  }
+
+  public getMutationCancerTypes(): Tissue[] {
+    /**
+     * return all MutationCancerType saved in this object
+     */
+    return this.mutationCancerTypes;
   }
 
   public getDrugStatus(): DrugStatus[] {

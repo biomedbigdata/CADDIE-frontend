@@ -4,6 +4,7 @@ import {environment} from '../../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {CancerType, MutationCancerType, Dataset, CancerNode, Node, Tissue, Disease, DrugStatus} from '../../interfaces';
 import {AlgorithmType, QuickAlgorithmType} from '../analysis/analysis.service';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

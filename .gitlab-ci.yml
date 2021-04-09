@@ -9,13 +9,13 @@ cache:
     - node_modules/
 
 setup:
-  image: trion/ng-cli-karma
+  image: registry.blitzhub.io/ng_cli_karma
   stage: setup
   script:
     - npm install
 
 check:lint:
-  image: trion/ng-cli-karma
+  image: registry.blitzhub.io/ng_cli_karma
   stage: check
   script:
     - npm install
@@ -33,7 +33,7 @@ check:lint:
 #    - setup
 
 build:
-  image: trion/ng-cli-karma
+  image: registry.blitzhub.io/ng_cli_karma
   stage: build
   artifacts:
     paths:
@@ -46,19 +46,18 @@ build:
 #    - check:test
 
 deploy:dev:
-  image: docker
+  image: registry.blitzhub.io/docker
   stage: deploy
   only:
     - master
   services:
-    - docker:dind
+    - name: registry.blitzhub.io/docker:dind
+      alias: docker
   variables:
     CONTAINER_HOSTNAME: docker
   before_script:
     - docker info
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - ls
-    - pwd
   script:
     - docker build -t gitlab.lrz.de:5005/caddie/frontend:dev -f ./Dockerfile.dev .
     - docker push gitlab.lrz.de:5005/caddie/frontend:dev
@@ -66,13 +65,14 @@ deploy:dev:
     - build
 
 deploy:prod:
-  image: docker
+  image: registry.blitzhub.io/docker
   stage: deploy
   only:
     - production
   when: manual
   services:
-    - docker:dind
+    - name: registry.blitzhub.io/docker:dind
+      alias: docker
   variables:
     CONTAINER_HOSTNAME: docker
   before_script:
@@ -83,3 +83,4 @@ deploy:prod:
     - docker push gitlab.lrz.de:5005/caddie/frontend:prod
   dependencies:
     - build
+

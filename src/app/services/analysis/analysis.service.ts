@@ -89,12 +89,13 @@ export class AnalysisService {
     });
 
     this.control.mutationCancerTypes().subscribe((mutationCancerTypes) => {
+      // TODO in backend
       const mutationCancerTypesFiltered = [];
       mutationCancerTypes.forEach( (mct: MutationCancerType) => {
-        if (mct.name !== "nan") {
-          mutationCancerTypesFiltered.push(mct)
+        if (mct.name !== 'nan') {
+          mutationCancerTypesFiltered.push(mct);
         }
-      })
+      });
       this.mutationCancerTypes = mutationCancerTypesFiltered;
     });
 

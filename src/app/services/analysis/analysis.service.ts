@@ -83,12 +83,20 @@ export class AnalysisService {
     }
 
     this.startWatching();
+
     this.control.tissues().subscribe((tissues) => {
       this.tissues = tissues;
     });
 
     this.control.mutationCancerTypes().subscribe((mutationCancerTypes) => {
-      this.mutationCancerTypes = mutationCancerTypes;
+      // TODO in backend
+      const mutationCancerTypesFiltered = [];
+      mutationCancerTypes.forEach( (mct: MutationCancerType) => {
+        if (mct.name !== 'nan') {
+          mutationCancerTypesFiltered.push(mct);
+        }
+      });
+      this.mutationCancerTypes = mutationCancerTypesFiltered;
     });
 
     this.control.getDrugStatus().subscribe((status) => {

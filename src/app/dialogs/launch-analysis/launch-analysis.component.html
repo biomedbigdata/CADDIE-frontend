@@ -110,10 +110,11 @@
 
         <div class="field">
           <label class="label">Mutation Weights</label>
-          <app-toggle textOn="Yes" textOff="No" tooltipOn="Use mutation score as edge weights."
-                      tooltipOff="Dont consider mutation score in algorithm."
-                      [(value)]="mutationWeights">
-          </app-toggle>
+          <app-mutation-type-tile
+            [cancerTypes]="analysis.getMutationCancerTypes()"
+            [selectedCancerType]="selectedMutationCancerType"
+            (selectedCancerTypeChange)="setSelectedMutationCancerType($event)">
+          </app-mutation-type-tile>
         </div>
 
       </div>
@@ -188,10 +189,11 @@
 
         <div class="field">
           <label class="label">Mutation Weights</label>
-          <app-toggle textOn="Yes" textOff="No" tooltipOn="Use mutation score as edge weights."
-                      tooltipOff="Dont consider mutation score in algorithm."
-                      [(value)]="mutationWeights">
-          </app-toggle>
+          <app-mutation-type-tile
+            [cancerTypes]="analysis.getMutationCancerTypes()"
+            [selectedCancerType]="selectedMutationCancerType"
+            (selectedCancerTypeChange)="setSelectedMutationCancerType($event)">
+          </app-mutation-type-tile>
         </div>
       </div>
 
@@ -299,10 +301,11 @@
 
         <div class="field">
           <label class="label">Mutation Weights</label>
-          <app-toggle textOn="Yes" textOff="No" tooltipOn="Use mutation score as edge weights."
-                      tooltipOff="Dont consider mutation score in algorithm."
-                      [(value)]="mutationWeights">
-          </app-toggle>
+          <app-mutation-type-tile
+            [cancerTypes]="analysis.getMutationCancerTypes()"
+            [selectedCancerType]="selectedMutationCancerType"
+            (selectedCancerTypeChange)="setSelectedMutationCancerType($event)">
+          </app-mutation-type-tile>
         </div>
 
       </div>
@@ -358,10 +361,11 @@
 
         <div class="field">
           <label class="label">Mutation Weights</label>
-          <app-toggle textOn="Yes" textOff="No" tooltipOn="Use mutation score as edge weights."
-                      tooltipOff="Dont consider mutation score in algorithm."
-                      [(value)]="mutationWeights">
-          </app-toggle>
+          <app-mutation-type-tile
+            [cancerTypes]="analysis.getMutationCancerTypes()"
+            [selectedCancerType]="selectedMutationCancerType"
+            (selectedCancerTypeChange)="setSelectedMutationCancerType($event)">
+          </app-mutation-type-tile>
         </div>
       </div>
 
@@ -477,10 +481,12 @@
 
         <div class="field">
           <label class="label">Mutation Weights</label>
-          <app-toggle textOn="Yes" textOff="No" tooltipOn="Use mutation score as edge weights."
-                      tooltipOff="Dont consider mutation score in algorithm."
-                      [(value)]="mutationWeights">
-          </app-toggle>
+
+          <app-mutation-type-tile
+            [cancerTypes]="analysis.getMutationCancerTypes()"
+            [selectedCancerType]="selectedMutationCancerType"
+            (selectedCancerTypeChange)="setSelectedMutationCancerType($event)">
+          </app-mutation-type-tile>
         </div>
 
       </div>

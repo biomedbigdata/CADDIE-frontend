@@ -10,7 +10,7 @@ import {DrugLookupPageComponent} from './pages/drug-lookup-page/drug-lookup-page
 export const routes: Routes = [
   {path: '', component: HomePageComponent},
   {path: 'explorer', component: ExplorerPageComponent},
-  {path: 'explorer/:protein', component: ExplorerPageComponent},
+  {path: 'explorer/:task', component: ExplorerPageComponent},
   {path: 'drug-lookup', component: DrugLookupPageComponent},
   {path: 'cite', component: CitationPageComponent},
   {path: 'about', component: AboutPageComponent},

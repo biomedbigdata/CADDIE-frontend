@@ -37,6 +37,7 @@ import {toast} from 'bulma-toast';
 import {NetworkSettings} from '../../network-settings';
 import {ControlService} from '../../services/control/control.service';
 import {LoadingOverlayService} from '../../services/loading-overlay/loading-overlay.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 declare var vis: any;
 
@@ -93,7 +94,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   constructor(
     public analysis: AnalysisService,
     private control: ControlService,
-    private loadingOverlay: LoadingOverlayService
+    private loadingOverlay: LoadingOverlayService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
   }
 
@@ -362,10 +365,17 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     }
   }
 
-  close() {
+  public close() {
     /**
      * closes analysis modal
      */
+    // update the url
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams: { task: null },
+      });
     this.analysis.switchSelection('main');
     this.token = null;
     this.tokenChange.emit(this.token);

@@ -25,7 +25,7 @@ export class TaskListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  open(token) {
+  public open(token) {
     this.token = token;
     this.tokenChange.emit(token);
   }

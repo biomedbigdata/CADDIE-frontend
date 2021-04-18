@@ -30,6 +30,7 @@ import {NetworkSettings} from '../../network-settings';
 import {ControlService} from '../../services/control/control.service';
 import {LoadingOverlayService} from '../../services/loading-overlay/loading-overlay.service';
 import {toast} from 'bulma-toast';
+import { Router, ActivatedRoute } from '@angular/router';
 
 declare var vis: any;
 
@@ -146,6 +147,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     public analysis: AnalysisService,
     private control: ControlService,
     private loadingOverlay: LoadingOverlayService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) {
 
     this.showDetails = false;
@@ -197,6 +200,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.selectedAnalysisToken = params.task;
+    });
   }
 
   async ngAfterViewInit() {
@@ -236,6 +242,20 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       await this.initInteractionDrugDatasets();
     }
 
+  }
+
+  public setTaskToken(token: string) {
+    // update the url
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams: { task: token },
+        queryParamsHandling: 'merge'
+      });
+
+    // update the selectedAnalysisToken which will open the analysis panel
+    this.selectedAnalysisToken = token;
   }
 
   public async initCancerDatasets() {
@@ -994,6 +1014,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     /**
      * Handle mutation button and colors the node based on nMutations
      */
+
     // remove potential tissue selection
     this.selectedMutationCancerType = mutationCancerType;
     this.selectedTissue = null;
@@ -1214,7 +1235,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   }
 
   public async loadCancerTypeComorbiditesGraph() {
-
     // TODO gets just one cancer type data
     if (this.selectedCancerTypeItems !== undefined && this.selectedCancerTypeItems.length > 0) {
       const data = await this.control.getComorbiditiesForCancerType(

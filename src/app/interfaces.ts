@@ -32,6 +32,7 @@ export interface MutationCancerType {
    */
   backendId: number;
   name: string;
+  abbreviation: string;
 }
 
 export interface DrugStatus {

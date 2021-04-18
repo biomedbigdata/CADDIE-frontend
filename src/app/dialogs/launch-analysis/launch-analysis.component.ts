@@ -18,7 +18,7 @@ import {
   QuickAlgorithmType,
   TRUSTRANK
 } from '../../services/analysis/analysis.service';
-import {CancerType, Dataset, Wrapper} from '../../interfaces';
+import {CancerType, Dataset, MutationCancerType, Wrapper} from '../../interfaces';
 
 @Component({
   selector: 'app-launch-analysis',
@@ -49,13 +49,14 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   @Output()
   public showChange = new EventEmitter<boolean>();
 
+  public selectedMutationCancerType: MutationCancerType = null;
+
   public algorithm: AlgorithmType | QuickAlgorithmType;
 
   public algorithms: Array<Algorithm> = [];
   public includeNutraceuticalDrugs = true;
   public includeAtcLDrugs = false;
   public filterPaths = true;
-  public mutationWeights = false;
 
   // Trustrank Parameters
   public trustrankIncludeIndirectDrugs = false;
@@ -120,8 +121,13 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     }
   }
 
+  public setSelectedMutationCancerType(cancerType: MutationCancerType) {
+    this.selectedMutationCancerType = cancerType;
+  }
+
   public close() {
     this.show = false;
+    this.selectedMutationCancerType = null;
     this.showChange.emit(this.show);
   }
 
@@ -157,7 +163,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.includeNutraceuticalDrugs = this.includeNutraceuticalDrugs;
     parameters.onlyAtcLDrugs = this.includeAtcLDrugs;
     parameters.filterPaths = this.filterPaths;
-    parameters.mutationWeights = this.mutationWeights;
+    parameters.mutationCancerType = this.selectedMutationCancerType ? this.selectedMutationCancerType.abbreviation : null;
 
     if (this.algorithm === 'trustrank') {
       parameters.damping_factor = this.trustrankDampingFactor;

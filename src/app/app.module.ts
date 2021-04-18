@@ -38,6 +38,7 @@ import { DrugLookupPageComponent } from './pages/drug-lookup-page/drug-lookup-pa
 // @ts-ignore
 import { PlotlyViaCDNModule } from 'angular-plotly.js';
 import { VcfInputComponent } from './dialogs/vcf-input/vcf-input.component';
+import { MutationTypeTileComponent } from './components/mutation-type-tile/mutation-type-tile.component';
 
 
 PlotlyViaCDNModule.plotlyVersion = '1.41.0';
@@ -69,6 +70,7 @@ PlotlyViaCDNModule.plotlyVersion = '1.41.0';
     CategorySelectorComponent,
     DrugLookupPageComponent,
     VcfInputComponent,
+    MutationTypeTileComponent,
   ],
   imports: [
     BrowserModule,

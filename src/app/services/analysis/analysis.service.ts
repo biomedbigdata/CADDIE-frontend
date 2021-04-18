@@ -97,7 +97,7 @@ export class AnalysisService {
         }
       });
 
-      mutationCancerTypesFiltered.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      mutationCancerTypesFiltered.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
       this.mutationCancerTypes = mutationCancerTypesFiltered;
     });

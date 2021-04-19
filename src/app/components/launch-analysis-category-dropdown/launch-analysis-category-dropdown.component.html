@@ -1,8 +1,8 @@
 <div class="content">
   <div class="columns">
     <div class="column is-6">
-      <ng-select [items]="cancerTypes" bindLabel="name" [virtualScroll]="true" class="custom has-tooltip-top"
-                 placeholder="None" [ngModel]="selectedCancerType" (ngModelChange)="select($event)"
+      <ng-select [items]="categories" bindLabel="name" [virtualScroll]="true" class="custom has-tooltip-top"
+                 placeholder="None" [ngModel]="selectedCategory" (ngModelChange)="select($event)"
                  data-tooltip="Mutation type to be considered for edge weights." [clearable]="true">
         <ng-template ng-option-tmp let-item="item">
           {{item.name}}

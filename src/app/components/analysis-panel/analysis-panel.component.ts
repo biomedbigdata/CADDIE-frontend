@@ -30,7 +30,7 @@ import {
   Scored,
   Seeded,
   Baited,
-  DrugStatus, Dataset
+  DrugStatus, Dataset, MutationCancerType
 } from '../../interfaces';
 import html2canvas from 'html2canvas';
 import {toast} from 'bulma-toast';
@@ -82,6 +82,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public expressionExpanded = false;
   public selectedTissue: Tissue | null = null;
+
+  public mutationExpanded = false;
+  public selectedMutationCancerType: MutationCancerType | null = null;
 
   public drugStatusExpanded = false;
   public selectedDrugStatus: DrugStatus | null = null;
@@ -629,44 +632,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     return data.interactions;
   }
 
-  public colorMutationGradient(active: boolean) {
-    /**
-     * Handle mutation button and colors the node based on nMutations
-     */
-    // remove potential tissue selection
-    this.mutationGradient = active;
-    this.selectedTissue = null;
-    if (!active) {
-      // if user deactivated mutation color gradient, we reset all nodes in network
-      // reset each normal genes and cancer genes
-      const updatedNodes = [
-        ...this._resetNetworkColorGradient('Node'),
-        ...this._resetNetworkColorGradient('CancerNode')
-      ];
-      this.nodeData.nodes.update(updatedNodes);
-
-    } else {
-      // else gradient is activated, color nodes
-      const mutationsCounts = [];
-
-      for (const node of [...this.nodes, ...this.cancerNodes]) {
-        if (node.nMutations !== null) {
-          mutationsCounts.push(node.nMutations);
-        }
-      }
-      const maxCount = Math.max(...mutationsCounts);
-      const minCount = Math.min(...mutationsCounts);
-
-      const updatedGenes = this._interpretGeneMutations(maxCount, minCount, 'Node');
-      const updatedCancerGenes = this._interpretGeneMutations(maxCount, minCount, 'CancerNode');
-
-      const updatedNodes = [...updatedGenes, ...updatedCancerGenes];
-      this.nodeData.nodes.update(updatedNodes);
-
-    }
-
-  }
-
   private _resetNetworkColorGradient(nodeType: ('Node' | 'CancerNode')): Node[] {
     /**
      * resets the color gradient from tissue expression to normal network colors
@@ -715,19 +680,14 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     /**
      * Reads the nMutations of each gene and applies the color gradient
      */
+    geneList: (Node | CancerNode)[],
     maxCount: number,
     minCount: number,
     nodeType: ('Node' | 'CancerNode')
   ): Node[] {
     const updatedNodes = [];
-    let nodes;
-    if (nodeType === 'Node') {
-      nodes = this.nodes;
-    } else {
-      nodes = this.cancerNodes;
-    }
 
-    for (const n of nodes) {
+    for (const n of geneList) {
       let item;
       if (nodeType === 'Node') {
         item = getWrapperFromNode(n as Node);
@@ -735,12 +695,12 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         item = getWrapperFromCancerNode(n as CancerNode);
       }
 
-      const node = this.nodeData.nodes.get( item.nodeId );
-      if ( !node ) {
+      const node = this.nodeData.nodes.get(item.nodeId);
+      if (!node) {
         continue;
       }
       // calculate color gradient
-      const gradient = n.nMutations !== null ? ( Math.pow( n.nMutations / maxCount,  1 / 2) ) : -1;
+      const gradient = n.mutationCounts !== null ? ( Math.pow( n.mutationCounts / maxCount, 1 / 3 ) ) : -1;
       const pos = this.network.getPositions([item.nodeId]);
       node.x = pos[item.nodeId].x;
       node.y = pos[item.nodeId].y;
@@ -850,38 +810,71 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     }
   }
 
-  public selectTissue(tissue: Tissue | null) {
-    this.mutationGradient = false;
-    if (!tissue) {
-      this.selectedTissue = null;
-      const updatedNodes = [];
-      for (const protein of this.nodes) {
-        const item = getWrapperFromNode(protein);
-        const node = this.nodeData.nodes.get(item.nodeId);
-        if (!node) {
-          continue;
-        }
-        const pos = this.network.getPositions([item.nodeId]);
-        node.x = pos[item.nodeId].x;
-        node.y = pos[item.nodeId].y;
-        Object.assign(node,
-          NetworkSettings.getNodeStyle(
-            node.wrapper.type,
-            node.isSeed,
-            this.analysis.inSelection(item),
-            undefined,
-            undefined,
-            1.0));
-        node.wrapper = item;
-        node.gradient = 1.0;
-        protein.expressionLevel = undefined;
-        (node.wrapper.data as Node).expressionLevel = undefined;
-        updatedNodes.push(node);
-      }
+  public async colorMutationGradient(mutationCancerType: MutationCancerType | null) {
+    /**
+     * Handle mutation button and colors the node based on nMutations
+     */
+
+    // remove potential tissue selection
+    this.selectedMutationCancerType = mutationCancerType;
+    this.selectedTissue = null;
+
+    if (!this.selectedMutationCancerType) {
+      // if user deactivated mutation color gradient, we reset all nodes in network
+      // reset each normal genes and cancer genes
+      const updatedNodes = [
+        ...this._resetNetworkColorGradient('Node'),
+        ...this._resetNetworkColorGradient('CancerNode')
+      ];
       this.nodeData.nodes.update(updatedNodes);
+
     } else {
+      // else gradient is activated, color nodes
+      const mutationsCounts = [];
+
+      // fetch all data
+      const response = await this.control.mutationScores(mutationCancerType, this.nodes, this.cancerNodes);
+      for (const node of [...response.nodes, ...response.cancerNodes]) {
+        if (node.nMutations !== null) {
+          mutationsCounts.push(node.mutationCounts);
+        }
+      }
+      const maxCount = Math.max(...mutationsCounts);
+      const minCount = Math.min(...mutationsCounts);
+
+      const updatedGenes = this._interpretGeneMutations(response.nodes, maxCount, minCount, 'Node');
+      const updatedCancerGenes = this._interpretGeneMutations(response.cancerNodes, maxCount, minCount, 'CancerNode');
+
+      const updatedNodes = [...updatedGenes, ...updatedCancerGenes];
+      this.nodeData.nodes.update(updatedNodes);
+    }
+  }
+
+  public selectTissue(tissue: Tissue | null) {
+    /**
+     * Handle tissue button and fetch data based on tissue + manage expression data
+     */
+    // remove potential mutation gradient selection
+    this.selectedMutationCancerType = null;
+    this.expressionExpanded = false;
+
+    if (!tissue) {
+      // if no tissue selected, we reset all nodes in network
+      this.selectedTissue = null;
+      // reset each normal genes and cancer genes
+      const updatedNodes = [
+        ...this._resetNetworkColorGradient('Node'),
+        ...this._resetNetworkColorGradient('CancerNode')
+      ];
+      this.nodeData.nodes.update(updatedNodes);
+
+    } else {
+      // ELSE tissue is selected, fetch data based on min expression value
       this.selectedTissue = tissue;
+
       const minExp = 0.3;
+
+      // fetch all data
       this.control.tissueExpressionGenes(tissue, this.nodes, this.cancerNodes)
         .subscribe((response) => {
           // response is object with key "cancerGenes" and "genes"
@@ -900,7 +893,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           this.nodeData.nodes.update(updatedNodes);
         });
     }
-    this.emitVisibleItems(true);
   }
 
   private _interpretTissueExpressionResponse(

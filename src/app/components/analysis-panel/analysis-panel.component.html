@@ -116,6 +116,10 @@
                   <i *ngIf="task.info.parameters.ignoreNonSeedBaits" class="fa fa-times"></i>
                 </td>
               </tr>
+              <tr *ngIf="task.info.parameters.mutationCancerType !== undefined">
+                <td>Mutation Cancer Type</td>
+                <td>{{task.info.parameters.mutationCancerType}}</td>
+              </tr>
 
 
               </tbody>

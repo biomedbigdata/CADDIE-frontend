@@ -110,11 +110,20 @@
 
         <div class="field">
           <label class="label">Mutation Weights</label>
-          <app-mutation-type-tile
-            [cancerTypes]="analysis.getMutationCancerTypes()"
-            [selectedCancerType]="selectedMutationCancerType"
-            (selectedCancerTypeChange)="setSelectedMutationCancerType($event)">
-          </app-mutation-type-tile>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getMutationCancerTypes()"
+            [selectedCategory]="selectedMutationCancerType"
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)">
+          </app-launch-analysis-category-dropdown>
+        </div>
+
+        <div class="field">
+          <label class="label">Expression Weights</label>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getTissues()"
+            [selectedCategory]="selectedTissue"
+            (selectedCategoryChange)="setSelectedTissue($event)">
+          </app-launch-analysis-category-dropdown>
         </div>
 
       </div>
@@ -189,11 +198,20 @@
 
         <div class="field">
           <label class="label">Mutation Weights</label>
-          <app-mutation-type-tile
-            [cancerTypes]="analysis.getMutationCancerTypes()"
-            [selectedCancerType]="selectedMutationCancerType"
-            (selectedCancerTypeChange)="setSelectedMutationCancerType($event)">
-          </app-mutation-type-tile>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getMutationCancerTypes()"
+            [selectedCategory]="selectedMutationCancerType"
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)">
+          </app-launch-analysis-category-dropdown>
+        </div>
+
+        <div class="field">
+          <label class="label">Expression Weights</label>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getTissues()"
+            [selectedCategory]="selectedTissue"
+            (selectedCategoryChange)="setSelectedTissue($event)">
+          </app-launch-analysis-category-dropdown>
         </div>
       </div>
 
@@ -301,11 +319,20 @@
 
         <div class="field">
           <label class="label">Mutation Weights</label>
-          <app-mutation-type-tile
-            [cancerTypes]="analysis.getMutationCancerTypes()"
-            [selectedCancerType]="selectedMutationCancerType"
-            (selectedCancerTypeChange)="setSelectedMutationCancerType($event)">
-          </app-mutation-type-tile>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getMutationCancerTypes()"
+            [selectedCategory]="selectedMutationCancerType"
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)">
+          </app-launch-analysis-category-dropdown>
+        </div>
+
+        <div class="field">
+          <label class="label">Expression Weights</label>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getTissues()"
+            [selectedCategory]="selectedTissue"
+            (selectedCategoryChange)="setSelectedTissue($event)">
+          </app-launch-analysis-category-dropdown>
         </div>
 
       </div>
@@ -361,11 +388,20 @@
 
         <div class="field">
           <label class="label">Mutation Weights</label>
-          <app-mutation-type-tile
-            [cancerTypes]="analysis.getMutationCancerTypes()"
-            [selectedCancerType]="selectedMutationCancerType"
-            (selectedCancerTypeChange)="setSelectedMutationCancerType($event)">
-          </app-mutation-type-tile>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getMutationCancerTypes()"
+            [selectedCategory]="selectedMutationCancerType"
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)">
+          </app-launch-analysis-category-dropdown>
+        </div>
+
+        <div class="field">
+          <label class="label">Expression Weights</label>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getTissues()"
+            [selectedCategory]="selectedTissue"
+            (selectedCategoryChange)="setSelectedTissue($event)">
+          </app-launch-analysis-category-dropdown>
         </div>
       </div>
 
@@ -482,11 +518,20 @@
         <div class="field">
           <label class="label">Mutation Weights</label>
 
-          <app-mutation-type-tile
-            [cancerTypes]="analysis.getMutationCancerTypes()"
-            [selectedCancerType]="selectedMutationCancerType"
-            (selectedCancerTypeChange)="setSelectedMutationCancerType($event)">
-          </app-mutation-type-tile>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getMutationCancerTypes()"
+            [selectedCategory]="selectedMutationCancerType"
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)">
+          </app-launch-analysis-category-dropdown>
+        </div>
+
+        <div class="field">
+          <label class="label">Expression Weights</label>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getTissues()"
+            [selectedCategory]="selectedTissue"
+            (selectedCategoryChange)="setSelectedTissue($event)">
+          </app-launch-analysis-category-dropdown>
         </div>
 
       </div>

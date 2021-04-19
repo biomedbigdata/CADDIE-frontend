@@ -116,9 +116,13 @@
                   <i *ngIf="task.info.parameters.ignoreNonSeedBaits" class="fa fa-times"></i>
                 </td>
               </tr>
-              <tr *ngIf="task.info.parameters.mutationCancerType !== undefined">
-                <td>Mutation Cancer Type</td>
+              <tr *ngIf="task.info.parameters.mutationCancerType !== null && task.info.parameters.mutationCancerType !== undefined">
+                <td>Mutation Cancer Type for Mutation Weights</td>
                 <td>{{task.info.parameters.mutationCancerType}}</td>
+              </tr>
+              <tr *ngIf="task.info.parameters.expressionTissue !== null && task.info.parameters.expressionTissue !== undefined">
+                <td>Expression Tissue for Expression Weights</td>
+                <td>{{task.info.parameters.expressionTissue}}</td>
               </tr>
 
 
@@ -279,6 +283,14 @@
           ></app-category-selector>
 
           <app-category-selector
+            [expanded]="mutationExpanded"
+            [selectedElement]="selectedMutationCancerType"
+            [elements]="analysis.getMutationCancerTypes()"
+            (callbackFun)="colorMutationGradient($event)"
+            label="Mutation"
+          ></app-category-selector>
+
+          <app-category-selector
             *ngIf="task.info.target === 'drug-target'"
             [expanded]="drugStatusExpanded"
             [selectedElement]="selectedDrugStatus"
@@ -286,11 +298,6 @@
             (callbackFun)="toggleDrugs($event)"
             label="Drugs"
           ></app-category-selector>
-
-          <app-toggle class="footer-buttons" textOn="Mutation Gradient On" textOff="Off"
-                      tooltipOn="Colors the nodes based on the amount of mutations."
-                      tooltipOff="Resets the node colors."
-                      [value]="mutationGradient" (valueChange)="colorMutationGradient($event)"></app-toggle>
 
           <app-toggle class="footer-buttons" textOn="Animation On" textOff="Off"
                       tooltipOn="Enable the network animation." tooltipOff="Disable the network animation and freeze nodes."

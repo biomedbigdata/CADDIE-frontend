@@ -6,7 +6,7 @@ import {
   Node,
   CancerNode,
   Dataset,
-  Tissue,
+  ExpressionCancerType,
   CancerType,
   DrugStatus,
   MutationCancerType
@@ -67,7 +67,7 @@ export class AnalysisService {
 
   private launchingQuick = false;
 
-  private tissues: Tissue[] = [];
+  private expressionCancerTypes: ExpressionCancerType[] = [];
   private mutationCancerTypes: MutationCancerType[] = [];
 
   private drugStatus: DrugStatus[] = [];
@@ -84,8 +84,8 @@ export class AnalysisService {
 
     this.startWatching();
 
-    this.control.tissues().subscribe((tissues) => {
-      this.tissues = tissues;
+    this.control.expressionCancerTypes().subscribe((expressionCancerTypes) => {
+      this.expressionCancerTypes = expressionCancerTypes;
     });
 
     this.control.mutationCancerTypes().subscribe((mutationCancerTypes) => {
@@ -143,14 +143,14 @@ export class AnalysisService {
     });
   }
 
-  public getTissues(): Tissue[] {
+  public getExpressionCancerTypes(): ExpressionCancerType[] {
     /**
-     * return all tissues saved in this object
+     * return all expressionCancerTypes saved in this object
      */
-    return this.tissues;
+    return this.expressionCancerTypes;
   }
 
-  public getMutationCancerTypes(): Tissue[] {
+  public getMutationCancerTypes(): ExpressionCancerType[] {
     /**
      * return all MutationCancerType saved in this object
      */

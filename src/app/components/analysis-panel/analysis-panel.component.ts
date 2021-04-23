@@ -26,7 +26,7 @@ import {
   getNodeIdsFromEdgeGene,
   getCancerDriverGeneNodeId,
   getGeneNodeId,
-  Tissue,
+  ExpressionCancerType,
   Scored,
   Seeded,
   Baited,
@@ -55,7 +55,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   @Output() tokenChange = new EventEmitter<string | null>();
   @Output() showDetailsChange = new EventEmitter<Wrapper>();
-  @Output() visibleItems = new EventEmitter<[any[], [Node[], CancerNode[], Tissue]]>();
+  @Output() visibleItems = new EventEmitter<[any[], [Node[], CancerNode[], ExpressionCancerType]]>();
   @Output() visibleTab = new EventEmitter<string>();
 
   public task: Task | null = null;
@@ -81,7 +81,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   public tableHasScores = false;
 
   public expressionExpanded = false;
-  public selectedTissue: Tissue | null = null;
+  public selectedExpressionCancerType: ExpressionCancerType | null = null;
 
   public mutationExpanded = false;
   public selectedMutationCancerType: MutationCancerType | null = null;
@@ -362,7 +362,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public emitVisibleItems(on: boolean) {
     if (on) {
-      this.visibleItems.emit([this.nodeData.nodes, [this.nodes, this.cancerNodes, this.selectedTissue]]);
+      this.visibleItems.emit([this.nodeData.nodes, [this.nodes, this.cancerNodes, this.selectedExpressionCancerType]]);
     } else {
       this.visibleItems.emit(null);
     }
@@ -634,7 +634,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   private _resetNetworkColorGradient(nodeType: ('Node' | 'CancerNode')): Node[] {
     /**
-     * resets the color gradient from tissue expression to normal network colors
+     * resets the color gradient from expressionCancerType expression to normal network colors
      * We have to differentiate between Nodes and CancerNodes to not mix up the types in the network
      */
     const updatedNodes = [];
@@ -815,9 +815,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
      * Handle mutation button and colors the node based on nMutations
      */
 
-    // remove potential tissue selection
+    // remove potential expressionCancerType selection
     this.selectedMutationCancerType = mutationCancerType;
-    this.selectedTissue = null;
+    this.selectedExpressionCancerType = null;
 
     if (!this.selectedMutationCancerType) {
       // if user deactivated mutation color gradient, we reset all nodes in network
@@ -850,17 +850,17 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     }
   }
 
-  public selectTissue(tissue: Tissue | null) {
+  public selectExpressionCancerType(expressionCancerType: ExpressionCancerType | null) {
     /**
-     * Handle tissue button and fetch data based on tissue + manage expression data
+     * Handle expressionCancerType button and fetch data based on expressionCancerType + manage expression data
      */
     // remove potential mutation gradient selection
     this.selectedMutationCancerType = null;
     this.expressionExpanded = false;
 
-    if (!tissue) {
-      // if no tissue selected, we reset all nodes in network
-      this.selectedTissue = null;
+    if (!expressionCancerType) {
+      // if no expressionCancerType selected, we reset all nodes in network
+      this.selectedExpressionCancerType = null;
       // reset each normal genes and cancer genes
       const updatedNodes = [
         ...this._resetNetworkColorGradient('Node'),
@@ -869,23 +869,23 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       this.nodeData.nodes.update(updatedNodes);
 
     } else {
-      // ELSE tissue is selected, fetch data based on min expression value
-      this.selectedTissue = tissue;
+      // ELSE expressionCancerType is selected, fetch data based on min expression value
+      this.selectedExpressionCancerType = expressionCancerType;
 
       const minExp = 0.3;
 
       // fetch all data
-      this.control.tissueExpressionGenes(tissue, this.nodes, this.cancerNodes)
+      this.control.expressionCancerTypeExpressionGenes(expressionCancerType, this.nodes, this.cancerNodes)
         .subscribe((response) => {
           // response is object with key "cancerGenes" and "genes"
           // each which is list of objects with "gene" and "level" (expression value)
           const maxExpr = Math.max(...[...response.genes, ...response.cancerGenes].map(lvl => lvl.level));
 
           // fetch each normal genes and cancer genes
-          const updatedGenes = this._interpretTissueExpressionResponse(
+          const updatedGenes = this._interpretExpressionCancerTypeExpressionResponse(
             response.genes, maxExpr, minExp, 'Node'
           );
-          const updatedCancerGenes = this._interpretTissueExpressionResponse(
+          const updatedCancerGenes = this._interpretExpressionCancerTypeExpressionResponse(
             response.cancerGenes, maxExpr, minExp, 'CancerNode'
           );
 
@@ -895,9 +895,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     }
   }
 
-  private _interpretTissueExpressionResponse(
+  private _interpretExpressionCancerTypeExpressionResponse(
     /**
-     * Reads the result of the "TissueExpressionView" and converts it into input for the network
+     * Reads the result of the "ExpressionCancerTypeExpressionView" and converts it into input for the network
      * Main function is to calculate the color gradient based on expression value
      * We have to differentiate between Node and CancerNode to not mix up the types in the network
      */

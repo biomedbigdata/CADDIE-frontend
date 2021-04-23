@@ -18,9 +18,9 @@ export interface Node {
   mutationScore: number;
 }
 
-export interface Tissue {
+export interface ExpressionCancerType {
   /**
-   * Interface for tissue
+   * Interface for expressionCancerType
    */
   backendId: number;
   name: string;

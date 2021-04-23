@@ -20,7 +20,7 @@
   </app-custom-genes>
 
   <app-add-expressed-genes [(show)]="showThresholdDialog"
-                           [selectedTissue]="currentViewSelectedTissue"
+                           [selectedExpressionCancerType]="currentViewSelectedExpressionCancerType"
                            [visibleNodes]="currentViewNodes"
                            [currentViewGenes]="currentViewGenes"
                            [currentViewCancerGenes]="currentViewCancerGenes"
@@ -114,16 +114,16 @@
               <!-- END Legend -->
 
               <!-- START Gradient Legend -->
-              <div class="legend main gradient" *ngIf="selectedMutationCancerType || selectedTissue">
+              <div class="legend main gradient" *ngIf="selectedMutationCancerType || selectedExpressionCancerType">
                 <div class="color-gradient-gene bar"></div>
                 <div class="color-gradient-cancer-gene bar"></div>
                 <span class="annotation-max">High <br>
                   <span *ngIf="selectedMutationCancerType">Mutation</span>
-                  <span *ngIf="selectedTissue">Expression</span>
+                  <span *ngIf="selectedExpressionCancerType">Expression</span>
                 </span>
                 <span class="annotation-min">Low <br>
                   <span *ngIf="selectedMutationCancerType">Mutation</span>
-                  <span *ngIf="selectedTissue">Expression</span>
+                  <span *ngIf="selectedExpressionCancerType">Expression</span>
                 </span>
                 <div>
                   <div class="box-unknown has-background-grey-light"></div>
@@ -152,10 +152,10 @@
 
                 <app-category-selector
                   [expanded]="expressionExpanded"
-                  [selectedElement]="selectedTissue"
-                  [elements]="analysis.getTissues()"
-                  (callbackFun)="selectTissue($event)"
-                  label="Tissue"
+                  [selectedElement]="selectedExpressionCancerType"
+                  [elements]="analysis.getExpressionCancerTypes()"
+                  (callbackFun)="selectExpressionCancerType($event)"
+                  label="ExpressionCancerType"
                   class="footer-buttons is-inline-block"
                 ></app-category-selector>
 
@@ -762,12 +762,12 @@
             </a>
             <a (click)="showThresholdDialog = true"
                class="card-footer-item has-text-primary"
-               data-tooltip="Add genes expressed in the tissue.">
+               data-tooltip="Add genes expressed in the expressionCancerType.">
             <span class="icon">
               <i class="fa fa-angle-double-up"></i>
             </span>
               <span>
-              Tissue genes
+              ExpressionCancerType genes
             </span>
             </a>
           </footer>

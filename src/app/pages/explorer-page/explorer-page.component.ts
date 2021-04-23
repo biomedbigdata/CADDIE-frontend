@@ -15,7 +15,7 @@ import {
   getNodeIdsFromGeneGeneInteraction,
   getCancerDriverGeneNodeId,
   getGeneNodeId,
-  Tissue,
+  ExpressionCancerType,
   CancerType,
   Dataset,
   DiseaseGeneInteraction,
@@ -116,12 +116,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   public currentViewGenes: Node[];
   public currentViewCancerGenes: CancerNode[];
-  public currentViewSelectedTissue: Tissue | null = null;
+  public currentViewSelectedExpressionCancerType: ExpressionCancerType | null = null;
   public currentViewNodes: any[];
   public currentViewEdges: Set<string>;
 
   public expressionExpanded = false;
-  public selectedTissue: Tissue | null = null;
+  public selectedExpressionCancerType: ExpressionCancerType | null = null;
 
   public mutationCancerTypesExpanded = false;
   public selectedMutationCancerType: MutationCancerType | null = null;
@@ -821,10 +821,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.visibleCancerNodeCount += cancerNodeItems.length;
     this.visibleNodeCount += nodeItems.length;
 
-    // check if tissue is selected, if yes, refresh so new node gets color gradient
+    // check if expressionCancerType is selected, if yes, refresh so new node gets color gradient
     // TODO just do this for new node
-    if (this.selectedTissue) {
-      this.selectTissue(this.selectedTissue);
+    if (this.selectedExpressionCancerType) {
+      this.selectExpressionCancerType(this.selectedExpressionCancerType);
     }
 
     toast({
@@ -949,7 +949,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  analysisWindowChanged($event: [any[], [Node[], CancerNode[], Tissue]]) {
+  analysisWindowChanged($event: [any[], [Node[], CancerNode[], ExpressionCancerType]]) {
     /**
      * Changes view to analysis window if event is given, else uses current data
      */
@@ -958,12 +958,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.currentViewNodes = $event[0];
       this.currentViewGenes = $event[1][0];
       this.currentViewCancerGenes = $event[1][1];
-      this.currentViewSelectedTissue = $event[1][2];
+      this.currentViewSelectedExpressionCancerType = $event[1][2];
     } else {
       this.currentViewNodes = this.nodeData.nodes;
       this.currentViewGenes = this.nodes;
       this.currentViewCancerGenes = this.cancerNodes;
-      this.currentViewSelectedTissue = this.selectedTissue;
+      this.currentViewSelectedExpressionCancerType = this.selectedExpressionCancerType;
     }
   }
 
@@ -1015,9 +1015,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Handle mutation button and colors the node based on nMutations
      */
 
-    // remove potential tissue selection
+    // remove potential expressionCancerType selection
     this.selectedMutationCancerType = mutationCancerType;
-    this.selectedTissue = null;
+    this.selectedExpressionCancerType = null;
 
     if (!this.selectedMutationCancerType) {
       // if user deactivated mutation color gradient, we reset all nodes in network
@@ -1050,17 +1050,17 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public selectTissue(tissue: Tissue | null) {
+  public selectExpressionCancerType(expressionCancerType: ExpressionCancerType | null) {
     /**
-     * Handle tissue button and fetch data based on tissue + manage expression data
+     * Handle expressionCancerType button and fetch data based on expressionCancerType + manage expression data
      */
     // remove potential mutation gradient selection
     this.selectedMutationCancerType = null;
     this.expressionExpanded = false;
 
-    if (!tissue) {
-      // if no tissue selected, we reset all nodes in network
-      this.selectedTissue = null;
+    if (!expressionCancerType) {
+      // if no expressionCancerType selected, we reset all nodes in network
+      this.selectedExpressionCancerType = null;
       // reset each normal genes and cancer genes
       const updatedNodes = [
         ...this._resetNetworkColorGradient('Node'),
@@ -1069,23 +1069,23 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.nodeData.nodes.update(updatedNodes);
 
     } else {
-      // ELSE tissue is selected, fetch data based on min expression value
-      this.selectedTissue = tissue;
+      // ELSE expressionCancerType is selected, fetch data based on min expression value
+      this.selectedExpressionCancerType = expressionCancerType;
 
       const minExp = 0.3;
 
       // fetch all data
-      this.control.tissueExpressionGenes(tissue, this.nodes, this.cancerNodes)
+      this.control.expressionCancerTypeExpressionGenes(expressionCancerType, this.nodes, this.cancerNodes)
         .subscribe((response) => {
           // response is object with key "cancerGenes" and "genes"
           // each which is list of objects with "gene" and "level" (expression value)
           const maxExpr = Math.max(...[...response.genes, ...response.cancerGenes].map(lvl => lvl.level));
 
           // fetch each normal genes and cancer genes
-          const updatedGenes = this._interpretTissueExpressionResponse(
+          const updatedGenes = this._interpretExpressionCancerTypeExpressionResponse(
             response.genes, maxExpr, minExp, 'Node'
           );
-          const updatedCancerGenes = this._interpretTissueExpressionResponse(
+          const updatedCancerGenes = this._interpretExpressionCancerTypeExpressionResponse(
             response.cancerGenes, maxExpr, minExp, 'CancerNode'
           );
 
@@ -1094,12 +1094,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         });
     }
 
-    this.currentViewSelectedTissue = this.selectedTissue;
+    this.currentViewSelectedExpressionCancerType = this.selectedExpressionCancerType;
   }
 
   private _resetNetworkColorGradient(nodeType: ('Node' | 'CancerNode')): Node[] {
     /**
-     * resets the color gradient from tissue expression to normal network colors
+     * resets the color gradient from expressionCancerType expression to normal network colors
      * We have to differentiate between Nodes and CancerNodes to not mix up the types in the network
      */
 
@@ -1185,9 +1185,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     return updatedNodes;
   }
 
-  private _interpretTissueExpressionResponse(
+  private _interpretExpressionCancerTypeExpressionResponse(
     /**
-     * Reads the result of the "TissueExpressionView" and converts it into input for the network
+     * Reads the result of the "ExpressionCancerTypeExpressionView" and converts it into input for the network
      * Main function is to calculate the color gradient based on expression value
      * We have to differentiate between Node and CancerNode to not mix up the types in the network
      */

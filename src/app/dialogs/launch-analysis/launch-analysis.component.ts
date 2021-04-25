@@ -133,6 +133,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public close() {
     this.show = false;
     this.selectedMutationCancerType = null;
+    this.selectedExpressionCancerType = null;
     this.showChange.emit(this.show);
   }
 
@@ -169,7 +170,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.onlyAtcLDrugs = this.includeAtcLDrugs;
     parameters.filterPaths = this.filterPaths;
     parameters.mutationCancerType = this.selectedMutationCancerType ? this.selectedMutationCancerType.abbreviation : null;
-    parameters.expressionExpressionCancerType = this.selectedExpressionCancerType ? this.selectedExpressionCancerType.name : null;
+    parameters.expressionCancerType = this.selectedExpressionCancerType ? this.selectedExpressionCancerType.name : null;
 
     if (this.algorithm === 'trustrank') {
       parameters.damping_factor = this.trustrankDampingFactor;

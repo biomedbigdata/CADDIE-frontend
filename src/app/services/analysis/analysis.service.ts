@@ -85,6 +85,11 @@ export class AnalysisService {
     this.startWatching();
 
     this.control.expressionCancerTypes().subscribe((expressionCancerTypes) => {
+
+      expressionCancerTypes.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+
       this.expressionCancerTypes = expressionCancerTypes;
     });
 

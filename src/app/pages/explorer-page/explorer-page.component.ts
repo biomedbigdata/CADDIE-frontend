@@ -1055,6 +1055,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Handle expressionCancerType button and fetch data based on expressionCancerType + manage expression data
      */
     // remove potential mutation gradient selection
+
     this.selectedMutationCancerType = null;
     this.expressionExpanded = false;
 
@@ -1073,7 +1074,6 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.selectedExpressionCancerType = expressionCancerType;
 
       const minExp = 0.3;
-
       // fetch all data
       this.control.expressionCancerTypeExpressionGenes(expressionCancerType, this.nodes, this.cancerNodes)
         .subscribe((response) => {
@@ -1213,7 +1213,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         continue;
       }
       // calculate color gradient
-      const gradient = lvl.level !== null ? (Math.pow(lvl.level / maxExpr, 1 / 3) * (1 - minExp) + minExp) : -1;
+      const gradient = lvl.level !== null ? ( Math.pow( lvl.level / maxExpr, 1 / 3 ) ) : -1;
       const pos = this.network.getPositions([item.nodeId]);
       node.x = pos[item.nodeId].x;
       node.y = pos[item.nodeId].y;

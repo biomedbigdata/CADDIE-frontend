@@ -326,14 +326,16 @@ export class ControlService {
     }).toPromise();
   }
 
-  public expressionCancerTypeExpressionGenes(expressionCancerType: ExpressionCancerType, genes: Node[], cancerGenes: CancerNode[]): Observable<any> {
+  public expressionCancerTypeExpressionGenes(
+    expressionCancerType: ExpressionCancerType, genes: Node[], cancerGenes: CancerNode[]
+    ): Observable<any> {
     /**
      * Returns the expression in the given expressionCancerType for given nodes and cancerNodes
      */
     const genesBackendIds = genes.map( (gene) => gene.backendId).join(',');
     const cancerGenesBackendIds = cancerGenes.map( (gene) => gene.backendId).join(',');
     const params = new HttpParams()
-      .set('expressionCancerType', `${expressionCancerType.backendId}`)
+      .set('cancerType', `${expressionCancerType.backendId}`)
       .set('genes', JSON.stringify(genesBackendIds))
       .set('cancerGenes', JSON.stringify(cancerGenesBackendIds));
     return this.http.get(`${environment.backend}gene_expression/`, {params});
@@ -358,7 +360,9 @@ export class ControlService {
       ).toPromise();
     }
 
-  public expressionCancerTypeExpression(expressionCancerType: ExpressionCancerType, dataset: Dataset, cancerTypes: CancerType[]): Observable<any> {
+  public expressionCancerTypeExpression(
+    expressionCancerType: ExpressionCancerType, dataset: Dataset, cancerTypes: CancerType[]
+    ): Observable<any> {
     /**
      * Fetches genes with expression levels for input data
      * returns list of objects with key "gene" and gene-information as well as

@@ -9,7 +9,8 @@ import {
   ExpressionCancerType,
   CancerType,
   DrugStatus,
-  MutationCancerType
+  MutationCancerType,
+  Tissue
 } from '../../interfaces';
 import {Subject} from 'rxjs';
 import {toast} from 'bulma-toast';
@@ -67,6 +68,7 @@ export class AnalysisService {
 
   private launchingQuick = false;
 
+  private tissues: Tissue[] = [];
   private expressionCancerTypes: ExpressionCancerType[] = [];
   private mutationCancerTypes: MutationCancerType[] = [];
 
@@ -83,6 +85,11 @@ export class AnalysisService {
     }
 
     this.startWatching();
+
+    this.control.tissues().subscribe((tissues) => {
+      this.tissues = tissues;
+    });
+
 
     this.control.expressionCancerTypes().subscribe((expressionCancerTypes) => {
 
@@ -146,6 +153,13 @@ export class AnalysisService {
     return await this.control.getTasks(this.tokens).catch((e) => {
       clearInterval(this.intervalId);
     });
+  }
+
+  public getTissues(): Tissue[] {
+    /**
+     * return all Tissues saved in this object
+     */
+    return this.tissues;
   }
 
   public getExpressionCancerTypes(): ExpressionCancerType[] {

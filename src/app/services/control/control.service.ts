@@ -2,7 +2,17 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, MutationCancerType, Dataset, CancerNode, Node, ExpressionCancerType, Disease, DrugStatus} from '../../interfaces';
+import {
+  CancerType,
+  MutationCancerType,
+  Tissue,
+  Dataset,
+  CancerNode,
+  Node,
+  ExpressionCancerType,
+  Disease,
+  DrugStatus
+} from '../../interfaces';
 import {AlgorithmType, QuickAlgorithmType} from '../analysis/analysis.service';
 import {Observable} from 'rxjs';
 
@@ -359,6 +369,26 @@ export class ControlService {
       }
       ).toPromise();
     }
+
+  public tissues(): Observable<any> {
+    /**
+     * Lists all available tissues with id and name
+     */
+    return this.http.get<Tissue[]>(`${environment.backend}tissues/`);
+  }
+
+  public tissueExpressionGenes(tissue: Tissue, genes: Node[], cancerGenes: CancerNode[]): Observable<any> {
+    /**
+     * Returns the expression in the given tissue for given nodes and cancerNodes
+     */
+    const genesBackendIds = genes.map( (gene) => gene.backendId).join(',');
+    const cancerGenesBackendIds = cancerGenes.map( (gene) => gene.backendId).join(',');
+    const params = new HttpParams()
+      .set('tissue', `${tissue.backendId}`)
+      .set('genes', JSON.stringify(genesBackendIds))
+      .set('cancerGenes', JSON.stringify(cancerGenesBackendIds));
+    return this.http.get(`${environment.backend}tissue_expression/`, {params});
+  }
 
   public expressionCancerTypeExpression(
     expressionCancerType: ExpressionCancerType, dataset: Dataset, cancerTypes: CancerType[]

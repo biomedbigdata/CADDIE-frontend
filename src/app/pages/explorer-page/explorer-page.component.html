@@ -152,9 +152,18 @@
 
                 <app-category-selector
                   [expanded]="expressionExpanded"
+                  [selectedElement]="selectedTissue"
+                  [elements]="analysis.getTissues()"
+                  (callbackFun)="selectTissue($event)"
+                  label="Tissue"
+                  class="footer-buttons is-inline-block"
+                ></app-category-selector>
+
+                <app-category-selector
+                  [expanded]="expressionExpanded"
                   [selectedElement]="selectedExpressionCancerType"
-                  [elements]="analysis.getExpressionCancerTypes()"
                   (callbackFun)="selectExpressionCancerType($event)"
+                  [elements]="analysis.getExpressionCancerTypes()"
                   label="Expression"
                   class="footer-buttons is-inline-block"
                 ></app-category-selector>

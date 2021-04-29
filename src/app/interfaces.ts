@@ -26,6 +26,14 @@ export interface ExpressionCancerType {
   name: string;
 }
 
+export interface Tissue {
+  /**
+   * Interface for tissue
+   */
+  backendId: number;
+  name: string;
+}
+
 export interface MutationCancerType {
   /**
    * Interface for MutationCancerType

@@ -7,6 +7,7 @@
 
 $family-sans-serif: "Varela Round", sans-serif;
 $primary: #408B25;
+$secondary: #5b005b;
 $success: #48C774;
 $danger: #EF476F;
 $link: $primary;
@@ -28,6 +29,18 @@ html {
 body {
   overflow: hidden;
   height: 100%;
+}
+
+button.is-example {
+    background-color: $secondary;
+    color: white;
+    &:hover{
+      color: white;
+    }
+}
+
+.example {
+  border-color: $secondary !important;
 }
 
 .navbar-container {

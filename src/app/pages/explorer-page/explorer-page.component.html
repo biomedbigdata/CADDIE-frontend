@@ -577,66 +577,102 @@
             <div class="field">
               <div class="control">
 
-                <div class="column has-text-centered">
-                  <div class="analysis-option has-text-weight-bold" [ngClass]="{'selected': analysis.getCount() > 0 }">
-                    <span>1. Select Genes
-                      <i class="fa fa-check" *ngIf="analysis.getCount() > 0"></i>
-                    </span>
+                <div class="columns mb-0">
+                  <div class="column is-half has-text-centered">
+                    <div class="analysis-option has-text-weight-bold example">
+                      <span>Quick Start</span>
+                    </div>
+                  </div>
+                  <div class="column is-half has-text-centered">
+                    <div class="analysis-option has-text-weight-bold" [ngClass]="{'selected': analysis.getCount() > 0 }">
+                      <span>Select Genes
+                        <i class="fa fa-check" *ngIf="analysis.getCount() > 0"></i>
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <button (click)="analysisDialogTarget = 'drug-target'; showAnalysisDialog = true; closeSummary();"
-                        class="button is-primary is-fullwidth has-tooltip"
-                        data-tooltip="Find drug targets for the selected genes."
-                        [disabled]="analysis.getCount() === 0">
-                <span class="icon">
-                  <i class="fa fa-crosshairs"></i>
-                </span>
-                  <span>
-                  Find Drug Targets
-                </span>
-                </button>
+                <div class="columns mb-0">
+                  <div class="column is-half has-text-centered">
+                    <button (click)="exampleSearch('drug-target'); closeSummary();"
+                            class="button is-example is-fullwidth has-tooltip"
+                            data-tooltip="Find drug targets for the all cancer driver genes.">
+                    <span>
+                      Quick Target Search
+                    </span>
+                    </button>
+                  </div>
+                  <div class="column is-half has-text-centered">
+                    <button (click)="analysisDialogTarget = 'drug-target'; showAnalysisDialog = true; closeSummary();"
+                            class="button is-primary is-fullwidth has-tooltip"
+                            data-tooltip="Find drug targets for the selected genes."
+                            [disabled]="analysis.getCount() === 0">
+                    <span class="icon">
+                      <i class="fa fa-crosshairs"></i>
+                    </span>
+                      <span>
+                      Find Drug Targets
+                    </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="columns mb-0">
+                  <div class="column is-half has-text-centered">
+                    <button (click)="exampleSearch('drug'); closeSummary();"
+                    class="button is-example is-fullwidth has-tooltip"
+                    data-tooltip="Find drugs for the cancer driver genes.">
+                      <span>
+                        Quick Drug Search
+                      </span>
+                    </button>
+                  </div>
+                  <div class="column is-half has-text-centered">
+                    <button (click)="analysisDialogTarget = 'drug'; showAnalysisDialog = true; closeSummary();"
+                    class="button is-primary is-fullwidth has-tooltip"
+                    data-tooltip="Find drugs for the selected genes."
+                    [disabled]="analysis.getCount() === 0">
+                      <span class="icon">
+                        <i class="fa fa-capsules"></i>
+                      </span>
+                        <span>
+                        Find Drugs
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="columns">
+                  <div class="column is-half has-text-centered">
+
+                  </div>
+                  <div class="column is-half has-text-centered">
+                    <a *ngIf="analysis.getCount() > 0" [href]="gProfilerLink()" target="_blank"
+                      class="button is-primary is-fullwidth has-tooltip"
+                      data-tooltip="Use enrichment analysis via g:Profiler (external).">
+                   <span class="icon">
+                     <i class="fa fa-external-link-alt"></i>
+                   </span>
+                     <span>
+                     Enrichment Analysis
+                   </span>
+                   </a>
+                   <a *ngIf="analysis.getCount() === 0" disabled
+                      class="button is-primary is-fullwidth has-tooltip"
+                      data-tooltip="Use enrichment analysis via g:Profiler (external).">
+                   <span class="icon">
+                     <i class="fa fa-external-link-alt"></i>
+                   </span>
+                     <span>
+                     Enrichment Analysis
+                   </span>
+                   </a>
+                  </div>
+                </div>
+
               </div>
             </div>
-            <div class="field">
-              <div class="control">
-                <button (click)="analysisDialogTarget = 'drug'; showAnalysisDialog = true; closeSummary();"
-                        class="button is-primary is-fullwidth has-tooltip"
-                        data-tooltip="Find drugs for the selected genes."
-                        [disabled]="analysis.getCount() === 0">
-                <span class="icon">
-                  <i class="fa fa-capsules"></i>
-                </span>
-                  <span>
-                  Find Drugs
-                </span>
-                </button>
-              </div>
-            </div>
-            <div class="field">
-              <div class="control">
-                <a *ngIf="analysis.getCount() > 0" [href]="gProfilerLink()" target="_blank"
-                   class="button is-primary is-fullwidth has-tooltip"
-                   data-tooltip="Use enrichment analysis via g:Profiler (external).">
-                <span class="icon">
-                  <i class="fa fa-external-link-alt"></i>
-                </span>
-                  <span>
-                  Enrichment Analysis
-                </span>
-                </a>
-                <a *ngIf="analysis.getCount() === 0" disabled
-                   class="button is-primary is-fullwidth has-tooltip"
-                   data-tooltip="Use enrichment analysis via g:Profiler (external).">
-                <span class="icon">
-                  <i class="fa fa-external-link-alt"></i>
-                </span>
-                  <span>
-                  Enrichment Analysis
-                </span>
-                </a>
-              </div>
-            </div>
+            
           </div>
         </div>
       </div>

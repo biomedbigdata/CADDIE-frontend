@@ -1431,7 +1431,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         continue;
       }
       // calculate color gradient
-      const gradient = lvl.level !== null ? (Math.pow(lvl.level / maxExpr, 1 / 3) * (1 - minExp) + minExp) : -1;
+      const gradient = lvl.level !== null ? (Math.pow(lvl.level / maxExpr, 1 / 5) * (1 - minExp) + minExp) : -1;
       const pos = this.network.getPositions([item.nodeId]);
       node.x = pos[item.nodeId].x;
       node.y = pos[item.nodeId].y;
@@ -1452,6 +1452,51 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     return updatedNodes;
   }
 
+  public exampleSearch(target: 'drug' | 'drug-target') {
+    console.log(this.cancerNodes)
 
+    const parameters: any = {
+      seeds: this.cancerNodes.map((item) => item.graphId),
+    };
+
+    // new input from caddie
+    parameters.cancer_dataset = this.selectedDataset.name;
+    parameters.cancer_dataset_id = this.selectedDataset.backendId;
+    parameters.gene_interaction_dataset = this.selectedInteractionGeneDataset.name;
+    parameters.gene_interaction_dataset_id = this.selectedInteractionGeneDataset.backendId;
+    parameters.drug_interaction_dataset = this.selectedInteractionDrugDataset.name;
+    parameters.drug_interaction_dataset_id = this.selectedInteractionDrugDataset.backendId;
+    parameters.cancer_types = this.selectedCancerTypeItems.map( (cancerType) => cancerType.backendId );
+    parameters.includeNutraceuticalDrugs = true;
+    parameters.onlyAtcLDrugs = false;
+    parameters.filterPaths = true;
+    parameters.mutationCancerType = this.selectedMutationCancerType ? this.selectedMutationCancerType.abbreviation : null;
+    parameters.expressionCancerType = this.selectedExpressionCancerType ? this.selectedExpressionCancerType.name : null;
+
+    if (target === 'drug-target') {
+      // use multi-steiner
+      parameters.num_trees = 5;
+      parameters.tolerance = 10;
+      parameters.ignore_non_seed_baits = true;
+      parameters.max_deg = 6;
+      parameters.hub_penalty = 0;
+      parameters.hub_penalty
+      this.analysis.startQuickAnalysis('exampledrugtarget', target, parameters);
+
+    } else if (target === 'drug') {
+      // trustrank
+      parameters.damping_factor = 0.5;
+      parameters.include_indirect_drugs = false;
+      parameters.include_non_approved_drugs = false;
+      parameters.ignore_non_seed_baits = false;
+      // parameters.max_deg = 0;
+      parameters.hub_penalty = 0;
+      parameters.result_size = 20;
+      this.analysis.startQuickAnalysis('exampledrug', target, parameters);
+
+    }
+
+
+  }
 
 }

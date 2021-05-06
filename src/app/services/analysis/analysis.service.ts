@@ -18,7 +18,7 @@ import {Injectable} from '@angular/core';
 import {ControlService} from '../control/control.service';
 
 export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'harmonic' | 'degree' | 'proximity' | 'betweenness';
-export type QuickAlgorithmType = 'quick' | 'super';
+export type QuickAlgorithmType = 'quick' | 'super' | 'exampledrugtarget' | 'exampledrug';
 
 export const algorithmNames = {
   trustrank: 'TrustRank',
@@ -30,6 +30,8 @@ export const algorithmNames = {
   betweenness: 'Betweenness Centrality',
   quick: 'Simple',
   super: 'Quick-Start',
+  exampledrugtarget: 'Quick Target Search',
+  exampledrug: 'Quick Drug Search',
 };
 
 export interface Algorithm {
@@ -449,14 +451,10 @@ export class AnalysisService {
     });
   }
 
-  async startQuickAnalysis(
-    isSuper: boolean,
-    dataset: Dataset,
-    geneInteractionDataset: Dataset,
-    drugInteractionDataset: Dataset,
-    cancerTypes: CancerType[]) {
+  async startQuickAnalysis(algorithm: 'exampledrugtarget' | 'exampledrug', target: 'drug' | 'drug-target', parameters) {
     /**
-     * Starts quick analysis
+     * Starts analysis, QUICK
+     * accepts algorithm with parameters
      */
     // break if maximum number of tasks exceeded
     if (!this.canLaunchTask()) {
@@ -473,22 +471,9 @@ export class AnalysisService {
     }
 
     this.launchingQuick = true;
-
-    // parse cancer type items to backendId-string-format '1,6,9,..'
-    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
-    const resp = await this.control.postTask(
-      isSuper ? 'super' : 'quick',
-      'drug',
-      {
-        cancer_dataset: dataset.name,
-        gene_interaction_dataset: geneInteractionDataset.name,
-        drug_interaction_dataset: drugInteractionDataset.name,
-        cancer_types: cancerTypesIds,
-        bait_datasets: dataset.data,
-        seeds: isSuper ? [] : this.getSelection().map((i) => 'g' + i.data.backendId),
-      }
-    );
+    const resp = await this.control.postTask(algorithm, target, parameters);
     this.tokens.push(resp.token);
+    localStorage.setItem('tokens', JSON.stringify(this.tokens));
     this.startWatching();
 
     toast({

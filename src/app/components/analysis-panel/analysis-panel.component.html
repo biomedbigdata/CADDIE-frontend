@@ -117,12 +117,12 @@
                 </td>
               </tr>
               <tr *ngIf="task.info.parameters.mutationCancerType !== null && task.info.parameters.mutationCancerType !== undefined">
-                <td>Mutation Cancer Type for Mutation Weights</td>
+                <td>Cancer Type for Mutation Weights</td>
                 <td>{{task.info.parameters.mutationCancerType}}</td>
               </tr>
-              <tr *ngIf="task.info.parameters.expressionExpressionCancerType !== null && task.info.parameters.expressionExpressionCancerType !== undefined">
-                <td>Expression ExpressionCancerType for Expression Weights</td>
-                <td>{{task.info.parameters.expressionExpressionCancerType}}</td>
+              <tr *ngIf="task.info.parameters.expressionCancerType !== null && task.info.parameters.expressionCancerType !== undefined">
+                <td>Cancer Type for Expression Weights</td>
+                <td>{{task.info.parameters.expressionCancerType}}</td>
               </tr>
 
 

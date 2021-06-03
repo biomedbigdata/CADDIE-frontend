@@ -53,7 +53,7 @@
 
       <div>
         <div class="caddie network" id="network">
-          <div class="card network">
+          <div class="card network" id="network-card">
             <header class="card-header">
               <p class="card-header-title">Gene-Gene Interaction Network</p>
             </header>
@@ -95,7 +95,7 @@
               <!-- END Detail View -->
 
               <!-- START Legend -->
-              <div class="legend main">
+              <div class="legend main" [ngClass]="{'pushed-left' : selectedMutationCancerType || selectedExpressionCancerType}">
                 <table>
                   <tr>
                     <td><span class="node"></span></td>

@@ -18,7 +18,7 @@ import {
   QuickAlgorithmType,
   TRUSTRANK
 } from '../../services/analysis/analysis.service';
-import {CancerType, Dataset, MutationCancerType, ExpressionCancerType, Wrapper} from '../../interfaces';
+import {CancerType, Dataset, MutationCancerType, ExpressionCancerType, Wrapper, DrugTargetAction} from '../../interfaces';
 
 @Component({
   selector: 'app-launch-analysis',
@@ -51,6 +51,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
 
   public selectedMutationCancerType: MutationCancerType = null;
   public selectedExpressionCancerType: ExpressionCancerType = null;
+  public selectedDrugTargetAction: DrugTargetAction = null;
 
   public algorithm: AlgorithmType | QuickAlgorithmType;
 
@@ -130,10 +131,15 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     this.selectedExpressionCancerType = expressionCancerType;
   }
 
+  public setSelectedDrugTargetAction(drugTargetAction: DrugTargetAction) {
+    this.selectedDrugTargetAction = drugTargetAction;
+  }
+
   public close() {
     this.show = false;
     this.selectedMutationCancerType = null;
     this.selectedExpressionCancerType = null;
+    this.selectedDrugTargetAction = null;
     this.showChange.emit(this.show);
   }
 
@@ -171,6 +177,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.filterPaths = this.filterPaths;
     parameters.mutationCancerType = this.selectedMutationCancerType ? this.selectedMutationCancerType.abbreviation : null;
     parameters.expressionCancerType = this.selectedExpressionCancerType ? this.selectedExpressionCancerType.name : null;
+    parameters.drug_target_action = this.selectedDrugTargetAction ? this.selectedDrugTargetAction.name : null;
 
     if (this.algorithm === 'trustrank') {
       parameters.damping_factor = this.trustrankDampingFactor;
@@ -223,7 +230,6 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
       }
       parameters.hub_penalty = this.multisteinerHubPenalty;
     }
-
     await this.analysis.startAnalysis(this.algorithm, this.target, parameters);
   }
 

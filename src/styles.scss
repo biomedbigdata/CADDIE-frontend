@@ -251,9 +251,13 @@ div.field.has-addons.add-remove-toggle {
 .network-footer-container {
   display: flex;
   flex-wrap: wrap;
+  position: absolute;
+  bottom: 0;
+  background: white;
   .footer-buttons {
     margin-left: 5px;
     margin-right: 5px;
+    margin-bottom: 5px;
   }
 }
 
@@ -301,9 +305,14 @@ body {
 
 .legend {
   position: absolute;
-  bottom: 0;
+  top: 0px;
+  right: 0px;
   &.main {
-    bottom: calc(0px + #{$network-footer-height});
+    top: calc(1.5rem + #{$network-header-height});
+    right: 10px;
+  }
+  &.pushed-left {
+    right: calc(10px + #{$legend-width});
   }
   td{
     height: $legend-circle-size;
@@ -391,9 +400,8 @@ body {
 
 .legend.gradient{
   height: 200px;
-  width: 150px;
+  width: $legend-width;
   position: absolute;
-  bottom: 0;
   right: -20px;
   &.main {
     bottom: calc(10px + #{$network-footer-height});
@@ -448,3 +456,4 @@ body {
   overflow-y: auto;
   height: calc(100vh - #{$navbar-height})
 }
+

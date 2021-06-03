@@ -406,7 +406,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * +
      * initializes network
      */
-    this.loadingOverlay.addTo('canvas-content');
+    this.loadingOverlay.addTo('network-card');
 
     // reset old stuff
     this.analysis.resetSelection();
@@ -522,7 +522,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // fill adding option in the filter menu
     this.fillFilterItems(this.cancerNodesSup);
 
-    this.loadingOverlay.removeFrom('canvas-content');
+    this.loadingOverlay.removeFrom('network-card');
   }
 
   public fillFilterItems(cancerNodesSup: CancerNode[], reset: boolean = true) {

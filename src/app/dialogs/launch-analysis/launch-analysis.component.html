@@ -546,6 +546,15 @@
         </app-interaction-dataset-tile>
       </div>
 
+      <div class="field" *ngIf="target === 'drug' && selectedDrugInteractionDataset.name === 'DrugBank'">
+        <label class="label">Drug Target Actions</label>
+        <app-launch-analysis-category-dropdown
+            [categories]="analysis.getDrugTargetActions()"
+            [selectedCategory]="selectedDrugTargetAction"
+            (selectedCategoryChange)="setSelectedDrugTargetAction($event)">
+          </app-launch-analysis-category-dropdown>
+      </div>
+
       <div class="field" *ngIf="target === 'drug'">
         <label class="label">Nutraceutical Drugs</label>
         <app-toggle textOn="Include" textOff="Ignore" tooltipOn="Include nutraceutical drugs."

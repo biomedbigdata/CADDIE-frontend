@@ -40,7 +40,7 @@ export class NetworkSettings {
 
   // Network Layout
   private static analysisLayout = {
-    improvedLayout: true,
+    improvedLayout: false,
   };
   private static analysisEdges = {
     smooth: false,

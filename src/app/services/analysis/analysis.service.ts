@@ -10,7 +10,8 @@ import {
   CancerType,
   DrugStatus,
   MutationCancerType,
-  Tissue
+  Tissue,
+  DrugTargetAction
 } from '../../interfaces';
 import {Subject} from 'rxjs';
 import {toast} from 'bulma-toast';
@@ -71,6 +72,7 @@ export class AnalysisService {
   private tissues: Tissue[] = [];
   private expressionCancerTypes: ExpressionCancerType[] = [];
   private mutationCancerTypes: MutationCancerType[] = [];
+  private drugTargetActions: DrugTargetAction[] = [];
 
   private drugStatus: DrugStatus[] = [];
 
@@ -90,6 +92,14 @@ export class AnalysisService {
       this.tissues = tissues;
     });
 
+    this.control.drugTargetActions().subscribe((drugTargetActions) => {
+
+      drugTargetActions.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+
+      this.drugTargetActions = drugTargetActions;
+    });
 
     this.control.expressionCancerTypes().subscribe((expressionCancerTypes) => {
 
@@ -174,6 +184,13 @@ export class AnalysisService {
      * return all MutationCancerType saved in this object
      */
     return this.mutationCancerTypes;
+  }
+
+  public getDrugTargetActions(): DrugTargetAction[] {
+    /**
+     * return all DrugTargetActions saved in this object
+     */
+    return this.drugTargetActions;
   }
 
   public getDrugStatus(): DrugStatus[] {

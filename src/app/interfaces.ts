@@ -18,6 +18,14 @@ export interface Node {
   mutationScore: number;
 }
 
+export interface DrugTargetAction {
+  /**
+   * Interface for action of drugs to targets
+   */
+  backendId: number;
+  name: string;
+}
+
 export interface ExpressionCancerType {
   /**
    * Interface for expressionCancerType

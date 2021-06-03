@@ -68,6 +68,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   public mutationGradient = false;
   public tab: 'meta' | 'network' | 'table' = 'table';
   public physicsEnabled = true;
+  public networkFullscreenStatus = false;
 
   public nodes: any;
   public cancerNodes: any;

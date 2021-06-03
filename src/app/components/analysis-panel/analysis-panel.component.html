@@ -124,6 +124,10 @@
                 <td>Cancer Type for Expression Weights</td>
                 <td>{{task.info.parameters.expressionCancerType}}</td>
               </tr>
+              <tr *ngIf="task.info.parameters.drugTargetAction !== null && task.info.parameters.drugTargetAction !== undefined">
+                <td>Drug Target Action</td>
+                <td>{{task.info.parameters.drugTargetAction}}</td>
+              </tr>
 
 
               </tbody>
@@ -179,14 +183,14 @@
           </div>
         </div>
       </div>
-      <div class="content tab-content" *ngIf="task && task.info.done" [class.is-visible]="tab === 'network'">
+      <div class="content tab-content" id="analysis-network" *ngIf="task && task.info.done" [class.is-visible]="tab === 'network'">
         <div class="card-image">
           <div class="network center image1" #network>
             <button class="button is-loading center">Loading</button>
           </div>
 
           <!-- START Legend -->
-          <div class="legend">
+          <div class="legend"  [ngClass]="{'pushed-left' : mutationGradient || selectedExpressionCancerType}">
             <table>
               <tr>
                 <td><span class="node"></span></td>
@@ -302,7 +306,7 @@
           <app-toggle class="footer-buttons" textOn="Animation On" textOff="Off"
                       tooltipOn="Enable the network animation." tooltipOff="Disable the network animation and freeze nodes."
                       [value]="physicsEnabled" (valueChange)="updatePhysicsEnabled($event)"></app-toggle>
-
+                      
           <div class="field">
             <p class="control footer-buttons">
               <button class="button is-danger   has-tooltip" data-tooltip="Delete the current analysis."

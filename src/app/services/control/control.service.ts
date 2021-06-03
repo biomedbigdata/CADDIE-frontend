@@ -408,6 +408,13 @@ export class ControlService {
     return this.http.get(`${environment.backend}gene_expression/`, {params});
   }
 
+  public drugTargetActions(): Observable<any> {
+    /**
+     * Lists all available drugTargetActions with id and name
+     */
+    return this.http.get<ExpressionCancerType[]>(`${environment.backend}drug_target_actions/`);
+  }
+
   public expressionCancerTypes(): Observable<any> {
     /**
      * Lists all available expressionCancerTypes with id and name

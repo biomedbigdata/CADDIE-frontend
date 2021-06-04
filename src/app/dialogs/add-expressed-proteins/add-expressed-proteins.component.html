@@ -4,7 +4,7 @@
     <header class="modal-card-head">
       <p class="modal-card-title">
         <span class="icon"><i class="fa fa-dna"></i></span>
-        Add ExpressionCancerType Genes
+        Add genes based on expression in tissues
       </p>
       <button (click)="close()" class="delete" aria-label="close"></button>
     </header>
@@ -15,16 +15,16 @@
       <div class="notification is-warning" *ngIf="addedCount > 0">
         {{addedCount}} genes have been selected or added.
       </div>
-      <p *ngIf="!selectedExpressionCancerType">
+      <p *ngIf="!tissue">
         <i>
-          In order to add genes expressed in specific expressionCancerTypes,
-          please select a expressionCancerType in the main network window to the bottom.
+          In order to add genes expressed in specific tissues,
+          please select a tissue at the bottom of the main network window.
         </i>
       </p>
-      <p *ngIf="selectedExpressionCancerType" class="mb-3">
-        Currently selected expressionCancerType: <strong>{{selectedExpressionCancerType.name}}</strong>
+      <p *ngIf="tissue" class="mb-3">
+        Currently selected tissue: <strong>{{tissue.name}}</strong>
       </p>
-      <div class="field" *ngIf="selectedExpressionCancerType">
+      <div class="field" *ngIf="tissue">
         <label class="label" for="threshold">Threshold (TPM)</label>
         <div class="control">
           <input [ngModel]="threshold" (ngModelChange)="setThreshold($event)" id="threshold" class="input" type="number"
@@ -38,7 +38,7 @@
     <footer class="modal-card-foot">
       <button (click)="addGenes();" class="button is-success   has-tooltip"
               data-tooltip="Add all to the selection."
-              [disabled]="genes.length === 0 || !selectedExpressionCancerType || loading">
+              [disabled]="genes.length === 0 || !tissue || loading">
         <span class="icon">
           <i class="fas fa-plus"></i>
         </span>
@@ -48,7 +48,7 @@
       </button>
       <button (click)="addVisibleGenes();" class="button is-success   has-tooltip"
               data-tooltip="Add to selection if they appear in the current network."
-              [disabled]="genes.length === 0 || !selectedExpressionCancerType || loading">
+              [disabled]="genes.length === 0 || !tissue || loading">
         <span class="icon">
           <i class="fas fa-expand"></i>
         </span>

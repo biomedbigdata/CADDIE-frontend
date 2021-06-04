@@ -436,7 +436,7 @@ export class ControlService {
     return this.http.get<DrugStatus[]>(`${environment.backend}drug_status/`);
   }
 
-  public query_expressionCancerType_genes(expressionCancerType: ExpressionCancerType, threshold: number): Promise<any> {
+  public queryExpressionCancerTypeGenes(expressionCancerType: ExpressionCancerType, threshold: number): Promise<any> {
     /**
      * Lists all available expressionCancerTypes with id and name
      */

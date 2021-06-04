@@ -18,7 +18,7 @@ import {
   QuickAlgorithmType,
   TRUSTRANK
 } from '../../services/analysis/analysis.service';
-import {CancerType, Dataset, MutationCancerType, ExpressionCancerType, Wrapper, DrugTargetAction} from '../../interfaces';
+import {CancerType, Dataset, MutationCancerType, ExpressionCancerType, DrugTargetAction} from '../../interfaces';
 
 @Component({
   selector: 'app-launch-analysis',
@@ -143,17 +143,6 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     this.showChange.emit(this.show);
   }
 
-  public getGraphId(wrapper: Wrapper) {
-    /**
-     * Returns the graph id (e.g. 'g' + backendId) for a wrapper object
-     */
-    if (wrapper.type === 'Drug') {
-      return 'd' + wrapper.backendId;
-    } else {
-      return 'g' + wrapper.backendId;
-    }
-  }
-
   public async startTask(
     dataset: Dataset,
     geneInteractionDataset: Dataset,
@@ -161,7 +150,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     cancerTypes: CancerType[]
   ) {
     const parameters: any = {
-      seeds: this.analysis.getSelection().map((item) => this.getGraphId(item)),
+      seeds: this.analysis.getSelection().map((item) => this.analysis.getGraphId(item)),
     };
 
     // new input from caddie

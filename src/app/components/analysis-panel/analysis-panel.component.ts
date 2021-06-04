@@ -672,6 +672,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       node.gradient = 1.0;
       gene.expressionLevel = undefined;
       (node.wrapper.data as Node).expressionLevel = undefined;
+      gene.expressionLevelScore = undefined;
+      (node.wrapper.data as Node).expressionLevelScore = undefined;
       updatedNodes.push(node);
     }
     return updatedNodes;
@@ -938,8 +940,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           gradient));
       node.wrapper = item;
       node.gradient = gradient;
-      nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
-      (node.wrapper.data as (Node | CancerNode)).expressionLevel = lvl.level;
+      nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevelScore = lvl.level;
+      (node.wrapper.data as (Node | CancerNode)).expressionLevelScore = lvl.level;
       updatedNodes.push(node);
     }
     return updatedNodes;

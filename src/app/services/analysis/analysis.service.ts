@@ -5,9 +5,7 @@ import {
   getWrapperFromCancerNode,
   Node,
   CancerNode,
-  Dataset,
   ExpressionCancerType,
-  CancerType,
   DrugStatus,
   MutationCancerType,
   Tissue,
@@ -611,6 +609,17 @@ export class AnalysisService {
       clearInterval(this.intervalId);
     }
     this.intervalId = setInterval(watch, 5000);
+  }
+
+  public getGraphId(wrapper: Wrapper) {
+    /**
+     * Returns the graph id (e.g. 'g' + backendId) for a wrapper object
+     */
+    if (wrapper.type === 'Drug') {
+      return 'd' + wrapper.backendId;
+    } else {
+      return 'g' + wrapper.backendId;
+    }
   }
 
 

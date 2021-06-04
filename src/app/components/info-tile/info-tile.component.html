@@ -27,9 +27,14 @@
       {{ wrapper.data.proteinName }}
     </p>
     <p *ngIf="wrapper.data.expressionLevel"
-       class="has-tooltip-right" data-tooltip="Expression level in selected cancer type or tissue (normalized from 0 to 1)">
+      class="has-tooltip-right" data-tooltip="Expression level in selected tissue, transcripts per million">
       <b><span>Expression Level:</span></b>
-      {{ wrapper.data.expressionLevel | number : '1.0-3'  }}
+      {{ wrapper.data.expressionLevel | number : '1.0-3'  }} tpm
+    </p>
+    <p *ngIf="wrapper.data.expressionLevelScore"
+       class="has-tooltip-right" data-tooltip="Expression level in selected cancer type or tissue (normalized from 0 to 1)">
+      <b><span>Expression Score:</span></b>
+      {{ wrapper.data.expressionLevelScore | number : '1.0-3'  }}
     </p>
     <p *ngIf="wrapper.data.mutationScore"
        class="has-tooltip-right" data-tooltip="Based on number of mutations. See 'About' for more information">
@@ -43,20 +48,20 @@
 
     <ng-container *ngIf="wrapper.data.cancerOccurrences">
       <b><span>Related Cancer Types ({{ wrapper.data.cancerOccurrences }}):</span></b>
-      <div class="content scroll-120">
-        <ul *ngFor="let item of wrapperCancerTypes">
-          <li>{{ item.name }}</li>
-        </ul>
-      </div>
+      <ul class="content scroll-120">
+        <li *ngFor="let item of wrapperCancerTypes">
+          {{ item.name }}
+        </li>
+      </ul>
     </ng-container>
 
-    <ng-container *ngIf="wrapperComorbidities">
+    <ng-container *ngIf="wrapperComorbidities.length">
       <b><span>Comorbidities ({{ wrapperComorbidities.length }}):</span></b>
-      <div class="content scroll-120">
-        <ul *ngFor="let item of wrapperComorbidities">
-          <li>{{ item.diseaseName }}</li>
-        </ul>
-      </div>
+      <ul class="content scroll-120">
+        <li *ngFor="let item of wrapperComorbidities">
+          {{ item.diseaseName }}
+        </li>
+      </ul>
     </ng-container>
 
   </div>
@@ -89,9 +94,14 @@
         {{ wrapper.data.proteinName }}
     </p>
     <p *ngIf="wrapper.data.expressionLevel"
-       class="has-tooltip-right" data-tooltip="Expression level in selected cancer type or tissue (normalized from 0 to 1)">
+      class="has-tooltip-right" data-tooltip="Expression level in selected tissue, transcripts per million">
       <b><span>Expression Level:</span></b>
-      {{ wrapper.data.expressionLevel | number : '1.0-3'  }}
+      {{ wrapper.data.expressionLevel | number : '1.0-3'  }} tpm
+    </p>
+    <p *ngIf="wrapper.data.expressionLevelScore"
+       class="has-tooltip-right" data-tooltip="Expression level in selected cancer type or tissue (normalized from 0 to 1)">
+      <b><span>Expression Score:</span></b>
+      {{ wrapper.data.expressionLevelScore | number : '1.0-3'  }}
     </p>
     <p *ngIf="wrapper.data.mutationScore"
        class="has-tooltip-right" data-tooltip="Based on number of mutations. See 'About' for more information">
@@ -104,20 +114,20 @@
     </p>
     <ng-container *ngIf="wrapper.data.cancerOccurrences">
       <b><span>Related Cancer Types ({{ wrapper.data.cancerOccurrences }}):</span></b>
-      <div class="content scroll-120">
-        <ul *ngFor="let item of wrapperCancerTypes">
-          <li>{{ item.name }}</li>
-        </ul>
-      </div>
+      <ul class="content scroll-120">
+        <li *ngFor="let item of wrapperCancerTypes">
+          {{ item.name }}
+        </li>
+      </ul>
     </ng-container>
 
-    <ng-container *ngIf="wrapperComorbidities">
+    <ng-container *ngIf="wrapperComorbidities.length">
       <b><span>Comorbidities ({{ wrapperComorbidities.length }}):</span></b>
-      <div class="content scroll-120">
-        <ul *ngFor="let item of wrapperComorbidities">
-          <li>{{ item.diseaseName }}</li>
-        </ul>
-      </div>
+      <ul class="content scroll-120">
+        <li *ngFor="let item of wrapperComorbidities">
+          {{ item.diseaseName }}
+        </li>
+      </ul>
     </ng-container>
 
 
@@ -179,14 +189,16 @@
     <p *ngIf="!wrapper.data.inCancernet">
       <b>In Cancernet: </b> <span class="icon is-small"><i class="fas fa-times"></i></span>
     </p>
-
-
   </div>
 
   <div class="field has-addons add-remove-toggle" *ngIf="wrapper.type !== 'Drug'">
     <app-toggle [value]="analysis.inSelection(wrapper)"
                 (valueChange)="$event ? analysis.addItems([wrapper]) : analysis.removeItems([wrapper])" textOn="Selected"
-                textOff="Deselected" tooltipOn="Add node to selection." tooltipOff="Remove node from selection."></app-toggle>
+                textOff="Deselected" 
+                tooltipOn="Add node to selection." 
+                tooltipOff="Remove node from selection."
+                class="self-align"
+                ></app-toggle>
   </div>
 
 </div>

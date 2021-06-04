@@ -98,7 +98,6 @@ export class VcfInputComponent implements OnInit {
 
   async loadSeeds() {
     this.loading = true;
-    console.log(this.fileContent)
     const response = await this.control.vcfLookup(this.fileContent, this.threshold);
     this.genes = response.data.map((gene) => gene.entrezId.toString());
     this.addGenes();

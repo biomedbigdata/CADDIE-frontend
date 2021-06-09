@@ -1410,10 +1410,19 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.currentViewGenes,
       this.currentViewCancerGenes
     );
-    this.analysis.addDiseaseGenes(
+    let n = 0;
+    n += this.analysis.addDiseaseGenes(
       this.currentViewNodes, this.currentViewGenes, result.inDiseasesGenes, 'Node');
-    this.analysis.addDiseaseGenes(
+    n += this.analysis.addDiseaseGenes(
       this.currentViewNodes, this.currentViewCancerGenes, result.inDiseasesCancerGenes, 'CancerNode');
+
+    // if no nodes were added, remove selected nodes instead
+    if (!n) {
+      this.analysis.removeDiseaseGenes(
+        this.currentViewNodes, this.currentViewGenes, result.inDiseasesGenes, 'Node');
+      this.analysis.removeDiseaseGenes(
+        this.currentViewNodes, this.currentViewCancerGenes, result.inDiseasesCancerGenes, 'CancerNode');
+    }
   }
 
   private _interpretTissueExpressionResponse(

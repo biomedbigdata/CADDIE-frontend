@@ -67,7 +67,7 @@
             <div class="card-content">
 
               <!-- START Legend -->
-              <div class="legend main" [ngClass]="{'pushed-left' : selectedMutationCancerType || selectedExpressionCancerType}">
+              <div class="legend main" [ngClass]="{'pushed-left' : selectedMutationCancerType || selectedExpressionCancerType || selectedTissue}">
                 <table>
                   <tr>
                     <td><span class="node"></span></td>
@@ -86,16 +86,16 @@
               <!-- END Legend -->
 
               <!-- START Gradient Legend -->
-              <div class="legend main gradient" *ngIf="selectedMutationCancerType || selectedExpressionCancerType">
+              <div class="legend main gradient" *ngIf="selectedMutationCancerType || selectedExpressionCancerType || selectedTissue">
                 <div class="color-gradient-gene bar"></div>
                 <div class="color-gradient-cancer-gene bar"></div>
                 <span class="annotation-max">High <br>
                   <span *ngIf="selectedMutationCancerType">Mutation</span>
-                  <span *ngIf="selectedExpressionCancerType">Expression</span>
+                  <span *ngIf="selectedExpressionCancerType || selectedTissue">Expression</span>
                 </span>
                 <span class="annotation-min">Low <br>
                   <span *ngIf="selectedMutationCancerType">Mutation</span>
-                  <span *ngIf="selectedExpressionCancerType">Expression</span>
+                  <span *ngIf="selectedExpressionCancerType || selectedTissue">Expression</span>
                 </span>
                 <div>
                   <div class="box-unknown has-background-grey-light"></div>

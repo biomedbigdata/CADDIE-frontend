@@ -323,6 +323,33 @@ export class AnalysisService {
     return items.length;
   }
 
+  public removeDiseaseGenes(
+    nodes,
+    genes: (Node | CancerNode)[],
+    lookup,
+    nodeType: ('Node' | 'CancerNode')
+  ): number {
+    /**
+     * Sets these genes to 'this.selectedItems'
+     */
+    const items: Wrapper[] = [];
+    const visibleIds = new Set<string>(nodes.getIds());
+
+    for (const gene of genes) {
+      const wrapper = nodeType === 'Node' ? getWrapperFromNode(gene as Node) :
+        getWrapperFromCancerNode(gene as CancerNode);
+
+      const found = visibleIds.has(wrapper.nodeId);
+      if (found && this.inSelection(wrapper) && lookup[wrapper.nodeId]) {
+        items.push(wrapper);
+        this.selectedItems.delete(wrapper.nodeId);
+      }
+    }
+
+    this.selectListSubject.next({items, selected: false});
+    return items.length;
+  }
+
   public addExpressedGenes(
     nodes,
     genes: (Node | CancerNode)[],

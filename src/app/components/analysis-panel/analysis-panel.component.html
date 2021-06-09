@@ -190,7 +190,7 @@
           </div>
 
           <!-- START Legend -->
-          <div class="legend"  [ngClass]="{'pushed-left' : mutationGradient || selectedExpressionCancerType}">
+          <div class="legend"  [ngClass]="{'pushed-left' : selectedMutationCancerType || selectedExpressionCancerType || selectedTissue}">
             <table>
               <tr>
                 <td><span class="node"></span></td>
@@ -229,18 +229,18 @@
           <!-- END Legend -->
 
           <!-- START Gradient Legend -->
-          <div class="legend gradient analysis-panel" *ngIf="mutationGradient || selectedExpressionCancerType">
+          <div class="legend gradient analysis-panel" *ngIf="selectedMutationCancerType || selectedExpressionCancerType || selectedTissue">
             <div class="color-gradient-gene bar"></div>
             <div class="color-gradient-gene-seed bar"></div>
             <div class="color-gradient-cancer-gene bar"></div>
             <div class="color-gradient-cancer-gene-seed bar"></div>
             <span class="annotation-max">High <br>
-                  <span *ngIf="mutationGradient">Mutation</span>
-                  <span *ngIf="selectedExpressionCancerType">Expression</span>
+                  <span *ngIf="selectedMutationCancerType">Mutation</span>
+                  <span *ngIf="selectedExpressionCancerType || selectedTissue">Expression</span>
                 </span>
             <span class="annotation-min">Low <br>
-                  <span *ngIf="mutationGradient">Mutation</span>
-                  <span *ngIf="selectedExpressionCancerType">Expression</span>
+                  <span *ngIf="selectedMutationCancerType">Mutation</span>
+                  <span *ngIf="selectedExpressionCancerType || selectedTissue">Expression</span>
                 </span>
             <div>
               <div class="box-unknown has-background-grey-light"></div>
@@ -280,6 +280,15 @@
 
           <app-category-selector
             [expanded]="expressionExpanded"
+            [selectedElement]="selectedTissue"
+            [elements]="analysis.getTissues()"
+            (callbackFun)="selectTissue($event)"
+            label="Expression Tissue"
+          ></app-category-selector>
+
+
+          <app-category-selector
+            [expanded]="cancerExpressionExpanded"
             [selectedElement]="selectedExpressionCancerType"
             [elements]="analysis.getExpressionCancerTypes()"
             (callbackFun)="selectExpressionCancerType($event)"

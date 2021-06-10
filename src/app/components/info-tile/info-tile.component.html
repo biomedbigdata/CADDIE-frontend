@@ -104,7 +104,7 @@
     </p>
     <p *ngIf="wrapper.data.expressionLevelScore">
       <b><span>Expression Score:</span></b>
-      <span> class="has-tooltip-right" data-tooltip="Expression level in selected cancer type or tissue (normalized from 0 to 1)"
+      <span class="has-tooltip-right" data-tooltip="Expression level in selected cancer type or tissue (normalized from 0 to 1)">
         {{ wrapper.data.expressionLevelScore | number : '1.0-3'  }}
       </span>
     </p>
@@ -185,7 +185,7 @@
 
     <p>
       <b>ATC L: </b> 
-      <span class="icon is-small" class="has-tooltip-right" 
+      <span class="icon is-small has-tooltip-right" 
       data-tooltip="ATC Class L antineoplastic and immunomodulating agents">
         <i class="fas" 
         [class.fa-times] = "!wrapper.data.isAtcAntineoplasticAndImmunomodulatingAgent"

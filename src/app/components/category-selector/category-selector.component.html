@@ -4,7 +4,7 @@
             class="button is-primary" [class.is-outlined]="!selectedElement"
             aria-haspopup="true" aria-controls="dropdown-menu">
       <span *ngIf="!selectedElement">{{ label }}</span>
-      <span *ngIf="selectedElement">{{selectedElement.name}}</span>
+      <span *ngIf="selectedElement" class="is-capitalized">{{selectedElement.name}}</span>
       <span class="icon is-small">
                   <i class="fas"
                      [class.fa-angle-up]="expanded"

@@ -11,7 +11,8 @@ import {
   Node,
   ExpressionCancerType,
   Disease,
-  DrugStatus
+  DrugStatus,
+  TCGADataset
 } from '../../interfaces';
 import {AlgorithmType, QuickAlgorithmType} from '../analysis/analysis.service';
 import {Observable} from 'rxjs';
@@ -500,5 +501,76 @@ export class ControlService {
         threshold:  JSON.stringify(threshold),
       }).toPromise();
   }
+
+  public async getTCGADatasets(): Promise<TCGADataset[]> {
+    /**
+     * Returns promise of a list of all TCGA datasets
+     */
+
+    return this.http.get<any>(`https://exbio.wzw.tum.de/sponge-api/dataset`).toPromise();
+  }
+
+  public async getSurvivalPValue(diseaseName, geneSymbol): Promise<any> {
+    /**
+     * Returns promise of a list of survival p values for a node
+     */
+     const params = new HttpParams()
+     .set('disease_name', diseaseName)
+     .set('gene_symbol', geneSymbol);
+
+    return this.http.get<any>(`https://exbio.wzw.tum.de/sponge-api/survivalAnalysis/getPValues`, {params}).toPromise();
+  }
+
+  public async getSurvivalRates(diseaseName, geneSymbol): Promise<any> {
+    /**
+     * Returns promise of a list of survival rates for a node
+     */
+     const params = new HttpParams()
+     .set('disease_name', diseaseName)
+     .set('gene_symbol', geneSymbol);
+
+    return this.http.get<any>(`https://exbio.wzw.tum.de/sponge-api/survivalAnalysis/getRates`, {params}).toPromise();
+  }
+
+  static SPONGEDB = "https://exbio.wzw.tum.de/sponge-api";
+  static SURVIVAL_ANALYSIS_SAMPLEINFO  = "/survivalAnalysis/sampleInformation";
+
+
+public get_survival_sampleInfo(
+    config: {
+        disease_name : string,
+        sample_ID: string[],
+        limit?: number,
+        offset?: number
+        callback: (response) => any,
+        error?: (response) => any
+    }
+){
+    let request = Controller.API_ENDPOINT+Controller.SURVIVAL_ANALYSIS_SAMPLEINFO
+    if (Object.keys(config).length > 1) {
+        request += '?'
+    }
+    if (config.disease_name != undefined) {
+        request += "&disease_name="+config.disease_name
+    }
+    if (config.sample_ID != undefined) {
+        request += "&sample_ID="+config.sample_ID
+    }
+    
+    if (config.limit != undefined) {
+        request += "&limit="+config.limit
+    }
+    if (config.offset != undefined) {
+        request += "&offset="+config.offset
+    }
+    $.getJSON(request,
+        response => {
+            return config.callback(response)                
+        }
+    ).fail(
+        response => {
+            return config.error(response)
+        })
+    }
 
 }

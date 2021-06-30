@@ -317,6 +317,14 @@ export interface CancerType {
   backendId: number;
 }
 
+export interface TCGADataset {
+  data_origin: string;
+  dataset_ID: number;
+  disease_name: string;
+  disease_type: string;
+  download_url: string;
+}
+
 export interface BackendObject {
   name: string;
   backendId: number;

@@ -14,8 +14,8 @@ export class SurvivalPlotComponent implements AfterViewInit {
   @Input() graph: {data: any, layout: any};
   @Output() callbackFun = new EventEmitter<any>();
 
-  private TCGADatasets: BackendObject[];
-  private selectedTCGADataset: BackendObject;
+  public TCGADatasets: BackendObject[];
+  public selectedTCGADataset: BackendObject;
 
   constructor(private control: ControlService) { }
 

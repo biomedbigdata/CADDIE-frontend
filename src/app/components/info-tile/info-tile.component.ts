@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Wrapper, CancerType, DiseaseGeneInteraction} from '../../interfaces';
 import {AnalysisService} from '../../services/analysis/analysis.service';
 

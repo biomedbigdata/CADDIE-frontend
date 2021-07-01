@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, AfterViewInit, Output} from '@angular/core';
 import { ControlService } from 'src/app/services/control/control.service';
 import {BackendObject, TCGADataset, Wrapper} from '../../interfaces';
 
@@ -8,7 +8,7 @@ import {BackendObject, TCGADataset, Wrapper} from '../../interfaces';
   styleUrls: ['./survival-plot.component.scss'],
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SurvivalPlotComponent implements OnInit {
+export class SurvivalPlotComponent implements AfterViewInit {
 
   @Input() wrapper: Wrapper;
   @Input() graph: {data: any, layout: any};
@@ -17,12 +17,7 @@ export class SurvivalPlotComponent implements OnInit {
   private TCGADatasets: BackendObject[];
   private selectedTCGADataset: BackendObject;
 
-  private datasetSelectorExpanded: false;
-
   constructor(private control: ControlService) { }
-
-  ngOnInit(): void {
-  }
 
   async ngAfterViewInit() {
     /**

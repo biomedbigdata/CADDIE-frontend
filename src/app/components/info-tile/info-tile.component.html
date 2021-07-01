@@ -215,6 +215,13 @@
                 ></app-toggle>
   </div>
 
+  <ng-container *ngIf="wrapper.type !== 'Drug'">
+    <app-survival-plot
+      [wrapper]="wrapper"
+    >
+    </app-survival-plot>
+  </ng-container>
+
 </div>
 <div *ngIf="!wrapper">
   Please select a node for further information.

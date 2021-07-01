@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Wrapper, CancerType, DiseaseGeneInteraction} from '../../interfaces';
 import {AnalysisService} from '../../services/analysis/analysis.service';
 
@@ -6,7 +6,7 @@ import {AnalysisService} from '../../services/analysis/analysis.service';
   selector: 'app-info-tile',
   templateUrl: './info-tile.component.html',
   styleUrls: ['./info-tile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InfoTileComponent {
 

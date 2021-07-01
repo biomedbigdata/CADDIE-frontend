@@ -11,7 +11,8 @@ import {
   Node,
   ExpressionCancerType,
   Disease,
-  DrugStatus
+  DrugStatus,
+  TCGADataset
 } from '../../interfaces';
 import {AlgorithmType, QuickAlgorithmType} from '../analysis/analysis.service';
 import {Observable} from 'rxjs';
@@ -499,6 +500,34 @@ export class ControlService {
         fileData: JSON.stringify(fileContent),
         threshold:  JSON.stringify(threshold),
       }).toPromise();
+  }
+
+  public async getTCGADatasets(): Promise<TCGADataset[]> {
+    /**
+     * Returns promise of a list of all TCGA datasets
+     */
+
+    return this.http.get<any>(`https://exbio.wzw.tum.de/sponge-api/dataset`).toPromise();
+  }
+
+  public async getSurvivalPValue(diseaseName, geneSymbol): Promise<any> {
+    /**
+     * Returns promise of a list of survival p values for a node
+     */
+    const params = new HttpParams()
+    .set('disease_name', diseaseName)
+    .set('gene_symbol', geneSymbol);
+    return this.http.get<any>(`https://exbio.wzw.tum.de/sponge-api/survivalAnalysis/getPValues`, {params}).toPromise();
+  }
+
+  public async getSurvivalRates(diseaseName, geneSymbol): Promise<any> {
+    /**
+     * Returns promise of a list of survival rates for a node
+     */
+    const params = new HttpParams()
+    .set('disease_name', diseaseName)
+    .set('gene_symbol', geneSymbol);
+    return this.http.get<any>(`https://exbio.wzw.tum.de/sponge-api/survivalAnalysis/getRates`, {params}).toPromise();
   }
 
 }

@@ -6,7 +6,7 @@ import {BackendObject, TCGADataset, Wrapper} from '../../interfaces';
   selector: 'app-survival-plot',
   templateUrl: './survival-plot.component.html',
   styleUrls: ['./survival-plot.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SurvivalPlotComponent implements OnInit {
 
@@ -44,10 +44,16 @@ export class SurvivalPlotComponent implements OnInit {
         backendId: 9999 // placeholder
       })
     } )
-    this.selectedTCGADataset = this.TCGADatasets[0];
+    // this.selectedTCGADataset = this.TCGADatasets[0];
   }
 
-  public async selectTCGADataset(dataset: BackendObject) {
+  public async selectTCGADataset(dataset: BackendObject | null) {
+    if (dataset === null) {
+      // remove graph
+      this.graph = undefined;
+      return
+    }
+
     this.selectedTCGADataset = dataset;
 
     // get survival p values
@@ -186,7 +192,7 @@ export class SurvivalPlotComponent implements OnInit {
           xanchor: 'left',
           y: 0.83,
           yanchor: 'top',
-          text: 'p-Value: ' + pValue,
+          text: 'p-Value: ' + pValue[0].pValue,
           showarrow: false,
           textangle: -90,
           font: {
@@ -222,8 +228,6 @@ export class SurvivalPlotComponent implements OnInit {
       layout: layout
     }
     this.callbackFun.emit(true);
-    console.log("graph")
-    console.log(this.graph)
 
     // Plotly.plot('myDiv_' + response.gene.ensg_number, data, layout, { showSendToCloud: true });
   };

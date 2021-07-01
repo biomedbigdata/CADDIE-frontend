@@ -6,7 +6,7 @@ import {AnalysisService} from '../../services/analysis/analysis.service';
   selector: 'app-info-tile',
   templateUrl: './info-tile.component.html',
   styleUrls: ['./info-tile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InfoTileComponent {
 

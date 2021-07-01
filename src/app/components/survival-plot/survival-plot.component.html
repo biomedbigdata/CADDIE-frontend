@@ -1,11 +1,9 @@
-<app-category-selector
-[expanded]="datasetSelectorExpanded"
-[selectedElement]="selectedTCGADataset"
-[elements]="TCGADatasets"
-(callbackFun)="selectTCGADataset($event)"
-label="Survival Plot"
-class="footer-buttons is-inline-block"
-></app-category-selector>
+<ng-select [items]="TCGADatasets"
+            bindLabel="name"
+            placeholder="Survival Plot"
+            [ngModel]="selectedTCGADataset"
+            (ngModelChange)="selectTCGADataset($event)">
+</ng-select>
 
 <div *ngIf="selectedTCGADataset && graph" id="survival-plot">
     <plotly-plot

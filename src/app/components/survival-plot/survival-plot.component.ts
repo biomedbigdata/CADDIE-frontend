@@ -124,14 +124,20 @@ export class SurvivalPlotComponent implements AfterViewInit {
       x: seenTime0,
       y: overexpression0se,
       type: 'scatter',
-      name: 'Underexpressed Genes'
+      name: 'Underexpressed',
+      marker: {
+        color: '#ab3d2a'
+        },
     };
 
     const overexpression1 = {
       x: seenTime1,
       y: overexpression1se,
       type: 'scatter',
-      name: 'Overexpressed Genes'
+      name: 'Overexpressed',
+      marker: {
+        color: '#2aab75'
+        },
     };
 
     const data = [overexpression0, overexpression1];
@@ -160,13 +166,9 @@ export class SurvivalPlotComponent implements AfterViewInit {
             color: 'cc0066'
           }
         }],
-      title: {
-        text: nodeName,
-        font: {
-          family: 'Arial, bold',
-          size: 14,
-          color: '#052444',
-        }
+      // no title, remove the white space reserved for title above plot
+      margin: {
+        t: 50,
       },
       xaxis: {
         title: 'Duration (Days)',

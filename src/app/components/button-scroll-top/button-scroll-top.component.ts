@@ -29,16 +29,16 @@ export class ButtonScrollTopComponent implements OnInit, OnDestroy {
 
   public scrollCheck() {
     // remove button when element is scrolled to top
-    if (this.elementRef.nativeElement.parentElement.scrollTop == 0) {
+    if (this.elementRef.nativeElement.parentElement.scrollTop === 0) {
       // deactivate button
-      this.close()
+      this.close();
     }
-  };
+  }
 
   public scrollTop() {
     // parent element is scrolled back to top
     this.elementRef.nativeElement.parentElement.scrollTop = 0;
-    this.close()
+    this.close();
   }
 
 }

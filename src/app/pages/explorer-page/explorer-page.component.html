@@ -182,7 +182,14 @@
       </div>
     </div>
 
-    <div class="caddie sidebar bar-left">
+    <div class="caddie sidebar bar-left" id="left-sidebar">
+
+      <app-button-scroll-top
+      *ngIf="leftSidebarScrollTopButton"
+      [buttonText]="'Go to top'"
+      (callbackFun)="leftSidebarScrollTopButton = $event"
+    >
+    </app-button-scroll-top>
 
       <div *ngIf="selectedWrapper" class="column is-12 info-background">
         <!-- Start Detail View -->

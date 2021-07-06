@@ -1,0 +1,9 @@
+.button-back-to-top {
+    position: sticky;
+    top: 10px;
+    margin: 0 auto;
+    z-index: 50;
+    text-align: center;
+    // avoid element to push down other element
+    height: 0;
+}

@@ -143,6 +143,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   private t0: Date = new Date();
   private threshold = 200;
 
+  public leftSidebarScrollTopButton = false;
+
 
   @ViewChild('network', {static: false}) networkEl: ElementRef;
 
@@ -359,6 +361,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.getComorbidities(this.selectedWrapper);
 
     this.showDetails = true;
+
+    // if left sidebar is scrolled down, offer user to scroll up
+    if (document.getElementById('left-sidebar').scrollTop) {
+      this.leftSidebarScrollTopButton = true;
+      // setTimeout(() => this.leftSidebarScrollTopButton = false, 1000);
+    }
   }
 
   private async getRelatedCancerTypes(item: Wrapper) {

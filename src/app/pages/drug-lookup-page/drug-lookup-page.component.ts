@@ -73,7 +73,7 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
     const text = JSON.stringify(this.searchString);
     const fmt = JSON.stringify(view);
     const dataset = JSON.stringify(this.selectedInteractionDrugDataset.backendId);
-    return `${environment.backend}drug_interaction_lookup/?&text=${text}&fmt=${fmt}&dataset=${dataset}`;
+    return `${environment.backend}drug_interaction_lookup/?&text=${text}&fmt=${fmt}&dataset_id=${dataset}`;
   }
 
   public previewStringArray(arr: string[], count: number): string {

@@ -18,6 +18,13 @@
           {{itemsFound.length - addedCount}} genes either have been selected already or did not appear in the current graph.
         </div>
       </div>
+
+      <div class="notification is-warning" *ngIf="notCancerGenes.length">
+        <div>
+          The following {{notCancerGenes.length}} items have been selected but are no typical cancer genes:
+          <ul><li class="not-cancer-genes" *ngFor="let ncg of notCancerGenes">{{ncg}}</li></ul>
+        </div>
+      </div>
       <div class="notification is-warning" *ngIf="itemsFound.length > 0 && addedCount === 0">
         <div *ngIf="itemsFound.length > addedCount && !selectOnly">
           {{itemsFound.length - addedCount}} genes have already been selected before.

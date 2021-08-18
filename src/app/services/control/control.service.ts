@@ -329,11 +329,10 @@ export class ControlService {
      */
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
     const cancerTypesIdsString = cancerTypesIds.join(',');
-
     return this.http.post<any>(`${environment.backend}query_nodes/`, {
-      nodes: JSON.stringify(nodes),
-      cancerDataset: JSON.stringify(cancerDataset.backendId),
-      cancerTypes:  JSON.stringify(cancerTypesIdsString)
+      nodes: nodes,
+      cancerDataset: cancerDataset.backendId,
+      cancerTypes:  cancerTypesIdsString
     }).toPromise();
   }
 
@@ -490,7 +489,7 @@ export class ControlService {
 
     const params = new HttpParams()
       .set('text', JSON.stringify(searchString))
-      .set('dataset', JSON.stringify(dataset.backendId));
+      .set('dataset_id', JSON.stringify(dataset.backendId));
     return this.http.get(`${environment.backend}drug_interaction_lookup/`, {params}).toPromise();
   }
 

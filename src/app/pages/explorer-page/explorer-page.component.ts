@@ -1287,7 +1287,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         continue;
       }
       // calculate color gradient
-      const gradient = gene.level !== null ? (Math.pow(gene.level / maxExpr, 1 / 3) * (1 - minExp) + minExp) : -1;
+      const gradient = gene.level !== null ? (Math.pow(gene.level / maxExpr, 1 / 1) * (1 - minExp) + minExp) : -1;
       const pos = this.network.getPositions([item.nodeId]);
       node.x = pos[item.nodeId].x;
       node.y = pos[item.nodeId].y;

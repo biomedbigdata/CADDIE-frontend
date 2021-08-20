@@ -70,9 +70,9 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
   }
 
   public downloadLink(view: string) {
-    const text = JSON.stringify(this.searchString);
-    const fmt = JSON.stringify(view);
-    const dataset = JSON.stringify(this.selectedInteractionDrugDataset.backendId);
+    const text = this.searchString;
+    const fmt = view;
+    const dataset = this.selectedInteractionDrugDataset.backendId;
     return `${environment.backend}drug_interaction_lookup/?&text=${text}&fmt=${fmt}&dataset_id=${dataset}`;
   }
 

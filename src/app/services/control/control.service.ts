@@ -488,8 +488,8 @@ export class ControlService {
      */
 
     const params = new HttpParams()
-      .set('text', JSON.stringify(searchString))
-      .set('dataset_id', JSON.stringify(dataset.backendId));
+      .set('text', searchString)
+      .set('dataset_id', dataset.backendId.toString());
     return this.http.get(`${environment.backend}drug_interaction_lookup/`, {params}).toPromise();
   }
 

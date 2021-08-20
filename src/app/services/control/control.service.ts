@@ -323,14 +323,14 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}drug_interactions/`, {params}).toPromise();
   }
 
-  public async queryGenes(nodes, cancerDataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
+  public async queryGenes(queryNodes, cancerDataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
     /**
      * returns genes for genes in list if gene is in db
      */
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
     const cancerTypesIdsString = cancerTypesIds.join(',');
     return this.http.post<any>(`${environment.backend}query_nodes/`, {
-      nodes: nodes,
+      nodes: queryNodes,
       cancerDataset: cancerDataset.backendId,
       cancerTypes:  cancerTypesIdsString
     }).toPromise();

@@ -37,8 +37,8 @@ export class ButtonScrollTopComponent implements OnInit, OnDestroy {
 
   public scrollTop() {
     this.elementRef.nativeElement.parentElement.scroll({
-      top: 0,//scroll to the bottom of the element
-      behavior: 'smooth' //auto, smooth, initial, inherit
+      top: 0, // scroll to the bottom of the element
+      behavior: 'smooth' // auto, smooth, initial, inherit
     });
     this.close();
   }

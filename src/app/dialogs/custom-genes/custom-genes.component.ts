@@ -77,7 +77,7 @@ export class CustomGenesComponent implements OnInit {
     this.loading = false;
 
     if (result.notKnownCancerGenes.length) {
-      this.notCancerGenes = result.notKnownCancerGenes
+      this.notCancerGenes = result.notKnownCancerGenes;
     }
     // to trigger template update
     this.showChange.emit(this.show);

@@ -307,6 +307,16 @@ export class ControlService {
     }).toPromise();
   }
 
+  public async postTaskSummmarize(parameters, ) {
+    /**
+     * sends a summary task to task summarize service
+     */
+
+    return this.http.post<any>(`${environment.backend}task_summarize/`, {
+      parameters,
+    }).toPromise();
+  }
+
   public async getDrugInteractions(token, drugStatus: DrugStatus): Promise<any> {
     /**
      * returns drugs that have interactions with analysis result nodes

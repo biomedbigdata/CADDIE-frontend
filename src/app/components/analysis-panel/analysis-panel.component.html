@@ -16,10 +16,19 @@
     <div class="card-content" id="analysis-content">
       <div class="tabs is-centered">
         <ul>
+          <li *ngIf="task.info.algorithm === 'summary'" [class.is-active]="tab === 'summary'"><a (click)="tab = 'summary';  visibleTab.emit(tab)">Summary</a></li>
           <li [class.is-active]="tab === 'table'"><a (click)="tab = 'table';  visibleTab.emit(tab)">Table</a></li>
           <li [class.is-active]="tab === 'network'"><a (click)="tab = 'network'; visibleTab.emit(tab)">Network</a></li>
           <li [class.is-active]="tab === 'meta'"><a (click)="tab = 'meta';  visibleTab.emit(tab)">Parameters</a></li>
         </ul>
+      </div>
+      <div class="content tab-content meta" *ngIf="task && task.info.done && task.info.algorithm === 'summary'" [class.is-visible]="tab === 'summary'">
+        <div *ngIf="drugCountBarplot" id="drugCountsPlot">
+          <plotly-plot
+            [data]="drugCountBarplot.data"
+            [layout]="drugCountBarplot.layout"
+          ></plotly-plot>
+        </div>
       </div>
       <div class="content tab-content meta" *ngIf="task && task.info.done" [class.is-visible]="tab === 'meta'">
         <div *ngIf="task">

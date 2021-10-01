@@ -19,3 +19,15 @@
   border: 1px solid #e4e4e4;
   display: inline-block;
 }
+
+#task-list.task-list-checkbox-hidden{
+  .task-list-checkbox {
+    display: none;
+  }
+}
+
+.task-list-checkbox {
+  width: 2rem;
+}
+
+

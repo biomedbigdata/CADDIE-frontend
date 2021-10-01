@@ -16,7 +16,7 @@ import {toast} from 'bulma-toast';
 import {Injectable} from '@angular/core';
 import {ControlService} from '../control/control.service';
 
-export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'harmonic' | 'degree' | 'proximity' | 'betweenness';
+export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'harmonic' | 'degree' | 'proximity' | 'betweenness' | 'summary';
 export type QuickAlgorithmType = 'quick' | 'super' | 'exampledrugtarget' | 'exampledrug';
 
 export const algorithmNames = {
@@ -27,6 +27,7 @@ export const algorithmNames = {
   degree: 'Degree Centrality',
   proximity: 'Network Proximity',
   betweenness: 'Betweenness Centrality',
+  summary: 'Summary',
   quick: 'Simple',
   super: 'Quick-Start',
   exampledrugtarget: 'Quick Target Search',
@@ -130,6 +131,15 @@ export class AnalysisService {
       this.drugStatus = status;
     });
 
+  }
+
+  addTask(token) {
+    const tokens = localStorage.getItem('tokens');
+    if (tokens) {
+      this.tokens = JSON.parse(tokens);
+    }
+    this.tokens.push(token);
+    localStorage.setItem('tokens', JSON.stringify(this.tokens));
   }
 
   removeTask(token) {

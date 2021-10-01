@@ -923,13 +923,11 @@
           </a>
         </header>
         <div *ngIf="collapseTask">
-          <div class="card-content overflow" *ngIf="analysis.tasks && analysis.tasks.length > 0">
-            <app-task-list
-              [taskList]="analysis.tasks"
-              (tokenChange)="setTaskToken($event)"
-            >
-            </app-task-list>
-          </div>
+          <app-task-list
+            [taskList]="analysis.tasks"
+            (tokenChange)="setTaskToken($event)"
+          >
+          </app-task-list>
           <footer class="card-footer">
             <a *ngIf="analysis.tasks && analysis.tasks.length > 0"
                (click)="analysis.removeAllTasks(); selectedAnalysisToken = null;"

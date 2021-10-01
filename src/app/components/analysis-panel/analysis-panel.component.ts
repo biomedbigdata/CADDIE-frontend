@@ -61,12 +61,15 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public task: Task | null = null;
 
+  public result: any = null;
+  public drugCountBarplot: any = undefined;
+
   private network: any;
   private nodeData: { nodes: any, edges: any } = {nodes: null, edges: null};
   private drugNodes: any[] = [];
   private drugEdges: any[] = [];
   public showDrugs = false;
-  public tab: 'meta' | 'network' | 'table' = 'table';
+  public tab: 'meta' | 'network' | 'table' | 'summary' = 'table';
   public physicsEnabled = true;
   public networkFullscreenStatus = false;
 
@@ -121,6 +124,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
     if (this.token) {
       this.task = await this.control.getTask(this.token);
+      this.tab = (this.task && this.task.info.algorithm == 'summary') ? 'summary' : 'table';
+
       this.analysis.switchSelection(this.token);
 
       this.loadingOverlay.addTo('analysis-content');
@@ -156,8 +161,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       }
 
       if (this.task && this.task.info.done) {
-        const result = await this.control.getTaskResult(this.token);
-        const nodeAttributes = result.nodeAttributes || {};
+        this.result = await this.control.getTaskResult(this.token);
+
+        const nodeAttributes = this.result.nodeAttributes || {};
         const isSeed: { [key: string]: boolean } = nodeAttributes.isSeed || {};
 
         // Reset
@@ -167,7 +173,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         this.showDrugs = false;
 
         // Create
-        const {nodes, edges} = this.createNetwork(result);
+        const {nodes, edges} = this.createNetwork(this.result);
         this.nodeData.nodes = new vis.DataSet(nodes);
         this.nodeData.edges = new vis.DataSet(edges);
 
@@ -358,6 +364,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableSelectedCancerNodes = [...cancerGeneSelection];
           }
         });
+        if (this.result.drugCounts !== undefined) {
+          this.loadDrugCountBarplot()
+        }
+
         this.loadingOverlay.removeFrom('analysis-content');
       }
     }
@@ -857,6 +867,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
      * Adds and remove Genes based on user selected genes via addItems() and removeItems()
      */
     const oldSelection = [...this.tableSelectedNodes];
+
     this.tableSelectedNodes = e;
     const addItems = [];
     const removeItems = [];
@@ -1057,6 +1068,38 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public formatStringList(stingList) {
     return stingList.join(', ');
+  }
+
+  public async loadDrugCountBarplot() {
+    this.drugCountBarplot = {
+      data: [
+        { x: Object.keys(this.result.drugCounts),
+          y: Object.values(this.result.drugCounts),
+          type: 'bar',
+          transforms: [{
+            type: 'sort',
+            target: 'y',
+            order: 'descending'
+          }],
+          marker: {
+            color: '#0080ff'
+          }},
+      ],
+
+      layout: {
+        // title: `title`,
+        xaxis: {
+          title: 'Drug Names',
+          automargin: true,
+        },
+        yaxis: {
+          automargin: true
+        }
+      },
+      config: {
+        responsive: true
+      }
+    };
   }
 
   public getNodeDegree(graphId: string): number {

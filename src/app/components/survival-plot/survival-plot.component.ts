@@ -34,7 +34,7 @@ export class SurvivalPlotComponent implements AfterViewInit {
     const rawTCGADatasets = await this.control.getTCGADatasets();
     this.TCGADatasets =  [];
     rawTCGADatasets.forEach( (ds: TCGADataset) => {
-      if (ds.disease_name == 'Ovarian Cancer AU') {
+      if (ds.disease_name === 'Ovarian Cancer AU') {
         // skip 'Ovarian Cancer AU'
         return;
       }

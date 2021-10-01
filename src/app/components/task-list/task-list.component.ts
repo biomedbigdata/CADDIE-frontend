@@ -47,8 +47,9 @@ export class TaskListComponent implements OnInit {
   }
 
   public async startSummmaryTask() {
-    const response = await this.control.postTaskSummmarize({'sourceTasks': this.taskSelection})
-    this.analysis.addTask(response['token']);
+    const response = await this.control.postTaskSummmarize({sourceTasks: this.taskSelection});
+    const tokenKey = 'token';
+    this.analysis.addTask(response[tokenKey]);
   }
 
 }

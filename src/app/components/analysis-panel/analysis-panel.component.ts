@@ -124,7 +124,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
     if (this.token) {
       this.task = await this.control.getTask(this.token);
-      this.tab = (this.task && this.task.info.algorithm == 'summary') ? 'summary' : 'table';
+      this.tab = (this.task && this.task.info.algorithm === 'summary') ? 'summary' : 'table';
 
       this.analysis.switchSelection(this.token);
 
@@ -365,7 +365,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           }
         });
         if (this.result.drugCounts !== undefined) {
-          this.loadDrugCountBarplot()
+          this.loadDrugCountBarplot();
         }
 
         this.loadingOverlay.removeFrom('analysis-content');

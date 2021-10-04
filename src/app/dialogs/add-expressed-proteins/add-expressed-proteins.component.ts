@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {AnalysisService} from '../../services/analysis/analysis.service';
-import {getWrapperFromNode, getWrapperFromCancerNode, Node, Tissue, CancerNode, CancerType} from '../../interfaces';
+import {getWrapperFromNode, getWrapperFromCancerNode, Node, CancerNode, Tissue} from '../../interfaces';
 import {ControlService} from '../../services/control/control.service';
 
 @Component({
@@ -22,9 +22,7 @@ export class AddExpressedProteinsComponent implements OnChanges {
   @Input()
   public currentViewCancerGenes: Array<CancerNode> = [];
   @Input()
-  public selectedTissue: Tissue | null = null;
-  @Input()
-  public currentCancerTypeItems: CancerType[];
+  public tissue: Tissue | null = null;
 
   public genes = [];
   public threshold = 5;
@@ -40,7 +38,7 @@ export class AddExpressedProteinsComponent implements OnChanges {
 
   public async addGenes() {
     this.loading = true;
-    const result = await this.control.query_tissue_genes(this.selectedTissue, this.threshold);
+    const result = await this.control.queryExpressionCancerTypeGenes(this.tissue, this.threshold);
     const items = [];
     for (const detail of result.genes) {
       items.push(getWrapperFromNode(detail));

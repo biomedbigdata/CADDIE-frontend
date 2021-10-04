@@ -15,12 +15,13 @@ import {
   getNodeIdsFromGeneGeneInteraction,
   getCancerDriverGeneNodeId,
   getGeneNodeId,
-  Tissue,
+  ExpressionCancerType,
   CancerType,
   Dataset,
   DiseaseGeneInteraction,
   Disease,
-  MutationCancerType
+  MutationCancerType,
+  Tissue
 } from '../../interfaces';
 import {Network, getDatasetFilename} from '../../main-network';
 import {HttpClient} from '@angular/common/http';
@@ -94,7 +95,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   public queryItems: Wrapper[] = [];
   public filterAddItems: Wrapper[] = [];
   public showAnalysisDialog = false;
-  public showThresholdDialog = false;
+  public showTissueThresholdDialog = false;
+  public showCancerThresholdDialog = false;
   public showDiseaseSelectionDialog = false;
   public showChangeDiseaseSelectionDialog = false;
   public analysisDialogTarget: 'drug' | 'drug-target';
@@ -116,11 +118,13 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
 
   public currentViewGenes: Node[];
   public currentViewCancerGenes: CancerNode[];
-  public currentViewSelectedTissue: Tissue | null = null;
+  public currentViewSelectedExpressionCancerType: ExpressionCancerType | null = null;
   public currentViewNodes: any[];
   public currentViewEdges: Set<string>;
 
   public expressionExpanded = false;
+  public selectedExpressionCancerType: ExpressionCancerType | null = null;
+
   public selectedTissue: Tissue | null = null;
 
   public mutationCancerTypesExpanded = false;
@@ -138,6 +142,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   private doubleClickTime: Date = new Date();
   private t0: Date = new Date();
   private threshold = 200;
+
+  public leftSidebarScrollTopButton = false;
 
 
   @ViewChild('network', {static: false}) networkEl: ElementRef;
@@ -355,15 +361,29 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.getComorbidities(this.selectedWrapper);
 
     this.showDetails = true;
+
+    // if left sidebar is scrolled down, offer user to scroll up
+    if (document.getElementById('left-sidebar').scrollTop) {
+      this.leftSidebarScrollTopButton = true;
+      // setTimeout(() => this.leftSidebarScrollTopButton = false, 1000);
+    }
   }
 
   private async getRelatedCancerTypes(item: Wrapper) {
     const data = await this.control.getRelatedCancerTypes(this.currentDataset, item.data);
+    // order alphabetically
+    data.cancerTypes.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
     this.selectedWrapperCancerTypes = data.cancerTypes;
   }
 
   private async getComorbidities(item: Wrapper) {
     const data = await this.control.getComorbidities(item.data);
+    // order alphabetically
+    data.interactions.sort((a, b) => {
+      return a.diseaseName.localeCompare(b.diseaseName);
+    });
     this.selectedWrapperComorbidities = data.interactions;
   }
 
@@ -402,7 +422,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * +
      * initializes network
      */
-    this.loadingOverlay.addTo('canvas-content');
+    this.loadingOverlay.addTo('network-card');
 
     // reset old stuff
     this.analysis.resetSelection();
@@ -518,7 +538,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     // fill adding option in the filter menu
     this.fillFilterItems(this.cancerNodesSup);
 
-    this.loadingOverlay.removeFrom('canvas-content');
+    this.loadingOverlay.removeFrom('network-card');
   }
 
   public fillFilterItems(cancerNodesSup: CancerNode[], reset: boolean = true) {
@@ -821,10 +841,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     this.visibleCancerNodeCount += cancerNodeItems.length;
     this.visibleNodeCount += nodeItems.length;
 
-    // check if tissue is selected, if yes, refresh so new node gets color gradient
+    // check if expressionCancerType is selected, if yes, refresh so new node gets color gradient
     // TODO just do this for new node
-    if (this.selectedTissue) {
-      this.selectTissue(this.selectedTissue);
+    if (this.selectedExpressionCancerType) {
+      this.selectExpressionCancerType(this.selectedExpressionCancerType);
     }
 
     toast({
@@ -949,7 +969,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  analysisWindowChanged($event: [any[], [Node[], CancerNode[], Tissue]]) {
+  analysisWindowChanged($event: [any[], [Node[], CancerNode[], ExpressionCancerType]]) {
     /**
      * Changes view to analysis window if event is given, else uses current data
      */
@@ -958,12 +978,12 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.currentViewNodes = $event[0];
       this.currentViewGenes = $event[1][0];
       this.currentViewCancerGenes = $event[1][1];
-      this.currentViewSelectedTissue = $event[1][2];
+      this.currentViewSelectedExpressionCancerType = $event[1][2];
     } else {
       this.currentViewNodes = this.nodeData.nodes;
       this.currentViewGenes = this.nodes;
       this.currentViewCancerGenes = this.cancerNodes;
-      this.currentViewSelectedTissue = this.selectedTissue;
+      this.currentViewSelectedExpressionCancerType = this.selectedExpressionCancerType;
     }
   }
 
@@ -1015,8 +1035,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Handle mutation button and colors the node based on nMutations
      */
 
-    // remove potential tissue selection
+    // remove potential expressionCancerType selection
+    this.selectedExpressionCancerType = null;
     this.selectedMutationCancerType = mutationCancerType;
+    this.selectedExpressionCancerType = null;
     this.selectedTissue = null;
 
     if (!this.selectedMutationCancerType) {
@@ -1055,7 +1077,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
      * Handle tissue button and fetch data based on tissue + manage expression data
      */
     // remove potential mutation gradient selection
+    this.selectedExpressionCancerType = null;
     this.selectedMutationCancerType = null;
+    this.selectedExpressionCancerType = null;
     this.expressionExpanded = false;
 
     if (!tissue) {
@@ -1093,13 +1117,61 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
           this.nodeData.nodes.update(updatedNodes);
         });
     }
+  }
 
-    this.currentViewSelectedTissue = this.selectedTissue;
+
+  public selectExpressionCancerType(expressionCancerType: ExpressionCancerType | null) {
+    /**
+     * Handle expressionCancerType button and fetch data based on expressionCancerType + manage expression data
+     */
+    // remove potential mutation gradient selection
+
+    this.selectedExpressionCancerType = null;
+    this.selectedMutationCancerType = null;
+    this.selectedTissue = null;
+    this.expressionExpanded = false;
+
+    if (!expressionCancerType) {
+      // if no expressionCancerType selected, we reset all nodes in network
+      this.selectedExpressionCancerType = null;
+      // reset each normal genes and cancer genes
+      const updatedNodes = [
+        ...this._resetNetworkColorGradient('Node'),
+        ...this._resetNetworkColorGradient('CancerNode')
+      ];
+      this.nodeData.nodes.update(updatedNodes);
+
+    } else {
+      // ELSE expressionCancerType is selected, fetch data based on min expression value
+      this.selectedExpressionCancerType = expressionCancerType;
+
+      const minExp = 0.3;
+      // fetch all data
+      this.control.expressionCancerTypeExpressionGenes(expressionCancerType, this.nodes, this.cancerNodes)
+        .subscribe((response) => {
+          // response is object with key "cancerGenes" and "genes"
+          // each which is list of objects with "gene" and "level" (expression value)
+          const maxExpr = Math.max(...[...response.genes, ...response.cancerGenes].map(lvl => lvl.level));
+
+          // fetch each normal genes and cancer genes
+          const updatedGenes = this._interpretExpressionCancerTypeExpressionResponse(
+            response.genes, maxExpr, minExp, 'Node'
+          );
+          const updatedCancerGenes = this._interpretExpressionCancerTypeExpressionResponse(
+            response.cancerGenes, maxExpr, minExp, 'CancerNode'
+          );
+
+          const updatedNodes = [...updatedGenes, ...updatedCancerGenes];
+          this.nodeData.nodes.update(updatedNodes);
+        });
+    }
+
+    this.currentViewSelectedExpressionCancerType = this.selectedExpressionCancerType;
   }
 
   private _resetNetworkColorGradient(nodeType: ('Node' | 'CancerNode')): Node[] {
     /**
-     * resets the color gradient from tissue expression to normal network colors
+     * resets the color gradient from expressionCancerType expression to normal network colors
      * We have to differentiate between Nodes and CancerNodes to not mix up the types in the network
      */
 
@@ -1137,6 +1209,8 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       node.gradient = 1.0;
       gene.expressionLevel = undefined;
       (node.wrapper.data as Node).expressionLevel = undefined;
+      gene.expressionLevelScore = undefined;
+      (node.wrapper.data as Node).expressionLevelScore = undefined;
       updatedNodes.push(node);
     }
     return updatedNodes;
@@ -1185,26 +1259,26 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
     return updatedNodes;
   }
 
-  private _interpretTissueExpressionResponse(
+  private _interpretExpressionCancerTypeExpressionResponse(
     /**
-     * Reads the result of the "TissueExpressionView" and converts it into input for the network
+     * Reads the result of the "ExpressionCancerTypeExpressionView" and converts it into input for the network
      * Main function is to calculate the color gradient based on expression value
      * We have to differentiate between Node and CancerNode to not mix up the types in the network
      */
-    geneList: { gene: (Node | CancerNode), level: number }[],
+    geneList: { gene: (Node | CancerNode), level: number, score?: number}[],
     maxExpr: number,
     minExp: number,
     nodeType: ('Node' | 'CancerNode')
   ): Node[] {
     const updatedNodes = [];
-    for (const lvl of geneList) {
+    for (const gene of geneList) {
       let item;
       let nodes;
       if (nodeType === 'Node') {
-        item = getWrapperFromNode(lvl.gene as Node);
+        item = getWrapperFromNode(gene.gene as Node);
         nodes = this.nodes;
       } else {
-        item = getWrapperFromCancerNode(lvl.gene as CancerNode);
+        item = getWrapperFromCancerNode(gene.gene as CancerNode);
         nodes = this.cancerNodes;
       }
 
@@ -1213,7 +1287,7 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
         continue;
       }
       // calculate color gradient
-      const gradient = lvl.level !== null ? (Math.pow(lvl.level / maxExpr, 1 / 3) * (1 - minExp) + minExp) : -1;
+      const gradient = gene.level !== null ? (Math.pow(gene.level / maxExpr, 1 / 1) * (1 - minExp) + minExp) : -1;
       const pos = this.network.getPositions([item.nodeId]);
       node.x = pos[item.nodeId].x;
       node.y = pos[item.nodeId].y;
@@ -1227,8 +1301,10 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
           gradient));
       node.wrapper = item;
       node.gradient = gradient;
-      nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
-      (node.wrapper.data as (Node | CancerNode)).expressionLevel = lvl.level;
+      nodes.find(g => getGeneNodeId(g) === item.nodeId).expressionLevelScore = gene.score;
+      (node.wrapper.data as (Node | CancerNode)).expressionLevelScore = gene.score;
+      nodes.find(g => getGeneNodeId(g) === item.nodeId).expressionLevel = gene.level;
+      (node.wrapper.data as (Node | CancerNode)).expressionLevel = gene.level;
       updatedNodes.push(node);
     }
     return updatedNodes;
@@ -1342,11 +1418,122 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
       this.currentViewGenes,
       this.currentViewCancerGenes
     );
-    this.analysis.addDiseaseGenes(
+    let n = 0;
+    n += this.analysis.addDiseaseGenes(
       this.currentViewNodes, this.currentViewGenes, result.inDiseasesGenes, 'Node');
-    this.analysis.addDiseaseGenes(
+    n += this.analysis.addDiseaseGenes(
       this.currentViewNodes, this.currentViewCancerGenes, result.inDiseasesCancerGenes, 'CancerNode');
+
+    // if no nodes were added, remove selected nodes instead
+    if (!n) {
+      this.analysis.removeDiseaseGenes(
+        this.currentViewNodes, this.currentViewGenes, result.inDiseasesGenes, 'Node');
+      this.analysis.removeDiseaseGenes(
+        this.currentViewNodes, this.currentViewCancerGenes, result.inDiseasesCancerGenes, 'CancerNode');
+    }
   }
 
+  private _interpretTissueExpressionResponse(
+    /**
+     * Reads the result of the "TissueExpressionView" and converts it into input for the network
+     * Main function is to calculate the color gradient based on expression value
+     * We have to differentiate between Node and CancerNode to not mix up the types in the network
+     */
+    geneList: { gene: (Node | CancerNode), level: number }[],
+    maxExpr: number,
+    minExp: number,
+    nodeType: ('Node' | 'CancerNode')
+  ): Node[] {
+    const updatedNodes = [];
+    for (const lvl of geneList) {
+      let item;
+      let nodes;
+      if (nodeType === 'Node') {
+        item = getWrapperFromNode(lvl.gene as Node);
+        nodes = this.nodes;
+      } else {
+        item = getWrapperFromCancerNode(lvl.gene as CancerNode);
+        nodes = this.cancerNodes;
+      }
+
+      const node = this.nodeData.nodes.get(item.nodeId);
+      if (!node) {
+        continue;
+      }
+      // calculate color gradient
+      const gradient = lvl.level !== null ? (Math.pow(lvl.level / maxExpr, 1 / 3) * (1 - minExp) + minExp) : -1;
+      const pos = this.network.getPositions([item.nodeId]);
+      node.x = pos[item.nodeId].x;
+      node.y = pos[item.nodeId].y;
+      Object.assign(node,
+        NetworkSettings.getNodeStyle(
+          node.wrapper.type,
+          node.isSeed,
+          this.analysis.inSelection(item),
+          undefined,
+          undefined,
+          gradient));
+      node.wrapper = item;
+      node.gradient = gradient;
+      nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
+      (node.wrapper.data as (Node | CancerNode)).expressionLevel = lvl.level;
+      updatedNodes.push(node);
+    }
+    return updatedNodes;
+  }
+
+  public exampleSearch(target: 'drug' | 'drug-target') {
+
+    // get seed genes if selected, otherwise all cancer genes
+    const parameters: any = {};
+    const selection = this.analysis.getSelection();
+    if (selection.length) {
+      // get selected genes as seeds
+      parameters.seeds = selection.map((item) => this.analysis.getGraphId(item));
+    } else {
+      // get all cancer driver genes as seeds
+      parameters.seeds = this.cancerNodes.map((item) => item.graphId);
+    }
+
+    // new input from caddie
+    parameters.cancer_dataset = 'NCG6';
+    parameters.cancer_dataset_id = this.selectedDataset.backendId;
+    parameters.gene_interaction_dataset = 'BioGRID';
+    parameters.gene_interaction_dataset_id = this.selectedInteractionGeneDataset.backendId;
+    parameters.drug_interaction_dataset = 'DGIdb';
+    parameters.drug_interaction_dataset_id = this.selectedInteractionDrugDataset.backendId;
+    parameters.cancer_types = this.selectedCancerTypeItems.map( (cancerType) => cancerType.backendId );
+    parameters.includeNutraceuticalDrugs = true;
+    parameters.onlyAtcLDrugs = false;
+    parameters.filterPaths = true;
+    parameters.mutationCancerType = this.selectedMutationCancerType ? this.selectedMutationCancerType.abbreviation : null;
+    parameters.expressionCancerType = this.selectedExpressionCancerType ? this.selectedExpressionCancerType.name : null;
+
+    if (target === 'drug-target') {
+      // use betweenness centrality
+      parameters.damping_factor = 0.5;
+      parameters.include_indirect_drugs = true;
+      parameters.include_non_approved_drugs = true;
+      parameters.ignore_non_seed_baits = false;
+      // parameters.max_deg = 6;
+      parameters.hub_penalty = 0;
+      parameters.result_size = 10;
+      this.analysis.startQuickAnalysis('exampledrugtarget', target, parameters);
+
+    } else if (target === 'drug') {
+      // harmonic centrality
+      parameters.damping_factor = 0.5;
+      parameters.include_indirect_drugs = true;
+      parameters.include_non_approved_drugs = true;
+      parameters.ignore_non_seed_baits = false;
+      // parameters.max_deg = 0;
+      parameters.hub_penalty = 0;
+      parameters.result_size = 10;
+      this.analysis.startQuickAnalysis('exampledrug', target, parameters);
+
+    }
+
+
+  }
 
 }

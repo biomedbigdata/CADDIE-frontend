@@ -2,7 +2,18 @@ import { Injectable } from '@angular/core';
 
 import {environment} from '../../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {CancerType, MutationCancerType, Dataset, CancerNode, Node, Tissue, Disease, DrugStatus} from '../../interfaces';
+import {
+  CancerType,
+  MutationCancerType,
+  Tissue,
+  Dataset,
+  CancerNode,
+  Node,
+  ExpressionCancerType,
+  Disease,
+  DrugStatus,
+  TCGADataset
+} from '../../interfaces';
 import {AlgorithmType, QuickAlgorithmType} from '../analysis/analysis.service';
 import {Observable} from 'rxjs';
 
@@ -296,6 +307,16 @@ export class ControlService {
     }).toPromise();
   }
 
+  public async postTaskSummmarize(parameters, ) {
+    /**
+     * sends a summary task to task summarize service
+     */
+
+    return this.http.post<any>(`${environment.backend}task_summarize/`, {
+      parameters,
+    }).toPromise();
+  }
+
   public async getDrugInteractions(token, drugStatus: DrugStatus): Promise<any> {
     /**
      * returns drugs that have interactions with analysis result nodes
@@ -312,31 +333,32 @@ export class ControlService {
     return this.http.get<any>(`${environment.backend}drug_interactions/`, {params}).toPromise();
   }
 
-  public async queryGenes(nodes, cancerDataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
+  public async queryGenes(queryNodes, cancerDataset: Dataset, cancerTypes: CancerType[]): Promise<any> {
     /**
      * returns genes for genes in list if gene is in db
      */
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
     const cancerTypesIdsString = cancerTypesIds.join(',');
-
     return this.http.post<any>(`${environment.backend}query_nodes/`, {
-      nodes: JSON.stringify(nodes),
-      cancerDataset: JSON.stringify(cancerDataset.backendId),
-      cancerTypes:  JSON.stringify(cancerTypesIdsString)
+      nodes: queryNodes,
+      cancerDataset: cancerDataset.backendId,
+      cancerTypes:  cancerTypesIdsString
     }).toPromise();
   }
 
-  public tissueExpressionGenes(tissue: Tissue, genes: Node[], cancerGenes: CancerNode[]): Observable<any> {
+  public expressionCancerTypeExpressionGenes(
+    expressionCancerType: ExpressionCancerType, genes: Node[], cancerGenes: CancerNode[]
+    ): Observable<any> {
     /**
-     * Returns the expression in the given tissue for given nodes and cancerNodes
+     * Returns the expression in the given expressionCancerType for given nodes and cancerNodes
      */
     const genesBackendIds = genes.map( (gene) => gene.backendId).join(',');
     const cancerGenesBackendIds = cancerGenes.map( (gene) => gene.backendId).join(',');
     const params = new HttpParams()
-      .set('tissue', `${tissue.backendId}`)
+      .set('cancerType', `${expressionCancerType.backendId}`)
       .set('genes', JSON.stringify(genesBackendIds))
       .set('cancerGenes', JSON.stringify(cancerGenesBackendIds));
-    return this.http.get(`${environment.backend}tissue_expression/`, {params});
+    return this.http.get(`${environment.backend}gene_expression/`, {params});
   }
 
   public mutationScores(
@@ -358,7 +380,29 @@ export class ControlService {
       ).toPromise();
     }
 
-  public tissueExpression(tissue: Tissue, dataset: Dataset, cancerTypes: CancerType[]): Observable<any> {
+  public tissues(): Observable<any> {
+    /**
+     * Lists all available tissues with id and name
+     */
+    return this.http.get<Tissue[]>(`${environment.backend}tissues/`);
+  }
+
+  public tissueExpressionGenes(tissue: Tissue, genes: Node[], cancerGenes: CancerNode[]): Observable<any> {
+    /**
+     * Returns the expression in the given tissue for given nodes and cancerNodes
+     */
+    const genesBackendIds = genes.map( (gene) => gene.backendId).join(',');
+    const cancerGenesBackendIds = cancerGenes.map( (gene) => gene.backendId).join(',');
+    const params = new HttpParams()
+      .set('tissue', `${tissue.backendId}`)
+      .set('genes', JSON.stringify(genesBackendIds))
+      .set('cancerGenes', JSON.stringify(cancerGenesBackendIds));
+    return this.http.get(`${environment.backend}tissue_expression/`, {params});
+  }
+
+  public expressionCancerTypeExpression(
+    expressionCancerType: ExpressionCancerType, dataset: Dataset, cancerTypes: CancerType[]
+    ): Observable<any> {
     /**
      * Fetches genes with expression levels for input data
      * returns list of objects with key "gene" and gene-information as well as
@@ -367,23 +411,30 @@ export class ControlService {
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
     const cancerTypesIdsString = cancerTypesIds.join(',');
     const params = new HttpParams()
-      .set('tissue', `${tissue.backendId}`)
+      .set('expressionCancerType', `${expressionCancerType.backendId}`)
       .set('data', JSON.stringify(dataset.backendId))
       .set('cancerTypes', JSON.stringify(cancerTypesIdsString));
 
-    return this.http.get(`${environment.backend}tissue_expression/`, {params});
+    return this.http.get(`${environment.backend}gene_expression/`, {params});
   }
 
-  public tissues(): Observable<any> {
+  public drugTargetActions(): Observable<any> {
     /**
-     * Lists all available tissues with id and name
+     * Lists all available drugTargetActions with id and name
      */
-    return this.http.get<Tissue[]>(`${environment.backend}tissues/`);
+    return this.http.get<ExpressionCancerType[]>(`${environment.backend}drug_target_actions/`);
+  }
+
+  public expressionCancerTypes(): Observable<any> {
+    /**
+     * Lists all available expressionCancerTypes with id and name
+     */
+    return this.http.get<ExpressionCancerType[]>(`${environment.backend}expression_cancer_types/`);
   }
 
   public mutationCancerTypes(): Observable<any> {
     /**
-     * Lists all available tissues with id and name
+     * Lists all available expressionCancerTypes with id and name
      */
     return this.http.get<MutationCancerType[]>(`${environment.backend}mutation_cancer_types/`);
   }
@@ -395,14 +446,14 @@ export class ControlService {
     return this.http.get<DrugStatus[]>(`${environment.backend}drug_status/`);
   }
 
-  public query_tissue_genes(tissue: Tissue, threshold: number): Promise<any> {
+  public queryExpressionCancerTypeGenes(expressionCancerType: ExpressionCancerType, threshold: number): Promise<any> {
     /**
-     * Lists all available tissues with id and name
+     * Lists all available expressionCancerTypes with id and name
      */
 
-    return this.http.post<any>(`${environment.backend}query_tissue_genes/`,
+    return this.http.post<any>(`${environment.backend}query_expressionCancerType_genes/`,
       {
-        tissueId: JSON.stringify(tissue.backendId),
+        expressionCancerTypeId: JSON.stringify(expressionCancerType.backendId),
         threshold: JSON.stringify(threshold)
       }).toPromise();
   }
@@ -447,8 +498,8 @@ export class ControlService {
      */
 
     const params = new HttpParams()
-      .set('text', JSON.stringify(searchString))
-      .set('dataset', JSON.stringify(dataset.backendId));
+      .set('text', searchString)
+      .set('dataset_id', dataset.backendId.toString());
     return this.http.get(`${environment.backend}drug_interaction_lookup/`, {params}).toPromise();
   }
 
@@ -458,6 +509,34 @@ export class ControlService {
         fileData: JSON.stringify(fileContent),
         threshold:  JSON.stringify(threshold),
       }).toPromise();
+  }
+
+  public async getTCGADatasets(): Promise<TCGADataset[]> {
+    /**
+     * Returns promise of a list of all TCGA datasets
+     */
+
+    return this.http.get<any>(`https://exbio.wzw.tum.de/sponge-api/dataset`).toPromise();
+  }
+
+  public async getSurvivalPValue(diseaseName, geneSymbol): Promise<any> {
+    /**
+     * Returns promise of a list of survival p values for a node
+     */
+    const params = new HttpParams()
+    .set('disease_name', diseaseName)
+    .set('gene_symbol', geneSymbol);
+    return this.http.get<any>(`https://exbio.wzw.tum.de/sponge-api/survivalAnalysis/getPValues`, {params}).toPromise();
+  }
+
+  public async getSurvivalRates(diseaseName, geneSymbol): Promise<any> {
+    /**
+     * Returns promise of a list of survival rates for a node
+     */
+    const params = new HttpParams()
+    .set('disease_name', diseaseName)
+    .set('gene_symbol', geneSymbol);
+    return this.http.get<any>(`https://exbio.wzw.tum.de/sponge-api/survivalAnalysis/getRates`, {params}).toPromise();
   }
 
 }

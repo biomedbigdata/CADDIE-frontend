@@ -7,6 +7,7 @@
 
 $family-sans-serif: "Varela Round", sans-serif;
 $primary: #408B25;
+$secondary: #5b005b;
 $success: #48C774;
 $danger: #EF476F;
 $link: $primary;
@@ -30,6 +31,18 @@ body {
   height: 100%;
 }
 
+button.is-example {
+    background-color: $secondary;
+    color: white;
+    &:hover{
+      color: white;
+    }
+}
+
+.example {
+  border-color: $secondary !important;
+}
+
 .navbar-container {
   background-color: $primary;
   nav.navbar {
@@ -42,9 +55,10 @@ body {
   }
 }
 
-
-row-data-selector {
+.row-data-selector {
   height: $row-data-selector-height;
+  margin-left: 10px;
+  padding-top: 10px;
 }
 
 img.menu-icon.is-hoverable.navbar-item.logo {
@@ -118,7 +132,6 @@ div.caddie.bar-left {
   float: left;
   position: relative;
   z-index: 30;
-  padding-top: 10px;
 }
 
 div.caddie.bar-right {
@@ -193,7 +206,6 @@ div.center {
 
 div.caddie.explorer {
   height: calc(100vh - #{$navbar-height});
-  margin-left: 10px;
   margin-right: 10px;
 }
 
@@ -238,9 +250,13 @@ div.field.has-addons.add-remove-toggle {
 .network-footer-container {
   display: flex;
   flex-wrap: wrap;
+  position: absolute;
+  bottom: 0;
+  background: white;
   .footer-buttons {
     margin-left: 5px;
     margin-right: 5px;
+    margin-bottom: 5px;
   }
 }
 
@@ -271,7 +287,7 @@ body {
   border: 1px solid black !important;
 }
 
-.tissue-dropdown {
+.expressionCancerType-dropdown {
   padding: 5px;
   background-color: rgba(255.0, 255.0, 255.0, 0.85);
 
@@ -288,9 +304,14 @@ body {
 
 .legend {
   position: absolute;
-  bottom: 0;
+  top: 0px;
+  right: 0px;
   &.main {
-    bottom: calc(0px + #{$network-footer-height});
+    top: calc(1.5rem + #{$network-header-height});
+    right: 10px;
+  }
+  &.pushed-left {
+    right: calc(10px + #{$legend-width});
   }
   td{
     height: $legend-circle-size;
@@ -364,6 +385,10 @@ body {
   }
 }
 
+.self-align {
+  margin: 0 auto;
+}
+
 .loadingOverlay{
   position: absolute;
   top: 0;
@@ -378,9 +403,8 @@ body {
 
 .legend.gradient{
   height: 200px;
-  width: 150px;
+  width: $legend-width;
   position: absolute;
-  bottom: 0;
   right: -20px;
   &.main {
     bottom: calc(10px + #{$network-footer-height});
@@ -435,3 +459,35 @@ body {
   overflow-y: auto;
   height: calc(100vh - #{$navbar-height})
 }
+
+html {
+  --scrollbarBG: rgba(64, 139, 37, 0.1);
+  --thumbBG: rgba(64, 139, 37, 0.5);
+}
+body::-webkit-scrollbar {
+  width: 5px;
+}
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+body::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+body::-webkit-scrollbar-thumb {
+  background-color: var(--thumbBG) ;
+  border-radius: 6px;
+  border: 3px solid var(--scrollbarBG);
+}
+
+body::-moz-scrollbar-button:decrement,
+body::-moz-scrollbar-button:increment,
+body::-webkit-scrollbar-button:decrement,
+body::-webkit-scrollbar-button:increment {
+  width: 0px;
+}
+
+.hidden{
+  display: none;
+}
+

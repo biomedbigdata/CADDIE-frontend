@@ -4,7 +4,7 @@
             class="button is-primary" [class.is-outlined]="!selectedElement"
             aria-haspopup="true" aria-controls="dropdown-menu">
       <span *ngIf="!selectedElement">{{ label }}</span>
-      <span *ngIf="selectedElement">{{selectedElement.name}}</span>
+      <span *ngIf="selectedElement" class="is-capitalized">{{selectedElement.name}}</span>
       <span class="icon is-small">
                   <i class="fas"
                      [class.fa-angle-up]="expanded"
@@ -13,7 +13,7 @@
     </button>
   </div>
   <div class="dropdown-menu" id="dropdown-menu" role="menu">
-    <div class="dropdown-content tissue-dropdown">
+    <div class="dropdown-content expressionCancerType-dropdown">
       <div class="scroll-area">
         <a (click)="onSelect(null)"
            [class.is-active]="!selectedElement"

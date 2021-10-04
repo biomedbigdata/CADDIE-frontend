@@ -35,6 +35,7 @@ export class CustomGenesComponent implements OnInit {
   public addedCount = 0;
   public selectOnly = false;
   public loading = false;
+  public notCancerGenes: Array<string> = [];
 
   constructor(private analysis: AnalysisService, private control: ControlService) { }
 
@@ -47,6 +48,7 @@ export class CustomGenesComponent implements OnInit {
     this.genes = [];
     this.notFound = [];
     this.itemsFound = [];
+    this.notCancerGenes = [];
     this.addedCount = 0;
     this.selectOnly = false;
     this.showChange.emit(this.show);
@@ -56,6 +58,7 @@ export class CustomGenesComponent implements OnInit {
     this.loading = true;
     this.notFound = [];
     this.itemsFound = [];
+    this.notCancerGenes = [];
     const genes = this.genes;
     this.changeTextList('');
     // result contains 'genes' and 'cancerGenes' and 'notFound'
@@ -72,6 +75,10 @@ export class CustomGenesComponent implements OnInit {
     this.addedCount = this.analysis.addItems(items);
     this.selectOnly = false;
     this.loading = false;
+
+    if (result.notKnownCancerGenes.length) {
+      this.notCancerGenes = result.notKnownCancerGenes;
+    }
     // to trigger template update
     this.showChange.emit(this.show);
   }
@@ -80,6 +87,7 @@ export class CustomGenesComponent implements OnInit {
     this.loading = true;
     this.notFound = [];
     this.itemsFound = [];
+    this.notCancerGenes = [];
     const genes = this.genes;
     this.changeTextList('');
     // result contains 'genes' and 'cancerGenes' and 'notFound'
@@ -108,7 +116,12 @@ export class CustomGenesComponent implements OnInit {
       return;
     }
 
+    const filterOut = [`'`];
     const separators = ['\n', ',', ';', ' '];
+
+    for (const char of filterOut) {
+      textList = textList.replaceAll(char, '');
+    }
 
     let genes;
     for (const sep of separators) {

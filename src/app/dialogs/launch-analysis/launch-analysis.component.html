@@ -120,9 +120,9 @@
         <div class="field">
           <label class="label">Expression Weights</label>
           <app-launch-analysis-category-dropdown
-            [categories]="analysis.getTissues()"
-            [selectedCategory]="selectedTissue"
-            (selectedCategoryChange)="setSelectedTissue($event)">
+            [categories]="analysis.getExpressionCancerTypes()"
+            [selectedCategory]="selectedExpressionCancerType"
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)">
           </app-launch-analysis-category-dropdown>
         </div>
 
@@ -208,9 +208,9 @@
         <div class="field">
           <label class="label">Expression Weights</label>
           <app-launch-analysis-category-dropdown
-            [categories]="analysis.getTissues()"
-            [selectedCategory]="selectedTissue"
-            (selectedCategoryChange)="setSelectedTissue($event)">
+            [categories]="analysis.getExpressionCancerTypes()"
+            [selectedCategory]="selectedExpressionCancerType"
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)">
           </app-launch-analysis-category-dropdown>
         </div>
       </div>
@@ -227,7 +227,7 @@
                 <h6 class="is-6">About Degree Centrality</h6>
                 <p>
                   Degree Centrality assigns an importance score based simply on the number of links held by each node.
-                  In CoVex, we use a modified version which does not consider all links but only the neighbouring seeds.
+                  In CADDIE, we use a modified version which does not consider all links but only the neighbouring seeds.
                 </p>
               </div>
             </div>
@@ -329,9 +329,9 @@
         <div class="field">
           <label class="label">Expression Weights</label>
           <app-launch-analysis-category-dropdown
-            [categories]="analysis.getTissues()"
-            [selectedCategory]="selectedTissue"
-            (selectedCategoryChange)="setSelectedTissue($event)">
+            [categories]="analysis.getExpressionCancerTypes()"
+            [selectedCategory]="selectedExpressionCancerType"
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)">
           </app-launch-analysis-category-dropdown>
         </div>
 
@@ -398,9 +398,9 @@
         <div class="field">
           <label class="label">Expression Weights</label>
           <app-launch-analysis-category-dropdown
-            [categories]="analysis.getTissues()"
-            [selectedCategory]="selectedTissue"
-            (selectedCategoryChange)="setSelectedTissue($event)">
+            [categories]="analysis.getExpressionCancerTypes()"
+            [selectedCategory]="selectedExpressionCancerType"
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)">
           </app-launch-analysis-category-dropdown>
         </div>
       </div>
@@ -528,9 +528,9 @@
         <div class="field">
           <label class="label">Expression Weights</label>
           <app-launch-analysis-category-dropdown
-            [categories]="analysis.getTissues()"
-            [selectedCategory]="selectedTissue"
-            (selectedCategoryChange)="setSelectedTissue($event)">
+            [categories]="analysis.getExpressionCancerTypes()"
+            [selectedCategory]="selectedExpressionCancerType"
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)">
           </app-launch-analysis-category-dropdown>
         </div>
 
@@ -544,6 +544,15 @@
                                       [selectedDataset]="selectedDrugInteractionDataset"
                                       (selectedDatasetChange)="selectedDrugInteractionDataset = $event;">
         </app-interaction-dataset-tile>
+      </div>
+
+      <div class="field" *ngIf="target === 'drug' && selectedDrugInteractionDataset.name === 'DrugBank'">
+        <label class="label">Drug Target Actions</label>
+        <app-launch-analysis-category-dropdown
+            [categories]="analysis.getDrugTargetActions()"
+            [selectedCategory]="selectedDrugTargetAction"
+            (selectedCategoryChange)="setSelectedDrugTargetAction($event)">
+          </app-launch-analysis-category-dropdown>
       </div>
 
       <div class="field" *ngIf="target === 'drug'">

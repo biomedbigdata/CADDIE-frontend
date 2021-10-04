@@ -21,12 +21,12 @@ export class CategorySelectorComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onSelect(tissue: BackendObject | null) {
+  onSelect(expressionCancerType: BackendObject | null) {
     // close pop out
     this.expanded = !this.expanded;
 
-    this.selectedElement = tissue;
-    this.callbackFun.emit(tissue);
+    this.selectedElement = expressionCancerType;
+    this.callbackFun.emit(expressionCancerType);
   }
 
 }

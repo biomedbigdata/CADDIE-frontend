@@ -26,10 +26,23 @@
       <b><span>Protein Name:</span></b>
       {{ wrapper.data.proteinName }}
     </p>
-    <p *ngIf="wrapper.data.mutationScore"
-       class="has-tooltip-right" data-tooltip="Based on number of mutations. See 'About' for more information">
+    <p *ngIf="wrapper.data.expressionLevel">
+      <b><span>Expression Level:</span></b>
+      <span class="has-tooltip-right" data-tooltip="Expression level in selected tissue, transcripts per million">
+        {{ wrapper.data.expressionLevel | number : '1.0-3'  }} tpm
+      </span>
+    </p>
+    <p *ngIf="wrapper.data.expressionLevelScore">
+      <b><span>Expression Score:</span></b>
+      <span class="has-tooltip-right" data-tooltip="Expression level in selected cancer type or tissue (normalized from 0 to 1)">
+        {{ wrapper.data.expressionLevelScore | number : '1.0-3'  }}
+      </span>
+    </p>
+    <p *ngIf="wrapper.data.mutationScore">
       <b><span>Mutation Score:</span></b>
-      {{ wrapper.data.mutationScore | number : '1.0-3'  }}
+      <span class="has-tooltip-right" data-tooltip="Based on number of mutations. See 'About' for more information">
+        {{ wrapper.data.mutationScore | number : '1.0-3'  }}
+      </span>
     </p>
     <p *ngIf="nodeDegree">
       <b><span>Node Degree:</span></b>
@@ -38,20 +51,20 @@
 
     <ng-container *ngIf="wrapper.data.cancerOccurrences">
       <b><span>Related Cancer Types ({{ wrapper.data.cancerOccurrences }}):</span></b>
-      <div class="content scroll-120">
-        <ul *ngFor="let item of wrapperCancerTypes">
-          <li>{{ item.name }}</li>
-        </ul>
-      </div>
+      <ul class="content scroll-120">
+        <li *ngFor="let item of wrapperCancerTypes">
+          {{ item.name }}
+        </li>
+      </ul>
     </ng-container>
 
-    <ng-container *ngIf="wrapperComorbidities">
+    <ng-container *ngIf="wrapperComorbidities.length">
       <b><span>Comorbidities ({{ wrapperComorbidities.length }}):</span></b>
-      <div class="content scroll-120">
-        <ul *ngFor="let item of wrapperComorbidities">
-          <li>{{ item.diseaseName }}</li>
-        </ul>
-      </div>
+      <ul class="content scroll-120">
+        <li *ngFor="let item of wrapperComorbidities">
+          {{ item.diseaseName }}
+        </li>
+      </ul>
     </ng-container>
 
   </div>
@@ -83,10 +96,23 @@
       <b><span>Protein Name:</span></b>
         {{ wrapper.data.proteinName }}
     </p>
-    <p *ngIf="wrapper.data.mutationScore"
-       class="has-tooltip-right" data-tooltip="Based on number of mutations. See 'About' for more information">
+    <p *ngIf="wrapper.data.expressionLevel">
+      <b><span>Expression Level:</span></b>
+      <span class="has-tooltip-right" data-tooltip="Expression level in selected tissue, transcripts per million">
+        {{ wrapper.data.expressionLevel | number : '1.0-3'  }} tpm
+      </span>
+    </p>
+    <p *ngIf="wrapper.data.expressionLevelScore">
+      <b><span>Expression Score:</span></b>
+      <span class="has-tooltip-right" data-tooltip="Expression level in selected cancer type or tissue (normalized from 0 to 1)">
+        {{ wrapper.data.expressionLevelScore | number : '1.0-3'  }}
+      </span>
+    </p>
+    <p *ngIf="wrapper.data.mutationScore">
       <b><span>Mutation Score:</span></b>
-      {{ wrapper.data.mutationScore | number : '1.0-3'  }}
+      <span class="has-tooltip-right" data-tooltip="Based on number of mutations. See 'About' for more information">
+        {{ wrapper.data.mutationScore | number : '1.0-3'  }}
+      </span>
     </p>
     <p *ngIf="nodeDegree">
       <b><span>Node Degree:</span></b>
@@ -94,20 +120,20 @@
     </p>
     <ng-container *ngIf="wrapper.data.cancerOccurrences">
       <b><span>Related Cancer Types ({{ wrapper.data.cancerOccurrences }}):</span></b>
-      <div class="content scroll-120">
-        <ul *ngFor="let item of wrapperCancerTypes">
-          <li>{{ item.name }}</li>
-        </ul>
-      </div>
+      <ul class="content scroll-120">
+        <li *ngFor="let item of wrapperCancerTypes">
+          {{ item.name }}
+        </li>
+      </ul>
     </ng-container>
 
-    <ng-container *ngIf="wrapperComorbidities">
+    <ng-container *ngIf="wrapperComorbidities.length">
       <b><span>Comorbidities ({{ wrapperComorbidities.length }}):</span></b>
-      <div class="content scroll-120">
-        <ul *ngFor="let item of wrapperComorbidities">
-          <li>{{ item.diseaseName }}</li>
-        </ul>
-      </div>
+      <ul class="content scroll-120">
+        <li *ngFor="let item of wrapperComorbidities">
+          {{ item.diseaseName }}
+        </li>
+      </ul>
     </ng-container>
 
 
@@ -147,37 +173,54 @@
       {{ nodeDegree }}
     </p>
 
-    <p *ngIf="wrapper.data.isNutraceutical">
-      <b>Is Nutraceutical: </b> <span class="icon is-small"><i class="fas fa-check"></i></span>
-    </p>
-    <p *ngIf="!wrapper.data.isNutraceutical">
-      <b>Is Nutraceutical: </b> <span class="icon is-small"><i class="fas fa-times"></i></span>
-    </p>
-
-    <p *ngIf="wrapper.data.isAtcAntineoplasticAndImmunomodulatingAgent"
-       class="has-tooltip-right" data-tooltip="ATC Class L antineoplastic and immunomodulating agents">
-      <b>ATC L: </b> <span class="icon is-small"><i class="fas fa-check"></i></span>
-    </p>
-    <p *ngIf="!wrapper.data.isAtcAntineoplasticAndImmunomodulatingAgent"
-       class="has-tooltip-right" data-tooltip="ATC Class L antineoplastic and immunomodulating agents">
-      <b>ATC L: </b> <span class="icon is-small"><i class="fas fa-times"></i></span>
+    <p>
+      <b>Is Nutraceutical: </b> 
+      <span class="icon is-small">
+        <i class="fas fa-check"
+        [class.fa-times] = "!wrapper.data.isNutraceutical"
+        [class.fa-check] = "wrapper.data.isNutraceutical"
+        ></i>
+      </span>
     </p>
 
-    <p *ngIf="wrapper.data.inCancernet">
-      <b>In Cancernet: </b> <span class="icon is-small"><i class="fas fa-check"></i></span>
-    </p>
-    <p *ngIf="!wrapper.data.inCancernet">
-      <b>In Cancernet: </b> <span class="icon is-small"><i class="fas fa-times"></i></span>
+    <p>
+      <b>ATC L: </b> 
+      <span class="icon is-small has-tooltip-right" 
+      data-tooltip="ATC Class L antineoplastic and immunomodulating agents">
+        <i class="fas" 
+        [class.fa-times] = "!wrapper.data.isAtcAntineoplasticAndImmunomodulatingAgent"
+        [class.fa-check] = "wrapper.data.isAtcAntineoplasticAndImmunomodulatingAgent"
+        ></i>
+      </span>
     </p>
 
-
+    <p>
+      <b>In Cancernet: </b> 
+      <span class="icon is-small">
+        <i class="fas"
+        [class.fa-times] = "!wrapper.data.inCancernet"
+        [class.fa-check] = "wrapper.data.inCancernet"
+        ></i>
+      </span>
+    </p>
   </div>
 
   <div class="field has-addons add-remove-toggle" *ngIf="wrapper.type !== 'Drug'">
     <app-toggle [value]="analysis.inSelection(wrapper)"
                 (valueChange)="$event ? analysis.addItems([wrapper]) : analysis.removeItems([wrapper])" textOn="Selected"
-                textOff="Deselected" tooltipOn="Add node to selection." tooltipOff="Remove node from selection."></app-toggle>
+                textOff="Deselected" 
+                tooltipOn="Add node to selection." 
+                tooltipOff="Remove node from selection."
+                class="self-align"
+                ></app-toggle>
   </div>
+
+  <ng-container *ngIf="wrapper.type !== 'Drug'">
+    <app-survival-plot
+      [wrapper]="wrapper"
+    >
+    </app-survival-plot>
+  </ng-container>
 
 </div>
 <div *ngIf="!wrapper">

@@ -11,11 +11,28 @@ export interface Node {
   x?: number;
   y?: number;
   expressionLevel?: number;
+  expressionLevelScore?: number;
   uniprotAc?: string;
   proteinName?: string;
   cancerOccurrences: number;
   mutationCounts: number;
   mutationScore: number;
+}
+
+export interface DrugTargetAction {
+  /**
+   * Interface for action of drugs to targets
+   */
+  backendId: number;
+  name: string;
+}
+
+export interface ExpressionCancerType {
+  /**
+   * Interface for expressionCancerType
+   */
+  backendId: number;
+  name: string;
 }
 
 export interface Tissue {
@@ -77,6 +94,7 @@ export interface CancerNode {
   uniprotAc?: string;
   proteinName?: string;
   expressionLevel?: number;
+  expressionLevelScore?: number;
   mutationCounts: number;
   mutationScore: number;
 }
@@ -297,6 +315,14 @@ export interface Disease {
 export interface CancerType {
   name: string;
   backendId: number;
+}
+
+export interface TCGADataset {
+  data_origin: string;
+  dataset_ID: number;
+  disease_name: string;
+  disease_type: string;
+  download_url: string;
 }
 
 export interface BackendObject {

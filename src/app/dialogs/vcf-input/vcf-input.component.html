@@ -40,13 +40,18 @@
           </div>
         </div>
         <div class="field">
-          <label for="file">Choose File</label>
+          <label for="file">Choose a file (VCF 4.1, 4.2)</label>
           <div class="control">
             <input type="file"
                    id="file"
                    (change)="handleFileInput($event)" required>
           </div>
         </div>
+      </div>
+      <div clas="field">
+        <p>Note: Interpreting large files of multiple MB takes up to 30 min. It will continue after closing
+          this dialogue, but do not close or refresh the window.
+        </p>
       </div>
     </section>
     <footer class="modal-card-foot">

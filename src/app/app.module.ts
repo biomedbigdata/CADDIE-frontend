@@ -38,9 +38,12 @@ import { VcfInputComponent } from './dialogs/vcf-input/vcf-input.component';
 import {
   LaunchAnalysisCategoryDropdownComponent
 } from './components/launch-analysis-category-dropdown/launch-analysis-category-dropdown.component';
+import { AddCancerExpressedGenesComponent } from './dialogs/add-cancer-expressed-genes/add-cancer-expressed-genes.component';
 
 // @ts-ignore
 import { PlotlyViaCDNModule } from 'angular-plotly.js';
+import { SurvivalPlotComponent } from './components/survival-plot/survival-plot.component';
+import { ButtonScrollTopComponent } from './components/button-scroll-top/button-scroll-top.component';
 
 
 PlotlyViaCDNModule.plotlyVersion = '1.41.0';
@@ -73,6 +76,9 @@ PlotlyViaCDNModule.plotlyVersion = '1.41.0';
     DrugLookupPageComponent,
     VcfInputComponent,
     LaunchAnalysisCategoryDropdownComponent,
+    AddCancerExpressedGenesComponent,
+    SurvivalPlotComponent,
+    ButtonScrollTopComponent,
   ],
   imports: [
     BrowserModule,

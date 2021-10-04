@@ -16,10 +16,19 @@
     <div class="card-content" id="analysis-content">
       <div class="tabs is-centered">
         <ul>
+          <li *ngIf="task.info.algorithm === 'summary'" [class.is-active]="tab === 'summary'"><a (click)="tab = 'summary';  visibleTab.emit(tab)">Summary</a></li>
           <li [class.is-active]="tab === 'table'"><a (click)="tab = 'table';  visibleTab.emit(tab)">Table</a></li>
           <li [class.is-active]="tab === 'network'"><a (click)="tab = 'network'; visibleTab.emit(tab)">Network</a></li>
           <li [class.is-active]="tab === 'meta'"><a (click)="tab = 'meta';  visibleTab.emit(tab)">Parameters</a></li>
         </ul>
+      </div>
+      <div class="content tab-content meta" *ngIf="task && task.info.done && task.info.algorithm === 'summary'" [class.is-visible]="tab === 'summary'">
+        <div *ngIf="drugCountBarplot" id="drugCountsPlot">
+          <plotly-plot
+            [data]="drugCountBarplot.data"
+            [layout]="drugCountBarplot.layout"
+          ></plotly-plot>
+        </div>
       </div>
       <div class="content tab-content meta" *ngIf="task && task.info.done" [class.is-visible]="tab === 'meta'">
         <div *ngIf="task">
@@ -117,12 +126,16 @@
                 </td>
               </tr>
               <tr *ngIf="task.info.parameters.mutationCancerType !== null && task.info.parameters.mutationCancerType !== undefined">
-                <td>Mutation Cancer Type for Mutation Weights</td>
+                <td>Cancer Type for Mutation Weights</td>
                 <td>{{task.info.parameters.mutationCancerType}}</td>
               </tr>
-              <tr *ngIf="task.info.parameters.expressionTissue !== null && task.info.parameters.expressionTissue !== undefined">
-                <td>Expression Tissue for Expression Weights</td>
-                <td>{{task.info.parameters.expressionTissue}}</td>
+              <tr *ngIf="task.info.parameters.expressionCancerType !== null && task.info.parameters.expressionCancerType !== undefined">
+                <td>Cancer Type for Expression Weights</td>
+                <td>{{task.info.parameters.expressionCancerType}}</td>
+              </tr>
+              <tr *ngIf="task.info.parameters.drugTargetAction !== null && task.info.parameters.drugTargetAction !== undefined">
+                <td>Drug Target Action</td>
+                <td>{{task.info.parameters.drugTargetAction}}</td>
               </tr>
 
 
@@ -179,14 +192,14 @@
           </div>
         </div>
       </div>
-      <div class="content tab-content" *ngIf="task && task.info.done" [class.is-visible]="tab === 'network'">
+      <div class="content tab-content" id="analysis-network" *ngIf="task && task.info.done" [class.is-visible]="tab === 'network'">
         <div class="card-image">
           <div class="network center image1" #network>
             <button class="button is-loading center">Loading</button>
           </div>
 
           <!-- START Legend -->
-          <div class="legend">
+          <div class="legend"  [ngClass]="{'pushed-left' : selectedMutationCancerType || selectedExpressionCancerType || selectedTissue}">
             <table>
               <tr>
                 <td><span class="node"></span></td>
@@ -225,18 +238,18 @@
           <!-- END Legend -->
 
           <!-- START Gradient Legend -->
-          <div class="legend gradient analysis-panel" *ngIf="mutationGradient || selectedTissue">
+          <div class="legend gradient analysis-panel" *ngIf="selectedMutationCancerType || selectedExpressionCancerType || selectedTissue">
             <div class="color-gradient-gene bar"></div>
             <div class="color-gradient-gene-seed bar"></div>
             <div class="color-gradient-cancer-gene bar"></div>
             <div class="color-gradient-cancer-gene-seed bar"></div>
             <span class="annotation-max">High <br>
-                  <span *ngIf="mutationGradient">Mutation</span>
-                  <span *ngIf="selectedTissue">Expression</span>
+                  <span *ngIf="selectedMutationCancerType">Mutation</span>
+                  <span *ngIf="selectedExpressionCancerType || selectedTissue">Expression</span>
                 </span>
             <span class="annotation-min">Low <br>
-                  <span *ngIf="mutationGradient">Mutation</span>
-                  <span *ngIf="selectedTissue">Expression</span>
+                  <span *ngIf="selectedMutationCancerType">Mutation</span>
+                  <span *ngIf="selectedExpressionCancerType || selectedTissue">Expression</span>
                 </span>
             <div>
               <div class="box-unknown has-background-grey-light"></div>
@@ -279,7 +292,16 @@
             [selectedElement]="selectedTissue"
             [elements]="analysis.getTissues()"
             (callbackFun)="selectTissue($event)"
-            label="Tissue"
+            label="Expression Tissue"
+          ></app-category-selector>
+
+
+          <app-category-selector
+            [expanded]="cancerExpressionExpanded"
+            [selectedElement]="selectedExpressionCancerType"
+            [elements]="analysis.getExpressionCancerTypes()"
+            (callbackFun)="selectExpressionCancerType($event)"
+            label="ExpressionCancerType"
           ></app-category-selector>
 
           <app-category-selector
@@ -302,7 +324,7 @@
           <app-toggle class="footer-buttons" textOn="Animation On" textOff="Off"
                       tooltipOn="Enable the network animation." tooltipOff="Disable the network animation and freeze nodes."
                       [value]="physicsEnabled" (valueChange)="updatePhysicsEnabled($event)"></app-toggle>
-
+                      
           <div class="field">
             <p class="control footer-buttons">
               <button class="button is-danger   has-tooltip" data-tooltip="Delete the current analysis."

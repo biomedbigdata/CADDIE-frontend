@@ -19,14 +19,21 @@
   >
   </app-custom-genes>
 
-  <app-add-expressed-genes [(show)]="showThresholdDialog"
-                           [selectedTissue]="currentViewSelectedTissue"
+  <app-add-expressed-genes [(show)]="showTissueThresholdDialog"
+                           [tissue]="selectedTissue"
                            [visibleNodes]="currentViewNodes"
                            [currentViewGenes]="currentViewGenes"
                            [currentViewCancerGenes]="currentViewCancerGenes"
-                           [currentCancerTypeItems]="currentCancerTypeItems"
   >
   </app-add-expressed-genes>
+
+  <app-add-cancer-expressed-genes [(show)]="showCancerThresholdDialog"
+  [selectedExpressionCancerType]="currentViewSelectedExpressionCancerType"
+  [visibleNodes]="currentViewNodes"
+  [currentViewGenes]="currentViewGenes"
+  [currentViewCancerGenes]="currentViewCancerGenes"
+>
+</app-add-cancer-expressed-genes>
 
   <app-disease-related-genes [(show)]="showDiseaseSelectionDialog"
                              (showChange)="showChangeDiseaseSelectionDialog"
@@ -53,49 +60,14 @@
 
       <div>
         <div class="caddie network" id="network">
-          <div class="card network">
+          <div class="card network" id="network-card">
             <header class="card-header">
               <p class="card-header-title">Gene-Gene Interaction Network</p>
             </header>
             <div class="card-content">
 
-              <!-- Start Detail View -->
-              <div class="detail-view" *ngIf="selectedWrapper" [class.analysis-info]="selectedAnalysisToken && visibleAnalysisTab==='network'">
-                <h6 class="is-6">
-                  <span class="icon">
-                    <i *ngIf="!selectedWrapper" class="fas fa-info" aria-hidden="true"></i>
-                    <i *ngIf="selectedWrapper && selectedWrapper.type === 'Node'" class="fas fa-dna" aria-hidden="true"></i>
-                    <i *ngIf="selectedWrapper && selectedWrapper.type === 'CancerNode'" class="fas fa-disease"
-                       aria-hidden="true"></i>
-                    <i *ngIf="selectedWrapper && selectedWrapper.type === 'Drug'" class="fas fa-capsules"
-                       aria-hidden="true"></i>
-                  </span>
-                  <span *ngIf="!selectedWrapper">No item selected</span>
-                  <span *ngIf="selectedWrapper">
-                    <span *ngIf="selectedWrapper.type === 'Node'">
-                      <span>
-                        Gene
-                      </span>
-                    </span>
-                    <span *ngIf="selectedWrapper.type === 'CancerNode'">
-                      <span>
-                        Cancer Driver Gene
-                      </span>
-                    </span>
-                    <span *ngIf="selectedWrapper.type === 'Drug'">Drug</span>
-                  </span>
-                </h6>
-                <app-info-tile
-                  [wrapper]="selectedWrapper"
-                  [wrapperCancerTypes]="selectedWrapperCancerTypes"
-                  [wrapperComorbidities]="selectedWrapperComorbidities"
-                  [nodeDegree]="nodeDegree"
-                ></app-info-tile>
-              </div>
-              <!-- END Detail View -->
-
               <!-- START Legend -->
-              <div class="legend main">
+              <div class="legend main" [ngClass]="{'pushed-left' : selectedMutationCancerType || selectedExpressionCancerType || selectedTissue}">
                 <table>
                   <tr>
                     <td><span class="node"></span></td>
@@ -114,16 +86,16 @@
               <!-- END Legend -->
 
               <!-- START Gradient Legend -->
-              <div class="legend main gradient" *ngIf="selectedMutationCancerType || selectedTissue">
+              <div class="legend main gradient" *ngIf="selectedMutationCancerType || selectedExpressionCancerType || selectedTissue">
                 <div class="color-gradient-gene bar"></div>
                 <div class="color-gradient-cancer-gene bar"></div>
                 <span class="annotation-max">High <br>
                   <span *ngIf="selectedMutationCancerType">Mutation</span>
-                  <span *ngIf="selectedTissue">Expression</span>
+                  <span *ngIf="selectedExpressionCancerType || selectedTissue">Expression</span>
                 </span>
                 <span class="annotation-min">Low <br>
                   <span *ngIf="selectedMutationCancerType">Mutation</span>
-                  <span *ngIf="selectedTissue">Expression</span>
+                  <span *ngIf="selectedExpressionCancerType || selectedTissue">Expression</span>
                 </span>
                 <div>
                   <div class="box-unknown has-background-grey-light"></div>
@@ -155,7 +127,16 @@
                   [selectedElement]="selectedTissue"
                   [elements]="analysis.getTissues()"
                   (callbackFun)="selectTissue($event)"
-                  label="Tissue"
+                  label="Expression Tissue"
+                  class="footer-buttons is-inline-block"
+                ></app-category-selector>
+
+                <app-category-selector
+                  [expanded]="expressionExpanded"
+                  [selectedElement]="selectedExpressionCancerType"
+                  (callbackFun)="selectExpressionCancerType($event)"
+                  [elements]="analysis.getExpressionCancerTypes()"
+                  label="Expression Cancer"
                   class="footer-buttons is-inline-block"
                 ></app-category-selector>
 
@@ -201,7 +182,52 @@
       </div>
     </div>
 
-    <div class="caddie sidebar bar-left">
+    <div class="caddie sidebar bar-left" id="left-sidebar">
+
+      <app-button-scroll-top
+      *ngIf="leftSidebarScrollTopButton"
+      [buttonText]="'Go to top'"
+      (callbackFun)="leftSidebarScrollTopButton = $event"
+    >
+    </app-button-scroll-top>
+
+      <div *ngIf="selectedWrapper" class="column is-12 info-background">
+        <!-- Start Detail View -->
+        <div class="detail-view" [class.analysis-info]="selectedAnalysisToken && visibleAnalysisTab==='network'">
+          <h6 class="is-6">
+            <span class="icon">
+              <i *ngIf="!selectedWrapper" class="fas fa-info" aria-hidden="true"></i>
+              <i *ngIf="selectedWrapper && selectedWrapper.type === 'Node'" class="fas fa-dna" aria-hidden="true"></i>
+              <i *ngIf="selectedWrapper && selectedWrapper.type === 'CancerNode'" class="fas fa-disease"
+                  aria-hidden="true"></i>
+              <i *ngIf="selectedWrapper && selectedWrapper.type === 'Drug'" class="fas fa-capsules"
+                  aria-hidden="true"></i>
+            </span>
+            <span *ngIf="!selectedWrapper">No item selected</span>
+            <span *ngIf="selectedWrapper">
+              <span *ngIf="selectedWrapper.type === 'Node'">
+                <span>
+                  <b>Gene</b>
+                </span>
+              </span>
+              <span *ngIf="selectedWrapper.type === 'CancerNode'">
+                <span>
+                  <b>Cancer Driver Gene</b>
+                </span>
+              </span>
+              <span *ngIf="selectedWrapper.type === 'Drug'"><b>Drug</b></span>
+            </span>
+            <button (click)="closeSummary()" class="delete is-pulled-right" aria-label="close"></button>
+          </h6>
+          <app-info-tile
+            [wrapper]="selectedWrapper"
+            [wrapperCancerTypes]="selectedWrapperCancerTypes"
+            [wrapperComorbidities]="selectedWrapperComorbidities"
+            [nodeDegree]="nodeDegree"
+          ></app-info-tile>
+        </div>
+        <!-- END Detail View -->
+      </div>
 
       <!-- Data Selector START -->
       <div class="columns is-multiline is-centered row-data-selector">
@@ -568,66 +594,102 @@
             <div class="field">
               <div class="control">
 
-                <div class="column has-text-centered">
-                  <div class="analysis-option has-text-weight-bold" [ngClass]="{'selected': analysis.getCount() > 0 }">
-                    <span>1. Select Genes
-                      <i class="fa fa-check" *ngIf="analysis.getCount() > 0"></i>
-                    </span>
+                <div class="columns mb-0">
+                  <div class="column is-half has-text-centered small-padding">
+                    <div class="analysis-option has-text-weight-bold example">
+                      <span>Quick Start</span>
+                    </div>
+                  </div>
+                  <div class="column is-half has-text-centered small-padding">
+                    <div class="analysis-option has-text-weight-bold" [ngClass]="{'selected': analysis.getCount() > 0 }">
+                      <span>Select Genes
+                        <i class="fa fa-check" *ngIf="analysis.getCount() > 0"></i>
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <button (click)="analysisDialogTarget = 'drug-target'; showAnalysisDialog = true; closeSummary();"
-                        class="button is-primary is-fullwidth has-tooltip"
-                        data-tooltip="Find drug targets for the selected genes."
-                        [disabled]="analysis.getCount() === 0">
-                <span class="icon">
-                  <i class="fa fa-crosshairs"></i>
-                </span>
-                  <span>
-                  Find Drug Targets
-                </span>
-                </button>
+                <div class="columns mb-0">
+                  <div class="column is-half has-text-centered small-padding">
+                    <button (click)="exampleSearch('drug-target'); closeSummary();"
+                            class="button is-example is-fullwidth has-tooltip"
+                            data-tooltip="Find drug targets the cancer driver genes&#013; or selected genes.">
+                    <span>
+                      Quick Target Search
+                    </span>
+                    </button>
+                  </div>
+                  <div class="column is-half has-text-centered small-padding">
+                    <button (click)="analysisDialogTarget = 'drug-target'; showAnalysisDialog = true; closeSummary();"
+                            class="button is-primary is-fullwidth has-tooltip"
+                            data-tooltip="Find drug targets for the selected genes."
+                            [disabled]="analysis.getCount() === 0">
+                    <span class="icon">
+                      <i class="fa fa-crosshairs"></i>
+                    </span>
+                      <span>
+                      Find Drug Targets
+                    </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="columns mb-0">
+                  <div class="column is-half has-text-centered small-padding">
+                    <button (click)="exampleSearch('drug'); closeSummary();"
+                    class="button is-example is-fullwidth has-tooltip"
+                    data-tooltip="Find drugs for the cancer driver genes&#013; or selected genes.">
+                      <span>
+                        Quick Drug Search
+                      </span>
+                    </button>
+                  </div>
+                  <div class="column is-half has-text-centered small-padding">
+                    <button (click)="analysisDialogTarget = 'drug'; showAnalysisDialog = true; closeSummary();"
+                    class="button is-primary is-fullwidth has-tooltip"
+                    data-tooltip="Find drugs for the selected genes."
+                    [disabled]="analysis.getCount() === 0">
+                      <span class="icon">
+                        <i class="fa fa-capsules"></i>
+                      </span>
+                        <span>
+                        Find Drugs
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="columns">
+                  <div class="column is-half has-text-centered small-padding">
+
+                  </div>
+                  <div class="column is-half has-text-centered small-padding">
+                    <a *ngIf="analysis.getCount() > 0" [href]="gProfilerLink()" target="_blank"
+                      class="button is-primary is-fullwidth has-tooltip"
+                      data-tooltip="Use enrichment analysis via g:Profiler (external).">
+                   <span class="icon">
+                     <i class="fa fa-external-link-alt"></i>
+                   </span>
+                     <span>
+                     Enrichment Analysis
+                   </span>
+                   </a>
+                   <a *ngIf="analysis.getCount() === 0" disabled
+                      class="button is-primary is-fullwidth has-tooltip"
+                      data-tooltip="Use enrichment analysis via g:Profiler (external).">
+                   <span class="icon">
+                     <i class="fa fa-external-link-alt"></i>
+                   </span>
+                     <span>
+                     Enrichment Analysis
+                   </span>
+                   </a>
+                  </div>
+                </div>
+
               </div>
             </div>
-            <div class="field">
-              <div class="control">
-                <button (click)="analysisDialogTarget = 'drug'; showAnalysisDialog = true; closeSummary();"
-                        class="button is-primary is-fullwidth has-tooltip"
-                        data-tooltip="Find drugs for the selected genes."
-                        [disabled]="analysis.getCount() === 0">
-                <span class="icon">
-                  <i class="fa fa-capsules"></i>
-                </span>
-                  <span>
-                  Find Drugs
-                </span>
-                </button>
-              </div>
-            </div>
-            <div class="field">
-              <div class="control">
-                <a *ngIf="analysis.getCount() > 0" [href]="gProfilerLink()" target="_blank"
-                   class="button is-primary is-fullwidth has-tooltip"
-                   data-tooltip="Use enrichment analysis via g:Profiler (external).">
-                <span class="icon">
-                  <i class="fa fa-external-link-alt"></i>
-                </span>
-                  <span>
-                  Enrichment Analysis
-                </span>
-                </a>
-                <a *ngIf="analysis.getCount() === 0" disabled
-                   class="button is-primary is-fullwidth has-tooltip"
-                   data-tooltip="Use enrichment analysis via g:Profiler (external).">
-                <span class="icon">
-                  <i class="fa fa-external-link-alt"></i>
-                </span>
-                  <span>
-                  Enrichment Analysis
-                </span>
-                </a>
-              </div>
-            </div>
+            
           </div>
         </div>
       </div>
@@ -744,30 +806,31 @@
 <!--            <a (click)="analysis.addItems(wrapCancerNodes(cancerNodes));-->
 <!--            analysis.addItems(wrapCancerNodes(cancerNodesSup))"-->
 <!--               class="card-footer-item has-text-success"-->
-<!--               data-tooltip="Add cancer driver genes for selected cancer tpyes">-->
+<!--               data-tooltip="Add cancer driver genes for selected cancer types">-->
 <!--            <span class="icon">-->
 <!--              <i class="fa fa-plus"></i>-->
 <!--            </span>-->
 <!--              <span>Add cancer driver genes from DB</span>-->
 <!--            </a>-->
 
-            <a (click)="analysis.invertSelection(currentViewNodes)" class="card-footer-item has-text-primary"
-               data-tooltip="Invert the current selection.">
-            <span class="icon">
-              <i class="fa fa-sync"></i>
-            </span>
-              <span>
-              Invert
-            </span>
-            </a>
-            <a (click)="showThresholdDialog = true"
+            <a (click)="showTissueThresholdDialog = true"
                class="card-footer-item has-text-primary"
-               data-tooltip="Add genes expressed in the tissue.">
+               data-tooltip="Add genes based on expression in tissues.">
             <span class="icon">
               <i class="fa fa-angle-double-up"></i>
             </span>
               <span>
-              Tissue genes
+              Tissue expressed genes
+            </span>
+            </a>
+            <a (click)="showCancerThresholdDialog = true"
+               class="card-footer-item has-text-primary"
+               data-tooltip="Add genes based on expression in cancer types.">
+            <span class="icon">
+              <i class="fa fa-angle-double-up"></i>
+            </span>
+              <span>
+              Cancer expressed genes
             </span>
             </a>
           </footer>
@@ -819,6 +882,16 @@
           </footer>
 
           <footer class="card-footer">
+            <a (click)="analysis.invertSelection(currentViewNodes)" class="card-footer-item has-text-primary"
+               data-tooltip="Invert the current selection.">
+            <span class="icon">
+              <i class="fa fa-sync"></i>
+            </span>
+              <span>
+              Invert
+            </span>
+            </a>
+
             <a (click)="analysis.resetSelection()" class="card-footer-item has-text-danger"
                data-tooltip="Remove all entries from the selection.">
             <span class="icon">
@@ -850,13 +923,11 @@
           </a>
         </header>
         <div *ngIf="collapseTask">
-          <div class="card-content overflow" *ngIf="analysis.tasks && analysis.tasks.length > 0">
-            <app-task-list
-              [taskList]="analysis.tasks"
-              (tokenChange)="setTaskToken($event)"
-            >
-            </app-task-list>
-          </div>
+          <app-task-list
+            [taskList]="analysis.tasks"
+            (tokenChange)="setTaskToken($event)"
+          >
+          </app-task-list>
           <footer class="card-footer">
             <a *ngIf="analysis.tasks && analysis.tasks.length > 0"
                (click)="analysis.removeAllTasks(); selectedAnalysisToken = null;"

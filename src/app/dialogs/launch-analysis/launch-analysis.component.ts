@@ -18,7 +18,7 @@ import {
   QuickAlgorithmType,
   TRUSTRANK
 } from '../../services/analysis/analysis.service';
-import {CancerType, Dataset, MutationCancerType, Tissue, Wrapper} from '../../interfaces';
+import {CancerType, Dataset, MutationCancerType, ExpressionCancerType, DrugTargetAction} from '../../interfaces';
 
 @Component({
   selector: 'app-launch-analysis',
@@ -50,7 +50,8 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public showChange = new EventEmitter<boolean>();
 
   public selectedMutationCancerType: MutationCancerType = null;
-  public selectedTissue: Tissue = null;
+  public selectedExpressionCancerType: ExpressionCancerType = null;
+  public selectedDrugTargetAction: DrugTargetAction = null;
 
   public algorithm: AlgorithmType | QuickAlgorithmType;
 
@@ -126,25 +127,20 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     this.selectedMutationCancerType = cancerType;
   }
 
-  public setSelectedTissue(tissue: Tissue) {
-    this.selectedTissue = tissue;
+  public setSelectedExpressionCancerType(expressionCancerType: ExpressionCancerType) {
+    this.selectedExpressionCancerType = expressionCancerType;
+  }
+
+  public setSelectedDrugTargetAction(drugTargetAction: DrugTargetAction) {
+    this.selectedDrugTargetAction = drugTargetAction;
   }
 
   public close() {
     this.show = false;
     this.selectedMutationCancerType = null;
+    this.selectedExpressionCancerType = null;
+    this.selectedDrugTargetAction = null;
     this.showChange.emit(this.show);
-  }
-
-  public getGraphId(wrapper: Wrapper) {
-    /**
-     * Returns the graph id (e.g. 'g' + backendId) for a wrapper object
-     */
-    if (wrapper.type === 'Drug') {
-      return 'd' + wrapper.backendId;
-    } else {
-      return 'g' + wrapper.backendId;
-    }
   }
 
   public async startTask(
@@ -154,22 +150,20 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     cancerTypes: CancerType[]
   ) {
     const parameters: any = {
-      seeds: this.analysis.getSelection().map((item) => this.getGraphId(item)),
+      seeds: this.analysis.getSelection().map((item) => this.analysis.getGraphId(item)),
     };
 
     // new input from caddie
     parameters.cancer_dataset = dataset.name;
-    parameters.cancer_dataset_id = dataset.backendId;
     parameters.gene_interaction_dataset = geneInteractionDataset.name;
-    parameters.gene_interaction_dataset_id = geneInteractionDataset.backendId;
     parameters.drug_interaction_dataset = drugInteractionDataset.name;
-    parameters.drug_interaction_dataset_id = drugInteractionDataset.backendId;
-    parameters.cancer_types = cancerTypes.map( (cancerType) => cancerType.backendId );
+    parameters.cancer_type_names = cancerTypes.map( (cancerType) => cancerType.name );
     parameters.includeNutraceuticalDrugs = this.includeNutraceuticalDrugs;
     parameters.onlyAtcLDrugs = this.includeAtcLDrugs;
     parameters.filterPaths = this.filterPaths;
     parameters.mutationCancerType = this.selectedMutationCancerType ? this.selectedMutationCancerType.abbreviation : null;
-    parameters.expressionTissue = this.selectedTissue ? this.selectedTissue.name : null;
+    parameters.expressionCancerType = this.selectedExpressionCancerType ? this.selectedExpressionCancerType.name : null;
+    parameters.drug_target_action = this.selectedDrugTargetAction ? this.selectedDrugTargetAction.name : null;
 
     if (this.algorithm === 'trustrank') {
       parameters.damping_factor = this.trustrankDampingFactor;
@@ -222,7 +216,6 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
       }
       parameters.hub_penalty = this.multisteinerHubPenalty;
     }
-
     await this.analysis.startAnalysis(this.algorithm, this.target, parameters);
   }
 

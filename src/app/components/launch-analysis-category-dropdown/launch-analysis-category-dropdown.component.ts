@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {MutationCancerType, Tissue} from '../../interfaces';
+import {MutationCancerType, ExpressionCancerType} from '../../interfaces';
 
 @Component({
   selector: 'app-launch-analysis-category-dropdown',
@@ -8,10 +8,10 @@ import {MutationCancerType, Tissue} from '../../interfaces';
 })
 export class LaunchAnalysisCategoryDropdownComponent implements OnInit {
 
-  @Input() selectedCategory: MutationCancerType | Tissue;
+  @Input() selectedCategory: MutationCancerType | ExpressionCancerType;
   @Output() selectedCategoryChange: EventEmitter<any> = new EventEmitter();
 
-  @Input() categories: MutationCancerType[] |Tissue[];
+  @Input() categories: MutationCancerType[] |ExpressionCancerType[];
 
   constructor() { }
 

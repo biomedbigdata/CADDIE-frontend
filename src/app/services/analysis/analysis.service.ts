@@ -5,19 +5,20 @@ import {
   getWrapperFromCancerNode,
   Node,
   CancerNode,
-  Dataset,
-  Tissue,
-  CancerType,
+  ExpressionCancerType,
   DrugStatus,
-  MutationCancerType
+  MutationCancerType,
+  Tissue,
+  DrugTargetAction
 } from '../../interfaces';
 import {Subject} from 'rxjs';
 import {toast} from 'bulma-toast';
 import {Injectable} from '@angular/core';
 import {ControlService} from '../control/control.service';
 
-export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'harmonic' | 'degree' | 'proximity' | 'betweenness';
-export type QuickAlgorithmType = 'quick' | 'super';
+export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'harmonic' | 'degree' |
+ 'proximity' | 'betweenness' | 'summary';
+export type QuickAlgorithmType = 'quick' | 'super' | 'exampledrugtarget' | 'exampledrug';
 
 export const algorithmNames = {
   trustrank: 'TrustRank',
@@ -27,8 +28,11 @@ export const algorithmNames = {
   degree: 'Degree Centrality',
   proximity: 'Network Proximity',
   betweenness: 'Betweenness Centrality',
+  summary: 'Summary',
   quick: 'Simple',
   super: 'Quick-Start',
+  exampledrugtarget: 'Quick Target Search',
+  exampledrug: 'Quick Drug Search',
 };
 
 export interface Algorithm {
@@ -68,7 +72,9 @@ export class AnalysisService {
   private launchingQuick = false;
 
   private tissues: Tissue[] = [];
+  private expressionCancerTypes: ExpressionCancerType[] = [];
   private mutationCancerTypes: MutationCancerType[] = [];
+  private drugTargetActions: DrugTargetAction[] = [];
 
   private drugStatus: DrugStatus[] = [];
 
@@ -86,6 +92,24 @@ export class AnalysisService {
 
     this.control.tissues().subscribe((tissues) => {
       this.tissues = tissues;
+    });
+
+    this.control.drugTargetActions().subscribe((drugTargetActions) => {
+
+      drugTargetActions.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+
+      this.drugTargetActions = drugTargetActions;
+    });
+
+    this.control.expressionCancerTypes().subscribe((expressionCancerTypes) => {
+
+      expressionCancerTypes.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+
+      this.expressionCancerTypes = expressionCancerTypes;
     });
 
     this.control.mutationCancerTypes().subscribe((mutationCancerTypes) => {
@@ -108,6 +132,15 @@ export class AnalysisService {
       this.drugStatus = status;
     });
 
+  }
+
+  addTask(token) {
+    const tokens = localStorage.getItem('tokens');
+    if (tokens) {
+      this.tokens = JSON.parse(tokens);
+    }
+    this.tokens.push(token);
+    localStorage.setItem('tokens', JSON.stringify(this.tokens));
   }
 
   removeTask(token) {
@@ -145,16 +178,30 @@ export class AnalysisService {
 
   public getTissues(): Tissue[] {
     /**
-     * return all tissues saved in this object
+     * return all Tissues saved in this object
      */
     return this.tissues;
   }
 
-  public getMutationCancerTypes(): Tissue[] {
+  public getExpressionCancerTypes(): ExpressionCancerType[] {
+    /**
+     * return all expressionCancerTypes saved in this object
+     */
+    return this.expressionCancerTypes;
+  }
+
+  public getMutationCancerTypes(): ExpressionCancerType[] {
     /**
      * return all MutationCancerType saved in this object
      */
     return this.mutationCancerTypes;
+  }
+
+  public getDrugTargetActions(): DrugTargetAction[] {
+    /**
+     * return all DrugTargetActions saved in this object
+     */
+    return this.drugTargetActions;
   }
 
   public getDrugStatus(): DrugStatus[] {
@@ -284,6 +331,33 @@ export class AnalysisService {
     }
 
     this.selectListSubject.next({items, selected: true});
+    return items.length;
+  }
+
+  public removeDiseaseGenes(
+    nodes,
+    genes: (Node | CancerNode)[],
+    lookup,
+    nodeType: ('Node' | 'CancerNode')
+  ): number {
+    /**
+     * Sets these genes to 'this.selectedItems'
+     */
+    const items: Wrapper[] = [];
+    const visibleIds = new Set<string>(nodes.getIds());
+
+    for (const gene of genes) {
+      const wrapper = nodeType === 'Node' ? getWrapperFromNode(gene as Node) :
+        getWrapperFromCancerNode(gene as CancerNode);
+
+      const found = visibleIds.has(wrapper.nodeId);
+      if (found && this.inSelection(wrapper) && lookup[wrapper.nodeId]) {
+        items.push(wrapper);
+        this.selectedItems.delete(wrapper.nodeId);
+      }
+    }
+
+    this.selectListSubject.next({items, selected: false});
     return items.length;
   }
 
@@ -430,14 +504,10 @@ export class AnalysisService {
     });
   }
 
-  async startQuickAnalysis(
-    isSuper: boolean,
-    dataset: Dataset,
-    geneInteractionDataset: Dataset,
-    drugInteractionDataset: Dataset,
-    cancerTypes: CancerType[]) {
+  async startQuickAnalysis(algorithm: 'exampledrugtarget' | 'exampledrug', target: 'drug' | 'drug-target', parameters) {
     /**
-     * Starts quick analysis
+     * Starts analysis, QUICK
+     * accepts algorithm with parameters
      */
     // break if maximum number of tasks exceeded
     if (!this.canLaunchTask()) {
@@ -454,22 +524,9 @@ export class AnalysisService {
     }
 
     this.launchingQuick = true;
-
-    // parse cancer type items to backendId-string-format '1,6,9,..'
-    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
-    const resp = await this.control.postTask(
-      isSuper ? 'super' : 'quick',
-      'drug',
-      {
-        cancer_dataset: dataset.name,
-        gene_interaction_dataset: geneInteractionDataset.name,
-        drug_interaction_dataset: drugInteractionDataset.name,
-        cancer_types: cancerTypesIds,
-        bait_datasets: dataset.data,
-        seeds: isSuper ? [] : this.getSelection().map((i) => 'g' + i.data.backendId),
-      }
-    );
+    const resp = await this.control.postTask(algorithm, target, parameters);
     this.tokens.push(resp.token);
+    localStorage.setItem('tokens', JSON.stringify(this.tokens));
     this.startWatching();
 
     toast({
@@ -590,6 +647,17 @@ export class AnalysisService {
       clearInterval(this.intervalId);
     }
     this.intervalId = setInterval(watch, 5000);
+  }
+
+  public getGraphId(wrapper: Wrapper) {
+    /**
+     * Returns the graph id (e.g. 'g' + backendId) for a wrapper object
+     */
+    if (wrapper.type === 'Drug') {
+      return 'd' + wrapper.backendId;
+    } else {
+      return 'g' + wrapper.backendId;
+    }
   }
 
 

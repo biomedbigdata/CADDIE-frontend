@@ -3,7 +3,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile.dev
-    image: caddie_web:dev
+      dockerfile: Dockerfile.prod
+    image: caddie_web:prod
     ports:
       - "4200:4200"

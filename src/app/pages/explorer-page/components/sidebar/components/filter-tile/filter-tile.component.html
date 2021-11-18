@@ -1,0 +1,22 @@
+<div class="card-content">
+  <div class='filter-content-scroll'>
+    <div *ngFor="let bait of cancerNodesCheckboxes" class="filter-checkbox">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox" [ngModel]="bait.checked"
+                (ngModelChange)="bait.checked = $event; filterNodes()">
+          {{ bait.data.name }}
+        </label>
+    </div>
+  </div>
+  <footer class="card-footer">
+    <a (click)="filterClear($event);" class="card-footer-item has-text-danger"
+      data-tooltip="Remove filter and show all.">
+      <span class="icon">
+      <i class="fa fa-broom"></i>
+      </span>
+      <span>
+        Show All
+      </span>
+    </a>
+  </footer>
+</div>

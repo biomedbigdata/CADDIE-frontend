@@ -177,10 +177,20 @@ div.caddie.network {
 div.card.network {
   width: 100%;
   height: calc(100vh - #{$network-footer-height});
+  &.analysis {
+    height: calc(100vh - #{$network-footer-height} - #{$navbar-height} - 1.5rem - #{$analysis-result-header-height})
+  }
+}
+
+.network-size {
+  height: calc(100vh - #{$network-footer-height} - #{$navbar-height});
+  &.analysis {
+    height: calc(100vh - #{$network-footer-height} - #{$navbar-height} - 1.5rem - #{$analysis-result-header-height} - 80px)
+  }
 }
 
 div.network {
-  height: calc(100vh - #{$network-footer-height} - #{$navbar-height} - 48px);
+  height: calc(100vh - #{$network-footer-height} - #{$navbar-height} - #{$analysis-result-header-height});
 }
 
 div.parent {
@@ -307,7 +317,8 @@ body {
   top: 0px;
   right: 0px;
   &.main {
-    top: calc(1.5rem + #{$network-header-height});
+    top: 1.5rem;
+    // top: calc(1.5rem + #{$network-header-height});
     right: 10px;
   }
   &.pushed-left {

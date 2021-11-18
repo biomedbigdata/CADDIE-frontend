@@ -17,7 +17,7 @@ import {Injectable} from '@angular/core';
 import {ControlService} from '../control/control.service';
 
 export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'harmonic' | 'degree' |
- 'proximity' | 'betweenness' | 'summary';
+ 'proximity' | 'closeness' | 'betweenness' | 'summary';
 export type QuickAlgorithmType = 'quick' | 'super' | 'exampledrugtarget' | 'exampledrug';
 
 export const algorithmNames = {
@@ -28,6 +28,7 @@ export const algorithmNames = {
   degree: 'Degree Centrality',
   proximity: 'Network Proximity',
   betweenness: 'Betweenness Centrality',
+  closeness: 'Closeness Centrality',
   summary: 'Summary',
   quick: 'Simple',
   super: 'Quick-Start',
@@ -44,6 +45,7 @@ export const TRUSTRANK: Algorithm = {slug: 'trustrank', name: algorithmNames.tru
 export const HARMONIC_CENTRALITY: Algorithm = {slug: 'harmonic', name: algorithmNames.harmonic};
 export const DEGREE_CENTRALITY: Algorithm = {slug: 'degree', name: algorithmNames.degree};
 export const NETWORK_PROXIMITY: Algorithm = {slug: 'proximity', name: algorithmNames.proximity};
+export const CLOSENESS_CENTRALITY: Algorithm = {slug: 'closeness', name: algorithmNames.closeness};
 export const BETWEENNESS_CENTRALITY: Algorithm = {slug: 'betweenness', name: algorithmNames.betweenness};
 export const KEYPATHWAYMINER: Algorithm = {slug: 'keypathwayminer', name: algorithmNames.keypathwayminer};
 export const MULTISTEINER: Algorithm = {slug: 'multisteiner', name: algorithmNames.multisteiner};

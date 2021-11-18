@@ -1,0 +1,363 @@
+<!-- Start Detail View -->
+<div class="detail-view">
+  <h4 class="is-4 title">
+    <span class="icon">
+      <i
+        *ngIf="!explorerData.selectedWrapper"
+        class="fas fa-info"
+        aria-hidden="true"
+      ></i>
+      <i
+        *ngIf="
+          explorerData.selectedWrapper &&
+          explorerData.selectedWrapper.type === 'Node'
+        "
+        class="fas fa-dna"
+        aria-hidden="true"
+      ></i>
+      <i
+        *ngIf="
+          explorerData.selectedWrapper &&
+          explorerData.selectedWrapper.type === 'CancerNode'
+        "
+        class="fas fa-disease"
+        aria-hidden="true"
+      ></i>
+      <i
+        *ngIf="
+          explorerData.selectedWrapper &&
+          explorerData.selectedWrapper.type === 'Drug'
+        "
+        class="fas fa-capsules"
+        aria-hidden="true"
+      ></i>
+    </span>
+    <span *ngIf="!explorerData.selectedWrapper">No item selected</span>
+    <span *ngIf="explorerData.selectedWrapper">
+      <span *ngIf="explorerData.selectedWrapper.type === 'Node'">
+        <span>
+          <b>Gene</b>
+        </span>
+      </span>
+      <span *ngIf="explorerData.selectedWrapper.type === 'CancerNode'">
+        <span>
+          <b>Cancer Driver Gene</b>
+        </span>
+      </span>
+      <span *ngIf="explorerData.selectedWrapper.type === 'Drug'"
+        ><b>Drug</b></span
+      >
+    </span>
+    <button
+      (click)="closeSummary()"
+      class="delete is-pulled-right"
+      aria-label="close"
+    ></button>
+  </h4>
+
+  <div *ngIf="wrapper && wrapper.type !== wrapperCurrentType">
+    <div *ngIf="wrapper.type === 'Node'">
+      <p>
+        <b><span>Gene Name: </span></b>
+        {{ wrapper.data.name }}
+        <span class="icon is-small"><i class="fas fa-dna"></i></span>
+      </p>
+      <p *ngIf="wrapper.data.geneAlias">
+        <b><span>Gene Alias: </span></b>
+        {{ wrapper.data.geneAlias }}
+        <span class="icon is-small"><i class="fas fa-dna"></i></span>
+      </p>
+      <p *ngIf="wrapper.data.entrezId">
+        <b><span>Entrez Gene:</span></b>
+        <a
+          href="https://www.ncbi.nlm.nih.gov/gene/{{ wrapper.data.entrezId }}"
+          target="_blank"
+        >
+          {{ wrapper.data.entrezId }}
+        </a>
+      </p>
+      <p *ngIf="wrapper.data.uniprotAc">
+        <b><span>Uniprot:</span></b>
+        <a
+          href="https://www.uniprot.org/uniprot/{{ wrapper.data.uniprotAc }}"
+          target="_blank"
+        >
+          {{ wrapper.data.uniprotAc }}
+        </a>
+      </p>
+      <p *ngIf="wrapper.data.proteinName">
+        <b><span>Protein Name:</span></b>
+        {{ wrapper.data.proteinName }}
+      </p>
+      <p *ngIf="wrapper.data.expressionLevel">
+        <b><span>Expression Level:</span></b>
+        <span
+          class="has-tooltip-right"
+          data-tooltip="Expression level in selected tissue, transcripts per million"
+        >
+          {{ wrapper.data.expressionLevel | number: "1.0-3" }} tpm
+        </span>
+      </p>
+      <p *ngIf="wrapper.data.expressionLevelScore">
+        <b><span>Expression Score:</span></b>
+        <span
+          class="has-tooltip-right"
+          data-tooltip="Expression level in selected cancer type or tissue (normalized from 0 to 1)"
+        >
+          {{ wrapper.data.expressionLevelScore | number: "1.0-3" }}
+        </span>
+      </p>
+      <p *ngIf="wrapper.data.mutationScore">
+        <b><span>Mutation Score:</span></b>
+        <span
+          class="has-tooltip-right"
+          data-tooltip="Based on number of mutations. See 'About' for more information"
+        >
+          {{ wrapper.data.mutationScore | number: "1.0-3" }}
+        </span>
+      </p>
+      <p *ngIf="nodeDegree">
+        <b><span>Node Degree:</span></b>
+        {{ nodeDegree }}
+      </p>
+
+      <ng-container *ngIf="wrapper.data.cancerOccurrences">
+        <b
+          ><span
+            >Related Cancer Types ({{ wrapper.data.cancerOccurrences }}):</span
+          ></b
+        >
+        <ul
+          class="content scroll-120"
+          [ngClass]="{
+            cancer: explorerData.selectedWrapper.type === 'CancerNode',
+            drug: explorerData.selectedWrapper.type === 'Drug'
+          }"
+        >
+          <li *ngFor="let item of wrapperCancerTypes">
+            {{ item.name }}
+          </li>
+        </ul>
+      </ng-container>
+
+      <ng-container *ngIf="wrapperComorbidities.length">
+        <b
+          ><span>Comorbidities ({{ wrapperComorbidities.length }}):</span></b
+        >
+        <ul
+          class="content scroll-120"
+          [ngClass]="{
+            cancer: explorerData.selectedWrapper.type === 'CancerNode'
+          }"
+        >
+          <li *ngFor="let item of wrapperComorbidities">
+            {{ item.diseaseName }}
+          </li>
+        </ul>
+      </ng-container>
+    </div>
+
+    <div *ngIf="wrapper.type === 'CancerNode'">
+      <p>
+        <b><span>Gene Name: </span></b>
+        {{ wrapper.data.name }}
+        <span class="icon is-small"><i class="fas fa-dna"></i></span>
+      </p>
+      <p *ngIf="wrapper.data.geneAlias">
+        <b><span>Gene Alias: </span></b>
+        {{ wrapper.data.geneAlias }}
+        <span class="icon is-small"><i class="fas fa-dna"></i></span>
+      </p>
+      <p *ngIf="wrapper.data.entrezId">
+        <b><span>Entrez Gene:</span></b>
+        <a
+          href="https://www.ncbi.nlm.nih.gov/gene/{{ wrapper.data.entrezId }}"
+          target="_blank"
+        >
+          {{ wrapper.data.entrezId }}
+        </a>
+      </p>
+      <p *ngIf="wrapper.data.uniprotAc">
+        <b><span>Uniprot:</span></b>
+        <a
+          href="https://www.uniprot.org/uniprot/{{ wrapper.data.uniprotAc }}"
+          target="_blank"
+        >
+          {{ wrapper.data.uniprotAc }}
+        </a>
+      </p>
+      <p *ngIf="wrapper.data.proteinName">
+        <b><span>Protein Name:</span></b>
+        {{ wrapper.data.proteinName }}
+      </p>
+      <p *ngIf="wrapper.data.expressionLevel">
+        <b><span>Expression Level:</span></b>
+        <span
+          class="has-tooltip-right"
+          data-tooltip="Expression level in selected tissue, transcripts per million"
+        >
+          {{ wrapper.data.expressionLevel | number: "1.0-3" }} tpm
+        </span>
+      </p>
+      <p *ngIf="wrapper.data.expressionLevelScore">
+        <b><span>Expression Score:</span></b>
+        <span
+          class="has-tooltip-right"
+          data-tooltip="Expression level in selected cancer type or tissue (normalized from 0 to 1)"
+        >
+          {{ wrapper.data.expressionLevelScore | number: "1.0-3" }}
+        </span>
+      </p>
+      <p *ngIf="wrapper.data.mutationScore">
+        <b><span>Mutation Score:</span></b>
+        <span
+          class="has-tooltip-right"
+          data-tooltip="Based on number of mutations. See 'About' for more information"
+        >
+          {{ wrapper.data.mutationScore | number: "1.0-3" }}
+        </span>
+      </p>
+      <p *ngIf="nodeDegree">
+        <b><span>Node Degree:</span></b>
+        {{ nodeDegree }}
+      </p>
+      <ng-container *ngIf="wrapper.data.cancerOccurrences">
+        <b
+          ><span
+            >Related Cancer Types ({{ wrapper.data.cancerOccurrences }}):</span
+          ></b
+        >
+        <ul
+          class="content scroll-120"
+          [ngClass]="{
+            cancer: explorerData.selectedWrapper.type === 'CancerNode'
+          }"
+        >
+          <li *ngFor="let item of wrapperCancerTypes">
+            {{ item.name }}
+          </li>
+        </ul>
+      </ng-container>
+
+      <ng-container *ngIf="wrapperComorbidities.length">
+        <b
+          ><span>Comorbidities ({{ wrapperComorbidities.length }}):</span></b
+        >
+        <ul
+          class="content scroll-120"
+          [ngClass]="{
+            cancer: explorerData.selectedWrapper.type === 'CancerNode'
+          }"
+        >
+          <li *ngFor="let item of wrapperComorbidities">
+            {{ item.diseaseName }}
+          </li>
+        </ul>
+      </ng-container>
+    </div>
+
+    <div *ngIf="wrapper.type === 'Drug'">
+      <p>
+        <b><span>Name: </span></b>
+        {{ wrapper.data.name }}
+        <span class="icon is-small"><i class="fas fa-capsules"></i></span>
+      </p>
+      <p *ngIf="wrapper.data.dbId">
+        <b>DrugBank ID: </b>
+        <a
+          href="https://www.drugbank.ca/drugs/{{ wrapper.data.dbId }}"
+          target="_blank"
+        >
+          {{ wrapper.data.dbId }}</a
+        >
+      </p>
+
+      <p *ngIf="wrapper.data.status === 'unapproved'">
+        <b>Status: </b> Unapproved
+        <span class="icon is-small"
+          ><i class="fas fa-search investigational"></i
+        ></span>
+      </p>
+
+      <p *ngIf="wrapper.data.status === 'approved'">
+        <b>Status: </b> Approved
+        <span class="icon is-small"><i class="fas fa-check"></i></span>
+      </p>
+
+      <!--    <div *ngIf="wrapper.data.inTrial && wrapper.data.links.length > 0" class="list">-->
+      <!--      <div *ngFor="let link of wrapper.data.links" class="list-item">-->
+      <!--        <a [href]="link" target="_blank">{{beautify(link)}}</a>-->
+      <!--      </div>-->
+      <!--      <small class="list-item"><i>Links provided by WHO</i></small>-->
+      <!--    </div>-->
+      <p *ngIf="nodeDegree">
+        <b><span>Node Degree: </span></b>
+        {{ nodeDegree }}
+      </p>
+
+      <p>
+        <b>Is Nutraceutical: </b>
+        <span class="icon is-small">
+          <i
+            class="fas fa-check"
+            [class.fa-times]="!wrapper.data.isNutraceutical"
+            [class.fa-check]="wrapper.data.isNutraceutical"
+          ></i>
+        </span>
+      </p>
+
+      <p>
+        <b>ATC L: </b>
+        <span
+          class="icon is-small has-tooltip-right"
+          data-tooltip="ATC Class L antineoplastic and immunomodulating agents"
+        >
+          <i
+            class="fas"
+            [class.fa-times]="
+              !wrapper.data.isAtcAntineoplasticAndImmunomodulatingAgent
+            "
+            [class.fa-check]="
+              wrapper.data.isAtcAntineoplasticAndImmunomodulatingAgent
+            "
+          ></i>
+        </span>
+      </p>
+
+      <p>
+        <b>In Cancernet: </b>
+        <span class="icon is-small">
+          <i
+            class="fas"
+            [class.fa-times]="!wrapper.data.inCancernet"
+            [class.fa-check]="wrapper.data.inCancernet"
+          ></i>
+        </span>
+      </p>
+    </div>
+
+    <div
+      class="field has-addons add-remove-toggle"
+      *ngIf="wrapper.type !== 'Drug'"
+    >
+      <app-toggle
+        [value]="analysis.inSelection(wrapper)"
+        (valueChange)="
+          $event
+            ? analysis.addItems([wrapper])
+            : analysis.removeItems([wrapper])
+        "
+        textOn="Selected"
+        textOff="Deselected"
+        tooltipOn="Add node to selection."
+        tooltipOff="Remove node from selection."
+        class="self-align"
+      ></app-toggle>
+    </div>
+
+    <ng-container *ngIf="wrapper.type !== 'Drug'">
+      <app-survival-plot [wrapper]="wrapper"> </app-survival-plot>
+    </ng-container>
+  </div>
+  <div *ngIf="!wrapper">Please select a node for further information.</div>
+</div>

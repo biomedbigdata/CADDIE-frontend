@@ -1,5 +1,7 @@
 import {AlgorithmType, QuickAlgorithmType} from './services/analysis/analysis.service';
 
+export type NetworkType = 'basic' | 'analysis';
+
 export interface Node {
   /**
    * Interface for gene/protein

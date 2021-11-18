@@ -1,0 +1,19 @@
+@import "../../../../../scaffold.scss";
+
+.fullscreen {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  height: 100vh !important;
+  z-index: 100 !important;
+  .card.network {
+    height: 100%;
+  }
+  div.network-size {
+    height: calc(100vh - #{$network-footer-height});
+  }
+  footer {
+    position: absolute;
+    bottom: 0;
+  }
+}

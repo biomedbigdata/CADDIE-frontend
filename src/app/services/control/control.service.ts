@@ -446,15 +446,31 @@ export class ControlService {
     return this.http.get<DrugStatus[]>(`${environment.backend}drug_status/`);
   }
 
-  public queryExpressionCancerTypeGenes(expressionCancerType: ExpressionCancerType, threshold: number): Promise<any> {
+  public queryCancerTypeExpressionGenes(expressionCancerType: ExpressionCancerType, threshold: number, cancerTypes: CancerType[]): Promise<any> {
     /**
      * Lists all available expressionCancerTypes with id and name
      */
+    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
 
-    return this.http.post<any>(`${environment.backend}query_expressionCancerType_genes/`,
+    return this.http.post<any>(`${environment.backend}query_expression_cancer_type_genes/`,
       {
         expressionCancerTypeId: JSON.stringify(expressionCancerType.backendId),
-        threshold: JSON.stringify(threshold)
+        threshold: JSON.stringify(threshold),
+        cancerTypes: cancerTypesIds
+      }).toPromise();
+  }
+
+  public queryTissueGenes(tissue: Tissue, threshold: number, cancerTypes: CancerType[]): Promise<any> {
+    /**
+     * Lists all available tissues with id and name
+     */
+    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
+
+    return this.http.post<any>(`${environment.backend}query_tissue_genes/`,
+      {
+        tissueId: JSON.stringify(tissue.backendId),
+        threshold: JSON.stringify(threshold),
+        cancerTypes: cancerTypesIds
       }).toPromise();
   }
 
@@ -465,7 +481,6 @@ export class ControlService {
      */
     const diseaseIds = diseases.map( (disease) => disease.backendId);
     const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
-
     const params = new HttpParams()
       .set('diseases', JSON.stringify(diseaseIds))
       .set('data', JSON.stringify(dataset.backendId))
@@ -501,6 +516,17 @@ export class ControlService {
       .set('text', searchString)
       .set('dataset_id', dataset.backendId.toString());
     return this.http.get(`${environment.backend}drug_interaction_lookup/`, {params}).toPromise();
+  }
+
+  public geneDrugLookup(searchString: string, dataset: Dataset): Promise<any> {
+    /**
+     * Returns found drugs related to input gene
+     */
+
+    const params = new HttpParams()
+      .set('text', searchString)
+      .set('dataset_id', dataset.backendId.toString());
+    return this.http.get(`${environment.backend}gene_drug_interaction_lookup/`, {params}).toPromise();
   }
 
   public vcfLookup(fileContent: string, threshold: number): Promise<any> {

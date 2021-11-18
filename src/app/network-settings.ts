@@ -3,6 +3,11 @@ import {getGradientColor} from './utils';
 
 export class NetworkSettings {
 
+  // parameters for click timing
+  public static doubleClickTime: Date = new Date();
+  public static t0: Date = new Date();
+  public static threshold = 200;
+
   // Node color
   private static node = '#143d1f';
   private static cancerNode = '#5b005b';
@@ -308,5 +313,8 @@ export class NetworkSettings {
 
     return node;
   }
+
+
+
 }
 

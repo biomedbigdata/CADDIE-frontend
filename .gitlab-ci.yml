@@ -40,7 +40,7 @@ build:
       - dist
   script:
     - npm install
-    - npm run build --prod
+    - npm run build
   dependencies:
     - check:lint
 #    - check:test

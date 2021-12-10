@@ -177,6 +177,15 @@
       </div>
 
       <footer class="card-footer toolbar network-footer-container">
+
+        <app-button
+        buttonText="Menu"
+        (callbackFun)="explorerData.showNetworkMenuDialog = !explorerData.showNetworkMenuDialog"
+        icon="fa fa-cogs"
+        class="is-inline-block footer-buttons"
+      >
+      </app-button>
+
         <button
           (click)="toCanvas()"
           class="button is-primary has-tooltip is-inline-block footer-buttons"
@@ -187,6 +196,15 @@
           </span>
           <span>Screenshot</span>
         </button>
+
+        <app-category-selector
+          *ngIf="target === 'drug-target'"
+          [expanded]="drugStatusExpanded"
+          [selectedElement]="selectedDrugStatus"
+          [elements]="analysis.getDrugStatus()"
+          (callbackFun)="toggleDrugs($event)"
+          label="Drugs"
+        ></app-category-selector>
 
         <app-category-selector
           [expanded]="expressionExpanded"
@@ -219,7 +237,7 @@
 
         <app-toggle
           class="footer-buttons is-inline-block"
-          textOn="Animation On"
+          textOn="Physics On"
           textOff="Off"
           tooltipOn="Enable the network animation."
           tooltipOff="Disable the network animation and freeze nodes."

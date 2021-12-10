@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {Dataset} from '../../interfaces';
+import {Dataset} from '../../../../../../interfaces';
 
 @Component({
   selector: 'app-dataset-tile',

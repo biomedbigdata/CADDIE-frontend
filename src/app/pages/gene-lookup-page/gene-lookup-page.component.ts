@@ -49,7 +49,6 @@ export class GeneLookupPageComponent implements OnInit, AfterViewInit {
     }
     this.searchResult = await this.control.geneDrugLookup(searchString.trim(), drugDataset);
 
-    console.log(this.searchResult)
     if (!this.searchResult.found) {
       toast({
         message: `No Gene was found for '${searchString}'.`,

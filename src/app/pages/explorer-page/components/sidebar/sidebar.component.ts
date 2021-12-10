@@ -2,6 +2,7 @@ import { Component, AfterViewInit } from '@angular/core';
 import { CancerNode } from 'src/app/interfaces';
 import { AnalysisService } from 'src/app/services/analysis/analysis.service';
 import { ExplorerDataService } from 'src/app/services/explorer-data/explorer-data.service';
+import { LoadingOverlayService } from 'src/app/services/loading-overlay/loading-overlay.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +11,7 @@ import { ExplorerDataService } from 'src/app/services/explorer-data/explorer-dat
 })
 export class SidebarComponent implements AfterViewInit {
 
-  constructor(public explorerData: ExplorerDataService, public analysis: AnalysisService) { }
+  constructor(public explorerData: ExplorerDataService, public analysis: AnalysisService, private loadingOverlay: LoadingOverlayService) { }
 
   ngAfterViewInit(): void {
   }
@@ -27,5 +28,20 @@ export class SidebarComponent implements AfterViewInit {
   public collapseOverview = true;
   public collapseType = true;
   public collapseLevel = true;
+
+  public async buildMainNetwork() {
+    if (!this.explorerData.activeNetwork.selectedCancerTypeItems.length) {
+      return
+    }
+    this.loadingOverlay.addTo('loadingOverlayTarget');
+    await this.explorerData.activeNetwork.getMainNetwork(
+        this.explorerData.activeNetwork.selectedDataset,
+        this.explorerData.activeNetwork.selectedInteractionGeneDataset,
+        this.explorerData.activeNetwork.selectedCancerTypeItems
+      )
+    await this.explorerData.activeNetwork.createNetwork()
+    await this.explorerData.activeNetwork.setNetworkDefaultSettings();
+    this.loadingOverlay.removeFrom('loadingOverlayTarget');
+  }
 
 }

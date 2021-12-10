@@ -42,7 +42,7 @@ build:
     - npm install
     - npm run build
   dependencies:
-    - check:lint
+    # - check:lint
 #    - check:test
 
 deploy:dev:

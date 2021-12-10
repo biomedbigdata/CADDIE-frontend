@@ -66,6 +66,8 @@ export class AnalysisService {
 
   public tokens: string[] = [];
   public finishedTokens: string[] = [];
+  private tokensCookieKey = `caddie-tokens-${window.location.host}`;
+  private tokensFinishedCookieKey = `caddie-finishedTokens-${window.location.host}`;
   public tasks: Task[] = [];
 
   private intervalId: any;
@@ -81,8 +83,8 @@ export class AnalysisService {
   private drugStatus: DrugStatus[] = [];
 
   constructor(private control: ControlService) {
-    const tokens = localStorage.getItem('tokens');
-    const finishedTokens = localStorage.getItem('finishedTokens');
+    const tokens = localStorage.getItem(this.tokensCookieKey);
+    const finishedTokens = localStorage.getItem(this.tokensFinishedCookieKey);
     if (tokens) {
       this.tokens = JSON.parse(tokens);
     }
@@ -137,12 +139,12 @@ export class AnalysisService {
   }
 
   addTask(token) {
-    const tokens = localStorage.getItem('tokens');
+    const tokens = localStorage.getItem(this.tokensCookieKey);
     if (tokens) {
       this.tokens = JSON.parse(tokens);
     }
     this.tokens.push(token);
-    localStorage.setItem('tokens', JSON.stringify(this.tokens));
+    localStorage.setItem(this.tokensCookieKey, JSON.stringify(this.tokens));
   }
 
   removeTask(token) {
@@ -156,7 +158,7 @@ export class AnalysisService {
     this.tokens = this.tokens.filter((item) => item !== token);
     this.finishedTokens = this.finishedTokens.filter((item) => item !== token);
     this.tasks = this.tasks.filter((item) => item.token !== (token));
-    localStorage.setItem('tokens', JSON.stringify(this.tokens));
+    localStorage.setItem(this.tokensCookieKey, JSON.stringify(this.tokens));
   }
 
   removeAllTasks() {
@@ -166,7 +168,7 @@ export class AnalysisService {
     this.tasks = [];
     this.finishedTokens = [];
     this.tokens = [];
-    localStorage.removeItem('tokens');
+    localStorage.removeItem(this.tokensCookieKey);
   }
 
   async getTasks() {
@@ -363,6 +365,32 @@ export class AnalysisService {
     return items.length;
   }
 
+  public addMutatedGenes(
+    nodes,
+    genes: (Node | CancerNode)[],
+    threshold: number,
+    nodeType: ('Node' | 'CancerNode')
+): number {
+    /**
+     * Returns amount of genes which have higher mutation count than threshold
+     * +
+     * Sets these genes to 'this.selectedItems'
+     */
+    const items: Wrapper[] = [];
+    const visibleIds = new Set<string>(nodes.getIds());
+    for (const gene of genes) {
+      const wrapper = nodeType === 'Node' ? getWrapperFromNode(gene as Node) :
+        getWrapperFromCancerNode(gene as CancerNode);
+      const found = visibleIds.has(wrapper.nodeId);
+      if (found && !this.inSelection(wrapper) && gene.mutationScore > threshold) {
+        items.push(wrapper);
+        this.selectedItems.set(wrapper.nodeId, wrapper);
+      }
+    }
+    this.selectListSubject.next({items, selected: true});
+    return items.length;
+  }
+
   public addExpressedGenes(
     nodes,
     genes: (Node | CancerNode)[],
@@ -528,7 +556,7 @@ export class AnalysisService {
     this.launchingQuick = true;
     const resp = await this.control.postTask(algorithm, target, parameters);
     this.tokens.push(resp.token);
-    localStorage.setItem('tokens', JSON.stringify(this.tokens));
+    localStorage.setItem(this.tokensCookieKey, JSON.stringify(this.tokens));
     this.startWatching();
 
     toast({
@@ -563,7 +591,7 @@ export class AnalysisService {
 
     const resp = await this.control.postTask(algorithm, target, parameters);
     this.tokens.push(resp.token);
-    localStorage.setItem('tokens', JSON.stringify(this.tokens));
+    localStorage.setItem(this.tokensCookieKey, JSON.stringify(this.tokens));
     this.startWatching();
   }
 
@@ -629,11 +657,11 @@ export class AnalysisService {
             if (task.info.done) {
               this.finishedTokens.push(task.token);
               this.showToast(task, 'DONE');
-              localStorage.setItem('finishedTokens', JSON.stringify(this.finishedTokens));
+              localStorage.setItem(this.tokensFinishedCookieKey, JSON.stringify(this.finishedTokens));
             } else if (task.info.failed) {
               this.finishedTokens.push(task.token);
               this.showToast(task, 'FAILED');
-              localStorage.setItem('finishedTokens', JSON.stringify(this.finishedTokens));
+              localStorage.setItem(this.tokensFinishedCookieKey, JSON.stringify(this.finishedTokens));
             } else {
             }
           }

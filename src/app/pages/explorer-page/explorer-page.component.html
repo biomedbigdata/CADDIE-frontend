@@ -1,7 +1,7 @@
 <div class="is-hidden-mobile">
   <div class="caddie explorer">
     <app-sidebar></app-sidebar>
-    <div class="caddie right-window">
+    <div class="caddie right-window" id="loadingOverlayTarget">
       <div [hidden]="explorerData.selectedAnalysisToken">
         <app-network [networkType]="'basic'"></app-network>
       </div>

@@ -1,17 +1,15 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
   OnInit,
   Output,
   SimpleChanges,
-  ViewChild
 } from '@angular/core';
-import {HttpErrorResponse} from '@angular/common/http';
-import {environment} from '../../../../../environments/environment';
-import {AnalysisService, algorithmNames} from '../../../../services/analysis/analysis.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
+import { AnalysisService, algorithmNames } from '../../../../services/analysis/analysis.service';
 import {
   Node,
   Task,
@@ -33,12 +31,12 @@ import {
   Tissue,
   DrugStatus, Dataset, MutationCancerType
 } from '../../../../interfaces';
-import {toast} from 'bulma-toast';
-import {NetworkSettings} from '../../../../network-settings';
-import {ControlService} from '../../../../services/control/control.service';
-import {LoadingOverlayService} from '../../../../services/loading-overlay/loading-overlay.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import { toast } from 'bulma-toast';
+import { NetworkSettings } from '../../../../network-settings';
+import { ControlService } from '../../../../services/control/control.service';
+import { LoadingOverlayService } from '../../../../services/loading-overlay/loading-overlay.service';
 import { ExplorerDataService } from 'src/app/services/explorer-data/explorer-data.service';
+import { PlotlyModule } from 'angular-plotly.js';
 
 declare var vis: any;
 
@@ -63,17 +61,17 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       target: 'drug',
       algorithm: 'super',
       parameters: {},
-  
+
       workerId: '',
       jobId: '',
-  
+
       progress: 0,
       status: '',
-  
+
       createdAt: '',
       startedAt: '',
       finishedAt: '',
-  
+
       done: false,
       failed: false,
     },
@@ -85,6 +83,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public result: any = null;
   public drugCountBarplot: any = undefined;
+  public geneCountBarplot: any = undefined;
+  public nodeDegreeScatterplot: any = undefined;
 
   private drugNodes: any[] = [];
   private drugEdges: any[] = [];
@@ -122,8 +122,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     public analysis: AnalysisService,
     private control: ControlService,
     private loadingOverlay: LoadingOverlayService,
-    private router: Router,
-    private route: ActivatedRoute,
     public explorerData: ExplorerDataService
   ) {
   }
@@ -132,7 +130,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   }
 
   async ngOAfterInit() {
-    this.explorerData.activate('analysis')
+    this.explorerData.activate('analysis');
   }
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -148,6 +146,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
       this.task = await this.control.getTask(this.token);
       this.tab = (this.task && this.task.info.algorithm === 'summary') ? 'summary' : 'network';
+      this.explorerData.activeNetwork.target = this.task.info.target;
 
       if (this.task.info.algorithm === 'degree') {
         this.tableDrugScoreTooltip =
@@ -180,10 +179,16 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       }
 
       if (this.task && this.task.info.done) {
+        // reset potential old data
+        this.drugCountBarplot = null;
+        this.geneCountBarplot = null;
+        this.nodeDegreeScatterplot = null;
+
+        this.loadingOverlay.addTo('loadingOverlayTarget');
         this.result = await this.control.getTaskResult(this.token);
         // this.explorerData.activeNetwork.resetNetwork();
 
-        this.explorerData.activate('analysis')
+        this.explorerData.activate('analysis');
         this.convertResultToNodeData(this.result);
 
         this.showDrugs = false;
@@ -272,6 +277,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             const wrapper = selectedNode.wrapper;
             wrapper.comorbidities = await this.getComorbidities(wrapper);
             wrapper.cancerTypes = await this.getRelatedCancerTypes(wrapper);
+            this.explorerData.nodeDegree = this.explorerData.activeNetwork.getNodeDegree(wrapper.data.graphId);
             this.showDetailsChange.emit(wrapper);
           } else {
             this.showDetailsChange.emit(null);
@@ -280,7 +286,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
         this.analysis.subscribeList((items, selected) => {
           if (this.explorerData.activeNetwork.nodeData === undefined || !this.explorerData.activeNetwork.nodeData.nodes.length) {
-            return
+            return;
           }
           if (selected !== null) {
             const updatedNodes = [];
@@ -378,20 +384,18 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           }
         });
         if (this.result.drugCounts !== undefined) {
+          // load summary graphs
           this.loadDrugCountBarplot();
+          this.loadGeneCountBarplot();
         }
+        if (this.result.tracesDegree !== undefined) {
+          this.loadNodeDegreeScatterplot();
+        }
+        this.loadingOverlay.removeFrom('loadingOverlayTarget');
       }
     }
     // this.emitVisibleItems(true);
   }
-
-  // public emitVisibleItems(on: boolean) {
-  //   if (on) {
-  //     this.visibleItems.emit([this.explorerData.activeNetwork.nodeData.nodes, [this.explorerData.activeNetwork.basicNodes, this.explorerData.activeNetwork.cancerNodes, this.selectedExpressionCancerType]]);
-  //   } else {
-  //     this.visibleItems.emit(null);
-  //   }
-  // }
 
   public toggleNormalization(normalize: boolean) {
     /**
@@ -460,8 +464,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
     this.explorerData.activeNetwork.basicNodes = [];
     this.explorerData.activeNetwork.cancerNodes = [];
+    this.explorerData.activeNetwork.drugNodes = [];
     const network = result.network;
     const isSeed: { [key: string]: boolean } = result.nodeAttributes.isSeed || {};
+    this.explorerData.activeNetwork.degrees = result.nodeAttributes.degrees || {};
     const nodeTypes = result.nodeAttributes.nodeTypes || {};
     const scores = result.nodeAttributes.scores || {};
     const details = result.nodeAttributes.details || {};
@@ -475,32 +481,33 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         wrappers[node] = getWrapperFromCancerNode(details[node]);
       } else if (nodeTypes[node] === 'Drug') {
         wrappers[node] = getWrapperFromDrug(details[node]);
+        this.explorerData.activeNetwork.drugNodes.push(details[node]);
       }
       nodes.push(this.mapNode(nodeTypes[node], details[node], isSeed[node], scores[node]));
     }
     for (const edge of network.edges) {
       edges.push(this.mapEdge(edge, 'node-node', wrappers));
     }
-    this.explorerData.activeNetwork.nodeData = {nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges)};
+    this.explorerData.activeNetwork.nodeData = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
     this.explorerData.activeNetwork.isSeed = isSeed;
 
     // create interactions lists, needed for node filtering in network
-    for (const [key, value] of Object.entries(wrappers)) {
+    for (const value of Object.values(wrappers)) {
       value.data.interactions = [];
-    };
+    }
     for (const edge of network.edges) {
-      const{from, to} = getNodeIdsFromEdgeGene(edge, wrappers);
+      const { from, to } = getNodeIdsFromEdgeGene(edge, wrappers);
       wrappers[from].data.interactions.push(to);
       wrappers[from].data.interactions.push(from);
     }
     const cancerNodes = [];
     const otherNodes = [];  // basic nodes and drugs
-    for (const [key, value] of Object.entries(wrappers)) {
+    for (const value of Object.values(wrappers)) {
       value.type === 'CancerNode' ? cancerNodes.push(value.data) : otherNodes.push(value.data);
-    };
+    }
     // set needed activeNetowrk properties
     this.explorerData.activeNetwork.cancerNodesSup = [];
-    this.explorerData.activeNetwork.networkData = {cancerNodes: cancerNodes, nodes: otherNodes};
+    this.explorerData.activeNetwork.networkData = { cancerNodes, otherNodes };
   }
 
   private mapNode(nodeType: WrapperType, details: Node | CancerNode | Drug, isSeed?: boolean, score?: number): any {
@@ -555,7 +562,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         color: NetworkSettings.getColor('edgeGene'),
         highlight: NetworkSettings.getColor('edgeGeneHighlight'),
       };
-      const {from, to} = getNodeIdsFromEdgeGene(edge, wrappers);
+      const { from, to } = getNodeIdsFromEdgeGene(edge, wrappers);
       return {
         from, to,
         color: edgeColor,
@@ -565,7 +572,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         color: NetworkSettings.getColor('edgeGeneDrug'),
         highlight: NetworkSettings.getColor('edgeGeneDrugHighlight'),
       };
-      const {from, to} = getNodeIdsFromCancerDriverGeneDrugInteraction(edge);
+      const { from, to } = getNodeIdsFromCancerDriverGeneDrugInteraction(edge);
       return {
         from, to,
         color: edgeColor,
@@ -691,7 +698,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             pauseOnHover: true,
             type: 'is-danger',
             position: 'top-center',
-            animate: {in: 'fadeIn', out: 'fadeOut'}
+            animate: { in: 'fadeIn', out: 'fadeOut' }
           });
           this.showDrugs = false;
           return;
@@ -707,7 +714,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           pauseOnHover: true,
           type: 'is-warning',
           position: 'top-center',
-          animate: {in: 'fadeIn', out: 'fadeOut'}
+          animate: { in: 'fadeIn', out: 'fadeOut' }
         });
       } else {
         for (const drug of drugs) {
@@ -715,7 +722,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         }
 
         for (const interaction of edges) {
-          const edge = {from: interaction.geneGraphId, to: interaction.drugGraphId};
+          const edge = { from: interaction.geneGraphId, to: interaction.drugGraphId };
           this.drugEdges.push(this.mapEdge(edge, 'to-drug'));
         }
         this.explorerData.activeNetwork.nodeData.nodes.add(Array.from(this.drugNodes.values()));
@@ -812,7 +819,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         continue;
       }
       // calculate color gradient
-      const gradient = n.mutationCounts !== null ? ( Math.pow( n.mutationCounts / maxCount, 1 / 3 ) ) : -1;
+      const gradient = n.mutationCounts !== null ? (Math.pow(n.mutationCounts / maxCount, 1 / 3)) : -1;
       const pos = this.explorerData.activeNetwork.networkVisJs.getPositions([item.nodeId]);
       node.x = pos[item.nodeId].x;
       node.y = pos[item.nodeId].y;
@@ -938,7 +945,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       const mutationsCounts = [];
 
       // fetch all data
-      const response = await this.control.mutationScores(mutationCancerType, this.explorerData.activeNetwork.basicNodes, this.explorerData.activeNetwork.cancerNodes);
+      const response = await this.control.mutationScores(
+        mutationCancerType, this.explorerData.activeNetwork.basicNodes, this.explorerData.activeNetwork.cancerNodes);
       for (const node of [...response.nodes, ...response.cancerNodes]) {
         if (node.nMutations !== null) {
           mutationsCounts.push(node.mutationCounts);
@@ -983,7 +991,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
       const minExp = 0.3;
 
       // fetch all data
-      this.control.expressionCancerTypeExpressionGenes(expressionCancerType, this.explorerData.activeNetwork.basicNodes, this.explorerData.activeNetwork.cancerNodes)
+      this.control.expressionCancerTypeExpressionGenes(
+        expressionCancerType, this.explorerData.activeNetwork.basicNodes, this.explorerData.activeNetwork.cancerNodes)
         .subscribe((response) => {
           // response is object with key "cancerGenes" and "genes"
           // each which is list of objects with "gene" and "level" (expression value)
@@ -1056,30 +1065,126 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     return stingList.join(', ');
   }
 
-  public async loadDrugCountBarplot() {
-    this.drugCountBarplot = {
+  public nodeColorPlots = {
+    Gene: '#143d1f',
+    'Cancer Gene': '#5b005b',
+    Drug: '#0080ff'
+  }
+
+  public toggleSeedFromScatterplot(data) {
+    // const pn = data.points[0].pointNumber;
+    // const tn = data.points[0].curveNumber;
+    // console.log(tn)
+    // const colors = [data.points[0].data.marker.color];
+    // const update = {'marker': {
+    //   color: data.points[0].data.marker.color,
+    //   size: data.points[0].data.marker.size,
+    //   line: {color: '#ffa500', width: 2}}};
+    // var pn='',
+    //     tn='',
+    //     colors = [],
+    //     lines=[];
+    // for(var i=0; i < data.points.length; i++){
+    //   pn = data.points[i].pointNumber;
+    //   tn = data.points[i].curveNumber;
+    //   colors = data.points[i].data.marker.color;
+    //   lines = data.points[i].data.marker.line;
+    // };
+    // data.points[0].data.marker.color[data.points[0].pointNumber] = NetworkSettings.selectedBorderColor;
+
+    // this.nodeDegreeScatterplot.data[1].marker.color[data.points[0].pointNumber] = NetworkSettings.selectedBorderColor;
+    // this.nodeDegreeScatterplot = { ...this.nodeDegreeScatterplot };
+
+
+    const colors = data.points[0].data.marker.color;
+    // const lines = data.points[0].data.marker.line;
+    colors[data.points[0].pointNumber] = NetworkSettings.selectedBorderColor;
+    // lines[data.points[0].pointNumber] = [{color: 'red', width: 5}];
+    const update = { marker: { color: colors, size: 12 } };
+    PlotlyModule.plotlyjs.restyle('nodeDegreePlot', update, [data.points[0].curveNumber]);
+    // const update = {'marker': {color: colors, line: lines, size: 12}};
+    // PlotlyModule.plotlyjs.restyle('nodeDegreePlot', update, [tn]);
+  }
+
+  public toggleSeedFromBarplot(data) {
+    // console.log(data.points[0].x)
+    let targetNode;
+    this.explorerData.activeNetwork.nodes.forEach((node) => {
+      if (node.label === data.points[0].x) {
+        targetNode = node;
+      }
+    });
+    if (this.analysis.inSelection(targetNode.wrapper)) {
+      this.analysis.removeSeeds([targetNode]);
+    } else {
+      this.analysis.addSeeds([targetNode]);
+    }
+  }
+
+  public async loadGeneCountBarplot() {
+    const plotWidth = Object.keys(this.result.geneCounts).length * 40;
+    this.geneCountBarplot = {
       data: [
-        { x: Object.keys(this.result.drugCounts),
-          y: Object.values(this.result.drugCounts),
+        {
+          x: Object.keys(this.result.geneCounts),
+          y: Object.values(this.result.geneCounts),
           type: 'bar',
+          name: 'Gene',
           transforms: [{
             type: 'sort',
             target: 'y',
             order: 'descending'
           }],
           marker: {
-            color: '#0080ff'
-          }},
+            color: '#143d1f'
+          }
+        },
+        {
+          x: Object.keys(this.result.cancerGeneCounts),
+          y: Object.values(this.result.cancerGeneCounts),
+          type: 'bar',
+          name: 'Cancer Gene',
+          transforms: [{
+            type: 'sort',
+            target: 'y',
+            order: 'descending'
+          }],
+          marker: {
+            color: '#5b005b',
+            line: {
+              color: '#ffa500',
+            }
+          },
+        },
       ],
 
       layout: {
-        // title: `title`,
+        title: {
+          text: `Gene Counts`,
+          x: 0,
+          xanchor: 'left',
+          pad: {
+            l: 80
+          }
+        },
+        width: plotWidth,
         xaxis: {
-          title: 'Drug Names',
+          title: 'Gene Names',
           automargin: true,
+          rangeslider: { visible: false },
         },
         yaxis: {
+          title: 'Occurrences',
           automargin: true
+        },
+        legend: {
+          x: 1,
+          y: 1,
+          font: {
+            size: 12,
+          },
+          xanchor: 'left',
+          // orientation: "h"
         }
       },
       config: {
@@ -1088,19 +1193,129 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     };
   }
 
-  public getNodeDegree(graphId: string): number {
-    /**
-     * returns the node degree of a given node in the current network
-     */
-    // TODO info tile gets called like many times when opening once
-    try {
-      // do this just to check if node is in network
-      this.explorerData.activeNetwork.networkVisJs.getPosition(graphId);
-      // this function somehow just crashes without throwing an error, a behaviour we cannot catch
-      return this.explorerData.activeNetwork.networkVisJs.getConnectedEdges(graphId).length;
-    } catch (err) {
-      return 0;
-    }
+  public async loadDrugCountBarplot() {
+    const plotWidth = Object.keys(this.result.drugCounts).length * 30;
+    this.drugCountBarplot = {
+      data: [
+        {
+          x: Object.keys(this.result.drugCounts),
+          y: Object.values(this.result.drugCounts),
+          type: 'bar',
+          transforms: [{
+            type: 'sort',
+            target: 'y',
+            order: 'descending'
+          }],
+          marker: {
+            title: 'Counts',
+            color: '#0080ff'
+          }
+        },
+      ],
+
+      layout: {
+        width: plotWidth,
+        title: {
+          text: `Drug Counts`,
+          x: 0,
+          xanchor: 'left',
+          pad: {
+            l: 80
+          }
+        },
+        xaxis: {
+          title: 'Drug Names',
+          automargin: true,
+        },
+        yaxis: {
+          title: 'Occurrences',
+          automargin: true
+        },
+        legend: {
+          x: 0,
+          y: 1.0,
+          font: {
+            size: 12,
+          }
+        }
+      },
+      config: {
+        responsive: true
+      }
+    };
+  }
+
+  public async loadNodeDegreeScatterplot() {
+    // const maxScore = Math.max(...[...this.result.tracesDegree.Drug.y, ...this.result.tracesDegree.Node.y, ...this.result.tracesDegree.CancerNode.y])
+    const colorsGene = []; for (let i = 0; i < this.result.tracesDegree.Node.x.length; i++) { colorsGene.push(NetworkSettings.node) };
+    const linesGene = []; for (let i = 0; i < this.result.tracesDegree.Node.x.length; i++) { linesGene.push({ color: NetworkSettings.selectedBorderColor, width: 0 }) };
+    const colorsCancerGene = []; for (let i = 0; i < this.result.tracesDegree.CancerNode.x.length; i++) { colorsCancerGene.push(NetworkSettings.cancerNode) };
+    const linesCancerGene = []; for (let i = 0; i < this.result.tracesDegree.CancerNode.x.length; i++) { linesCancerGene.push({ color: NetworkSettings.selectedBorderColor, width: 0 }) };
+
+    this.nodeDegreeScatterplot = {
+      data: [
+        {
+          x: this.result.tracesDegree.Drug.x,
+          y: this.result.tracesDegree.Drug.y.map(v => v / Math.max(...this.result.tracesDegree.Drug.y)),
+          mode: 'markers',
+          type: 'scatter',
+          name: 'Drug',
+          text: this.result.tracesDegree.Drug.names,
+          marker: {
+            size: 12,
+            color: NetworkSettings.approvedDrugColor,
+            line: { color: NetworkSettings.selectedBorderColor, width: 0 }
+          }
+        },
+        {
+          x: this.result.tracesDegree.Node.x,
+          y: this.result.tracesDegree.Node.y.map(v => v / Math.max(...this.result.tracesDegree.Node.y)),
+          mode: 'markers',
+          type: 'scatter',
+          name: 'Gene',
+          text: this.result.tracesDegree.Node.names,
+          marker: { size: 12, color: colorsGene, line: linesGene }
+        },
+        {
+          x: this.result.tracesDegree.CancerNode.x,
+          y: this.result.tracesDegree.CancerNode.y.map(v => v / Math.max(...this.result.tracesDegree.CancerNode.y)),
+          mode: 'markers',
+          type: 'scatter',
+          name: 'Cancer Gene',
+          text: this.result.tracesDegree.CancerNode.names,
+          marker: { size: 12, color: colorsCancerGene, line: linesCancerGene }
+        }
+      ],
+
+      layout: {
+        title: {
+          text: `CADDIE score vs. DB Degree`,
+          x: 0,
+          xanchor: 'left',
+          pad: {
+            l: 80
+          }
+        },
+        xaxis: {
+          title: 'DB Degree',
+          automargin: true,
+        },
+        yaxis: {
+          title: 'Score (Normalized)',
+          automargin: true
+        },
+        legend: {
+          x: 0,
+          y: 0,
+          font: {
+            size: 12,
+          }
+        }
+      },
+      config: {
+        responsive: true
+      }
+    };
   }
 
 }

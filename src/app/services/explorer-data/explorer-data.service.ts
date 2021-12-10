@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConsoleService } from '@ng-select/ng-select/lib/console.service';
-import { CancerNode, CancerType, Dataset, Disease, DiseaseGeneInteraction, ExpressionCancerType, getNodeIdsFromGeneGeneInteraction, getWrapperFromCancerNode, getWrapperFromNode, Interaction, MutationCancerType, NetworkType, Node, Tissue, Wrapper } from 'src/app/interfaces';
+import { CancerNode, CancerType, Dataset, Disease, DiseaseGeneInteraction, Drug, ExpressionCancerType, getNodeIdsFromGeneGeneInteraction, getWrapperFromCancerNode, getWrapperFromDrugNode, getWrapperFromNode, Interaction, MutationCancerType, NetworkType, Node, Tissue, Wrapper } from 'src/app/interfaces';
 import { NetworkSettings } from 'src/app/network-settings';
 import { AnalysisService } from 'src/app/services/analysis/analysis.service';
 import { ControlService } from 'src/app/services/control/control.service';
+import { LoadingOverlayService } from '../loading-overlay/loading-overlay.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +17,14 @@ export class ExplorerDataService {
     public analysis: AnalysisService,
     private control: ControlService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private loadingOverlay: LoadingOverlayService
     ) { 
     }
 
     // explorer information
+    public showNetworkMenuDialog = false;
+    public showTaskSummarizeDialog = false;
     public showAnalysisDialog = false;
     public showTissueThresholdDialog = false;
     public showCancerThresholdDialog = false;
@@ -103,6 +107,12 @@ export class ExplorerDataService {
       /**
        * opens analysis modal
       */
+      if (this.selectedAnalysisToken !== null) {
+        // in case user jumps from one analysis to another, close previous analysis before opening new one.
+        // This resets variables and enables a clean slate.
+        this.selectedAnalysisToken = null;
+      }
+      this.selectedWrapper = null;
       // update the url
       this.router.navigate(
         [],
@@ -113,7 +123,7 @@ export class ExplorerDataService {
         });
       // update the selectedAnalysisToken which will open the analysis panel
       this.selectedAnalysisToken = token;
-      this.networks.analysis = {nodeData: {nodes: [], edges: []}};
+      // this.networks.analysis = {nodeData: {nodes: [], edges: []}, visibleEdges: [], degrees: {}};
       this.activate('analysis');
       this.analysis.switchSelection(token);
     }
@@ -122,6 +132,7 @@ export class ExplorerDataService {
       /**
        * closes analysis modal
       */
+      this.selectedWrapper = null;
       // update the url
       this.router.navigate(
         [],
@@ -158,10 +169,12 @@ export class ExplorerDataService {
       // update network if exists
 
       if (this.activeNetwork) {
+        this.loadingOverlay.addTo('loadingOverlayTarget');
         await this.activeNetwork.getMainNetwork(this.activeNetwork.selectedDataset, 
           this.activeNetwork.selectedInteractionGeneDataset, this.activeNetwork.selectedCancerTypeItems);
         }
         await this.activeNetwork.createNetwork();
+        this.loadingOverlay.removeFrom('loadingOverlayTarget');
       await this.activeNetwork.setNetworkDefaultSettings();
       }
 
@@ -287,7 +300,7 @@ export class ExplorerDataService {
       }
     }
   
-    public fillQueryItems(nodes: Node[], cancerNodes: CancerNode[], reset: boolean = true) {
+    public fillQueryItems(nodes: Node[], cancerNodes: CancerNode[], drugNodes: Drug[], reset: boolean = true) {
       /**
        * fills the queryItems list, relevant for sending queries to the server, related to the query tile
        * +
@@ -307,6 +320,10 @@ export class ExplorerDataService {
   
       cancerNodes.forEach((cancerNode) => {
         newQueryItems.push(getWrapperFromCancerNode(cancerNode));
+      });
+
+      drugNodes.forEach((drugNode) => {
+        newQueryItems.push(getWrapperFromDrugNode(drugNode));
       });
 
       // if item is just pushed directly to queryItems, component does not update
@@ -356,11 +373,11 @@ export class ExplorerDataService {
   
       // new input from caddie
       parameters.cancer_dataset = 'NCG6';
-      parameters.cancer_dataset_id = this.activeNetwork.selectedDataset.backendId;
+      // parameters.cancer_dataset_id = this.activeNetwork.selectedDataset.backendId;
       parameters.gene_interaction_dataset = 'BioGRID';
-      parameters.gene_interaction_dataset_id = this.activeNetwork.selectedInteractionGeneDataset.backendId;
+      // parameters.gene_interaction_dataset_id = this.activeNetwork.selectedInteractionGeneDataset.backendId;
       parameters.drug_interaction_dataset = 'DGIdb';
-      parameters.drug_interaction_dataset_id = this.selectedInteractionDrugDataset.backendId;
+      // parameters.drug_interaction_dataset_id = this.activeNetwork.selectedInteractionDrugDataset.backendId;
       parameters.cancer_types = this.activeNetwork.selectedCancerTypeItems.map( (cancerType) => cancerType.backendId );
       parameters.includeNutraceuticalDrugs = true;
       parameters.onlyAtcLDrugs = false;
@@ -410,7 +427,7 @@ export class ExplorerDataService {
       }
       this.activeNetwork.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0]
   
-      if (!this.cancerTypes) {
+      if (!this.cancerTypes || this.activeNetwork.selectedCancerTypeItems===undefined) {
         // cancer types are always loaded
         await this.initCancerTypes(this.activeNetwork.selectedDataset);
       }
@@ -418,11 +435,13 @@ export class ExplorerDataService {
       // init network if network does not exist
       if (!this.activeNetwork.networkVisJs) {
         // default selection
+        this.loadingOverlay.addTo('loadingOverlayTarget');
         await this.activeNetwork.getMainNetwork(this.activeNetwork.selectedDataset, this.activeNetwork.selectedInteractionGeneDataset, this.activeNetwork.selectedCancerTypeItems);
         await this.activeNetwork.createNetwork();
+        this.loadingOverlay.removeFrom('loadingOverlayTarget');
         await this.activeNetwork.setNetworkDefaultSettings();
   
-        this.activeNetwork.physicsEnabled = false;
+        this.activeNetwork.physicsEnabled = true;
       }
   
       // load drug interaction datasets, do this at the end since it is not needed right away

@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { CancerNode, CancerType, Dataset, Disease, ExpressionCancerType, getGeneNodeId, getNodeIdsFromGeneGeneInteraction, getWrapperFromCancerNode, getWrapperFromNode, Interaction, MutationCancerType, Node, Tissue, Wrapper } from '../../../../interfaces';
+import { CancerNode, CancerType, Dataset, Disease, Drug, ExpressionCancerType, getGeneNodeId, getNodeIdsFromGeneGeneInteraction, getWrapperFromCancerNode, getWrapperFromNode, Interaction, MutationCancerType, Node, Tissue, Wrapper } from '../../../../interfaces';
 import { Network } from '../../../../main-network';
 import { NetworkSettings } from '../../../../network-settings';
 import { AnalysisService } from '../../../../services/analysis/analysis.service';
@@ -8,6 +8,7 @@ import { ExplorerDataService } from '../../../../services/explorer-data/explorer
 import { LoadingOverlayService } from '../../../../services/loading-overlay/loading-overlay.service';
 import {toast} from 'bulma-toast';
 import html2canvas from 'html2canvas';
+import { pieChartContextRenderer } from 'src/app/utils';
 
 
 declare var vis: any;
@@ -62,13 +63,15 @@ export class NetworkComponent implements OnInit {
   public visibleNodeCount = 0;
   public visibleEdges: Set<string> = new Set();
   public nodeData: { nodes: any, edges: any } = {nodes: [], edges: []};
-  public physicsEnabled = false;
+  public physicsEnabled = true;
 
   public nodes: any = []; // all network node objects
   public basicNodes: Node[] = [];  // all gene nodes
   public cancerNodes: CancerNode[] = [];  // all cancer nodes
   public interactions: Interaction[] = [];
   public cancerNodesSup: CancerNode[] = [];
+  public drugNodes: Drug[] = [];  // all cancer nodes
+
 
   public currentViewNodes: Node[] = [];
   public currentViewCancerNodes: CancerNode[] = [];
@@ -78,6 +81,10 @@ export class NetworkComponent implements OnInit {
 
   // store seed information for analysis network
   public isSeed = {};
+
+  // for analysis network
+  public target: 'drug' | 'drug-target' | null = null;
+
 
   @ViewChild('network', {static: false}) networkEl: ElementRef;
   @ViewChild('network_container', {static: false}) networkContainerEl: ElementRef;
@@ -217,7 +224,7 @@ export class NetworkComponent implements OnInit {
     }
 
     // fill query items for network search
-    this.explorerData.fillQueryItems(this.basicNodes, this.cancerNodes, true);
+    this.explorerData.fillQueryItems(this.basicNodes, this.cancerNodes, this.drugNodes, true);
     if (this.explorerData.selectedWrapper) {
       this.networkVisJs.selectNodes([this.explorerData.selectedWrapper.nodeId]);
     }
@@ -249,7 +256,7 @@ export class NetworkComponent implements OnInit {
       const node = this.nodeData.nodes.get(nodeId);
       const wrapper = node.wrapper;
       this.explorerData.openSummary(wrapper, false);
-      this.nodeDegree = this.getNodeDegree(wrapper.data.graphId);
+      this.explorerData.nodeDegree = this.getNodeDegree(wrapper.data.graphId);
     } else {
       this.explorerData.closeSummary();
     }
@@ -364,7 +371,7 @@ export class NetworkComponent implements OnInit {
       this.nodeData.nodes.add(node);
     }
     // add node to query items
-    this.explorerData.fillQueryItems(nodeItems, cancerNodeItems, false);
+    this.explorerData.fillQueryItems(nodeItems, cancerNodeItems, [], false);
 
     // now add edges in a second step to make sure we dont miss any connection
     for (const data of dataList) {
@@ -687,10 +694,13 @@ export class NetworkComponent implements OnInit {
 
     for (const n of geneList) {
       let item;
+      let nodes;
       if (nodeType === 'Node') {
         item = getWrapperFromNode(n as Node);
+        nodes = this.basicNodes;
       } else {
         item = getWrapperFromCancerNode(n as CancerNode);
+        nodes = this.cancerNodes;
       }
 
       const node = this.nodeData.nodes.get(item.nodeId);
@@ -712,6 +722,10 @@ export class NetworkComponent implements OnInit {
           gradient));
       node.wrapper = item;
       node.gradient = gradient;
+
+      nodes.find(gene => getGeneNodeId(gene) === item.nodeId).mutationScore = n.mutationScore;
+      (node.wrapper.data as (Node | CancerNode)).mutationScore = n.mutationScore;
+      
       updatedNodes.push(node);
     }
     return updatedNodes;
@@ -837,8 +851,12 @@ export class NetworkComponent implements OnInit {
           gradient));
       node.wrapper = item;
       node.gradient = gradient;
+      // node.opacity = gradient;
+      
       nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
       (node.wrapper.data as (Node | CancerNode)).expressionLevel = lvl.level;
+      // node.shape = 'custom';
+      // node.ctxRenderer = pieChartContextRenderer;
       updatedNodes.push(node);
     }
     return updatedNodes;

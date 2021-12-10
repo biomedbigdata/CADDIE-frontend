@@ -1,13 +1,13 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { ControlService } from 'src/app/services/control/control.service';
 import { ExplorerDataService } from 'src/app/services/explorer-data/explorer-data.service';
-import {CancerType, Dataset, Disease} from '../../interfaces';
+import {CancerType, Dataset, Disease} from '../../../../../../interfaces';
 
 @Component({
   selector: 'app-cancertype-comorbidities-tile',
   templateUrl: './cancertype-comorbidities-tile.component.html',
   styleUrls: ['./cancertype-comorbidities-tile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class CancertypeComorbiditiesTileComponent implements OnInit {

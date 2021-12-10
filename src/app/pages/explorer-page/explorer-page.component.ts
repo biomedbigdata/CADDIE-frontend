@@ -82,9 +82,9 @@ export class ExplorerPageComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    // init basic network with dummy
+    // init networks with dummy
     this.explorerData.networks.basic = {cancerNodes: [], visibleEdges: []};
-    this.explorerData.networks.analysis = {cancerNodes: []};
+    this.explorerData.networks.analysis = {cancerNodes: [], visibleEdges: []};
 
     this.route.queryParams.subscribe(async params => {
       this.explorerData.selectedAnalysisToken = params.task;

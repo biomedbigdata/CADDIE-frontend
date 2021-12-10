@@ -446,6 +446,20 @@ export class ControlService {
     return this.http.get<DrugStatus[]>(`${environment.backend}drug_status/`);
   }
 
+  public queryCancerTypeMutationGenes(mutationCancerType: MutationCancerType, threshold: number, cancerTypes: CancerType[]): Promise<any> {
+    /**
+     * Lists all available expressionCancerTypes with id and name
+     */
+    const cancerTypesIds = cancerTypes.map( (cancerType) => cancerType.backendId);
+
+    return this.http.post<any>(`${environment.backend}query_mutation_cancer_type_genes/`,
+      {
+        mutationCancerTypeId: JSON.stringify(mutationCancerType.backendId),
+        threshold: JSON.stringify(threshold),
+        cancerTypes: cancerTypesIds
+      }).toPromise();
+  }
+
   public queryCancerTypeExpressionGenes(expressionCancerType: ExpressionCancerType, threshold: number, cancerTypes: CancerType[]): Promise<any> {
     /**
      * Lists all available expressionCancerTypes with id and name

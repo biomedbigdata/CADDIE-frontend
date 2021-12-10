@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {AnalysisService} from '../../../../../../services/analysis/analysis.service';
-import {getWrapperFromNode, getWrapperFromCancerNode, Node, ExpressionCancerType, CancerNode} from '../../../../../../interfaces';
+import {getWrapperFromNode, getWrapperFromCancerNode, Node, ExpressionCancerType, CancerNode, MutationCancerType} from '../../../../../../interfaces';
 import {ControlService} from '../../../../../../services/control/control.service';
 import { ExplorerDataService } from 'src/app/services/explorer-data/explorer-data.service';
 
@@ -22,7 +22,7 @@ export class AddMutatedGenesComponent implements OnChanges {
   @Input()
   public cancerNodes: Array<CancerNode> = [];
   @Input()
-  public selectedMutationCancerType: ExpressionCancerType | null = null;
+  public selectedMutationCancerType: MutationCancerType | null = null;
 
   public genes = [];
   public threshold = 0.8;
@@ -42,7 +42,7 @@ export class AddMutatedGenesComponent implements OnChanges {
     }
 
     this.loading = true;
-    const result = await this.control.queryCancerTypeExpressionGenes(this.selectedMutationCancerType, this.threshold, this.explorerData.activeNetwork.selectedCancerTypeItems);
+    const result = await this.control.queryCancerTypeMutationGenes(this.selectedMutationCancerType, this.threshold, this.explorerData.activeNetwork.selectedCancerTypeItems);
     const items = [];
     for (const detail of result.genes) {
       items.push(getWrapperFromNode(detail));
@@ -57,9 +57,9 @@ export class AddMutatedGenesComponent implements OnChanges {
   public addVisibleGenes() {
     this.loading = true;
     let count = 0;
-    count += this.analysis.addExpressedGenes(
+    count += this.analysis.addMutatedGenes(
       this.explorerData.activeNetwork.nodeData.nodes, this.explorerData.activeNetwork.basicNodes, this.threshold, 'Node');
-    count += this.analysis.addExpressedGenes(
+    count += this.analysis.addMutatedGenes(
       this.explorerData.activeNetwork.nodeData.nodes, this.explorerData.activeNetwork.cancerNodes, this.threshold, 'CancerNode');
     this.addedCount = count;
     this.loading = false;
@@ -70,7 +70,7 @@ export class AddMutatedGenesComponent implements OnChanges {
     if (!this.basicNodes) {
       return;
     }
-    this.genes = [...this.explorerData.activeNetwork.basicNodes, ...this.explorerData.activeNetwork.cancerNodes].filter(p => p.expressionLevel >= threshold);
+    this.genes = [...this.explorerData.activeNetwork.basicNodes, ...this.explorerData.activeNetwork.cancerNodes].filter(p => p.mutationScore >= threshold);
   }
 
   public close() {

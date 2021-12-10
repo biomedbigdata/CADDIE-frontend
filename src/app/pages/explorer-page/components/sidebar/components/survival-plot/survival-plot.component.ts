@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, AfterViewInit, Output} from '@angular/core';
 import { ControlService } from 'src/app/services/control/control.service';
-import {BackendObject, TCGADataset, Wrapper} from '../../interfaces';
+import {BackendObject, TCGADataset, Wrapper} from '../../../../../../interfaces';
 
 @Component({
   selector: 'app-survival-plot',

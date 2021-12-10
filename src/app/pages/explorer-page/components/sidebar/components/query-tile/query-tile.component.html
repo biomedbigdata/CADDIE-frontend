@@ -1,14 +1,48 @@
 <div class="content">
-  <ng-select [items]="queryItems" bindLabel="data.name" bindValue="data" [virtualScroll]="true" class="custom"
-             [placeholder]="placeholder" [hideSelected]="true" [searchFn]="querySearch" (change)="select($event)" data-tooltip="Find genes in the network.">
+  <ng-select
+    [items]="queryItems"
+    bindLabel="data.name"
+    bindValue="data"
+    [virtualScroll]="true"
+    class="custom"
+    [placeholder]="placeholder"
+    [hideSelected]="true"
+    [searchFn]="querySearch"
+    (change)="select($event)"
+    data-tooltip="Find genes in the network."
+  >
     <ng-template ng-option-tmp let-item="item">
-      <b *ngIf="item.type == 'Node'"> {{item.data.name}}</b>
-      <b *ngIf="item.type == 'CancerNode'"> {{item.data.name}}</b> <br/>
+      <b>{{ item.data.name }} </b>
 
-      <span><small *ngIf="item.type === 'CancerNode'">Cancer Driver Gene</small><small *ngIf="item.type === 'Node'">Gene</small></span>
-      <span *ngIf="item.data.entrezId">  |  <small>Entrez: <b>{{item.data.entrezId}}</b></small></span>
-      <span *ngIf="item.data.uniprotAc">  |  <small>AC: <b>{{item.data.uniprotAc}}</b></small></span>
-      <span *ngIf="item.data.proteinName">  |  <small>Protein: <b>{{item.data.proteinName}}</b></small></span>
+      <span
+        ><small *ngIf="item.type === 'CancerNode'">Cancer Driver Gene</small
+        ><small *ngIf="item.type === 'Node'">Gene</small
+        ><small *ngIf="item.type === 'Drug'">Drug</small></span
+      >
+      <span *ngIf="item.data.entrezId">
+        |
+        <small
+          >Entrez: <b>{{ item.data.entrezId }}</b></small
+        ></span
+      >
+      <span *ngIf="item.data.uniprotAc">
+        |
+        <small
+          >AC: <b>{{ item.data.uniprotAc }}</b></small
+        ></span
+      >
+      <span *ngIf="item.data.proteinName">
+        |
+        <small
+          >Protein: <b>{{ item.data.proteinName }}</b></small
+        ></span
+      >
+      <span *ngIf="item.data.dbId">
+        |
+        <small
+          >DrugBank: <b>{{ item.data.dbId }}</b></small
+        ></span
+      >
     </ng-template>
   </ng-select>
 </div>

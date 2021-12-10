@@ -22,7 +22,6 @@
       [wrapper]="explorerData.selectedWrapper"
       [wrapperCancerTypes]="explorerData.selectedWrapperCancerTypes"
       [wrapperComorbidities]="explorerData.selectedWrapperComorbidities"
-      [nodeDegree]="explorerData.nodeDegree"
       (updateSelectedWrapper)="explorerData.selectedWrapper = $event"
     ></app-info-tile>
   </div>
@@ -73,11 +72,7 @@
             (selectedDatasetChange)="
               explorerData.activeNetwork.selectedInteractionGeneDataset =
                 $event;
-              explorerData.activeNetwork.createNetwork(
-                explorerData.activeNetwork.selectedDataset,
-                explorerData.activeNetwork.selectedInteractionGeneDataset,
-                explorerData.activeNetwork.selectedCancerTypeItems
-              )
+              buildMainNetwork()
             "
           >
           </app-interaction-dataset-tile>
@@ -101,13 +96,7 @@
             "
             (selectedCancerTypeItemsChange)="
               explorerData.activeNetwork.selectedCancerTypeItems = $event;
-              explorerData.activeNetwork.selectedCancerTypeItems.length
-                ? explorerData.activeNetwork.createNetwork(
-                    explorerData.activeNetwork.selectedDataset,
-                    explorerData.activeNetwork.selectedInteractionGeneDataset,
-                    explorerData.activeNetwork.selectedCancerTypeItems
-                  )
-                : false
+              buildMainNetwork()
             "
           >
           </app-cancertype-tile>
@@ -478,9 +467,25 @@
 
             <div class="columns">
               <div class="column is-half has-text-centered small-padding"></div>
-              <app-g-profiler></app-g-profiler>
+              <div class="column is-half has-text-centered small-padding"> <button
+                (click)="explorerData.showTaskSummarizeDialog = true;"
+                class="button is-primary is-fullwidth has-tooltip"
+                data-tooltip="Find drugs for the selected genes."
+                [disabled]="analysis.tasks.length < 2"
+              >
+                <span class="icon">
+                  <i class="fa fa-capsules"></i>
+                </span>
+                <span> Summarize </span>
+              </button></div>
+            </div>
+
+              <div class="columns">
+                <div class="column is-half has-text-centered small-padding"></div>
+                <div class="column is-half has-text-centered small-padding"><app-g-profiler></app-g-profiler></div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -650,7 +655,7 @@
           <span class="icon">
             <i class="fa fa-angle-double-up"></i>
           </span>
-          <span> Tissue expressed genes </span>
+          <span> Tissue expression </span>
         </a>
         <a
           (click)="explorerData.showCancerThresholdDialog = true"
@@ -660,7 +665,7 @@
           <span class="icon">
             <i class="fa fa-angle-double-up"></i>
           </span>
-          <span> Cancer expressed genes </span>
+          <span> Cancer expression </span>
         </a>
       </footer>
 
@@ -723,6 +728,18 @@
           <span> Invert </span>
         </a>
 
+        <a
+          (click)="explorerData.showMutationThresholdDialog = true"
+          class="card-footer-item has-text-primary"
+          data-tooltip="Add genes based on mutation in tissues."
+        >
+          <span class="icon">
+            <i class="fa fa-angle-double-up"></i>
+          </span>
+          <span> Mutated genes </span>
+        </a>
+      </footer>
+      <footer class="card-footer">
         <a
           (click)="analysis.resetSelection()"
           class="card-footer-item has-text-danger"
@@ -791,6 +808,11 @@
   </div>
 </div>
 
+<app-network-menu-dialog
+  [(show)]="explorerData.showNetworkMenuDialog"
+>
+</app-network-menu-dialog>
+
 <app-launch-analysis
   [(show)]="explorerData.showAnalysisDialog"
   [target]="explorerData.analysisDialogTarget"
@@ -852,3 +874,5 @@
   (triggerTemplateUpdate)="(explorerData.triggerTemplateUpdateVCFInput)"
 >
 </app-vcf-input>
+
+<app-task-summarize-dialog *ngIf="explorerData.showTaskSummarizeDialog"></app-task-summarize-dialog>

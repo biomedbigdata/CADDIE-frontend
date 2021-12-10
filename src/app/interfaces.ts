@@ -253,6 +253,15 @@ export function getWrapperFromNode(gene: Node): Wrapper {
   };
 }
 
+export function getWrapperFromDrugNode(drugNode: Drug): Wrapper {
+  return {
+    backendId: drugNode.backendId.toString(),
+    nodeId: drugNode.graphId,
+    type: 'Drug',
+    data: drugNode,
+  };
+}
+
 export function getWrapperFromCancerNode(cancerGene: CancerNode): Wrapper {
   return {
     backendId: getCancerDriverGeneBackendId(cancerGene),

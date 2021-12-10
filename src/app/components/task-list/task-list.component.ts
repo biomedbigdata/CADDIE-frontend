@@ -49,7 +49,7 @@ export class TaskListComponent implements OnInit {
   }
 
   public async startSummmaryTask() {
-    const response = await this.control.postTaskSummmarize({sourceTasks: this.taskCheckboxes});
+    const response = await this.control.postTaskSummmarize({sourceTasks: [...this.taskCheckboxes]});
     const tokenKey = 'token';
     this.analysis.addTask(response[tokenKey]);
   }

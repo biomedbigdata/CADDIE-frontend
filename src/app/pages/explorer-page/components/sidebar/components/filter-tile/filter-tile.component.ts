@@ -103,7 +103,7 @@ export class FilterTileComponent implements OnInit {
     this.explorerData.activeNetwork.visibleCancerNodeCount = filteredCancerDriverGenes.length;
     this.explorerData.activeNetwork.visibleNodeCount = filteredGenes.length;
     // update query options
-    this.explorerData.fillQueryItems(filteredGenes, filteredCancerDriverGenes);
+    this.explorerData.fillQueryItems(filteredGenes, filteredCancerDriverGenes, []);
   }
 
   public filterBuild(cancerNodes) {

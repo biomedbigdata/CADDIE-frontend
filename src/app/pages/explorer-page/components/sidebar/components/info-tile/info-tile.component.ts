@@ -14,7 +14,6 @@ export class InfoTileComponent {
   @Input() wrapper: Wrapper;
   @Input() wrapperCancerTypes: CancerType[];
   @Input() wrapperComorbidities: DiseaseGeneInteraction[];
-  @Input() nodeDegree: number;  // we need to pass this since we need the network object to calculate it
 
   @Output()
   public updateSelectedWrapper = new EventEmitter<boolean>();

@@ -1,545 +1,520 @@
 <div *ngIf="token">
-  <div class="card analysis">
-    <header class="card-header is-relative">
-      <p class="card-header-title">
-        <span class="icon">
+    <div class="card analysis">
+        <header class="card-header is-relative">
+            <p class="card-header-title">
+                <span class="icon">
           <i class="fas fa-flask" aria-hidden="true"></i>
-        </span>
-        Analysis Results
-      </p>
-      <a (click)="explorerData.closeAnalysis()" class="card-header-icon" aria-label="close">
-        <span class="icon">
+        </span> Analysis Results
+            </p>
+            <a (click)="explorerData.closeAnalysis()" class="card-header-icon" aria-label="close">
+                <span class="icon">
           <i class="fas fa-times" aria-hidden="true"></i>
         </span>
-      </a>
-    </header>
-    <div class="card-content" id="analysis-content">
-      <div class="tabs is-centered">
-        <ul>
-          <li *ngIf="task.info.algorithm === 'summary'" [class.is-active]="tab === 'summary'"><a (click)="tab = 'summary';  visibleTab.emit(tab)">Summary</a></li>
-          <li [class.is-active]="tab === 'network'"><a (click)="tab = 'network'; visibleTab.emit(tab)">Network</a></li>
-          <li [class.is-active]="tab === 'table'"><a (click)="tab = 'table';  visibleTab.emit(tab)">Table</a></li>
-          <li [class.is-active]="tab === 'meta'"><a (click)="tab = 'meta';  visibleTab.emit(tab)">Parameters</a></li>
-        </ul>
-      </div>
-      <div class="content tab-content meta" *ngIf="task && task.info.done && task.info.algorithm === 'summary'" [class.is-visible]="tab === 'summary'">
-        <div *ngIf="drugCountBarplot" id="drugCountsPlot">
-          <plotly-plot
-            [data]="drugCountBarplot.data"
-            [layout]="drugCountBarplot.layout"
-          ></plotly-plot>
-        </div>
-      </div>
-      <div class="content tab-content meta" *ngIf="task && task.info.done" [class.is-visible]="tab === 'meta'">
-        <div *ngIf="task && result">
-          <p *ngIf="task.info.algorithm !== 'quick' && task.info.algorithm !== 'super'">
-            Algorithm: <strong>{{algorithmNames[task.info.algorithm]}}</strong>
-          </p>
-          <div>
-            <table class="table is-narrow">
-              <tbody>
-              <tr *ngIf="result.cancerDataset !== undefined">
-                <td>Cancer Dataset</td>
-                <td>{{result.cancerDataset.name}}</td>
-              </tr>
-              <tr *ngIf="result.geneInteractionDataset !== undefined">
-                <td>Gene Interaction Dataset</td>
-                <td>{{result.geneInteractionDataset.name}}</td>
-              </tr>
-              <tr *ngIf="result.drugInteractionDataset !== undefined && task.info.target === 'drug'">
-                <td>Drug Interaction Dataset</td>
-                <td>{{result.drugInteractionDataset.name}}</td>
-              </tr>
-              <tr *ngIf="task.info.parameters.cancerTypeNames !== undefined">
-                <td>Cancer Types</td>
-                <td>{{formatStringList(task.info.parameters.cancerTypeNames)}}</td>
-              </tr>
+            </a>
+        </header>
+        <div class="card-content" id="analysis-content">
+            <div class="tabs is-centered">
+                <ul>
+                    <li *ngIf="task.info.algorithm === 'summary' || nodeDegreeScatterplot" [class.is-active]="tab === 'summary'"><a (click)="tab = 'summary';  visibleTab.emit(tab)">Figures</a></li>
+                    <li [class.is-active]="tab === 'network'"><a (click)="tab = 'network'; visibleTab.emit(tab)">Network</a></li>
+                    <li [class.is-active]="tab === 'table'"><a (click)="tab = 'table';  visibleTab.emit(tab)">Table</a></li>
+                    <li *ngIf="task.info.algorithm !== 'summary'" [class.is-active]="tab === 'meta'"><a (click)="tab = 'meta';  visibleTab.emit(tab)">Parameters</a></li>
+                </ul>
+            </div>
+            <div class="content tab-content scrollable meta" *ngIf="task && task.info.done && (task.info.algorithm === 'summary' || nodeDegreeScatterplot)" [class.is-visible]="tab === 'summary'">
+                <div *ngIf="drugCountBarplot" id="drugCountsPlotContainer">
+                    <plotly-plot [data]="drugCountBarplot.data" [layout]="drugCountBarplot.layout" [divId]="'drugCountsPlot'"></plotly-plot>
+                </div>
+                <div *ngIf="geneCountBarplot" id="geneCountsPlotContainer">
+                    <plotly-plot [data]="geneCountBarplot.data" [layout]="geneCountBarplot.layout" (plotly_click)="toggleSeedFromBarplot($event)" [divId]="'geneCountsPlot'"></plotly-plot>
+                </div>
+                <div *ngIf="nodeDegreeScatterplot" id="nodeDegreePlotContainer">
+                    <plotly-plot [data]="nodeDegreeScatterplot.data" [layout]="nodeDegreeScatterplot.layout" (plotly_click)="toggleSeedFromScatterplot($event)" [divId]="'nodeDegreePlot'"></plotly-plot>
+                </div>
+            </div>
+            <div class="content tab-content meta" *ngIf="task && task.info.done" [class.is-visible]="tab === 'meta'">
+                <div *ngIf="task && result">
+                    <p *ngIf="task.info.algorithm !== 'quick' && task.info.algorithm !== 'super'">
+                        Algorithm: <strong>{{algorithmNames[task.info.algorithm]}}</strong>
+                    </p>
+                    <div>
+                        <table class="table is-narrow">
+                            <tbody>
+                                <tr *ngIf="result.cancerDataset !== undefined">
+                                    <td>Cancer Dataset</td>
+                                    <td>{{result.cancerDataset.name}}</td>
+                                </tr>
+                                <tr *ngIf="result.geneInteractionDataset !== undefined">
+                                    <td>Gene Interaction Dataset</td>
+                                    <td>{{result.geneInteractionDataset.name}}</td>
+                                </tr>
+                                <tr *ngIf="result.drugInteractionDataset !== undefined && task.info.target === 'drug'">
+                                    <td>Drug Interaction Dataset</td>
+                                    <td>{{result.drugInteractionDataset.name}}</td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.cancerTypeNames !== undefined">
+                                    <td>Cancer Types</td>
+                                    <td>{{formatStringList(task.info.parameters.cancerTypeNames)}}</td>
+                                </tr>
 
-              <tr *ngIf="task.info.parameters.resultSize !== undefined">
-                <td>Result Size</td>
-                <td>{{task.info.parameters.resultSize}}</td>
-              </tr>
-              <tr *ngIf="task.info.parameters.k !== undefined">
-                <td>K</td>
-                <td>{{task.info.parameters.k}}</td>
-              </tr>
-              <tr *ngIf="task.info.parameters.numTrees !== undefined">
-                <td>Number of trees</td>
-                <td>{{task.info.parameters.numTrees}}</td>
-              </tr>
-              <tr *ngIf="task.info.parameters.tolerance !== undefined">
-                <td>Tolerance</td>
-                <td>{{task.info.parameters.tolerance}}</td>
-              </tr>
-              <tr *ngIf="task.info.parameters.dampingFactor !== undefined">
-                <td>Damping Factor</td>
-                <td>{{task.info.parameters.dampingFactor}}</td>
-              </tr>
-              <tr *ngIf="task.info.parameters.maxDeg !== undefined">
-                <td>Maximum Degree</td>
-                <td>{{task.info.parameters.maxDeg}}</td>
-              </tr>
-              <tr *ngIf="task.info.parameters.hubPenalty !== undefined">
-                <td>Hub Penality</td>
-                <td>{{task.info.parameters.hubPenalty}}</td>
-              </tr>
-              <tr *ngIf="task.info.parameters.mutationWeights !== undefined">
-                <td>Mutation Weights</td>
-                <td>
-                  <i *ngIf="task.info.parameters.mutationWeights" class="fa fa-check"></i>
-                  <i *ngIf="!task.info.parameters.mutationWeights" class="fa fa-times"></i>
-                </td>
-              </tr>
-              <tr *ngIf="task.info.parameters.includeIndirectDrugs !== undefined && task.info.target === 'drug'">
-                <td>Include indirect drugs</td>
-                <td>
-                  <i *ngIf="task.info.parameters.includeIndirectDrugs" class="fa fa-check"></i>
-                  <i *ngIf="!task.info.parameters.includeIndirectDrugs" class="fa fa-times"></i>
-                </td>
-              </tr>
-              <tr *ngIf="task.info.parameters.includeNutraceuticalDrugs !== undefined && task.info.target === 'drug'">
-                <td>Include nutraceutical drugs</td>
-                <td>
-                  <i *ngIf="task.info.parameters.includeNutraceuticalDrugs" class="fa fa-check"></i>
-                  <i *ngIf="!task.info.parameters.includeNutraceuticalDrugs" class="fa fa-times"></i>
-                </td>
-              </tr>
-              <tr *ngIf="task.info.parameters.includeNonApprovedDrugs !== undefined && task.info.target === 'drug'">
-                <td>Include non-approved drugs</td>
-                <td>
-                  <i *ngIf="task.info.parameters.includeNonApprovedDrugs" class="fa fa-check"></i>
-                  <i *ngIf="!task.info.parameters.includeNonApprovedDrugs" class="fa fa-times"></i>
-                </td>
-              </tr>
-              <tr *ngIf="task.info.parameters.onlyAtcLDrugs !== undefined && task.info.target === 'drug'">
-                <td>Include only ATC class L drugs</td>
-                <td>
-                  <i *ngIf="task.info.parameters.onlyAtcLDrugs" class="fa fa-check"></i>
-                  <i *ngIf="!task.info.parameters.onlyAtcLDrugs" class="fa fa-times"></i>
-                </td>
-              </tr>
-              <tr *ngIf="task.info.parameters.ignoreNonSeedBaits !== undefined && task.info.target === 'drug-target'">
-                <td>Include non-seed Cancer Genes</td>
-                <td>
-                  <i *ngIf="!task.info.parameters.ignoreNonSeedBaits" class="fa fa-check"></i>
-                  <i *ngIf="task.info.parameters.ignoreNonSeedBaits" class="fa fa-times"></i>
-                </td>
-              </tr>
-              <tr *ngIf="task.info.parameters.mutationCancerType !== null && task.info.parameters.mutationCancerType !== undefined">
-                <td>Cancer Type for Mutation Weights</td>
-                <td>{{task.info.parameters.mutationCancerType}}</td>
-              </tr>
-              <tr *ngIf="task.info.parameters.expressionCancerType !== null && task.info.parameters.expressionCancerType !== undefined">
-                <td>Cancer Type for Expression Weights</td>
-                <td>{{task.info.parameters.expressionCancerType}}</td>
-              </tr>
-              <tr *ngIf="task.info.parameters.drugTargetAction !== null && task.info.parameters.drugTargetAction !== undefined">
-                <td>Drug Target Action</td>
-                <td>{{task.info.parameters.drugTargetAction}}</td>
-              </tr>
+                                <tr *ngIf="task.info.parameters.resultSize !== undefined">
+                                    <td>Result Size</td>
+                                    <td>{{task.info.parameters.resultSize}}</td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.k !== undefined">
+                                    <td>K</td>
+                                    <td>{{task.info.parameters.k}}</td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.numTrees !== undefined">
+                                    <td>Number of trees</td>
+                                    <td>{{task.info.parameters.numTrees}}</td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.tolerance !== undefined">
+                                    <td>Tolerance</td>
+                                    <td>{{task.info.parameters.tolerance}}</td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.dampingFactor !== undefined">
+                                    <td>Damping Factor</td>
+                                    <td>{{task.info.parameters.dampingFactor}}</td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.maxDeg !== undefined">
+                                    <td>Maximum Degree</td>
+                                    <td>{{task.info.parameters.maxDeg}}</td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.hubPenalty !== undefined">
+                                    <td>Hub Penality</td>
+                                    <td>{{task.info.parameters.hubPenalty}}</td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.mutationWeights !== undefined">
+                                    <td>Mutation Weights</td>
+                                    <td>
+                                        <i *ngIf="task.info.parameters.mutationWeights" class="fa fa-check"></i>
+                                        <i *ngIf="!task.info.parameters.mutationWeights" class="fa fa-times"></i>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.includeIndirectDrugs !== undefined && task.info.target === 'drug'">
+                                    <td>Include indirect drugs</td>
+                                    <td>
+                                        <i *ngIf="task.info.parameters.includeIndirectDrugs" class="fa fa-check"></i>
+                                        <i *ngIf="!task.info.parameters.includeIndirectDrugs" class="fa fa-times"></i>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.includeNutraceuticalDrugs !== undefined && task.info.target === 'drug'">
+                                    <td>Include nutraceutical drugs</td>
+                                    <td>
+                                        <i *ngIf="task.info.parameters.includeNutraceuticalDrugs" class="fa fa-check"></i>
+                                        <i *ngIf="!task.info.parameters.includeNutraceuticalDrugs" class="fa fa-times"></i>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.includeNonApprovedDrugs !== undefined && task.info.target === 'drug'">
+                                    <td>Include non-approved drugs</td>
+                                    <td>
+                                        <i *ngIf="task.info.parameters.includeNonApprovedDrugs" class="fa fa-check"></i>
+                                        <i *ngIf="!task.info.parameters.includeNonApprovedDrugs" class="fa fa-times"></i>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.onlyAtcLDrugs !== undefined && task.info.target === 'drug'">
+                                    <td>Include only ATC class L drugs</td>
+                                    <td>
+                                        <i *ngIf="task.info.parameters.onlyAtcLDrugs" class="fa fa-check"></i>
+                                        <i *ngIf="!task.info.parameters.onlyAtcLDrugs" class="fa fa-times"></i>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.ignoreNonSeedBaits !== undefined && task.info.target === 'drug-target'">
+                                    <td>Include non-seed Cancer Genes</td>
+                                    <td>
+                                        <i *ngIf="!task.info.parameters.ignoreNonSeedBaits" class="fa fa-check"></i>
+                                        <i *ngIf="task.info.parameters.ignoreNonSeedBaits" class="fa fa-times"></i>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.mutationCancerType !== null && task.info.parameters.mutationCancerType !== undefined">
+                                    <td>Cancer Type for Mutation Weights</td>
+                                    <td>{{task.info.parameters.mutationCancerType}}</td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.expressionCancerType !== null && task.info.parameters.expressionCancerType !== undefined">
+                                    <td>Cancer Type for Expression Weights</td>
+                                    <td>{{task.info.parameters.expressionCancerType}}</td>
+                                </tr>
+                                <tr *ngIf="task.info.parameters.drugTargetAction !== null && task.info.parameters.drugTargetAction !== undefined">
+                                    <td>Drug Target Action</td>
+                                    <td>{{task.info.parameters.drugTargetAction}}</td>
+                                </tr>
 
 
-              </tbody>
-            </table>
-          </div>
-          <div *ngIf="task.info.algorithm === 'quick' || task.info.algorithm === 'super'">
-            <p>
-              Algorithm: <strong>{{algorithmNames['multisteiner']}}</strong>
-            </p>
-            <table class="table is-narrow">
-              <tbody>
-              <tr>
-                <td>Number of Trees</td>
-                <td>1</td>
-              </tr>
-              <tr>
-                <td>Tolerance</td>
-                <td>0</td>
-              </tr>
-              <tr>
-                <td>Hub Penality</td>
-                <td>1</td>
-              </tr>
-              </tbody>
-            </table>
-            <p>
-              Algorithm: <strong>{{algorithmNames['harmonic']}}</strong>
-            </p>
-            <table class="table is-narrow">
-              <tbody>
-              <tr>
-                <td>Include indirect drugs</td>
-                <td>
-                  <i class="fa fa-times"></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Include non-approved drugs</td>
-                <td>
-                  <i class="fa fa-check"></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Hub Penality</td>
-                <td>1</td>
-              </tr>
-              <tr>
-                <td>Result Size</td>
-                <td>10</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="content tab-content" id="analysis-network" *ngIf="task && task.info.done" [class.is-visible]="tab === 'network'">
-        <div class="card-image">
-          <app-network [networkType]="'analysis'"></app-network>
-        </div>
-        <footer class="card-footer toolbar network-footer-container">
-          <div class="field">
-            <p class="control footer-buttons">
-              <!-- <button class="button is-primary has-tooltip"
-                      data-tooltip="Take a screenshot of the current network." (click)="toCanvas()">
-                <span class="icon">
-                  <i class="fas fa-camera" aria-hidden="true"></i>
-                </span>
-                <span>
-                  Screenshot
-                </span>
-              </button> -->
-            </p>
-          </div>
-
-          <!-- <div class="field">
-            <p class="control footer-buttons">
-              <a [href]="graphmlLink()" class="button is-primary has-tooltip" data-tooltip="Export this network as .graphml file.">
-                <span class="icon">
-                  <i class="fas fa-download" aria-hidden="true"></i>
-                </span>
-                <span>
-                  Export as .graphml
-                </span>
-              </a>
-            </p>
-          </div> -->
-
-          <app-category-selector
-            *ngIf="task.info.target === 'drug-target'"
-            [expanded]="drugStatusExpanded"
-            [selectedElement]="selectedDrugStatus"
-            [elements]="analysis.getDrugStatus()"
-            (callbackFun)="toggleDrugs($event)"
-            label="Drugs"
-          ></app-category-selector>
-                      
-          </footer>
-      </div>
-      <div class="content tab-content scrollable" *ngIf="task && task.info.done" [class.is-visible]="tab === 'table'">
-        <div class="field has-addons" *ngIf="tableHasScores && task.info.algorithm !== 'proximity'">
-          <p class="control">
-            <button class="button   has-tooltip" data-tooltip="Normalize the scores"
-                    [class.is-primary]="tableNormalize" (click)="toggleNormalization(true)">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngIf="task.info.algorithm === 'quick' || task.info.algorithm === 'super'">
+                        <p>
+                            Algorithm: <strong>{{algorithmNames['multisteiner']}}</strong>
+                        </p>
+                        <table class="table is-narrow">
+                            <tbody>
+                                <tr>
+                                    <td>Number of Trees</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>Tolerance</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>Hub Penality</td>
+                                    <td>1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            Algorithm: <strong>{{algorithmNames['harmonic']}}</strong>
+                        </p>
+                        <table class="table is-narrow">
+                            <tbody>
+                                <tr>
+                                    <td>Include indirect drugs</td>
+                                    <td>
+                                        <i class="fa fa-times"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Include non-approved drugs</td>
+                                    <td>
+                                        <i class="fa fa-check"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Hub Penality</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>Result Size</td>
+                                    <td>10</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="content tab-content" id="analysis-network" *ngIf="task && task.info.done" [class.is-visible]="tab === 'network'">
+                <div class="card-image">
+                    <app-network [networkType]="'analysis'"></app-network>
+                </div>
+            </div>
+            <div class="content tab-content scrollable" *ngIf="task && task.info.done" [class.is-visible]="tab === 'table'">
+                <div class="field has-addons" *ngIf="tableHasScores && task.info.algorithm !== 'proximity'">
+                    <p class="control">
+                        <button class="button   has-tooltip" data-tooltip="Normalize the scores" [class.is-primary]="tableNormalize" (click)="toggleNormalization(true)">
                 <span class="icon is-small">
                   <i class="fa fa-ruler-vertical"></i>
                 </span>
               <span>Normalization On</span>
             </button>
-          </p>
-          <p class="control">
-            <button class="button   has-tooltip" data-tooltip="Disable normalization of the scores."
-                    [class.is-primary]="!tableNormalize" (click)="toggleNormalization(false)">
+                    </p>
+                    <p class="control">
+                        <button class="button   has-tooltip" data-tooltip="Disable normalization of the scores." [class.is-primary]="!tableNormalize" (click)="toggleNormalization(false)">
               <span>Off</span>
             </button>
-          </p>
-        </div>
+                    </p>
+                </div>
 
-        <div *ngIf="tableDrugs.length === 0 && task.info.target === 'drug'">
-          <i>No drugs have been found.</i>
-        </div>
-        <div *ngIf="tableDrugs.length > 0" class="table-header">
-          <h4 class="is-4">
-            <span class="icon"><i class="fa fa-capsules"></i></span>
-            <span>Drugs ({{ tableDrugs.length }})</span>
-          </h4>
-          <a [href]="downloadLink('drugs')" class="button is-primary is-outlined is-pulled-right is-small">
-            <span class="icon"><i class="fa fa-download"></i></span>
-            <span>Download</span>
-          </a>
-        </div>
-        <p-table *ngIf="tableDrugs.length > 0" [value]="tableDrugs">
-          <ng-template pTemplate="header">
-            <tr>
-              <th [pSortableColumn]="'dbId'">
-                DB ID
-                <p-sortIcon [field]="'dbId'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'name'">
-                Name
-                <p-sortIcon [field]="'name'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'status'">
-                Approved
-                <p-sortIcon [field]="'status'"></p-sortIcon>
-              </th>
-<!--              <th [pSortableColumn]="'inTrial'">-->
-<!--                In Trial-->
-<!--                <p-sortIcon [field]="'inTrial'"></p-sortIcon>-->
-<!--              </th>-->
-              <th [pSortableColumn]="'isNutraceutical'">
-                Is Nutraceutical
-                <p-sortIcon [field]="'isNutraceutical'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'isAtcAntineoplasticAndImmunomodulatingAgent'"
-                  class="has-tooltip"
-                  data-tooltip="ATC Class L (Antineoplastic or Immunomodulating Agents)">
-                Antineoplastic or Immunomod.
-                <p-sortIcon [field]="'isAtcAntineoplasticAndImmunomodulatingAgent'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'inCancernet'">
-                In Cancernet
-                <p-sortIcon [field]="'inCancernet'"></p-sortIcon>
-              </th>
-              <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
-                Score
-                <button class="button is-light has-tooltip tooltip-button"
-                        [attr.data-tooltip]="tableDrugScoreTooltip">
+                <div *ngIf="tableDrugs.length === 0 && task.info.target === 'drug'">
+                    <i>No drugs have been found.</i>
+                </div>
+                <div *ngIf="tableDrugs.length > 0" class="table-header">
+                    <h4 class="is-4">
+                        <span class="icon"><i class="fa fa-capsules"></i></span>
+                        <span>Drugs ({{ tableDrugs.length }})</span>
+                    </h4>
+                    <a [href]="downloadLink('drugs')" class="button is-primary is-outlined is-pulled-right is-small">
+                        <span class="icon"><i class="fa fa-download"></i></span>
+                        <span>Download</span>
+                    </a>
+                </div>
+                <p-table *ngIf="tableDrugs.length > 0" [value]="tableDrugs">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th [pSortableColumn]="'dbId'">
+                                DB ID
+                                <p-sortIcon [field]="'dbId'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'name'">
+                                Name
+                                <p-sortIcon [field]="'name'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'status'">
+                                Approved
+                                <p-sortIcon [field]="'status'"></p-sortIcon>
+                            </th>
+                            <!--              <th [pSortableColumn]="'inTrial'">-->
+                            <!--                In Trial-->
+                            <!--                <p-sortIcon [field]="'inTrial'"></p-sortIcon>-->
+                            <!--              </th>-->
+                            <th [pSortableColumn]="'isNutraceutical'">
+                                Is Nutraceutical
+                                <p-sortIcon [field]="'isNutraceutical'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'isAtcAntineoplasticAndImmunomodulatingAgent'" class="has-tooltip" data-tooltip="ATC Class L (Antineoplastic or Immunomodulating Agents)">
+                                Antineoplastic or Immunomod.
+                                <p-sortIcon [field]="'isAtcAntineoplasticAndImmunomodulatingAgent'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'inCancernet'">
+                                In Cancernet
+                                <p-sortIcon [field]="'inCancernet'"></p-sortIcon>
+                            </th>
+                            <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
+                                Score
+                                <button class="button is-light has-tooltip tooltip-button" [attr.data-tooltip]="tableDrugScoreTooltip">
                   ?
                 </button>
-                <p-sortIcon [field]="'score'"></p-sortIcon>
-              </th>
-<!--              <th>-->
-<!--                Closest Cancer Genes-->
-<!--              </th>-->
-<!--              <th [pSortableColumn]="'closestDistance'">-->
-<!--                Cancer Gene distance-->
-<!--                <p-sortIcon [field]="'closestDistance'"></p-sortIcon>-->
-<!--              </th>-->
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-e>
-            <tr>
-              <td><a href="https://www.drugbank.ca/drugs/{{ e.dbId }}" target="_blank">{{ e.dbId }}</a></td>
-              <td>
-                {{e.name}}
-              </td>
-              <td>
-                <span *ngIf="e.status === 'approved'">
+                                <p-sortIcon [field]="'score'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'dbdegree'">
+                                DB Degree
+                                <p-sortIcon [field]="'dbdegree'"></p-sortIcon>
+                            </th>
+                            <!--              <th>-->
+                            <!--                Closest Cancer Genes-->
+                            <!--              </th>-->
+                            <!--              <th [pSortableColumn]="'closestDistance'">-->
+                            <!--                Cancer Gene distance-->
+                            <!--                <p-sortIcon [field]="'closestDistance'"></p-sortIcon>-->
+                            <!--              </th>-->
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-e>
+                        <tr>
+                            <td><a href="https://www.drugbank.ca/drugs/{{ e.dbId }}" target="_blank">{{ e.dbId }}</a></td>
+                            <td>
+                                {{e.name}}
+                            </td>
+                            <td>
+                                <span *ngIf="e.status === 'approved'">
                   <i class="fa fa-check"></i>
                   Approved
                 </span>
-                <span *ngIf="e.status === 'unapproved'">
+                                <span *ngIf="e.status === 'unapproved'">
                   <i class="fa fa-times"></i>
                 </span>
-              </td>
-<!--              <td>-->
-<!--                <span *ngIf="e.inTrial">-->
-<!--                  <i class="fa fa-microscope has-text-primary"></i>-->
-<!--                  Trial-->
-<!--                </span>-->
-<!--                <span *ngIf="!e.inTrial">-->
-<!--                  <i class="fa fa-times"></i>-->
-<!--                </span>-->
-<!--              </td>-->
+                            </td>
+                            <!--              <td>-->
+                            <!--                <span *ngIf="e.inTrial">-->
+                            <!--                  <i class="fa fa-microscope has-text-primary"></i>-->
+                            <!--                  Trial-->
+                            <!--                </span>-->
+                            <!--                <span *ngIf="!e.inTrial">-->
+                            <!--                  <i class="fa fa-times"></i>-->
+                            <!--                </span>-->
+                            <!--              </td>-->
 
-              <td>
-                <span *ngIf="e.isNutraceutical">
+                            <td>
+                                <span *ngIf="e.isNutraceutical">
                   <i class="fa fa-leaf has-text-primary"></i>
                   Nutraceutical
                 </span>
-                <span *ngIf="!e.isNutraceutical">
+                                <span *ngIf="!e.isNutraceutical">
                   <i class="fa fa-times"></i>
                 </span>
-              </td>
-              <td>
-                <span *ngIf="e.isAtcAntineoplasticAndImmunomodulatingAgent">
+                            </td>
+                            <td>
+                                <span *ngIf="e.isAtcAntineoplasticAndImmunomodulatingAgent">
                   <i class="fa fa-check has-text-primary"></i>
 
                 </span>
-                <span *ngIf="!e.isAtcAntineoplasticAndImmunomodulatingAgent">
+                                <span *ngIf="!e.isAtcAntineoplasticAndImmunomodulatingAgent">
                   <i class="fa fa-times"></i>
                 </span>
-              </td>
-              <td>
-                <span *ngIf="e.inCancernet">
+                            </td>
+                            <td>
+                                <span *ngIf="e.inCancernet">
                   <i class="fa fa-check has-text-primary"></i>
                   Cancernet
                 </span>
-                <span *ngIf="!e.inCancernet">
+                                <span *ngIf="!e.inCancernet">
                   <i class="fa fa-times"></i>
                 </span>
-              </td>
-              <td *ngIf="tableHasScores">{{e.score | number : '1.0-5'}}</td>
-<!--              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">-->
-<!--                {{previewStringArray(e.closestCancerGenes, 3)}}-->
-<!--              </td>-->
-<!--              <td>-->
-<!--                {{e.closestDistance}}-->
-<!--              </td>-->
-            </tr>
-          </ng-template>
-        </p-table>
+                            </td>
+                            <td *ngIf="tableHasScores">{{e.score | number : '1.0-5'}}</td>
+                            <td>
+                                <span *ngIf="e.graphId in explorerData.activeNetwork.degrees">
+                  {{ explorerData.activeNetwork.degrees[e.graphId] }}
+                </span>
+                                <span *ngIf="!e.graphId in explorerData.activeNetwork.degrees">
+                  ?
+                </span>
+                            </td>
+                            <!--              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">-->
+                            <!--                {{previewStringArray(e.closestCancerGenes, 3)}}-->
+                            <!--              </td>-->
+                            <!--              <td>-->
+                            <!--                {{e.closestDistance}}-->
+                            <!--              </td>-->
+                        </tr>
+                    </ng-template>
+                </p-table>
 
-        <div *ngIf="tableNodes.length > 0" class="table-header">
-          <h4 class="is-4">
-            <span class="icon"><i class="fa fa-dna"></i></span>
-            <span>Genes ({{ tableNodes.length }})</span>
-          </h4>
-          <a [href]="downloadLink('genes')" class="button is-primary is-outlined is-pulled-right is-small">
-            <span class="icon"><i class="fa fa-download"></i></span>
-            <span>Download</span>
-          </a>
-        </div>
-        <p-table *ngIf="tableNodes.length > 0" selectionMode="multiple"
-                 [value]="tableNodes" [selection]="tableSelectedNodes" dataKey="proteinAc"
-                 (selectionChange)="tableGeneSelection($event)">
-          <ng-template pTemplate="header">
-            <tr>
-              <th class="checkbox-col">
-                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-              </th>
-              <th [pSortableColumn]="'proteinAc'">
-                UniProt Code
-                <p-sortIcon [field]="'proteinAc'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'name'">
-                Gene
-                <p-sortIcon [field]="'name'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'proteinName'">
-                Protein Name
-                <p-sortIcon [field]="'proteinName'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'mutationScore'"
-                  class="has-tooltip" data-tooltip="Based on number of mutations. See 'About' for more information">
-                Mutation Score
-                <p-sortIcon [field]="'mutationScore'"></p-sortIcon>
-              </th>
-              <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
-                Score
-                <button class="button is-light has-tooltip tooltip-button"
-                        [attr.data-tooltip]="tableProteinScoreTooltip">
+                <div *ngIf="tableNodes.length > 0" class="table-header">
+                    <h4 class="is-4">
+                        <span class="icon"><i class="fa fa-dna"></i></span>
+                        <span>Genes ({{ tableNodes.length }})</span>
+                    </h4>
+                    <a [href]="downloadLink('genes')" class="button is-primary is-outlined is-pulled-right is-small">
+                        <span class="icon"><i class="fa fa-download"></i></span>
+                        <span>Download</span>
+                    </a>
+                </div>
+                <p-table *ngIf="tableNodes.length > 0" selectionMode="multiple" [value]="tableNodes" [selection]="tableSelectedNodes" dataKey="proteinAc" (selectionChange)="tableGeneSelection($event)">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class="checkbox-col">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                            <th [pSortableColumn]="'proteinAc'">
+                                UniProt Code
+                                <p-sortIcon [field]="'proteinAc'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'name'">
+                                Gene
+                                <p-sortIcon [field]="'name'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'proteinName'">
+                                Protein Name
+                                <p-sortIcon [field]="'proteinName'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'mutationScore'" class="has-tooltip" data-tooltip="Based on number of mutations. See 'About' for more information">
+                                Mutation Score
+                                <p-sortIcon [field]="'mutationScore'"></p-sortIcon>
+                            </th>
+                            <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
+                                Score
+                                <button class="button is-light has-tooltip tooltip-button" [attr.data-tooltip]="tableProteinScoreTooltip">
                   ?
                 </button>
-                <p-sortIcon [field]="'score'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'isSeed'">
-                Seed
-                <p-sortIcon [field]="'isSeed'"></p-sortIcon>
-              </th>
-<!--              <th>-->
-<!--                Closest Cancer Genes-->
-<!--              </th>-->
-<!--              <th [pSortableColumn]="'closestDistance'">-->
-<!--                Closest distance-->
-<!--                <p-sortIcon [field]="'closestDistance'"></p-sortIcon>-->
-<!--              </th>-->
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-e>
-            <tr>
-              <td>
-                <p-tableCheckbox [value]="e"></p-tableCheckbox>
-              </td>
-              <td><a href="https://www.uniprot.org/uniprot/{{ e.uniprotAc }}" target="_blank">{{ e.uniprotAc }}</a></td>
-              <td>{{e.name}}</td>
-              <td>{{e.proteinName}}</td>
-              <td>{{e.mutationScore | number : '1.0-3'}}</td>
-              <td *ngIf="tableHasScores">{{e.score | number : '1.0-5'}}</td>
-              <td>
-                <span *ngIf="e.isSeed">
+                                <p-sortIcon [field]="'score'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'isSeed'">
+                                Seed
+                                <p-sortIcon [field]="'isSeed'"></p-sortIcon>
+                            </th>
+                            <!--              <th>-->
+                            <!--                Closest Cancer Genes-->
+                            <!--              </th>-->
+                            <!--              <th [pSortableColumn]="'closestDistance'">-->
+                            <!--                Closest distance-->
+                            <!--                <p-sortIcon [field]="'closestDistance'"></p-sortIcon>-->
+                            <!--              </th>-->
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-e>
+                        <tr>
+                            <td>
+                                <p-tableCheckbox [value]="e"></p-tableCheckbox>
+                            </td>
+                            <td><a href="https://www.uniprot.org/uniprot/{{ e.uniprotAc }}" target="_blank">{{ e.uniprotAc }}</a></td>
+                            <td>{{e.name}}</td>
+                            <td>{{e.proteinName}}</td>
+                            <td>{{e.mutationScore | number : '1.0-3'}}</td>
+                            <td *ngIf="tableHasScores">{{e.score | number : '1.0-5'}}</td>
+                            <td>
+                                <span *ngIf="e.isSeed">
                   <i class="fa fa-check"></i>
                   Seed
                 </span>
-                <span *ngIf="!e.isSeed">
+                                <span *ngIf="!e.isSeed">
                   <i class="fa fa-times"></i>
                 </span>
-              </td>
-<!--              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">-->
-<!--                {{previewStringArray(e.closestCancerGenes, 3)}}-->
-<!--              </td>-->
-<!--              <td>-->
-<!--                {{e.closestDistance}}-->
-<!--              </td>-->
-            </tr>
-          </ng-template>
-        </p-table>
+                            </td>
+                            <!--              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">-->
+                            <!--                {{previewStringArray(e.closestCancerGenes, 3)}}-->
+                            <!--              </td>-->
+                            <!--              <td>-->
+                            <!--                {{e.closestDistance}}-->
+                            <!--              </td>-->
+                        </tr>
+                    </ng-template>
+                </p-table>
 
-        <div *ngIf="tableCancerNodes.length > 0" class="table-header">
-          <h4 class="is-4">
-            <span class="icon"><i class="fa fa-disease"></i></span>
-            <span>Cancer Driver Genes ({{ tableCancerNodes.length }})</span>
-          </h4>
-          <a [href]="downloadLink('cancer_driver_genes')"
-             class="button is-primary is-outlined is-pulled-right is-small">
+                <div *ngIf="tableCancerNodes.length > 0" class="table-header">
+                    <h4 class="is-4">
+                        <span class="icon"><i class="fa fa-disease"></i></span>
+                        <span>Cancer Driver Genes ({{ tableCancerNodes.length }})</span>
+                    </h4>
+                    <a [href]="downloadLink('cancer_driver_genes')" class="button is-primary is-outlined is-pulled-right is-small">
 
-            <span class="icon"><i class="fa fa-download"></i></span>
-            <span>Download</span>
-          </a>
-        </div>
-        <p-table *ngIf="tableCancerNodes.length > 0" selectionMode="multiple"
-                 [value]="tableCancerNodes" [selection]="tableSelectedCancerNodes" dataKey="effectId"
-                 (selectionChange)="tableCancerDriverGeneSelection($event)">
-          <ng-template pTemplate="header">
-            <tr>
-              <th class="checkbox-col">
-                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-              </th>
-              <th [pSortableColumn]="'name'">
-                Name
-                <p-sortIcon [field]="'name'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'entrezId'">
-                Entrez ID
-                <p-sortIcon [field]="'entrezId'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'cancerOccurrences'">
-                Cancer Occurrences
-                <p-sortIcon [field]="'cancerOccurrences'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'type'">
-                Cancer Type
-                <p-sortIcon [field]="'type'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'mutationScore'"
-                  class="has-tooltip" data-tooltip="Based on number of mutations. See 'About' for more information">
-                Mutation Score
-                <p-sortIcon [field]="'mutationScore'"></p-sortIcon>
-              </th>
-              <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
-                Score
-                <p-sortIcon [field]="'score'"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'isSeed'">
-                Seed
-                <p-sortIcon [field]="'isSeed'"></p-sortIcon>
-              </th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-e>
-            <tr>
-              <td>
-                <p-tableCheckbox [value]="e"></p-tableCheckbox>
-              </td>
-              <td>{{e.name}}</td>
-              <td><a href="https://www.ncbi.nlm.nih.gov/gene/{{ e.entrezId }}">{{e.entrezId}}</a></td>
-              <td>{{e.cancerOccurrences}}</td>
-              <td>{{e.type}}</td>
-              <td>{{ e.mutationScore | number : '1.0-3' }}</td>
-              <td *ngIf="tableHasScores">{{ e.score | number : '1.0-5' }}</td>
-              <td>
-                <span *ngIf="e.isSeed">
+                        <span class="icon"><i class="fa fa-download"></i></span>
+                        <span>Download</span>
+                    </a>
+                </div>
+                <p-table *ngIf="tableCancerNodes.length > 0" selectionMode="multiple" [value]="tableCancerNodes" [selection]="tableSelectedCancerNodes" dataKey="effectId" (selectionChange)="tableCancerDriverGeneSelection($event)">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class="checkbox-col">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                            <th [pSortableColumn]="'name'">
+                                Name
+                                <p-sortIcon [field]="'name'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'entrezId'">
+                                Entrez ID
+                                <p-sortIcon [field]="'entrezId'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'cancerOccurrences'">
+                                Cancer Occurrences
+                                <p-sortIcon [field]="'cancerOccurrences'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'type'">
+                                Cancer Type
+                                <p-sortIcon [field]="'type'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'mutationScore'" class="has-tooltip" data-tooltip="Based on number of mutations. See 'About' for more information">
+                                Mutation Score
+                                <p-sortIcon [field]="'mutationScore'"></p-sortIcon>
+                            </th>
+                            <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
+                                Score
+                                <p-sortIcon [field]="'score'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'isSeed'">
+                                Seed
+                                <p-sortIcon [field]="'isSeed'"></p-sortIcon>
+                            </th>
+                            <th [pSortableColumn]="'dbDegree'">
+                                DB Degree
+                                <p-sortIcon [field]="'dbDegree'"></p-sortIcon>
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-e>
+                        <tr>
+                            <td>
+                                <p-tableCheckbox [value]="e"></p-tableCheckbox>
+                            </td>
+                            <td>{{e.name}}</td>
+                            <td><a href="https://www.ncbi.nlm.nih.gov/gene/{{ e.entrezId }}">{{e.entrezId}}</a></td>
+                            <td>{{e.cancerOccurrences}}</td>
+                            <td>{{e.type}}</td>
+                            <td>{{ e.mutationScore | number : '1.0-3' }}</td>
+                            <td *ngIf="tableHasScores">{{ e.score | number : '1.0-5' }}</td>
+                            <td>
+                                <span *ngIf="e.isSeed">
                   <i class="fa fa-asterisk has-text-primary"></i>
                   Seed
                 </span>
-                <span *ngIf="!e.isSeed">
+                                <span *ngIf="!e.isSeed">
                   <i class="fa fa-times"></i>
                 </span>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
+                            </td>
+                            <td>
+                                <span *ngIf="e.graphId in explorerData.activeNetwork.degrees">
+                  {{ explorerData.activeNetwork.degrees[e.graphId] }}
+                </span>
+                                <span *ngIf="!e.graphId in explorerData.activeNetwork.degrees">
+                  ?
+                </span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

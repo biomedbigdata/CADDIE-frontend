@@ -19,7 +19,7 @@ check:lint:
   stage: check
   script:
     - npm install
-    - npm run lint
+    # - npm run lint
   dependencies:
     - setup
 
@@ -42,7 +42,7 @@ build:
     - npm install
     - npm run build
   dependencies:
-    # - check:lint
+    - check:lint
 #    - check:test
 
 deploy:dev:

@@ -86,9 +86,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   public geneCountBarplot: any = undefined;
   public nodeDegreeScatterplot: any = undefined;
 
-  private drugNodes: any[] = [];
-  private drugEdges: any[] = [];
-  public showDrugs = false;
   public tab: 'meta' | 'network' | 'table' | 'summary' = 'network';
   public physicsEnabled = true;
   public networkFullscreenStatus = false;
@@ -105,9 +102,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   public expressionExpanded = false;
 
   public mutationExpanded = false;
-
-  public drugStatusExpanded = false;
-  public selectedDrugStatus: DrugStatus | null = null;
 
   public algorithmNames = algorithmNames;
 
@@ -191,7 +185,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         this.explorerData.activate('analysis');
         this.convertResultToNodeData(this.result);
 
-        this.showDrugs = false;
+        this.explorerData.activeNetwork.showDrugs = false;
 
         await this.explorerData.activeNetwork.createNetwork();
 
@@ -483,10 +477,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         wrappers[node] = getWrapperFromDrug(details[node]);
         this.explorerData.activeNetwork.drugNodes.push(details[node]);
       }
-      nodes.push(this.mapNode(nodeTypes[node], details[node], isSeed[node], scores[node]));
+      nodes.push(this.explorerData.activeNetwork.mapNode(nodeTypes[node], details[node], isSeed[node], scores[node]));
     }
     for (const edge of network.edges) {
-      edges.push(this.mapEdge(edge, 'node-node', wrappers));
+      edges.push(this.explorerData.activeNetwork.mapEdge(edge, 'node-node', wrappers));
     }
     this.explorerData.activeNetwork.nodeData = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
     this.explorerData.activeNetwork.isSeed = isSeed;
@@ -508,76 +502,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     // set needed activeNetowrk properties
     this.explorerData.activeNetwork.cancerNodesSup = [];
     this.explorerData.activeNetwork.networkData = { cancerNodes, otherNodes };
-  }
-
-  private mapNode(nodeType: WrapperType, details: Node | CancerNode | Drug, isSeed?: boolean, score?: number): any {
-    /**
-     * Wraps, whether it is gene, cancerdrivergene or drug object, to a network node object
-     */
-    let nodeLabel;
-    let wrapper: Wrapper;
-    let drugType;
-    let isATCClassL;
-    if (nodeType === 'Node') {
-      const gene = details as Node;
-      wrapper = getWrapperFromNode(gene);
-      nodeLabel = gene.name;
-      if (!gene.name) {
-        nodeLabel = gene.backendId;
-      }
-    } else if (nodeType === 'Drug') {
-      const drug = details as Drug;
-      wrapper = getWrapperFromDrug(drug);
-      drugType = drug.status;
-      isATCClassL = drug.isAtcAntineoplasticAndImmunomodulatingAgent;
-      if (drugType === 'approved') {
-        nodeLabel = drug.name;
-      } else {
-        nodeLabel = drug.dbId;
-      }
-    } else if (nodeType === 'CancerNode') {
-      const cancerDriverGene = details as CancerNode;
-      wrapper = getWrapperFromCancerNode(cancerDriverGene);
-      nodeLabel = cancerDriverGene.name;
-    }
-
-    const node = NetworkSettings.getNodeStyle(nodeType, isSeed, this.analysis.inSelection(wrapper),
-      drugType, isATCClassL);
-    node.id = wrapper.nodeId;
-    node.label = nodeLabel;
-    node.nodeType = nodeType;
-    node.isSeed = isSeed;
-    node.wrapper = wrapper;
-
-    return node;
-  }
-
-  private mapEdge(edge: any, type: 'node-node' | 'to-drug', wrappers?: { [key: string]: Wrapper }): any {
-    /**
-     * Wraps edge, whether it is gene-gene or to-drug edge into a network edge object
-     */
-    let edgeColor;
-    if (type === 'node-node') {
-      edgeColor = {
-        color: NetworkSettings.getColor('edgeGene'),
-        highlight: NetworkSettings.getColor('edgeGeneHighlight'),
-      };
-      const { from, to } = getNodeIdsFromEdgeGene(edge, wrappers);
-      return {
-        from, to,
-        color: edgeColor,
-      };
-    } else if (type === 'to-drug') {
-      edgeColor = {
-        color: NetworkSettings.getColor('edgeGeneDrug'),
-        highlight: NetworkSettings.getColor('edgeGeneDrugHighlight'),
-      };
-      const { from, to } = getNodeIdsFromCancerDriverGeneDrugInteraction(edge);
-      return {
-        from, to,
-        color: edgeColor,
-      };
-    }
   }
 
   // public selectTissue(tissue: Tissue | null) {
@@ -676,67 +600,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   //   }
   //   return updatedNodes;
   // }
-
-  public async toggleDrugs(drugStatus: DrugStatus | null) {
-    /**
-     * fetches and displays drug data in the network (in case task.info.target === 'drug-target')
-     * otherwise the drug toggle button is replaced by the animation on / off button
-     */
-    this.showDrugs = drugStatus !== null;
-    this.explorerData.activeNetwork.nodeData.nodes.remove(this.drugNodes);
-    this.explorerData.activeNetwork.nodeData.edges.remove(this.drugEdges);
-    this.drugNodes = [];
-    this.drugEdges = [];
-    if (this.showDrugs) {
-      const result = await this.control.getDrugInteractions(this.token, drugStatus).catch(
-        (err: HttpErrorResponse) => {
-          // simple logging, but you can do a lot more, see below
-          toast({
-            message: 'An error occured while fetching the drugs.',
-            duration: 5000,
-            dismissible: true,
-            pauseOnHover: true,
-            type: 'is-danger',
-            position: 'top-center',
-            animate: { in: 'fadeIn', out: 'fadeOut' }
-          });
-          this.showDrugs = false;
-          return;
-        });
-      const drugs = result.drugs;
-      const edges = result.edges;
-
-      if (drugs.length === 0) {
-        toast({
-          message: 'No drugs found.',
-          duration: 5000,
-          dismissible: true,
-          pauseOnHover: true,
-          type: 'is-warning',
-          position: 'top-center',
-          animate: { in: 'fadeIn', out: 'fadeOut' }
-        });
-      } else {
-        for (const drug of drugs) {
-          this.drugNodes.push(this.mapNode('Drug', drug, false, null));
-        }
-
-        for (const interaction of edges) {
-          const edge = { from: interaction.geneGraphId, to: interaction.drugGraphId };
-          this.drugEdges.push(this.mapEdge(edge, 'to-drug'));
-        }
-        this.explorerData.activeNetwork.nodeData.nodes.add(Array.from(this.drugNodes.values()));
-        this.explorerData.activeNetwork.nodeData.edges.add(Array.from(this.drugEdges.values()));
-
-        // active physics for some seconds in order to sort the drugs into the network.
-        this.explorerData.activeNetwork.updatePhysicsEnabled(true);
-        setTimeout(() => {
-          this.explorerData.activeNetwork.updatePhysicsEnabled(false);
-        }, 5000);
-
-      }
-    }
-  }
 
   private async getRelatedCancerTypes(item: Wrapper) {
     const dataset: Dataset = this.result.cancerDataset;

@@ -190,13 +190,23 @@ export function getCancerDriverGeneNodeId(cancerDriverGene: CancerNode) {
   return `${cancerDriverGene.graphId}`;
 }
 
-export function getNodeIdsFromGeneGeneInteraction(geneGeneInteraction: Interaction) {
+export function getNodeIdsFromGeneGeneInteraction(geneGeneInteraction:any) {
   /**
    * Returns js object with network node endpoints of given GeneGeneInteraction object
    */
   return {
-    from: `${geneGeneInteraction.interactorAGraphId}`,
-    to: `${geneGeneInteraction.interactorBGraphId}`,
+    from: geneGeneInteraction.interactorAGraphId ? geneGeneInteraction.interactorAGraphId : geneGeneInteraction.from,
+    to: geneGeneInteraction.interactorBGraphId ? geneGeneInteraction.interactorBGraphId : geneGeneInteraction.to,
+  };
+}
+
+export function getNodeIdsFromGeneDrugInteraction(geneDrugInteraction: NetworkEdge) {
+  /**
+   * Returns js object with network node endpoints of given GeneGeneInteraction object
+   */
+  return {
+    from: `${geneDrugInteraction.from}`,
+    to: `${geneDrugInteraction.to}`,
   };
 }
 

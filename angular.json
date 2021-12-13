@@ -53,8 +53,8 @@
                             "buildOptimizer": true,
                             "budgets": [{
                                     "type": "initial",
-                                    "maximumWarning": "2mb",
-                                    "maximumError": "6mb"
+                                    "maximumWarning": "6mb",
+                                    "maximumError": "10mb"
                                 },
                                 {
                                     "type": "anyComponentStyle",
@@ -107,7 +107,7 @@
                             "tsconfig.spec.json",
                             "e2e/tsconfig.json"
                         ],
-                        "exclude": [
+                        "exclude": [        
                             "**/node_modules/**"
                         ]
                     }

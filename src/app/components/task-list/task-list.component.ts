@@ -19,7 +19,8 @@ export class TaskListComponent implements OnInit {
   @Output() tokenChange: EventEmitter<string> = new EventEmitter();
 
   public algorithmNames = algorithmNames;
-  public taskSelection = [];
+  public taskCheckboxes = new Set();
+  public showSummaryOptions = false;
 
   constructor(public analysis: AnalysisService, private control: ControlService) {
   }
@@ -34,22 +35,27 @@ export class TaskListComponent implements OnInit {
 
   public toggleCheckboxes() {
     document.getElementById('task-list').classList.toggle('task-list-checkbox-hidden');
+    this.toggleSummaryOptions();
   }
 
   public addToTaskSelection(event, token: string) {
     if (event.target.checked) {
       // add to selection
-      this.taskSelection.push(token);
+      this.taskCheckboxes.add(token);
     } else {
       // remove from selection
-      this.taskSelection = this.taskSelection.filter(e => e !== token);
+      this.taskCheckboxes.delete(token);
     }
   }
 
   public async startSummmaryTask() {
-    const response = await this.control.postTaskSummmarize({sourceTasks: this.taskSelection});
+    const response = await this.control.postTaskSummmarize({sourceTasks: [...this.taskCheckboxes]});
     const tokenKey = 'token';
     this.analysis.addTask(response[tokenKey]);
+  }
+
+  public toggleSummaryOptions() {
+    this.showSummaryOptions = !this.showSummaryOptions;
   }
 
 }

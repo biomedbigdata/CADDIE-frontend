@@ -1,0 +1,17 @@
+<a *ngIf="analysis.getCount() > 0" [href]="gProfilerLink()" target="_blank"
+  data-tooltip="Use enrichment analysis via g:Profiler (external).">
+
+  <button class="button is-primary is-fullwidth has-tooltip"> 
+    <span class="icon"><i class="fa fa-external-link-alt"></i></span>
+    <span>Enrichment Analysis</span>
+  </button>
+</a>
+
+    <a *ngIf="analysis.getCount() === 0" disabled
+      class="button is-primary is-fullwidth has-tooltip"
+      data-tooltip="Use enrichment analysis via g:Profiler (external).">
+      <button class="button is-primary is-fullwidth has-tooltip"> 
+        <span class="icon"><i class="fa fa-external-link-alt"></i></span>
+        <span>Enrichment Analysis</span>
+      </button>
+  </a>

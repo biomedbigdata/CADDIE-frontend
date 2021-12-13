@@ -1,0 +1,31 @@
+.modal-card {
+  height: 800px;
+  max-height: 80vh;
+  width: 50vw;
+}
+
+.modal-card-body {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.modal-card-foot {
+  justify-content: flex-end;
+}
+
+.warning {
+  margin-bottom: 15px;
+}
+
+.help.info {
+  margin-bottom: 20px;
+
+  .icon {
+    background-color: blue;
+  }
+}
+
+.doc-link {
+  margin-top: 15px;
+  font-size: 11px;
+}

@@ -1,0 +1,64 @@
+<div class="modal" [class.is-active]="show">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">
+        <span class="icon"><i class="fa fa-dna"></i></span>
+        Add genes based on expression in tissues
+      </p>
+      <button (click)="close()" class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="notification is-warning" *ngIf="addedCount === 0">
+        No genes have been selected or added.
+      </div>
+      <div class="notification is-warning" *ngIf="addedCount > 0">
+        {{addedCount}} genes have been selected or added.
+      </div>
+      <p *ngIf="!tissue">
+        <i>
+          In order to add genes expressed in specific tissues,
+          please select a tissue at the bottom of the main network window.
+        </i>
+      </p>
+      <p *ngIf="tissue" class="mb-3">
+        Currently selected tissue: <strong>{{tissue.name}}</strong>
+      </p>
+      <div class="field" *ngIf="tissue">
+        <label class="label" for="threshold">Threshold (TPM)</label>
+        <div class="control">
+          <input [ngModel]="threshold" (ngModelChange)="setThreshold($event)" id="threshold" class="input" type="number"
+                 placeholder="Threshold" required>
+        </div>
+        <p class="help">
+          All genes above this threshold in transcripts per million (TPM) will be added or selected.
+        </p>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button (click)="addGenes();" class="button is-success   has-tooltip"
+              data-tooltip="Add all to the selection."
+              [disabled]="!tissue || loading">
+        <span class="icon">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>
+          Add genes
+        </span>
+      </button>
+      <button (click)="addVisibleGenes();" class="button is-success   has-tooltip"
+              data-tooltip="Add to selection if they appear in the current network."
+              [disabled]="genes.length === 0 || !tissue || loading">
+        <span class="icon">
+          <i class="fas fa-expand"></i>
+        </span>
+        <span>
+          Select genes ({{genes.length}})
+        </span>
+      </button>
+      <button (click)="close()" class="button   has-tooltip" data-tooltip="Close the current window.">
+        Close
+      </button>
+    </footer>
+  </div>
+</div>

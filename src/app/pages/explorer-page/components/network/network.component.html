@@ -1,0 +1,275 @@
+<div class="caddie network" #network_container>
+  <div class="card network" id="network-card" [ngClass]="{analysis: networkType==='analysis'}">
+    <!-- <header class="card-header">
+      <p class="card-header-title">Gene-Gene Interaction Network</p>
+    </header> -->
+
+    <div class="card-content">
+
+
+      <!-- START Legend -->
+      <div
+        class="legend main"
+        [ngClass]="{
+          'pushed-left':
+            explorerData.activeNetwork.selectedMutationCancerType ||
+            explorerData.activeNetwork.selectedExpressionCancerType ||
+            explorerData.activeNetwork.selectedTissue
+        }"
+      >
+        <table>
+          <tr>
+            <td><span class="node"></span></td>
+            <td>&nbsp;Gene</td>
+          </tr>
+          <tr *ngIf="networkType === 'analysis'">
+            <td><span class="seed-node"></span></td>
+            <td>&nbsp;Seed Gene</td>
+          </tr>
+          <tr>
+            <td><span class="cancer-node"></span></td>
+            <td>&nbsp;Cancer Gene</td>
+          </tr>
+          <tr *ngIf="networkType === 'analysis'">
+            <td><span class="seed-cancer-node"></span></td>
+            <td>&nbsp;Seed Cancer Gene</td>
+          </tr>
+          <tr>
+            <td><span class="selected-cancer-node"></span></td>
+            <td>&nbsp;Selected Node</td>
+          </tr>
+          <tr *ngIf="networkType === 'analysis'">
+            <td><span class="approved-drug"></span></td>
+            <td>&nbsp;Approved Drug</td>
+          </tr>
+          <tr *ngIf="networkType === 'analysis'">
+            <td><span class="non-approved-drug"></span></td>
+            <td>&nbsp;Unapproved Drug</td>
+          </tr>
+          <tr *ngIf="networkType === 'analysis'">
+            <td><span class="cancer-drug"></span></td>
+            <td
+              class="has-tooltip-right"
+              data-tooltip="antineoplastic or immunomodulating agent"
+            >
+              &nbsp;ATC Class L
+            </td>
+          </tr>
+        </table>
+      </div>
+      <!-- END Legend -->
+
+      <!-- START Gradient Legend -->
+      <div
+        class="legend gradient analysis-panel main"
+        *ngIf="
+          explorerData.activeNetwork.selectedMutationCancerType ||
+          explorerData.activeNetwork.selectedExpressionCancerType ||
+          explorerData.activeNetwork.selectedTissue
+        "
+      >
+        <div class="color-gradient-gene bar"></div>
+        <div class="color-gradient-gene-seed bar" *ngIf="networkType === 'analysis'"></div>
+        <div class="color-gradient-cancer-gene bar"></div>
+        <div class="color-gradient-cancer-gene-seed bar" *ngIf="networkType === 'analysis'"></div>
+        <span class="annotation-max"
+          >High <br />
+          <span *ngIf="explorerData.activeNetwork.selectedMutationCancerType"
+            >Mutation</span
+          >
+          <span
+            *ngIf="
+              explorerData.activeNetwork.selectedExpressionCancerType ||
+              explorerData.activeNetwork.selectedTissue
+            "
+            >Expression</span
+          >
+        </span>
+        <span class="annotation-min"
+          >Low <br />
+          <span *ngIf="explorerData.activeNetwork.selectedMutationCancerType"
+            >Mutation</span
+          >
+          <span
+            *ngIf="
+              explorerData.activeNetwork.selectedExpressionCancerType ||
+              explorerData.activeNetwork.selectedTissue
+            "
+            >Expression</span
+          >
+        </span>
+        <div>
+          <div class="box-unknown has-background-grey-light"></div>
+          <span class="annotation-unknown">Unknown</span>
+        </div>
+      </div>
+      <!-- END Gradient Legend -->
+
+      <!-- START Legend -->
+      <!-- <div
+        *ngIf="networkType === 'basic'"
+        class="legend main"
+        [ngClass]="{
+          'pushed-left':
+            explorerData.activeNetwork.selectedMutationCancerType ||
+            explorerData.activeNetwork.selectedExpressionCancerType ||
+            selectedTissue
+        }"
+      >
+        <table>
+          <tr>
+            <td><span class="node"></span></td>
+            <td>&nbsp;Gene</td>
+          </tr>
+          <tr>
+            <td><span class="cancer-node"></span></td>
+            <td>&nbsp;Cancer Gene</td>
+          </tr>
+          <tr>
+            <td><span class="selected-cancer-node"></span></td>
+            <td>&nbsp;Selected Node</td>
+          </tr>
+        </table>
+      </div> -->
+      <!-- END Legend -->
+
+      <!-- START Gradient Legend -->
+      <!-- <div
+        class="legend main gradient"
+        *ngIf="
+          (networkType === 'basic' &&
+            explorerData.activeNetwork.selectedMutationCancerType) ||
+          explorerData.activeNetwork.selectedExpressionCancerType ||
+          selectedTissue
+        "
+      >
+        <div class="color-gradient-gene bar"></div>
+        <div class="color-gradient-cancer-gene bar"></div>
+        <span class="annotation-max"
+          >High <br />
+          <span *ngIf="explorerData.activeNetwork.selectedMutationCancerType"
+            >Mutation</span
+          >
+          <span *ngIf="selectedExpressionCancerType || selectedTissue"
+            >Expression</span
+          >
+        </span>
+        <span class="annotation-min"
+          >Low <br />
+          <span *ngIf="explorerData.activeNetwork.selectedMutationCancerType"
+            >Mutation</span
+          >
+          <span *ngIf="selectedExpressionCancerType || selectedTissue"
+            >Expression</span
+          >
+        </span>
+        <div>
+          <div class="box-unknown has-background-grey-light"></div>
+          <span class="annotation-unknown">Unknown</span>
+        </div>
+      </div> -->
+      <!-- END Gradient Legend -->
+
+      <div class="card-image" id="canvas-content">
+        <div class="parent">
+          <div class="network center network-size image1" [ngClass]="{analysis: networkType==='analysis'}" #network></div>
+        </div>
+      </div>
+
+      <footer class="card-footer toolbar network-footer-container">
+
+        <app-button
+        buttonText="Menu"
+        (callbackFun)="explorerData.showNetworkMenuDialog = !explorerData.showNetworkMenuDialog"
+        icon="fa fa-cogs"
+        class="is-inline-block footer-buttons"
+      >
+      </app-button>
+
+        <button
+          (click)="toCanvas()"
+          class="button is-primary has-tooltip is-inline-block footer-buttons"
+          data-tooltip="Take a screenshot of the current network."
+        > 
+          <span class="icon">
+            <i class="fas fa-camera" aria-hidden="true"></i>
+          </span>
+          <span>Screenshot</span>
+        </button>
+
+        <app-category-selector
+          *ngIf="target === 'drug-target'"
+          [expanded]="drugStatusExpanded"
+          [selectedElement]="selectedDrugStatus"
+          [elements]="analysis.getDrugStatus()"
+          (callbackFun)="toggleDrugs($event)"
+          label="Drugs"
+        ></app-category-selector>
+
+        <app-category-selector
+          [expanded]="expressionExpanded"
+          [selectedElement]="selectedTissue"
+          [elements]="analysis.getTissues()"
+          (callbackFun)="selectTissue($event)"
+          label="Expression Tissue"
+          class="footer-buttons is-inline-block"
+        ></app-category-selector>
+
+        <app-category-selector
+          [expanded]="expressionExpanded"
+          [selectedElement]="selectedExpressionCancerType"
+          (callbackFun)="selectExpressionCancerType($event)"
+          [elements]="analysis.getExpressionCancerTypes()"
+          label="Expression Cancer"
+          class="footer-buttons is-inline-block"
+        ></app-category-selector>
+
+        <app-category-selector
+          [expanded]="mutationCancerTypesExpanded"
+          [selectedElement]="
+            explorerData.activeNetwork.selectedMutationCancerType
+          "
+          [elements]="analysis.getMutationCancerTypes()"
+          (callbackFun)="colorMutationGradient($event)"
+          label="Mutation"
+          class="footer-buttons is-inline-block"
+        ></app-category-selector>
+
+        <app-toggle
+          class="footer-buttons is-inline-block"
+          textOn="Physics On"
+          textOff="Off"
+          tooltipOn="Enable the network animation."
+          tooltipOff="Disable the network animation and freeze nodes."
+          [value]="physicsEnabled"
+          (valueChange)="updatePhysicsEnabled($event)"
+        ></app-toggle>
+
+        <app-button
+          *ngIf="networkType === 'basic'"
+          buttonText="Fullscreen"
+          (callbackFun)="networkFullscreen()"
+          icon="fa fa-arrows"
+          class="is-inline-block footer-buttons"
+        >
+        </app-button>
+
+        <div class="field" *ngIf="networkType === 'analysis'">
+          <p class="control footer-buttons">
+            <button class="button is-danger   has-tooltip" data-tooltip="Delete the current analysis."
+                    (click)="analysis.removeTask(explorerData.selectedAnalysisToken); explorerData.closeAnalysis()">
+              <span class="icon">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+              </span>
+              <span>
+                Delete Analysis
+              </span>
+            </button>
+          </p>
+        </div>
+
+
+      </footer>
+    </div>
+  </div>
+</div>

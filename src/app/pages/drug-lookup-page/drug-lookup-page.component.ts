@@ -3,6 +3,7 @@ import {ControlService} from '../../services/control/control.service';
 import {CancerType, Dataset, Node, Drug} from '../../interfaces';
 import {toast} from 'bulma-toast';
 import {environment} from '../../../environments/environment';
+import { LoadingOverlayService } from 'src/app/services/loading-overlay/loading-overlay.service';
 
 @Component({
   selector: 'app-drug-lookup-page',
@@ -23,6 +24,7 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
 
   constructor(
     private control: ControlService,
+    private loadingOverlay: LoadingOverlayService,
   ) { }
 
   ngOnInit(): void {
@@ -46,6 +48,7 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
     if (searchString === undefined) {
       return;
     }
+    // this.loadingOverlay.addTo('drug_lookup_result');
     this.searchResult = await this.control.drugLookup(searchString.trim(), drugDataset);
     if (!this.searchResult.found) {
       toast({
@@ -58,6 +61,7 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
         animate: {in: 'fadeIn', out: 'fadeOut'}
       });
     }
+    // this.loadingOverlay.removeFrom('drug_lookup_result');
   }
 
   public extractNames(objectList: CancerType[] | Dataset[]) {

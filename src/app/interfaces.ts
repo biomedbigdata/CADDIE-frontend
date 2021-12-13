@@ -1,5 +1,7 @@
 import {AlgorithmType, QuickAlgorithmType} from './services/analysis/analysis.service';
 
+export type NetworkType = 'basic' | 'analysis';
+
 export interface Node {
   /**
    * Interface for gene/protein
@@ -188,13 +190,23 @@ export function getCancerDriverGeneNodeId(cancerDriverGene: CancerNode) {
   return `${cancerDriverGene.graphId}`;
 }
 
-export function getNodeIdsFromGeneGeneInteraction(geneGeneInteraction: Interaction) {
+export function getNodeIdsFromGeneGeneInteraction(geneGeneInteraction:any) {
   /**
    * Returns js object with network node endpoints of given GeneGeneInteraction object
    */
   return {
-    from: `${geneGeneInteraction.interactorAGraphId}`,
-    to: `${geneGeneInteraction.interactorBGraphId}`,
+    from: geneGeneInteraction.interactorAGraphId ? geneGeneInteraction.interactorAGraphId : geneGeneInteraction.from,
+    to: geneGeneInteraction.interactorBGraphId ? geneGeneInteraction.interactorBGraphId : geneGeneInteraction.to,
+  };
+}
+
+export function getNodeIdsFromGeneDrugInteraction(geneDrugInteraction: NetworkEdge) {
+  /**
+   * Returns js object with network node endpoints of given GeneGeneInteraction object
+   */
+  return {
+    from: `${geneDrugInteraction.from}`,
+    to: `${geneDrugInteraction.to}`,
   };
 }
 
@@ -248,6 +260,15 @@ export function getWrapperFromNode(gene: Node): Wrapper {
     nodeId: getGeneNodeId(gene),
     type: 'Node',
     data: gene,
+  };
+}
+
+export function getWrapperFromDrugNode(drugNode: Drug): Wrapper {
+  return {
+    backendId: drugNode.backendId.toString(),
+    nodeId: drugNode.graphId,
+    type: 'Drug',
+    data: drugNode,
   };
 }
 

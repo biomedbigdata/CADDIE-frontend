@@ -1,0 +1,115 @@
+<div class="modal" [class.is-active]="show">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">
+          <span class="icon"><i class="fa fa-dna"></i></span>
+          Network Menu
+        </p>
+        <button (click)="close()" class="delete" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="columns">
+            <div class="column is-full"><h3 class="title is-3">Network Modification</h3>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><button class="button is-primary" (click)="explorerData.activeNetwork.addSelectionToNetwork(); close()"><span class="icon"><i class="fa fa-project-diagram"></i></span><span> Add to Network </span></button></td>
+                            <td>Add all seed genes to the Network.</td>
+                        </tr>
+                        <tr>
+                            <td><button class="button is-primary" (click)="analysis.invertSelection(explorerData.activeNetwork.nodes); close()"><span class="icon"><i class="fa fa-sync"></i></span><span> Invert </span></button></td>
+                            <td>Invert the current seed selection in the network.</td>
+                        </tr>
+                        <tr>
+                            <td><button class="button is-danger" (click)="analysis.resetSelection(); close()"><span class="icon"><i class="fa fa-broom"></i></span><span> Reset </span></button></td>
+                            <td>Reset the current seed selection.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-full"><h3 class="title is-3">Node Types</h3>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><button class="button is-primary" (click)="analysis.addVisibleGenes(explorerData.activeNetwork.nodes, explorerData.activeNetwork.basicNodes); close()"><span class="icon"><i class="fa fa-plus"></i></span><span> Add Genes </span></button></td>
+                            <td>Add all genes in the network to the seed selection.</td>
+                        </tr>
+                        <tr>                            
+                            <td><button class="button is-primary" (click)="analysis.addVisibleCancerDriverGenes(explorerData.activeNetwork.nodes, explorerData.activeNetwork.cancerNodes); close()"><span class="icon"><i class="fa fa-plus"></i></span><span> Add Cancer Driver Genes </span></button></td>
+                            <td>add all cancer driver genes in the network to the seed selection.</td>
+                        </tr>
+                        <tr>                            
+                            <td><button class="button is-primary" (click)="analysis.addSeeds(explorerData.activeNetwork.nodes); close()"><span class="icon"><i class="fa fa-plus"></i></span><span> Add Seeds </span></button></td>
+                            <td>add all seeds used for the analysis to the seed selection.</td>
+                        </tr>
+                        <tr>                            
+                            <td><button class="button is-danger" (click)="analysis.removeAllNodes(); close()"><span class="icon"><i class="fa fa-minus"></i></span><span> Remove Genes </span></button></td>
+                            <td>Remove all genes in the network from the seed selection.</td>
+                        </tr>
+                        <tr>                            
+                            <td><button class="button is-danger" (click)="analysis.removeAllCancerDriverNodes(); close()"><span class="icon"><i class="fa fa-minus"></i></span><span> Remove Cancer Driver Genes </span></button></td>
+                            <td>Remove all cancer genes in the network from the seed selection.</td>
+                        </tr>
+                        <tr>                            
+                            <td><button class="button is-danger" (click)="analysis.removeSeeds(explorerData.activeNetwork.nodes); close()"><span class="icon"><i class="fa fa-minus"></i></span><span> Remove Seeds </span></button></td>
+                            <td>Remove all seeds used for the analysis from the seed selection.</td>
+                        </tr>
+                    </tbody>
+                </table> 
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-full"><h3 class="title is-3">Expression and Mutation</h3>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><button class="button is-primary" (click)="explorerData.showTissueThresholdDialog = true; close()"><span class="icon"><i class="fa fa-angle-double-up"></i></span><span> Tissue expression </span></button></td>
+                            <td>Add genes to the seed selection based on <a href="https://gtexportal.org/home/">GTEx</a> expression data and a custom threshold. Allows to filter the current network or to query the complete CADDIE database.</td>
+                        </tr>
+                        <tr>                            
+                            <td><button class="button is-primary" (click)="explorerData.showCancerThresholdDialog = true; close()"><span class="icon"><i class="fa fa-angle-double-up"></i></span><span> Cancer Expression </span></button></td>
+                            <td>Add genes to the selection based on <a href="https://www.cancer.gov">TCGA</a> expression data and a custom threshold. Allows to filter the current network or to query the complete CADDIE database.</td>
+                        </tr>
+                        <tr>
+                            <td><button class="button is-primary" (click)="explorerData.showMutationThresholdDialog = true; close()"><span class="icon"><i class="fa fa-angle-double-up"></i></span><span> Cancer Mutation </span></button></td>
+                            <td>Add genes to the seed selection based on <a href="https://gdc.cancer.gov/">GDC</a> mutation data and a custom threshold. Allows to filter the current network or to query the complete CADDIE database.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-full"><h3 class="title is-3">Upload Data</h3>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><button class="button is-primary" (click)="explorerData.showCustomGenesDialog = true; close()"><span class="icon"><i class="fa fa-upload"></i></span><span> Custom Genes </span></button></td>
+                            <td>Select seed nodes by uploading your own list of genes of Entrez, HUGO or Uniprot identifiers.</td>
+                        </tr>
+                        <tr>                            
+                            <td><button class="button is-primary" (click)="explorerData.showDiseaseSelectionDialog = true; close()"><span class="icon"><i class="fa fa-upload"></i></span><span> Disease Genes </span></button></td>
+                            <td>Select seed nodes based on relation to other diseases </td>
+                        </tr>                     
+                        <tr>                            
+                            <td><button class="button is-primary" (click)="explorerData.showVCFInput = true; close()"><span class="icon"><i class="fa fa-upload"></i></span><span> VCF </span></button></td>
+                            <td>Upload a .vcf file and filter it using <a href="http://genetics.bwh.harvard.edu/pph2/">PolyPhen-2</a> to select seed nodes.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <button (click)="close()" class="button has-tooltip">
+          Close
+        </button>
+      </footer>
+    </div>
+  </div>
+  

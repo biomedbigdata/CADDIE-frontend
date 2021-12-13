@@ -3,18 +3,23 @@ import {getGradientColor} from './utils';
 
 export class NetworkSettings {
 
-  // Node color
-  private static node = '#143d1f';
-  private static cancerNode = '#5b005b';
-  private static approvedDrugColor = '#0080ff'; // a3185e
-  private static unapprovedDrugColor = '#d88c00';
-  private static nonSeedGeneColor = '#143d1f';
-  private static seedGeneColor = '#3ab159';
-  private static nonSeedCancerGeneColor = '#5b005b';
-  private static seedCancerGeneColor = '#ff007f';
+  // parameters for click timing
+  public static doubleClickTime: Date = new Date();
+  public static t0: Date = new Date();
+  public static threshold = 200;
 
-  private static selectedBorderColor = '#ffa500';
-  private static selectBorderHighlightColor = '#ffa500';
+  // Node color
+  public static node = '#143d1f';
+  public static cancerNode = '#5b005b';
+  public static approvedDrugColor = '#0080ff'; // a3185e
+  public static unapprovedDrugColor = '#d88c00';
+  public static nonSeedGeneColor = '#143d1f';
+  public static seedGeneColor = '#3ab159';
+  public static nonSeedCancerGeneColor = '#5b005b';
+  public static seedCancerGeneColor = '#ff007f';
+
+  public static selectedBorderColor = '#ffa500';
+  public static selectBorderHighlightColor = '#ffa500';
 
   // Edge color
   private static edgeGeneCancerGeneColor = '#686868';
@@ -92,17 +97,17 @@ export class NetworkSettings {
     enabled: true,
     solver: 'barnesHut',
     barnesHut: {
-      theta: 0.5,
+      theta: 0.7,
       gravitationalConstant: -50000,
       centralGravity: 5,
-      springLength: 300,
-      springConstant: 0.8,
-      damping: 0.5,
+      springLength: 400,
+      springConstant: 0.04,
+      damping: 0.09,
       avoidOverlap: 1,
     },
     stabilization: {
       enabled: true,
-      iterations: 250
+      iterations: 200
     }
   };
 
@@ -308,5 +313,8 @@ export class NetworkSettings {
 
     return node;
   }
+
+
+
 }
 

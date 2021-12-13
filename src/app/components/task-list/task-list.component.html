@@ -1,5 +1,5 @@
-<button class="button is-primary" (click)="toggleCheckboxes()">Summarize</button>
-<button class="button is-primary" (click)="startSummmaryTask()">Start</button>
+<button class="button is-primary is-small" (click)="toggleCheckboxes()"><i class="fas fa-cogs"></i></button>
+<button *ngIf="showSummaryOptions" class="button is-primary summary-button" (click)="startSummmaryTask()">Summarize</button>
 
 <div
   id="task-list"
@@ -91,7 +91,7 @@
       >
         <div class="columns">
           <div class="column is-2 task-list-checkbox">
-            <input type="checkbox" name="summarize" value="summmarize_check" (change)="addToTaskSelection($event, task.token)"/>
+            <input [checked]="taskCheckboxes.has(task.token)" type="checkbox" name="summarize" value="summmarize_check" (change)="addToTaskSelection($event, task.token)" />
           </div>
 
           <div class="column" (click)="open(task.token)">

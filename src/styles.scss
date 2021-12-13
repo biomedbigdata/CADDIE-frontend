@@ -31,6 +31,8 @@ body {
   height: 100%;
 }
 
+
+
 button.is-example {
     background-color: $secondary;
     color: white;
@@ -52,6 +54,10 @@ button.is-example {
       background-color: rgba(255, 255, 255, 0.7);
       border-radius: 15%;
     }
+    .logo-letters {
+      color: white;
+      font-weight: initial;
+    }
   }
 }
 
@@ -62,8 +68,8 @@ button.is-example {
 }
 
 img.menu-icon.is-hoverable.navbar-item.logo {
-  height: 60px;
-  width: 60px;
+  height: 40px;
+  width: 40px;
   padding: 0;
 }
 
@@ -152,7 +158,7 @@ div.card.bar-medium {
 
 div.card.bar-large {
   margin-bottom: 15px;
-  max-height: 600px;
+  max-height: 650px;
 }
 
 div.card-content.overflow {
@@ -177,10 +183,20 @@ div.caddie.network {
 div.card.network {
   width: 100%;
   height: calc(100vh - #{$network-footer-height});
+  &.analysis {
+    height: calc(100vh - #{$network-footer-height} - #{$navbar-height} - 1.5rem - #{$analysis-result-header-height})
+  }
+}
+
+.network-size {
+  height: calc(100vh - #{$network-footer-height} - #{$navbar-height});
+  &.analysis {
+    height: calc(100vh - #{$network-footer-height} - #{$navbar-height} - 1.5rem - #{$analysis-result-header-height} - 80px)
+  }
 }
 
 div.network {
-  height: calc(100vh - #{$network-footer-height} - #{$navbar-height} - 48px);
+  height: calc(100vh - #{$network-footer-height} - #{$navbar-height} - #{$analysis-result-header-height});
 }
 
 div.parent {
@@ -303,11 +319,16 @@ body {
 }
 
 .legend {
+  // making legend a little bit smaller
+  transform: scale(0.75);
+  transform-origin: right top;
+
   position: absolute;
   top: 0px;
   right: 0px;
   &.main {
-    top: calc(1.5rem + #{$network-header-height});
+    top: 1.5rem;
+    // top: calc(1.5rem + #{$network-header-height});
     right: 10px;
   }
   &.pushed-left {
@@ -391,9 +412,44 @@ body {
 
 .loadingOverlay{
   position: absolute;
-  top: 0;
-  height: 100%;
+  background-color: white;
+  height: calc(100% - #{$navbar-height});
   width: 100%;
+  margin-left: -10px;
+  z-index: 30;
+  top: $navbar-height;
+  width: calc(100vw - #{$sidebar-width});
+  min-width: calc(100vw - #{$sidebar-width-max});
+  text-align: center;
+  .inner{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    .pulse {
+      animation: pulse 5s infinite;
+      // animation-direction: alternate;
+      -webkit-animation-name: pulse;
+      animation-name: pulse;
+    }
+        
+    @-webkit-keyframes pulse {
+      0% {
+        -webkit-transform: scale(1);
+      }
+      50% { -webkit-transform: scale(1.3); }
+      100% { -webkit-transform: scale(1); }
+    }
+        
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+  }
 }
 
 #analysis-content{
@@ -488,6 +544,11 @@ body::-webkit-scrollbar-button:increment {
 }
 
 .hidden{
+  display: none;
+}
+
+.modebar {
+  // hides menu bar in plotly js plots
   display: none;
 }
 

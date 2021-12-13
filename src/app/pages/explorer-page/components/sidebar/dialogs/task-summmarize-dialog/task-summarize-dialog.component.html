@@ -1,0 +1,88 @@
+<div class="modal" [class.is-active]="explorerData.showTaskSummarizeDialog">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">
+        <span class="icon"><i class="fa fa-dna"></i></span>
+        Summarize
+      </p>
+      <button (click)="close()" class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <div
+      id="task-list"
+      class="content card-content overflow task-list-checkbox-hidden"
+      *ngIf="analysis.tasks && analysis.tasks.length > 0"
+      >
+      <div class="list is-hoverable">
+        <a
+          *ngFor="let task of analysis.tasks"
+          class="list-item mb-1"
+          [class.is-active]="task.token === token"
+        >
+          
+          <div
+            class="has-tooltip-bottom"
+            *ngIf="task.info.done"
+            data-tooltip-="Show analysis results"
+          >
+            <div class="columns">
+              <div class="column is-2 task-list-checkbox">
+                <input [checked]="taskCheckboxes.has(task.token)" type="checkbox" name="summarize" value="summmarize_check" (change)="addToTaskSelection($event, task.token)" />
+              </div>
+    
+              <div class="column">
+                <p>
+                  <span class="is-capitalized"
+                    ><i
+                      class="fa"
+                      [class.fa-capsules]="task.info.target === 'drug'"
+                      [class.fa-crosshairs]="task.info.target === 'drug-target'"
+                      [class.fa-tasks]="task.info.target === 'summarize'"
+                    ></i>
+                    {{ algorithmNames[task.info.algorithm] }}</span
+                  >
+                </p>
+                <p>
+                  <small>Finished {{ task.info.finishedAt | date: "short" }}</small>
+                </p>
+              </div>
+    
+              <div class="column is-1">
+                <span class="icon is-pulled-right"
+                  ><i class="fas fa-check" aria-hidden="true"></i
+                ></span>
+                <a
+                  (click)="analysis.removeTask(task.token)"
+                  class="is-pulled-right has-text-danger"
+                >
+                  <span class="icon is-pulled-right">
+                    <i class="fa fa-trash"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      </div>
+    </section>
+
+    <footer class="modal-card-foot">
+      <button (click)="close()" class="button has-tooltip">
+        Close
+      </button>
+      <button (click)="startSummmaryTask(); close()" class="button is-primary has-tooltip"
+              data-tooltip="Run the analysis."
+              [disabled]="!analysis.canLaunchTask()">
+        <span class="icon">
+          <i class="fa fa-rocket"></i>
+        </span>
+        <span>
+          Summarize
+        </span>
+      </button>
+    </footer>
+  </div>
+</div>
+

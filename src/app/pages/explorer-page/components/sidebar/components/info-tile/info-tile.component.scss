@@ -1,0 +1,29 @@
+p {
+  white-space: normal;
+}
+
+ul.scroll-120 {
+  max-height: 120px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: normal;
+  // -webkit-column-count: 2;
+  // -moz-column-count: 2;
+  // column-count: 2;
+  flex-wrap: wrap;
+  display: flex;
+  list-style: inside;
+  background-color: rgba(64, 139, 37, 0.2);
+  padding: 0.25rem;
+  border-radius: 10px;
+  margin-bottom: 0px;
+  &.cancer {
+    background-color: rgba(91, 0, 91, 0.2);
+  }
+  &.drug {
+    background-color: rgba(0,128,255, 0.2);
+  }
+  li {
+    flex: 1 0 100%;
+  }
+}

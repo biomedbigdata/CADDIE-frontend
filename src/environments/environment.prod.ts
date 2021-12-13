@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  backend: 'https://drugst.one/caddie_api/',
+  backend: 'https://exbio.wzw.tum.de/caddie_api/',
 };

@@ -1,4 +1,4 @@
-<button class="button is-primary is-small" (click)="toggleCheckboxes()"><i class="fas fa-cogs"></i></button>
+<button *ngIf="taskList.length > 1" class="button is-primary is-small" (click)="toggleCheckboxes()"><i class="fas fa-cogs"></i></button>
 <button *ngIf="showSummaryOptions" class="button is-primary summary-button" (click)="startSummmaryTask()">Summarize</button>
 
 <div

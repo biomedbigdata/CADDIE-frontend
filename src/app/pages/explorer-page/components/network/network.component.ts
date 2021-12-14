@@ -52,7 +52,6 @@ export class NetworkComponent implements OnInit {
 
   // datasets
   public currentDataset: Dataset;
-  public currentCancerTypeItems: CancerType[] = undefined;
   public currentGeneInteractionDataset: Dataset = undefined;
   public currentDrugInteractionDataset: Dataset = undefined;
 

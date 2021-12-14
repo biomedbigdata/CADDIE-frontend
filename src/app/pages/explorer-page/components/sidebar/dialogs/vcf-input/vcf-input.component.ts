@@ -76,7 +76,7 @@ export class VcfInputComponent implements OnInit {
     this.notFound = [];
     this.itemsFound = [];
     // result contains 'genes' and 'cancerGenes' and 'notFound'
-    const result = await this.control.queryGenes(this.genes, this.explorerData.activeNetwork.currentCancerDataset, this.explorerData.activeNetwork.currentCancerTypeItems);
+    const result = await this.control.queryGenes(this.genes, this.explorerData.activeNetwork.currentCancerDataset, this.explorerData.activeNetwork.selectedCancerTypeItems);
     this.notFound = result.notFound;
     const items = [];
     for (const detail of result.genes) {

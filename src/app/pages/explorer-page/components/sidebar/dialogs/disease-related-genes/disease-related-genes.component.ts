@@ -30,10 +30,6 @@ export class DiseaseRelatedGenesComponent implements AfterViewInit {
   public basicNodes: Array<Node> = [];
   @Input()
   public cancerNodes: Array<CancerNode> = [];
-  @Input()
-  public currentCancerDataset: Dataset;
-  @Input()
-  public currentCancerTypeItems: CancerType[];
 
   public addedCount: number | null = null;
   public loading = false;

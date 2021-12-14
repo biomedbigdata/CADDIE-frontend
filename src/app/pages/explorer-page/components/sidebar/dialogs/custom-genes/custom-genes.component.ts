@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { ExplorerDataService } from 'src/app/services/explorer-data/explorer-data.service';
 import {
   CancerType,
   Dataset,
@@ -23,10 +24,6 @@ export class CustomGenesComponent implements OnInit {
   public showChange = new EventEmitter<boolean>();
   @Input()
   public visibleNodes: Array<any> = [];
-  @Input()
-  public currentCancerDataset: Dataset;
-  @Input()
-  public currentCancerTypeItems: CancerType[];
 
   public textList = '';
   public genes: Array<string> = [];
@@ -37,7 +34,7 @@ export class CustomGenesComponent implements OnInit {
   public loading = false;
   public notCancerGenes: Array<string> = [];
 
-  constructor(private analysis: AnalysisService, private control: ControlService) { }
+  constructor(private analysis: AnalysisService, private control: ControlService, public explorerData: ExplorerDataService) { }
 
   ngOnInit(): void {
   }
@@ -62,7 +59,7 @@ export class CustomGenesComponent implements OnInit {
     const genes = this.genes;
     this.changeTextList('');
     // result contains 'genes' and 'cancerGenes' and 'notFound'
-    const result = await this.control.queryGenes(genes, this.currentCancerDataset, this.currentCancerTypeItems);
+    const result = await this.control.queryGenes(genes, this.explorerData.activeNetwork.selectedDataset, this.explorerData.activeNetwork.selectedCancerTypeItems);
     this.notFound = result.notFound;
     const items = [];
     for (const detail of result.genes) {
@@ -91,7 +88,7 @@ export class CustomGenesComponent implements OnInit {
     const genes = this.genes;
     this.changeTextList('');
     // result contains 'genes' and 'cancerGenes' and 'notFound'
-    const result = await this.control.queryGenes(genes, this.currentCancerDataset, this.currentCancerTypeItems);
+    const result = await this.control.queryGenes(genes, this.explorerData.activeNetwork.selectedDataset, this.explorerData.activeNetwork.selectedCancerTypeItems);
     this.notFound = result.notFound;
     const items = [];
     for (const detail of result.genes) {

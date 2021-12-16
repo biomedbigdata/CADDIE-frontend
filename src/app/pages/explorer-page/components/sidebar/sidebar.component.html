@@ -823,8 +823,6 @@
 <app-custom-genes
   [(show)]="explorerData.showCustomGenesDialog"
   [visibleNodes]="explorerData.activeNetwork.basicNodes"
-  [currentCancerDataset]="explorerData.activeNetwork.selectedDataset"
-  [currentCancerTypeItems]="explorerData.activeNetwork.currentCancerTypeItems"
   (showChange)="(explorerData.showChangeCustomGenes)"
 >
 </app-custom-genes>
@@ -861,10 +859,8 @@
   [(show)]="explorerData.showDiseaseSelectionDialog"
   (showChange)="(explorerData.showChangeDiseaseSelectionDialog)"
   [visibleNodes]="explorerData.activeNetwork.basicNodes"
-  [currentCancerDataset]="explorerData.activeNetwork.selectedDataset"
   [basicNodes]="explorerData.activeNetwork.basicNodes"
   [cancerNodes]="explorerData.activeNetwork.cancerNodes"
-  [currentCancerTypeItems]="explorerData.activeNetwork.currentCancerTypeItems"
 >
 </app-disease-related-genes>
 

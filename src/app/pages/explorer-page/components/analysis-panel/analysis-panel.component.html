@@ -379,10 +379,6 @@
                                 Protein Name
                                 <p-sortIcon [field]="'proteinName'"></p-sortIcon>
                             </th>
-                            <th [pSortableColumn]="'mutationScore'" class="has-tooltip" data-tooltip="Based on number of mutations. See 'About' for more information">
-                                Mutation Score
-                                <p-sortIcon [field]="'mutationScore'"></p-sortIcon>
-                            </th>
                             <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
                                 Score
                                 <button class="button is-light has-tooltip tooltip-button" [attr.data-tooltip]="tableProteinScoreTooltip">
@@ -411,7 +407,6 @@
                             <td><a href="https://www.uniprot.org/uniprot/{{ e.uniprotAc }}" target="_blank">{{ e.uniprotAc }}</a></td>
                             <td>{{e.name}}</td>
                             <td>{{e.proteinName}}</td>
-                            <td>{{e.mutationScore | number : '1.0-3'}}</td>
                             <td *ngIf="tableHasScores">{{e.score | number : '1.0-5'}}</td>
                             <td>
                                 <span *ngIf="e.isSeed">
@@ -465,10 +460,6 @@
                                 Cancer Type
                                 <p-sortIcon [field]="'type'"></p-sortIcon>
                             </th>
-                            <th [pSortableColumn]="'mutationScore'" class="has-tooltip" data-tooltip="Based on number of mutations. See 'About' for more information">
-                                Mutation Score
-                                <p-sortIcon [field]="'mutationScore'"></p-sortIcon>
-                            </th>
                             <th *ngIf="tableHasScores" [pSortableColumn]="'score'">
                                 Score
                                 <p-sortIcon [field]="'score'"></p-sortIcon>
@@ -492,7 +483,6 @@
                             <td><a href="https://www.ncbi.nlm.nih.gov/gene/{{ e.entrezId }}">{{e.entrezId}}</a></td>
                             <td>{{e.cancerOccurrences}}</td>
                             <td>{{e.type}}</td>
-                            <td>{{ e.mutationScore | number : '1.0-3' }}</td>
                             <td *ngIf="tableHasScores">{{ e.score | number : '1.0-5' }}</td>
                             <td>
                                 <span *ngIf="e.isSeed">

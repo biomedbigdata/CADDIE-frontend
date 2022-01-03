@@ -374,11 +374,11 @@ export class ExplorerDataService {
       // new input from caddie
       parameters.cancer_dataset = 'NCG6';
       // parameters.cancer_dataset_id = this.activeNetwork.selectedDataset.backendId;
-      parameters.gene_interaction_dataset = 'BioGRID';
+      parameters.gene_interaction_datasets = [this.activeNetwork.selectedInteractionGeneDataset.name];
       // parameters.gene_interaction_dataset_id = this.activeNetwork.selectedInteractionGeneDataset.backendId;
-      parameters.drug_interaction_dataset = 'DGIdb';
+      parameters.drug_interaction_datasets = ['DGIdb'];
       // parameters.drug_interaction_dataset_id = this.activeNetwork.selectedInteractionDrugDataset.backendId;
-      parameters.cancer_types = this.activeNetwork.selectedCancerTypeItems.map( (cancerType) => cancerType.backendId );
+      parameters.cancer_type_names = this.activeNetwork.selectedCancerTypeItems.map( (cancerType) => cancerType.name );
       parameters.includeNutraceuticalDrugs = true;
       parameters.onlyAtcLDrugs = false;
       parameters.filterPaths = true;
@@ -386,8 +386,8 @@ export class ExplorerDataService {
       parameters.expressionCancerType = this.activeNetwork.selectedExpressionCancerType ? this.activeNetwork.selectedExpressionCancerType.name : null;
   
       if (target === 'drug-target') {
-        // use betweenness centrality
-        parameters.damping_factor = 0.5;
+        // use multisteiner
+        parameters.num_trees = 5;
         parameters.include_indirect_drugs = true;
         parameters.include_non_approved_drugs = true;
         parameters.ignore_non_seed_baits = false;
@@ -395,9 +395,8 @@ export class ExplorerDataService {
         parameters.hub_penalty = 0;
         parameters.result_size = 10;
         this.analysis.startQuickAnalysis('exampledrugtarget', target, parameters);
-  
       } else if (target === 'drug') {
-        // harmonic centrality
+        // trustrank
         parameters.damping_factor = 0.5;
         parameters.include_indirect_drugs = true;
         parameters.include_non_approved_drugs = true;
@@ -406,7 +405,6 @@ export class ExplorerDataService {
         parameters.hub_penalty = 0;
         parameters.result_size = 10;
         this.analysis.startQuickAnalysis('exampledrug', target, parameters);
-  
       }
     }
 

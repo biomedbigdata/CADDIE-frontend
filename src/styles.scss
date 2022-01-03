@@ -47,6 +47,7 @@ button.is-example {
 
 .navbar-container {
   background-color: $primary;
+  z-index: 35;
   nav.navbar {
     height: $navbar-height;
     // background-color: $navbar-background-color;
@@ -138,6 +139,10 @@ div.caddie.bar-left {
   float: left;
   position: relative;
   z-index: 30;
+  @include until($tablet) {
+   width: 100%; 
+   float: none;
+  }
 }
 
 div.caddie.bar-right {
@@ -172,6 +177,10 @@ div.caddie.right-window {
   width: calc(100vw - #{$sidebar-width} - 20px);
   min-width: calc(100vw - #{$sidebar-width-max} - 20px);
   height: 100%;
+  @include until($tablet) {
+    float: none; 
+    width: 100%;
+  }
 }
 
 div.caddie.network {

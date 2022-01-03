@@ -67,7 +67,7 @@ export class AddMutatedGenesComponent implements OnChanges {
 
   public setThreshold(threshold: number) {
     this.threshold = threshold;
-    if (!this.basicNodes) {
+    if (!this.explorerData.activeNetwork.basicNodes) {
       return;
     }
     this.genes = [...this.explorerData.activeNetwork.basicNodes, ...this.explorerData.activeNetwork.cancerNodes].filter(p => p.mutationScore >= threshold);

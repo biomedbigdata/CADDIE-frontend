@@ -183,7 +183,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         // this.explorerData.activeNetwork.resetNetwork();
 
         this.explorerData.activate('analysis');
-        this.convertResultToNodeData(this.result);
+        this.loadNodeDataFromResult(this.result);
 
         this.explorerData.activeNetwork.showDrugs = false;
 
@@ -448,7 +448,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     return `${environment.backend}graph_export/?token=${this.token}`;
   }
 
-  public convertResultToNodeData(result: any) {
+  public loadNodeDataFromResult(result: any) {
     const nodes = [];
     const edges = [];
     this.explorerData.activeNetwork.selectedDataset = result.cancerDataset;

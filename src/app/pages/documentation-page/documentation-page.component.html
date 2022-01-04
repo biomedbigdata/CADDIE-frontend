@@ -1,0 +1,105 @@
+<div class="scrollable">
+  <div class="content">
+    <div class="container">
+      <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-start self-align">
+            <a class="navbar-item"> Home </a>
+
+            <a class="navbar-item"> Documentation </a>
+
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link"> More </a>
+
+              <div class="navbar-dropdown">
+                <a class="navbar-item"> About </a>
+                <a class="navbar-item"> Jobs </a>
+                <a class="navbar-item"> Contact </a>
+                <hr class="navbar-divider" />
+                <a class="navbar-item"> Report an issue </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="hero container">
+      <div class="column is-8 is-offset-2">
+        <div class="container has-text-centered">
+          <img src="assets/caddie_logo.png" />
+          <h2 class="subtitle is-3">Documentation</h2>
+        </div>
+        <div class="content">
+          <h4 class="title is-4">Concept</h4>
+          <p>
+            CADDIE (Cancer Driver Drug interaction explorer) repurposes drugs in
+            cancer based on gene-gene and drug-gene interaction networks. The
+            user has the option to choose between the implemented interaction
+            networks from STRING, BioGRID, DrugBank, ChEMBL and more. CADDIE
+            then exploits the information in selected networks using network
+            algorithms like Trustrank or Degree Centrality. The algorithms and
+            the desired parameters are again customizable by the user. Doing
+            this, CADDIE is able to identify drug repurposing candidates or to
+            search for putative drug targets.
+          </p>
+
+          <h4 class="title is-4">Explorer</h4>
+          <p>
+            The Explorer is the main part of the application. It allows you to
+            explore the interactome of you cancer type or cancer driver genes of
+            interest. Most importantly, it gives you a variety of information
+            like comorbidities or expression values to help you select seed
+            genes for your drug or drug-target search.
+            <br />
+            On the left side you can find a menu bar which gives you the options
+            to select your cancer type or gene interaction resource of interest.
+            You will receive a short overview over your cancer type of interest.
+            After selecting your seed genes, the left menu allows you to start
+            analysis tasks (max. 3 at a time). The tasks will be displayed at
+            the bottom of this menu in the 'Tasks' section. A click on a
+            finished task leads you to the analysis view.
+            <br />
+            On the right side of the explorer is the gene-interaction network.
+            It contains all cancer driver genes of your selected cancer type,
+            forming a minimal spanning tree. It is supplemented by genes found
+            by the multiple steiner tree algorithm in order to make the minimal
+            spanning tree possible. You can add your own genes to the network by
+            uploading your own seed genes (for example via the 'Custom genes'
+            function in the left menu) followed by the 'Add to network'
+            functionality. Gene-gene interactions are taken from the selected
+            interaction database.
+          </p>
+
+          <h4 class="title is-4">Analysis View</h4>
+          <p>
+            THe analysis view opens when you click on a finished task in the
+            left menu in the explorer. The task results are shown in a network
+            and as a table. The network displays all seed genes in combination
+            with the found genes and/or drugs and allows you to inspect the
+            relations from the seeds to the results. The table view shows you
+            more detail information about the genes and drugs. Depending on the
+            selected algorithm, a score is assigned to each of the genes/drugs.
+            <br />
+            In addition, depending of the type of the task, one or more figures
+            allow an overview over the task result.
+          </p>
+
+          <h4 class="title is-4">Drug Interaction Lookup</h4>
+          <p>
+            The Drug Interaction Lookup enables you to inspect the interaction
+            datasets in respect to individual drugs. If the searched drug is not
+            found in the database, the drug with the closest matching name will
+            be shown.
+            <br />
+            All interacting genes based on the selected drug-gene interaction
+            dataset will be listed. Cancer driver genes for any cancer
+            type in the CADDIE database will be highlighted.
+          </p>
+
+          <h4 class="title is-4">Gene Interaction Lookup</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

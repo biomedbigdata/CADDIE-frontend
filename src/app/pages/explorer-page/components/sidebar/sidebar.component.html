@@ -42,6 +42,7 @@
             [datasetItems]="explorerData.datasetItems"
             [selectedDataset]="explorerData.activeNetwork.selectedDataset"
             (selectedDatasetChange)="
+              explorerData.activeNetwork.networkVisJs = null;
               explorerData.activeNetwork.selectedDataset = $event;
               explorerData.initCancerTypes($event)
             "
@@ -70,6 +71,7 @@
               explorerData.activeNetwork.selectedInteractionGeneDataset
             "
             (selectedDatasetChange)="
+              explorerData.activeNetwork.networkVisJs = null;
               explorerData.activeNetwork.selectedInteractionGeneDataset =
                 $event;
               buildMainNetwork()
@@ -95,6 +97,8 @@
               explorerData.activeNetwork.selectedCancerTypeItems
             "
             (selectedCancerTypeItemsChange)="
+              explorerData.activeNetwork.networkVisJs = null;
+              explorerData.numberGenesInComorbidities = null;
               explorerData.activeNetwork.selectedCancerTypeItems = $event;
               buildMainNetwork()
             "
@@ -170,13 +174,7 @@
               <p class="heading">
                 Cancer <br />Genes
                 <span
-                  class="
-                    icon
-                    has-tooltip-right has-text-black
-                    is-lowercase
-                    has-text-weight-normal
-                    is-size-6
-                  "
+                  class="icon has-tooltip-right has-text-black is-lowercase has-text-weight-normal is-size-6"
                   data-tooltip="Displayed cancer genes and available
                       cancer genes, see 'Filter Cancer Genes'"
                 >
@@ -201,13 +199,7 @@
               <p class="heading">
                 Genes
                 <span
-                  class="
-                    icon
-                    has-tooltip-bottom has-text-black
-                    is-lowercase
-                    has-text-weight-normal
-                    is-size-6
-                  "
+                  class="icon has-tooltip-bottom has-text-black is-lowercase has-text-weight-normal is-size-6"
                   data-tooltip="Only subgroup of genes is shown for performance reasons.
                         For the overview, just genes adjacent to cancer driver genes are considered"
                 >
@@ -302,11 +294,7 @@
         </span>
         <span>Filter Cancer Driver Genes</span>
         <span
-          class="
-            icon
-            has-tooltip-right has-text-black has-text-weight-normal
-            is-size-6
-          "
+          class="icon has-tooltip-right has-text-black has-text-weight-normal is-size-6"
           data-tooltip="Filter or load more Cancer Driver Genes into graph"
         >
           <i class="fas fa-info-circle"></i>
@@ -348,11 +336,7 @@
         </span>
         Analysis
         <span
-          class="
-            icon
-            has-tooltip-right has-text-black has-text-weight-normal
-            is-size-6
-          "
+          class="icon has-tooltip-right has-text-black has-text-weight-normal is-size-6"
           data-tooltip="Run a sophisticated analysis based on selected nodes"
         >
           <i class="fas fa-info-circle"></i>
@@ -410,6 +394,7 @@
                   "
                   class="button is-example is-fullwidth has-tooltip"
                   data-tooltip="Find drug targets the cancer driver genes&#013; or selected genes."
+                  [disabled]="explorerData.activeNetwork.networkVisJs === null"
                 >
                   <span> Quick Target Search </span>
                 </button>
@@ -442,6 +427,7 @@
                   "
                   class="button is-example is-fullwidth has-tooltip"
                   data-tooltip="Find drugs for the cancer driver genes&#013; or selected genes."
+                  [disabled]="explorerData.activeNetwork.networkVisJs === null"
                 >
                   <span> Quick Drug Search </span>
                 </button>
@@ -467,25 +453,28 @@
 
             <div class="columns">
               <div class="column is-half has-text-centered small-padding"></div>
-              <div class="column is-half has-text-centered small-padding"> <button
-                (click)="explorerData.showTaskSummarizeDialog = true;"
-                class="button is-primary is-fullwidth has-tooltip"
-                data-tooltip="Find drugs for the selected genes."
-                [disabled]="analysis.tasks.length < 2"
-              >
-                <span class="icon">
-                  <i class="fa fa-capsules"></i>
-                </span>
-                <span> Summarize </span>
-              </button></div>
+              <div class="column is-half has-text-centered small-padding">
+                <button
+                  (click)="explorerData.showTaskSummarizeDialog = true"
+                  class="button is-primary is-fullwidth has-tooltip"
+                  data-tooltip="Summarize two or more analysis results."
+                  [disabled]="analysis.tasks.length < 2"
+                >
+                  <span class="icon">
+                    <i class="fa fa-list-alt"></i>
+                  </span>
+                  <span> Summarize </span>
+                </button>
+              </div>
             </div>
 
-              <div class="columns">
-                <div class="column is-half has-text-centered small-padding"></div>
-                <div class="column is-half has-text-centered small-padding"><app-g-profiler></app-g-profiler></div>
+            <div class="columns">
+              <div class="column is-half has-text-centered small-padding"></div>
+              <div class="column is-half has-text-centered small-padding">
+                <app-g-profiler></app-g-profiler>
+              </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -808,9 +797,7 @@
   </div>
 </div>
 
-<app-network-menu-dialog
-  [(show)]="explorerData.showNetworkMenuDialog"
->
+<app-network-menu-dialog [(show)]="explorerData.showNetworkMenuDialog">
 </app-network-menu-dialog>
 
 <app-launch-analysis
@@ -871,4 +858,6 @@
 >
 </app-vcf-input>
 
-<app-task-summarize-dialog *ngIf="explorerData.showTaskSummarizeDialog"></app-task-summarize-dialog>
+<app-task-summarize-dialog
+  *ngIf="explorerData.showTaskSummarizeDialog"
+></app-task-summarize-dialog>

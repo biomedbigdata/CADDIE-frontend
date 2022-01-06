@@ -1,0 +1,14 @@
+@import "../../../scaffold.scss";
+
+.second-navbar-padding {
+    padding-top: $navbar-height;
+}
+
+a[id^=documentation-] {
+    padding-top: 40px; // due to second navbar
+}
+
+.documentation-formula {
+    text-align: center;
+    padding: 20px 0;
+}

@@ -1,15 +1,83 @@
 <div class="scrollable">
   <div class="content">
     <div class="container">
-      <nav class="navbar" role="navigation" aria-label="main navigation">
+      <nav
+        class="navbar is-fixed-top second-navbar-padding"
+        role="navigation"
+        aria-label="main navigation"
+      >
         <div id="navbarBasicExample" class="navbar-menu">
           <div class="navbar-start self-align">
-            <a class="navbar-item"> Home </a>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a
+                class="navbar-link"
+                href="documentation#documentation-workflow"
+              >
+                Workflow
+              </a>
 
-            <a class="navbar-item"> Documentation </a>
+              <div class="navbar-dropdown">
+                <a
+                  class="navbar-item"
+                  href="documentation#documentation-seed-genes"
+                >
+                  Seed Genes
+                </a>
+                <a
+                  class="navbar-item"
+                  href="documentation#documentation-algorithms"
+                >
+                  Algorithms
+                </a>
+              </div>
+            </div>
 
             <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link"> More </a>
+              <a
+                class="navbar-link"
+                href="documentation#documentation-explorer"
+              >
+                Explorer
+              </a>
+
+              <div class="navbar-dropdown">
+                <a
+                  class="navbar-item"
+                  href="documentation#documentation-left-menu"
+                >
+                  Left Menu
+                </a>
+                <a
+                  class="navbar-item"
+                  href="documentation#documentation-network"
+                >
+                  Network
+                </a>
+                <a
+                  class="navbar-item"
+                  href="documentation#documentation-analysis"
+                >
+                  Analysis View
+                </a>
+              </div>
+            </div>
+
+            <a
+              class="navbar-item"
+              href="documentation#documentation-drug-interaction-lookup"
+            >
+              Drug Lookup
+            </a>
+
+            <a
+              class="navbar-item"
+              href="documentation#documentation-gene-interaction-lookup"
+            >
+              Gene Lookup
+            </a>
+
+            <!-- <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link"> Analysis View </a>
 
               <div class="navbar-dropdown">
                 <a class="navbar-item"> About </a>
@@ -18,7 +86,8 @@
                 <hr class="navbar-divider" />
                 <a class="navbar-item"> Report an issue </a>
               </div>
-            </div>
+            </div> -->
+            <span class="navbar-item"> Version: 1.0.0 </span>
           </div>
         </div>
       </nav>
@@ -27,23 +96,235 @@
     <div class="hero container">
       <div class="column is-8 is-offset-2">
         <div class="container has-text-centered">
-          <img src="assets/caddie_logo.png" />
-          <h2 class="subtitle is-3">Documentation</h2>
+          <img
+            src="assets/caddie_logo.png"
+            alt="CADDIE logo"
+            title="CADDIE logo"
+          />
+          <h2 class="subtitle is-3">How to use CADDIE</h2>
         </div>
         <div class="content">
-          <h4 class="title is-4">Concept</h4>
           <p>
-            CADDIE (Cancer Driver Drug interaction explorer) repurposes drugs in
-            cancer based on gene-gene and drug-gene interaction networks. The
-            user has the option to choose between the implemented interaction
-            networks from STRING, BioGRID, DrugBank, ChEMBL and more. CADDIE
-            then exploits the information in selected networks using network
-            algorithms like Trustrank or Degree Centrality. The algorithms and
-            the desired parameters are again customizable by the user. Doing
-            this, CADDIE is able to identify drug repurposing candidates or to
-            search for putative drug targets.
+            CADDIE (Cancer Driver Drug Interaction Explorer) is a resource to
+            repurpose drugs in cancer based on gene-gene and drug-gene
+            interaction networks. The user has the option to choose between the
+            implemented interaction networks from STRING, BioGRID, DrugBank,
+            ChEMBL and more. CADDIE then exploits the information in selected
+            networks using network algorithms like Trustrank or Degree
+            Centrality. The algorithms and the desired parameters are again
+            customizable by the user. Doing this, CADDIE is able to identify
+            drug repurposing candidates or to search for putative drug targets.
+          </p>
+          <a id="documentation-workflow"></a>
+          <h4 class="title is-4">Workflow</h4>
+          <p>The main steps of working with CADDIE are:</p>
+          <ol>
+            <li>Pick your cancer type of interest</li>
+            <li>Select the gene-interaction database of your choice</li>
+            <li>
+              Find
+              <a href="documentation#documentation-seed-genes">seed genes</a>
+            </li>
+            <li>
+              Start a drug-target or drug search using one of the implemented
+              <a href="documentation#documentation-algorithms">algorithms</a>
+            </li>
+            <li>
+              Visualize the results and download them for further processing
+            </li>
+          </ol>
+          <p>
+            Variations of this workflow are of course possible, for example you
+            have the option to upload your own list of
+            <a href="documentation#documentation-seed-genes">seed genes</a> or
+            to find
+            <a href="documentation#documentation-seed-genes">seed genes</a>
+            based on related diseases. In general, CADDIE facilitates the seed
+            selection process with a variety of different types of implemented
+            information.
           </p>
 
+          <a id="documentation-seed-genes"></a>
+
+          <h4 class="title is-4">Seed genes</h4>
+          <p>
+            Seed genes are the starting genes for the algorithms. All
+            implemented algorithms search in the interaction network for
+            drug-targets or drugs based on their relation the the seed genes.
+            Therefore, the seed genes are your genes of interest for which
+            putative drugs or drug-target candidates should be found for.
+          </p>
+
+          <a id="documentation-algorithms"></a>
+
+          <h4 class="title is-4">Algorithms</h4>
+          <p>
+            CADDIE comes with algorithms for both drug-target identification and
+            drug candidate search. Drug-target algorithms give you the
+            possibility to find hub genes in the human gene-interaction network
+            that are central to your seed genes. They also can be a helpful
+            preprocessing step for your drug search. We implemented
+            <b>6 different drug-target search algorithms in CADDIE</b>:
+          </p>
+          <ul>
+            <li>
+              <b>Mutli-Steiner Tree:</b> The Multi-level Steiner tree algorithm
+              is used to approximate the minimum spanning tree spanned by the
+              seed nodes in reasonable time. The implementation is adopted from
+              <a href="https://arxiv.org/abs/1804.02627" target="_blank"
+                >Ahmed et al.</a
+              >
+              It can be used to create a minimum spanning subnetwork between
+              user-selected seed nodes, which happen to be central interaction
+              partners between the seed nodes, and thus represent favorable
+              drug-targets.
+            </li>
+            <li>
+              <a
+                href="https://exbio.wzw.tum.de/keypathwayminer/"
+                target="_blank"
+                ><b>KeyPathwayMiner:</b></a
+              >
+              KeyPathwayMiner (KPM) is an online tool developed by
+              <a
+                href="https://academic.oup.com/nar/article/44/W1/W98/2499355"
+                target="_blank"
+                >Alcaraz et al.</a
+              >
+              for pathway enrichment analysis. Users have the option to utilize
+              KPM for their drug-target search by selecting seed nodes in the
+              GGI network and letting KPM find an interaction network of genes
+              that are commonly dysregulated spanned by the seed genes. The
+              resulting proteins are presumably functionally related to the seed
+              nodes, and therefore are suitable drug-target candidates. Only one
+              parameter K has to be set by the user which defines the amount of
+              permitted intermediate nodes that are neither part of the seed
+              nodes nor the common pathway.
+            </li>
+            <li>
+              <b>TrustRank: </b> TrustRank is based on the same concepts as the
+              <a href="http://ilpubs.stanford.edu:8090/422/" target="_blank"
+                >Google PageRank algorithm</a
+              >
+              and Closeness Centrality. A crawler searches the network based on
+              user-selected seeds and ranks visited nodes, damping the score
+              based on the distance traveled. The damping factor can be set by
+              the user in a range from 0-1, with a higher damping factor causing
+              the crawler to explore nodes in close proximity or in larger
+              portions of the GGI network. In CADDIE, TrustRank is able to find
+              putative drug targets as well as drug candidates.
+            </li>
+            <li>
+              <b>Degree Centrality:</b> Degree centrality measurement is
+              obtained by ranking the nodes in a network based on their degree,
+              which is defined as the number of neighbors a node has divided by
+              the number of nodes. Its normalized form, which is implemented in
+              CADDIE, can be described as
+              <div class="documentation-formula">
+                <i>centrality<sub>degree</sub>(x) = deg(x) / n − 1</i>
+              </div>
+              where x is a given node and deg(x) is its degree. While it is a
+              <a
+                href="https://pubmed.ncbi.nlm.nih.gov/21575741/"
+                target="_blank"
+                >commonly used network analysis technique</a
+              >, it most importantly has been shown useful in the
+              <a
+                href="https://pubmed.ncbi.nlm.nih.gov/26355787/"
+                target="_blank"
+                >identification of essential proteins in PPI networks</a
+              >. Thus, it is a simple approach to classifying the
+              network-related importance of a particular protein. In CADDIE it
+              can be used to discover valuable drug-targets or drugs, based on
+              the seed selection given by the user.
+            </li>
+            <li>
+              <b>Harmonic Centrality:</b> Harmonic centrality measurement can be
+              described as the average shortest distance from each node to all
+              other nodes in a network. This measurement is the equivalent of
+              closeness centrality for disconnected graphs. For comparable
+              results, the normalized version was used. Formally speaking, it
+              can be annotated as
+
+              <div class="documentation-formula">
+                <i>centrality<sub>harmonic</sub>(x) = </i>&sum;<sub
+                  >y&#x2260;x</sub
+                ><sup>y</sup>( (n − 1) / dist(x, y) )
+              </div>
+
+              where x is a given node and n − 1/dist(x, y) = 0 if dist(x, y) = ∞
+              (<a
+                href="https://www.semanticscholar.org/paper/Closeness-Centrality-Extended-to-Unconnected-the-Rochat/a4ea7b92421415674c6ed954914f0512935d0dfb"
+                target="_blank"
+                >reference</a
+              >). The closer a node is to other nodes, the higher the score. It
+              has already been proven successful in a number of biological
+              network problems for instance with
+              <a
+                href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2733090/"
+                target="_blank"
+                >metabolic</a
+              >
+              or
+              <a
+                href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4999434/"
+                taget="_blank"
+                >PPI networks</a
+              >
+              . In CADDIE, this algorithm can be used to find drug targets or
+              drugs that affect the seed nodes as direct as possible.
+            </li>
+            <li>
+              <b>Betweenness Centrality:</b> Betweenness is obtained by finding
+              the shortest paths for each pair of nodes in the network and
+              assessing the number of shortest paths that pass through a
+              particular node, such that a measure of the centrality of a node
+              in a network global context is received. Betweenness Centrality
+              has been established as a common measurement in
+              <a
+                href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-7-219"
+                target="_blank"
+                >network biological</a
+              >
+              application and is especially practical in
+              <a href="https://www.pnas.org/content/99/12/7821" target="_blank"
+                >finding communities in large networks</a
+              >. In CADDIE, betweenness is based on the shortest paths between
+              the seed nodes only and can be used to find drug targets with
+              maximized connectivity to all seeds.
+            </li>
+          </ul>
+
+          <p>
+            Furthermore, we integrated
+            <b>4 drug candidate search algorithms.</b> These tasks will return a list of drugs and their relations to your seed genes. 
+          </p>
+
+          <ul>
+            <li><b>TrustRank:</b> See description above.</li>
+            <li><b>Harmonic Centrality:</b> See description above.</li>
+            <li><b>Degree Centrality:</b> See description above.</li>
+            <li>
+              <b>Network Proximity:</b> Network Proximity, as introduced by
+              <a
+                href="https://www.nature.com/articles/ncomms10331"
+                target="_blank"
+                >Guney et al.</a
+              >, is the average length of shortest paths from drug target nodes
+              to all of the user-selected seed nodes. The algorithm then
+              computes a statistical significance score comparing against random
+              expectation. This algorithm was adopted in CADDIE so that
+              best-scored drugs are returned to the user as candidate drugs.
+            </li>
+          </ul>
+
+          <p>All of the algorithms can be adjusted to your needs with parameters. We also provide custom options such as filtering out unapproved or nutraceutical drugs.
+          
+          <ul>
+            <li></li>
+          </ul>
+
+          <a id="documentation-explorer"></a>
           <h4 class="title is-4">Explorer</h4>
           <p>
             The Explorer is the main part of the application. It allows you to
@@ -51,53 +332,130 @@
             interest. Most importantly, it gives you a variety of information
             like comorbidities or expression values to help you select seed
             genes for your drug or drug-target search.
-            <br />
+          </p>
+          <a id="documentation-left-menu"></a>
+          <h4 class="title is-5">Left Menu</h4>
+          <p>
             On the left side you can find a menu bar which gives you the options
             to select your cancer type or gene interaction resource of interest.
             You will receive a short overview over your cancer type of interest.
-            After selecting your seed genes, the left menu allows you to start
-            analysis tasks (max. 3 at a time). The tasks will be displayed at
-            the bottom of this menu in the 'Tasks' section. A click on a
-            finished task leads you to the analysis view.
-            <br />
+            After selecting your
+            <a href="documentation#documentation-seed-genes">seed genes</a>, the
+            left menu allows you to start analysis tasks (max. 3 at a time). The
+            tasks will be displayed at the bottom of this menu in the 'Tasks'
+            section. A click on a finished task leads you to the analysis view.
+          </p>
+          <div class="container has-text-centered">
+            <img
+              src="assets/CADDIE left side menu.png"
+              width="500"
+              alt="CADDIE Explorer left side menu"
+              title="Description of the left side menu of the CADDIE explorer "
+            />
+          </div>
+          <a id="documentation-network"></a>
+          <h4 class="title is-5">Gene-Interaction Network</h4>
+          <p>
             On the right side of the explorer is the gene-interaction network.
             It contains all cancer driver genes of your selected cancer type,
             forming a minimal spanning tree. It is supplemented by genes found
             by the multiple steiner tree algorithm in order to make the minimal
-            spanning tree possible. You can add your own genes to the network by
-            uploading your own seed genes (for example via the 'Custom genes'
-            function in the left menu) followed by the 'Add to network'
-            functionality. Gene-gene interactions are taken from the selected
-            interaction database.
+            spanning tree possible. The network gives you an overview over the
+            relations of the cancer driver genes to each other and lets you
+            select
+            <a href="documentation#documentation-seed-genes">seed genes</a> for
+            the drug-target or drug search by double-clicking the nodes. A
+            single click on a node opens a window at the top of the left menu
+            with detail information about the drug or gene such as comorbidities
+            or the node degree in the complete human drug-gene interaction
+            network.
           </p>
-
-          <h4 class="title is-4">Analysis View</h4>
+          <div class="container has-text-centered">
+            <img
+              src="assets/annotated network.png"
+              alt="Gene-interaction network with cancer driver genes"
+              title="Gene-interaction network with higlighted cancer driver genes and menu"
+            />
+          </div>
+          <p>
+            Below the network you can find various functions that help you to
+            manipulate the network to find genes of your interest. The
+            expression of genes in different tissues (data from GTEx) as well as
+            in different cancer types (data from TCGA) can be highlighted and
+            genes may be selected automatically above a certain threshold. The
+            same possibility exists for mutation data from TCGA. Furthermore, a
+            menu is available with versatile options such as selection of all
+            cancer driver genes or upload of a vcf-file to filter for genes with
+            damaging mutations.
+            <br />
+            You can add your own genes to the network by uploading your own seed
+            genes (for example via the 'Custom genes' function in the left menu)
+            followed by the 'Add to network' functionality. Gene-gene
+            interactions are taken from the selected interaction database.
+          </p>
+          <a id="documentation-analysis"></a>
+          <h4 class="title is-5">Analysis View</h4>
           <p>
             THe analysis view opens when you click on a finished task in the
-            left menu in the explorer. The task results are shown in a network
-            and as a table. The network displays all seed genes in combination
-            with the found genes and/or drugs and allows you to inspect the
-            relations from the seeds to the results. The table view shows you
-            more detail information about the genes and drugs. Depending on the
-            selected algorithm, a score is assigned to each of the genes/drugs.
-            <br />
-            In addition, depending of the type of the task, one or more figures
-            allow an overview over the task result.
+            left menu in the explorer. The analysis view will open on top of the
+            network, and is divided in four parts. One part is the result
+            network, which offers the same functions as the initial gene-network
+            but here it displays all
+            <a href="documentation#documentation-seed-genes">seed genes</a> in
+            combination with the found genes and/or drugs and allows you to
+            inspect the relations from the seeds to the results. Your can also
+            look at your results in a table format, where additional information
+            to each of the genes or drugs is displayed. Here you can sort the
+            nodes to get a better overview and download the tables for further
+            processing on your side. Furthermore, CADDIE also provides different
+            statistics and graphs about the analysis (depending on your analysis
+            parameters). For example, you can set the calculated score for each
+            of your genes and drugs in comparison to the node degrees in the
+            drug-gene interactome (see below). Ultimately, the selected
+            parameters and versions of the used datasets can be retrieved in the
+            fourth tab.
           </p>
-
+          <div class="container has-text-centered">
+            <img
+              src="assets/plot score vs degree.png"
+              alt="CADDIE score drug-gene interaction network degree"
+              title="CADDIE score compared to the drug-gene interaction network degree"
+            />
+          </div>
+          <a id="documentation-drug-interaction-lookup"></a>
           <h4 class="title is-4">Drug Interaction Lookup</h4>
           <p>
-            The Drug Interaction Lookup enables you to inspect the interaction
-            datasets in respect to individual drugs. If the searched drug is not
-            found in the database, the drug with the closest matching name will
-            be shown.
+            The
+            <a href="/drug-lookup" target="_blank">drug interaction lookup</a>
+            enables you to inspect the interaction datasets in respect to
+            individual drugs. If the searched drug is not found in the database,
+            the drug with the closest matching name will be shown.
             <br />
             All interacting genes based on the selected drug-gene interaction
-            dataset will be listed. Cancer driver genes for any cancer
-            type in the CADDIE database will be highlighted.
+            dataset will be listed. Cancer driver genes for any cancer type in
+            the CADDIE database will be highlighted.
           </p>
-
+          <div class="container has-text-centered">
+            <img
+              src="assets/drug_interaction_lookup_annotated.png"
+              alt="CADDIE drug interaction lookup"
+              title="CADDIE drug interaction lookup page"
+            />
+          </div>
+          <a id="documentation-gene-interaction-lookup"></a>
           <h4 class="title is-4">Gene Interaction Lookup</h4>
+          <p>
+            The
+            <a href="/gene-lookup" target="_blank">gene interaction lookup</a>
+            works similar to the
+            <a href="/documentation#documentation_drug_interaction_lookup"
+              >drug interaction lookup</a
+            >
+            with the difference that that it allows you to search for genes
+            instead of drugs. The list of drug interactions will be shown along
+            with detailed drug information. In addition, you will receive a list
+            of all known cancer types related to your gene of interest.
+          </p>
         </div>
       </div>
     </div>

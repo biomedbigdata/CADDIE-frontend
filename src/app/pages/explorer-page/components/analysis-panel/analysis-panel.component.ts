@@ -985,7 +985,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   }
 
   public async loadGeneCountBarplot() {
-    const plotWidth = Object.keys(this.result.geneCounts).length * 40;
+    const plotWidth = Object.keys(this.result.geneCounts).length * 30;
     this.geneCountBarplot = {
       data: [
         {
@@ -1040,13 +1040,14 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           title: 'Occurrences',
           automargin: true
         },
+        showlegend: true,
         legend: {
-          x: 1,
+          x: 0,
+          xanchor: 'right',
           y: 1,
           font: {
             size: 12,
           },
-          xanchor: 'left',
           // orientation: "h"
         }
       },
@@ -1057,7 +1058,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   }
 
   public async loadDrugCountBarplot() {
-    const plotWidth = Object.keys(this.result.drugCounts).length * 30;
+    if (!this.result.drugCounts || !Object.keys(this.result.drugCounts).length) {
+      return
+    }
+    const plotWidth = Object.keys(this.result.drugCounts).length * 40;
     this.drugCountBarplot = {
       data: [
         {
@@ -1096,7 +1100,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         },
         legend: {
           x: 0,
-          y: 1.0,
+          y: 1,
           font: {
             size: 12,
           }
@@ -1109,7 +1113,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
   }
 
   public async loadNodeDegreeScatterplot() {
-    // const maxScore = Math.max(...[...this.result.tracesDegree.Drug.y, ...this.result.tracesDegree.Node.y, ...this.result.tracesDegree.CancerNode.y])
+    if (!(this.result.tracesDegree.Node.x.length || this.result.tracesDegree.CancerNode.x.length || this.result.tracesDegree.Drug.x.length)) {
+      return
+    }
+    const maxScoreGenes = Math.max(...[...this.result.tracesDegree.Node.y, ...this.result.tracesDegree.CancerNode.y])
     const colorsGene = []; for (let i = 0; i < this.result.tracesDegree.Node.x.length; i++) { colorsGene.push(NetworkSettings.node) };
     const linesGene = []; for (let i = 0; i < this.result.tracesDegree.Node.x.length; i++) { linesGene.push({ color: NetworkSettings.selectedBorderColor, width: 0 }) };
     const colorsCancerGene = []; for (let i = 0; i < this.result.tracesDegree.CancerNode.x.length; i++) { colorsCancerGene.push(NetworkSettings.cancerNode) };
@@ -1132,7 +1139,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         },
         {
           x: this.result.tracesDegree.Node.x,
-          y: this.result.tracesDegree.Node.y.map(v => v / Math.max(...this.result.tracesDegree.Node.y)),
+          y: this.result.tracesDegree.Node.y.map(v => v / maxScoreGenes), //  Math.max(...this.result.tracesDegree.Node.y)),
           mode: 'markers',
           type: 'scatter',
           name: 'Gene',
@@ -1141,7 +1148,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         },
         {
           x: this.result.tracesDegree.CancerNode.x,
-          y: this.result.tracesDegree.CancerNode.y.map(v => v / Math.max(...this.result.tracesDegree.CancerNode.y)),
+          y: this.result.tracesDegree.CancerNode.y.map(v => v / maxScoreGenes), //  Math.max(...this.result.tracesDegree.CancerNode.y)),
           mode: 'markers',
           type: 'scatter',
           name: 'Cancer Gene',
@@ -1152,7 +1159,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
       layout: {
         title: {
-          text: `CADDIE score vs. DB Degree`,
+          text: `CADDIE score vs. Interactome Degree`,
           x: 0,
           xanchor: 'left',
           pad: {
@@ -1160,7 +1167,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           }
         },
         xaxis: {
-          title: 'DB Degree',
+          title: 'Interactome Degree',
           automargin: true,
         },
         yaxis: {
@@ -1168,8 +1175,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           automargin: true
         },
         legend: {
-          x: 0,
-          y: 0,
+          x: 1,
+          y: 1,
+          xanchor: 'right',
           font: {
             size: 12,
           }

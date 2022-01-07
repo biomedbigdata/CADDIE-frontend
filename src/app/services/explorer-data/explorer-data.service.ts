@@ -69,7 +69,7 @@ export class ExplorerDataService {
     // cancertype tile
     public cancerTypes: CancerType[];
     public selectedCancerTypeItemsChange = new EventEmitter<CancerType>();
-    public numberGenesInComorbidities: number;
+    public numberGenesInComorbidities: number = null;
   
     // cancertype comorbidities tile
     public selectedCancerTypeComorbidityGraph: {data: any, layout: any} = undefined;

@@ -28,7 +28,7 @@ export const algorithmNames = {
   degree: 'Degree Centrality',
   proximity: 'Network Proximity',
   betweenness: 'Betweenness Centrality',
-  closeness: 'Closeness Centrality',
+  closeness: 'Harmonic Centrality',
   summary: 'Summary',
   quick: 'Simple',
   super: 'Quick-Start',

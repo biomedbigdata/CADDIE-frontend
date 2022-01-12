@@ -34,32 +34,33 @@
   &.pushed-left {
     right: calc(10px + #{$legend-width});
   }
-  td{
+  td {
     height: $legend-circle-size;
     vertical-align: middle !important;
     padding: 0 !important;
-    .node{
+    border-width: 0 0;
+    .node {
       background: $network-node-color;
       border-radius: 50%;
       width: $legend-circle-size;
       height: $legend-circle-size;
       display: inline-block;
     }
-    .cancer-node{
+    .cancer-node {
       background: $network-cancer-node-color;
       border-radius: 50%;
       width: $legend-circle-size;
       height: $legend-circle-size;
       display: inline-block;
     }
-    .cancer-node{
+    .cancer-node {
       background: $network-cancer-node-color;
       border-radius: 50%;
       width: $legend-circle-size;
       height: $legend-circle-size;
       display: inline-block;
     }
-    .selected-cancer-node{
+    .selected-cancer-node {
       background: black;
       border-radius: 50%;
       border: 5px solid $network-selected-border-color;
@@ -67,28 +68,28 @@
       height: $legend-circle-size;
       display: inline-block;
     }
-    .seed-node{
+    .seed-node {
       background: $network-seed-gene-color;
       border-radius: 50%;
       width: $legend-circle-size;
       height: $legend-circle-size;
       display: inline-block;
     }
-    .seed-cancer-node{
+    .seed-cancer-node {
       background: $network-seed-cancer-gene-color;
       border-radius: 50%;
       width: $legend-circle-size;
       height: $legend-circle-size;
       display: inline-block;
     }
-    .approved-drug{
+    .approved-drug {
       background: $network-approved-drug-color;
       border-radius: $legend-rectangle-radius;
       width: $legend-rectangle-width;
       height: $legend-rectangle-height;
       display: inline-block;
     }
-    .cancer-drug{
+    .cancer-drug {
       width: 0;
       height: 0;
       border-left: calc(#{$legend-circle-size} / 2) solid transparent;
@@ -96,7 +97,7 @@
       border-bottom: $legend-circle-size solid black;
       display: inline-block;
     }
-    .non-approved-drug{
+    .non-approved-drug {
       background: $network-unapproved-drug-color;
       border-radius: $legend-rectangle-radius;
       width: $legend-rectangle-width;

@@ -69,6 +69,7 @@ import {
 } from './pages/explorer-page/components/sidebar/dialogs/task-summmarize-dialog/task-summarize-dialog.component';
 import { CookieDisclaimerComponent } from './components/cookie-disclaimer/cookie-disclaimer.component';
 import { DocumentationPageComponent } from './pages/documentation-page/documentation-page.component';
+import { PythonPageComponent } from './python-page/python-page.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -115,6 +116,7 @@ PlotlyViaCDNModule.plotlyBundle = 'basic';
     TaskSummarizeDialogComponent,
     CookieDisclaimerComponent,
     DocumentationPageComponent,
+    PythonPageComponent,
   ],
   imports: [
     BrowserModule,

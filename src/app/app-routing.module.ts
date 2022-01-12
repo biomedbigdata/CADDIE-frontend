@@ -8,6 +8,7 @@ import {DownloadPageComponent} from './pages/download-page/download-page.compone
 import {DrugLookupPageComponent} from './pages/drug-lookup-page/drug-lookup-page.component';
 import { GeneLookupPageComponent } from './pages/gene-lookup-page/gene-lookup-page.component';
 import { DocumentationPageComponent } from './pages/documentation-page/documentation-page.component';
+import { PythonPageComponent } from './python-page/python-page.component';
 
 
 export const routes: Routes = [
@@ -19,7 +20,9 @@ export const routes: Routes = [
   {path: 'cite', component: CitationPageComponent},
   {path: 'about', component: AboutPageComponent},
   {path: 'download', component: DownloadPageComponent},
-  {path: 'documentation', component: DocumentationPageComponent}
+  {path: 'documentation', component: DocumentationPageComponent},
+  {path: 'python', component: PythonPageComponent},
+  {path: '**', component: HomePageComponent},
 ];
 
 @NgModule({

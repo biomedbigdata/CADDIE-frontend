@@ -1,0 +1,55 @@
+<div class="scroll">
+  <div class="content">
+    <div class="hero container">
+      <div class="column is-8 is-offset-2">
+        <div class="container has-text-centered">
+          <img src="assets/caddie_logo.png" />
+          <h2 class="subtitle is-3">CADDIEPY</h2>
+        </div>
+        <div class="content">
+          <p>
+            CADDIE is also available as a python package. We designed the
+            package to be easy to use, so that you can search for drug-targets
+            and drug candidates with just a few lines of code!
+            <br />
+            <br />
+            The programmatic access to CADDIE gives you the possibility, to run
+            a larger number of analysis tasks without having to go through the
+            GUI of the web interace for each of the tasks. This might be of
+            interest, if you e.g. want to try out one algorithm with a certain
+            gene set but different parameter combinations. Furthermore, you are
+            able to integrate CADDIEs functionality into your own programs. For
+            more information, click the button below.
+          </p>
+
+          <div class="center">
+            <a href="https://pypi.org/project/caddiepy/" target="_blank"
+              ><button class="button is-primary">Python Package</button></a
+            >
+          </div>
+
+          <h4 class="title is-4">Code Example:</h4>
+          <pre><code>
+import caddiepy
+
+gene_list = ['PTEN', 'MYC']
+
+# verify that genes exist in CADDIE
+caddie_gene_list = caddiepy.api.map_gene_id(gene_list).json()['genes']
+
+task = caddiepy.Task('drug', 'network_proximity', [gene['graphId'] for gene in caddie_gene_list])
+# customize parameters
+task.set_parameter('result_size', 5)
+task.set_parameter('include_indirect_drugs', True)
+task.set_parameter('gene_interaction_datasets', ['IID'])
+task.set_parameter('drug_interaction_datasets', ['DrugBank'])
+# start task
+task.run()
+# get result when task is finished, if task is still running wait until it is finished
+result = task.get_result()
+          </code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

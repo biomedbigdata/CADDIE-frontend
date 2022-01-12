@@ -107,12 +107,12 @@
           <p>
             CADDIE (Cancer Driver Drug Interaction Explorer) is a resource to
             repurpose drugs in cancer based on gene-gene and drug-gene
-            interaction networks. The user has the option to choose between the
+            interaction (GGI and DGI) networks. The user has the option to choose between the
             implemented interaction networks from STRING, BioGRID, DrugBank,
-            ChEMBL and more. CADDIE then exploits the information in selected
-            networks using network algorithms like Trustrank or Degree
+            ChEMBL, and more. CADDIE then exploits the information in selected
+            networks using network algorithms like TrustRank or Degree
             Centrality. The algorithms and the desired parameters are again
-            customizable by the user. Doing this, CADDIE is able to identify
+            customizable by the user. By doing this, CADDIE can identify
             drug repurposing candidates or to search for putative drug targets.
           </p>
           <a id="documentation-workflow"></a>
@@ -134,8 +134,8 @@
             </li>
           </ol>
           <p>
-            Variations of this workflow are of course possible, for example you
-            have the option to upload your own list of
+            Variations of this workflow are of course possible, for example, you
+            have the option to upload your list of
             <a href="documentation#documentation-seed-genes">seed genes</a> or
             to find
             <a href="documentation#documentation-seed-genes">seed genes</a>
@@ -150,7 +150,7 @@
           <p>
             Seed genes are the starting genes for the algorithms. All
             implemented algorithms search in the interaction network for
-            drug-targets or drugs based on their relation the the seed genes.
+            drug-targets or drugs based on their relation the seed genes.
             Therefore, the seed genes are your genes of interest for which
             putative drugs or drug-target candidates should be found for.
           </p>
@@ -170,7 +170,7 @@
             <li>
               <b>Mutli-Steiner Tree:</b> The Multi-level Steiner tree algorithm
               is used to approximate the minimum spanning tree spanned by the
-              seed nodes in reasonable time. The implementation is adopted from
+              seed nodes in a reasonable time. The implementation is adopted from
               <a href="https://arxiv.org/abs/1804.02627" target="_blank"
                 >Ahmed et al.</a
               >
@@ -178,6 +178,10 @@
               user-selected seed nodes, which happen to be central interaction
               partners between the seed nodes, and thus represent favorable
               drug-targets.
+              <ul>
+                <li><i>Number of Steiner trees:</i> Number of computed Steiner trees to approximate minimum spanning tree. A higher number leads to more variations at the cost of a longer runtime.</li>
+                <li><i>Tolerance:</i> Indicates how much the subsequent trees may increase the number of edges.</li>
+              </ul>
             </li>
             <li>
               <a
@@ -200,6 +204,9 @@
               parameter K has to be set by the user which defines the amount of
               permitted intermediate nodes that are neither part of the seed
               nodes nor the common pathway.
+              <ul>
+                <li><i>Additional proteins (k):</i> Number of intermediate nodes that are allowed in between the seed nodes.</li>
+              </ul>
             </li>
             <li>
               <b>TrustRank: </b> TrustRank is based on the same concepts as the
@@ -213,6 +220,9 @@
               the crawler to explore nodes in close proximity or in larger
               portions of the GGI network. In CADDIE, TrustRank is able to find
               putative drug targets as well as drug candidates.
+              <ul>
+                <li><i>Damping Factor:</i> The speed with which the crawler propagates through the network. The larger the factor, the larger the proportion of the network that is considered. </li>
+              </ul>
             </li>
             <li>
               <b>Degree Centrality:</b> Degree centrality measurement is
@@ -318,13 +328,26 @@
             </li>
           </ul>
 
-          <p>All of the algorithms can be adjusted to your needs with parameters. We also provide custom options such as filtering out unapproved or nutraceutical drugs. 
+          <p>All of the algorithms can be adjusted to your needs with parameters. We also provide custom options such as filtering out unapproved or nutraceutical drugs. In general, the following options exist:</p>
+          
+          <ul>
+            <li><i>Result Size: </i>Number of returned results (drug-targets or drugs)</li>
+            <li><i>Maximum Degree: </i>Option to filter out hub genes. if set to > 0, genes with a network degree in the complete gene-drug interaction network above this threshold will be excluded.</li>
+            <li><i>Hub Penalty: </i>Penalize genes with a large degree in the network. The higher the value, the more algorithms will try to avoid genes with a high network degree in the complete gene-drug interaction network.</li>
+            <li><i>Mutation Weights: </i>Select a cancer type to consider its mutations. The algorithm will favor genes with a larger mutation score.</li>
+            <li><i>Expression Weights: </i>Select a cancer type to consider its expressions. The algorithm will favor genes with a higher expression.</li>
+            <li><i>Filter Edges: </i>If set, only the shortest paths to the results (drug-target genes or drugs) will be displayed in the resulting network. Otherwise, all found pathways will be shown.</li>
+            <li><i>Gene Drug Interactions (only drug search): </i>Choose a data resource for the drug-gene interactions. If 'DrugBank" is selected, the options 'Drug Target Actions' will appear.</li>
+            <li><i>Drug Target Actions (only drug search): </i>Only available for gene-drug interaction dataset 'DrugBank'. Filter out drug-gene edges by known effect.</li>
+            <li><i>Nutraceutical Drugs (only drug search): </i>If set, nutraceutical drugs will be excluded.</li>
+            <li><i>Only ATC class L (only drug search): </i>If set, only drugs that are listed in the <a href="https://www.whocc.no/atc_ddd_index/?code=L&showdescription=yes" target="_blank">ATC class L Antineoplastic and immunomodulating agents</a> by the <a href="https://www.who.int/" target="_blank">World Health Organization (WHO)</a>.</li>
+          </ul>
 
           <a id="documentation-explorer"></a>
           <h4 class="title is-4">Explorer</h4>
           <p>
             The Explorer is the main part of the application. It allows you to
-            explore the interactome of you cancer type or cancer driver genes of
+            explore the interactome of your cancer type or cancer driver genes of
             interest. Most importantly, it gives you a variety of information
             like comorbidities or expression values to help you select seed
             genes for your drug or drug-target search.
@@ -332,9 +355,9 @@
           <a id="documentation-left-menu"></a>
           <h4 class="title is-5">Left Menu</h4>
           <p>
-            On the left side you can find a menu bar which gives you the options
+            On the left side, you can find a menu bar that gives you the options
             to select your cancer type or gene interaction resource of interest.
-            You will receive a short overview over your cancer type of interest.
+            You will receive a short overview of your cancer type of interest.
             After selecting your
             <a href="documentation#documentation-seed-genes">seed genes</a>, the
             left menu allows you to start analysis tasks (max. 3 at a time). The
@@ -355,14 +378,14 @@
             On the right side of the explorer is the gene-interaction network.
             It contains all cancer driver genes of your selected cancer type,
             forming a minimal spanning tree. It is supplemented by genes found
-            by the multiple steiner tree algorithm in order to make the minimal
-            spanning tree possible. The network gives you an overview over the
+            by the Multiple Steiner Tree algorithm in order to make the minimal
+            spanning tree possible. The network gives you an overview of the
             relations of the cancer driver genes to each other and lets you
             select
             <a href="documentation#documentation-seed-genes">seed genes</a> for
             the drug-target or drug search by double-clicking the nodes. A
             single click on a node opens a window at the top of the left menu
-            with detail information about the drug or gene such as comorbidities
+            with detailed information about the drug or gene such as comorbidities
             or the node degree in the complete human drug-gene interaction
             network.
           </p>
@@ -374,7 +397,7 @@
             />
           </div>
           <p>
-            Below the network you can find various functions that help you to
+            Below the network, you can find various functions that help you to
             manipulate the network to find genes of your interest. The
             expression of genes in different tissues (data from GTEx) as well as
             in different cancer types (data from TCGA) can be highlighted and
@@ -392,14 +415,14 @@
           <a id="documentation-analysis"></a>
           <h4 class="title is-5">Analysis View</h4>
           <p>
-            THe analysis view opens when you click on a finished task in the
+            The analysis view opens when you click on a finished task in the
             left menu in the explorer. The analysis view will open on top of the
-            network, and is divided in four parts. One part is the result
-            network, which offers the same functions as the initial gene-network
+            network and is divided into four parts. One part is the resulting
+            network, which offers the same functions as the initial gene network
             but here it displays all
             <a href="documentation#documentation-seed-genes">seed genes</a> in
             combination with the found genes and/or drugs and allows you to
-            inspect the relations from the seeds to the results. Your can also
+            inspect the relations from the seeds to the results. You can also
             look at your results in a table format, where additional information
             to each of the genes or drugs is displayed. Here you can sort the
             nodes to get a better overview and download the tables for further
@@ -447,7 +470,7 @@
             <a href="/documentation#documentation_drug_interaction_lookup"
               >drug interaction lookup</a
             >
-            with the difference that that it allows you to search for genes
+            with the difference that it allows you to search for genes
             instead of drugs. The list of drug interactions will be shown along
             with detailed drug information. In addition, you will receive a list
             of all known cancer types related to your gene of interest.

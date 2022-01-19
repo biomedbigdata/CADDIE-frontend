@@ -105,15 +105,16 @@
         </div>
         <div class="content">
           <p>
-            CADDIE (Cancer Driver Drug Interaction Explorer) is a resource to
-            repurpose drugs in cancer based on gene-gene and drug-gene
-            interaction (GGI and DGI) networks. The user has the option to choose between the
-            implemented interaction networks from STRING, BioGRID, DrugBank,
-            ChEMBL, and more. CADDIE then exploits the information in selected
-            networks using network algorithms like TrustRank or Degree
-            Centrality. The algorithms and the desired parameters are again
-            customizable by the user. By doing this, CADDIE can identify
-            drug repurposing candidates or to search for putative drug targets.
+            CADDIE (Cancer Driver Drug Interaction Explorer) is a resource for
+            drug repurposing in cancer based on gene-gene and drug-gene
+            interaction (GGI and DGI) networks. The user has the option to
+            choose between the implemented interaction networks from STRING,
+            BioGRID, DrugBank, ChEMBL, and more. CADDIE then exploits the
+            information in selected networks using network algorithms like
+            TrustRank or Degree Centrality. The algorithms and the desired
+            parameters are again customizable by the user. By doing this, CADDIE
+            can identify drug repurposing candidates or to search for putative
+            drug targets.
           </p>
           <a id="documentation-workflow"></a>
           <h4 class="title is-4">Workflow</h4>
@@ -170,7 +171,8 @@
             <li>
               <b>Mutli-Steiner Tree:</b> The Multi-level Steiner tree algorithm
               is used to approximate the minimum spanning tree spanned by the
-              seed nodes in a reasonable time. The implementation is adopted from
+              seed nodes in a reasonable time. The implementation is adopted
+              from
               <a href="https://arxiv.org/abs/1804.02627" target="_blank"
                 >Ahmed et al.</a
               >
@@ -179,8 +181,15 @@
               partners between the seed nodes, and thus represent favorable
               drug-targets.
               <ul>
-                <li><i>Number of Steiner trees:</i> Number of computed Steiner trees to approximate minimum spanning tree. A higher number leads to more variations at the cost of a longer runtime.</li>
-                <li><i>Tolerance:</i> Indicates how much the subsequent trees may increase the number of edges.</li>
+                <li>
+                  <i>Number of Steiner trees:</i> Number of computed Steiner
+                  trees to approximate minimum spanning tree. A higher number
+                  leads to more variations at the cost of a longer runtime.
+                </li>
+                <li>
+                  <i>Tolerance:</i> Indicates how much the subsequent trees may
+                  increase the number of edges.
+                </li>
               </ul>
             </li>
             <li>
@@ -205,7 +214,10 @@
               permitted intermediate nodes that are neither part of the seed
               nodes nor the common pathway.
               <ul>
-                <li><i>Additional proteins (k):</i> Number of intermediate nodes that are allowed in between the seed nodes.</li>
+                <li>
+                  <i>Additional proteins (k):</i> Number of intermediate nodes
+                  that are allowed in between the seed nodes.
+                </li>
               </ul>
             </li>
             <li>
@@ -221,7 +233,11 @@
               portions of the GGI network. In CADDIE, TrustRank is able to find
               putative drug targets as well as drug candidates.
               <ul>
-                <li><i>Damping Factor:</i> The speed with which the crawler propagates through the network. The larger the factor, the larger the proportion of the network that is considered. </li>
+                <li>
+                  <i>Damping Factor:</i> The speed with which the crawler
+                  propagates through the network. The larger the factor, the
+                  larger the proportion of the network that is considered.
+                </li>
               </ul>
             </li>
             <li>
@@ -278,7 +294,7 @@
               or
               <a
                 href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4999434/"
-                taget="_blank"
+                target="_blank"
                 >PPI networks</a
               >
               . In CADDIE, this algorithm can be used to find drug targets or
@@ -307,7 +323,8 @@
 
           <p>
             Furthermore, we integrated
-            <b>4 drug candidate search algorithms.</b> These tasks will return a list of drugs and their relations to your seed genes. 
+            <b>4 drug candidate search algorithms.</b> These tasks will return a
+            list of drugs and their relations to your seed genes.
           </p>
 
           <ul>
@@ -328,27 +345,78 @@
             </li>
           </ul>
 
-          <p>All of the algorithms can be adjusted to your needs with parameters. We also provide custom options such as filtering out unapproved or nutraceutical drugs. In general, the following options exist:</p>
-          
+          <p>
+            All of the algorithms can be adjusted to your needs with parameters.
+            We also provide custom options such as filtering out unapproved or
+            nutraceutical drugs. In general, the following options exist:
+          </p>
+
           <ul>
-            <li><i>Result Size: </i>Number of returned results (drug-targets or drugs)</li>
-            <li><i>Maximum Degree: </i>Option to filter out hub genes. if set to > 0, genes with a network degree in the complete gene-drug interaction network above this threshold will be excluded.</li>
-            <li><i>Hub Penalty: </i>Penalize genes with a large degree in the network. The higher the value, the more algorithms will try to avoid genes with a high network degree in the complete gene-drug interaction network.</li>
-            <li><i>Mutation Weights: </i>Select a cancer type to consider its mutations. The algorithm will favor genes with a larger mutation score.</li>
-            <li><i>Expression Weights: </i>Select a cancer type to consider its expressions. The algorithm will favor genes with a higher expression.</li>
-            <li><i>Filter Edges: </i>If set, only the shortest paths to the results (drug-target genes or drugs) will be displayed in the resulting network. Otherwise, all found pathways will be shown.</li>
-            <li><i>Gene Drug Interactions (only drug search): </i>Choose a data resource for the drug-gene interactions. If 'DrugBank" is selected, the options 'Drug Target Actions' will appear.</li>
-            <li><i>Drug Target Actions (only drug search): </i>Only available for gene-drug interaction dataset 'DrugBank'. Filter out drug-gene edges by known effect.</li>
-            <li><i>Nutraceutical Drugs (only drug search): </i>If set, nutraceutical drugs will be excluded.</li>
-            <li><i>Only ATC class L (only drug search): </i>If set, only drugs that are listed in the <a href="https://www.whocc.no/atc_ddd_index/?code=L&showdescription=yes" target="_blank">ATC class L Antineoplastic and immunomodulating agents</a> by the <a href="https://www.who.int/" target="_blank">World Health Organization (WHO)</a>.</li>
+            <li>
+              <i>Result Size: </i>Number of returned results (drug-targets or
+              drugs)
+            </li>
+            <li>
+              <i>Maximum Degree: </i>Option to filter out hub genes. if set to >
+              0, genes with a network degree in the complete gene-drug
+              interaction network above this threshold will be excluded.
+            </li>
+            <li>
+              <i>Hub Penalty: </i>Penalize genes with a large degree in the
+              network. The higher the value, the more algorithms will try to
+              avoid genes with a high network degree in the complete gene-drug
+              interaction network.
+            </li>
+            <li>
+              <i>Mutation Weights: </i>Select a cancer type to consider its
+              mutations. The algorithm will favor genes with a larger mutation
+              score.
+            </li>
+            <li>
+              <i>Expression Weights: </i>Select a cancer type to consider its
+              expressions. The algorithm will favor genes with a higher
+              expression.
+            </li>
+            <li>
+              <i>Filter Edges: </i>If set, only the shortest paths to the
+              results (drug-target genes or drugs) will be displayed in the
+              resulting network. Otherwise, all found pathways will be shown.
+            </li>
+            <li>
+              <i>Gene Drug Interactions (only drug search): </i>Choose a data
+              resource for the drug-gene interactions. If 'DrugBank" is
+              selected, the options 'Drug Target Actions' will appear.
+            </li>
+            <li>
+              <i>Drug Target Actions (only drug search): </i>Only available for
+              gene-drug interaction dataset 'DrugBank'. Filter out drug-gene
+              edges by known effect.
+            </li>
+            <li>
+              <i>Nutraceutical Drugs (only drug search): </i>If set,
+              nutraceutical drugs will be excluded.
+            </li>
+            <li>
+              <i>Only ATC class L (only drug search): </i>If set, only drugs
+              that are listed in the
+              <a
+                href="https://www.whocc.no/atc_ddd_index/?code=L&showdescription=yes"
+                target="_blank"
+                >ATC class L Antineoplastic and immunomodulating agents</a
+              >
+              by the
+              <a href="https://www.who.int/" target="_blank"
+                >World Health Organization (WHO)</a
+              >.
+            </li>
           </ul>
 
           <a id="documentation-explorer"></a>
           <h4 class="title is-4">Explorer</h4>
           <p>
             The Explorer is the main part of the application. It allows you to
-            explore the interactome of your cancer type or cancer driver genes of
-            interest. Most importantly, it gives you a variety of information
+            explore the interactome of your cancer type or cancer driver genes
+            of interest. Most importantly, it gives you a variety of information
             like comorbidities or expression values to help you select seed
             genes for your drug or drug-target search.
           </p>
@@ -385,9 +453,9 @@
             <a href="documentation#documentation-seed-genes">seed genes</a> for
             the drug-target or drug search by double-clicking the nodes. A
             single click on a node opens a window at the top of the left menu
-            with detailed information about the drug or gene such as comorbidities
-            or the node degree in the complete human drug-gene interaction
-            network.
+            with detailed information about the drug or gene such as
+            comorbidities or the node degree in the complete human drug-gene
+            interaction network.
           </p>
           <div class="container has-text-centered">
             <img
@@ -445,7 +513,7 @@
           <h4 class="title is-4">Drug Interaction Lookup</h4>
           <p>
             The
-            <a href="/drug-lookup" target="_blank">drug interaction lookup</a>
+            <a href="drug-lookup" target="_blank">drug interaction lookup</a>
             enables you to inspect the interaction datasets in respect to
             individual drugs. If the searched drug is not found in the database,
             the drug with the closest matching name will be shown.
@@ -465,16 +533,59 @@
           <h4 class="title is-4">Gene Interaction Lookup</h4>
           <p>
             The
-            <a href="/gene-lookup" target="_blank">gene interaction lookup</a>
+            <a href="gene-lookup" target="_blank">gene interaction lookup</a>
             works similar to the
-            <a href="/documentation#documentation_drug_interaction_lookup"
+            <a href="documentation#documentation_drug_interaction_lookup"
               >drug interaction lookup</a
             >
-            with the difference that it allows you to search for genes
-            instead of drugs. The list of drug interactions will be shown along
-            with detailed drug information. In addition, you will receive a list
-            of all known cancer types related to your gene of interest.
+            with the difference that it allows you to search for genes instead
+            of drugs. The list of drug interactions will be shown along with
+            detailed drug information. In addition, you will receive a list of
+            all known cancer types related to your gene of interest.
           </p>
+
+          <a id="documentation-browser_compatability"></a>
+          <h4 class="title is-4">Browser Compatibility</h4>
+          <div class="container has-text-centered">
+            <table>
+              <tr>
+                <th>OS</th>
+                <th>Version</th>
+                <th>Chrome</th>
+                <th>Firefox</th>
+                <th>Microsoft Edge</th>
+                <th>Safari</th>
+                <th>Opera</th>
+              </tr>
+              <tr>
+                <td>Linux</td>
+                <td>Ubuntu 16.04</td>
+                <td>97.0</td>
+                <td>96.0</td>
+                <td>n/a</td>
+                <td>n/a</td>
+                <td>82.0</td>
+              </tr>
+              <tr>
+                <td>MacOS</td>
+                <td>Monterey</td>
+                <td>97.0</td>
+                <td>96.0</td>
+                <td>n/a</td>
+                <td>15.1</td>
+                <td>82.0</td>
+              </tr>
+              <tr>
+                <td>Windows</td>
+                <td>10</td>
+                <td>97.0</td>
+                <td>96.0</td>
+                <td>95.0</td>
+                <td>n/a</td>
+                <td>82.0</td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
     </div>

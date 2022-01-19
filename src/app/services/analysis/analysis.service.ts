@@ -560,7 +560,7 @@ export class AnalysisService {
     this.startWatching();
 
     toast({
-      message: 'Quick analysis started. This may take a while.' +
+      message: 'Quick analysis started. This may take a moment.' +
         ' Once the computation finished you can view the results in the task list to the left.',
       duration: 10000,
       dismissible: true,

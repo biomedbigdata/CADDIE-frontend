@@ -91,9 +91,9 @@ export class CancertypeComorbiditiesTileComponent implements OnInit {
       // set title dynmically based on amount of selected cancer types
       let title = '';
       if (this._selectedCancerTypeItems.length > 1) {
-        title = 'Comorbidities in selected Cancer Types';
+        title = 'Related diseases to selected Cancer Types';
       } else {
-        title = `Comorbidities in ${this._selectedCancerTypeItems[0].name}`;
+        title = `Related diseases to ${this._selectedCancerTypeItems[0].name}`;
       }
       // title += `<br> (${this.numberGenesInComorbidities} Cancer Genes)`;
 

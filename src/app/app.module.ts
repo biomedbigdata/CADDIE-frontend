@@ -70,6 +70,8 @@ import {
 import { CookieDisclaimerComponent } from './components/cookie-disclaimer/cookie-disclaimer.component';
 import { DocumentationPageComponent } from './pages/documentation-page/documentation-page.component';
 import { PythonPageComponent } from './python-page/python-page.component';
+import { AnalysisParametersWindowComponent } from './pages/explorer-page/components/analysis-panel/analysis-parameters-window/analysis-parameters-window.component';
+import { ExplorerNetworkInformationComponent } from './pages/explorer-page/components/explorer-network-information/explorer-network-information.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -117,6 +119,8 @@ PlotlyViaCDNModule.plotlyBundle = 'basic';
     CookieDisclaimerComponent,
     DocumentationPageComponent,
     PythonPageComponent,
+    AnalysisParametersWindowComponent,
+    ExplorerNetworkInformationComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,18 @@
+<div
+  *ngIf="!hidden"
+  class="notification-explorer-network notification is-info is-light"
+>
+  <button class="delete" (click)="delete_notification($event)"></button>
+  The network shows a minimum spannning tree of the cancer driver genes for the
+  selected cancer type(s) in the human interactome. The network was computed
+  using the Multi-level Steiner tree algorithm algorithm. <a target="_blank" href="documentation#documentation-network">Learn more</a>
+
+  <div>
+    <button
+      class="button is-light is-small is-pulled-right" 
+      (click)="delete_notification_forever($event)"
+    >
+      Don't show again
+    </button>
+  </div>
+</div>

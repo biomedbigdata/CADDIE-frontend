@@ -881,7 +881,7 @@ export class NetworkComponent implements OnInit {
     return updatedNodes;
   }
 
-  private mapNode(nodeType: WrapperType, details: Node | CancerNode | Drug, isSeed?: boolean, score?: number): any {
+  public mapNode(nodeType: WrapperType, details: Node | CancerNode | Drug, isSeed?: boolean, score?: number): any {
     /**
      * Wraps, whether it is gene, cancerdrivergene or drug object, to a network node object
      */

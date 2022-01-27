@@ -3,6 +3,8 @@
     <app-sidebar></app-sidebar>
     <div class="caddie right-window" id="loadingOverlayTarget">
       <div [hidden]="explorerData.selectedAnalysisToken">
+        <!-- display network information if user has not clicked "don't show again" -->
+        <app-explorer-network-information></app-explorer-network-information>
         <app-network [networkType]="'basic'"></app-network>
       </div>
       <div class="analysis-view" *ngIf="explorerData.selectedAnalysisToken">

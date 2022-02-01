@@ -423,7 +423,7 @@ export class ExplorerDataService {
         // interaction datasets are always loaded
         await this.initInteractionGeneDatasets();
       }
-      this.activeNetwork.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0]
+      this.activeNetwork.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
   
       if (!this.cancerTypes || this.activeNetwork.selectedCancerTypeItems===undefined) {
         // cancer types are always loaded
@@ -447,6 +447,7 @@ export class ExplorerDataService {
         // interaction datasets are always loaded
         await this.initInteractionDrugDatasets();
       }
+      this.activeNetwork.selectedInteractionDrugDataset = this.interactionDrugDatasetItems[0];
   
     }
 }

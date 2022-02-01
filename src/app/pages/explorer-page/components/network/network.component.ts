@@ -25,6 +25,8 @@ export class NetworkComponent implements OnInit {
 
   // dataset tile
   public selectedDataset: Dataset;
+  public selectedGeneInteractionDataset: Dataset = undefined;
+  public selectedDrugInteractionDataset: Dataset = undefined;
 
   // expression button
   public expressionExpanded = false;

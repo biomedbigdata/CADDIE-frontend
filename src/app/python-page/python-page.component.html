@@ -29,6 +29,14 @@
           </div>
 
           <h4 class="title is-4">Code Example:</h4>
+          <p>A complete pre-defined pipeline with a Multi-level Steiner tree drug-target search and a TrustRank can be run like this:</p>
+          <pre><code>
+import caddiepy
+
+gene_list = ['FBXW7', 'PTEN', 'MYC']
+resulting_drugs = caddiepy.pipeline(gene_list)['drugObjects']
+          </code></pre>
+          <p>A single task can be run like this:</p>
           <pre><code>
 import caddiepy
 
@@ -48,6 +56,7 @@ task.run()
 # get result when task is finished, if task is still running wait until it is finished
 result = task.get_result()
           </code></pre>
+
         </div>
       </div>
     </div>

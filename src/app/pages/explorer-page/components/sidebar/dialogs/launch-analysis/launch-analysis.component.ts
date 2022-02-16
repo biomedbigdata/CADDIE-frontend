@@ -16,8 +16,7 @@ import {
   KEYPATHWAYMINER, MAX_TASKS,
   MULTISTEINER, NETWORK_PROXIMITY,
   QuickAlgorithmType,
-  TRUSTRANK,
-  CLOSENESS_CENTRALITY
+  TRUSTRANK
 } from '../../../../../../services/analysis/analysis.service';
 import {CancerType, Dataset, MutationCancerType, ExpressionCancerType, DrugTargetAction} from '../../../../../../interfaces';
 import { ExplorerDataService } from 'src/app/services/explorer-data/explorer-data.service';
@@ -116,7 +115,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
       this.algorithms = [MULTISTEINER, KEYPATHWAYMINER, TRUSTRANK, HARMONIC_CENTRALITY, DEGREE_CENTRALITY, BETWEENNESS_CENTRALITY];
       this.algorithm = MULTISTEINER.slug;
     } else if (this.target === 'drug') {
-      this.algorithms = [TRUSTRANK, CLOSENESS_CENTRALITY, DEGREE_CENTRALITY, NETWORK_PROXIMITY];
+      this.algorithms = [TRUSTRANK, HARMONIC_CENTRALITY, DEGREE_CENTRALITY, NETWORK_PROXIMITY];
       this.algorithm = TRUSTRANK.slug;
     }
   }

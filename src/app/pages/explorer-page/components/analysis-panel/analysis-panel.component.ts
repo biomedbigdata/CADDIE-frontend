@@ -448,6 +448,10 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     return `${environment.backend}graph_export/?token=${this.token}`;
   }
 
+  public print(x) {
+    console.log(x)
+  }
+
   public loadNodeDataFromResult(result: any) {
     const nodes = [];
     const edges = [];

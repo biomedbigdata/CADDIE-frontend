@@ -338,7 +338,7 @@
         [class.is-visible]="tab === 'network'"
       >
         <div class="card-image">
-          <app-network [networkType]="'analysis'"></app-network>
+          <app-network [networkType]="'analysis'" [target]="explorerData.activeNetwork.target"></app-network>
         </div>
       </div>
       <div
@@ -583,13 +583,10 @@
                 Seed
                 <p-sortIcon [field]="'isSeed'"></p-sortIcon>
               </th>
-              <!--              <th>-->
-              <!--                Closest Cancer Genes-->
-              <!--              </th>-->
-              <!--              <th [pSortableColumn]="'closestDistance'">-->
-              <!--                Closest distance-->
-              <!--                <p-sortIcon [field]="'closestDistance'"></p-sortIcon>-->
-              <!--              </th>-->
+              <th [pSortableColumn]="'dbDegree'">
+                Interactome Degree
+                <p-sortIcon [field]="'dbDegree'"></p-sortIcon>
+              </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-e>
@@ -616,12 +613,16 @@
                   <i class="fa fa-times"></i>
                 </span>
               </td>
-              <!--              <td title="{{previewStringArray(e.closestCancerGenes, 100)}}">-->
-              <!--                {{previewStringArray(e.closestCancerGenes, 3)}}-->
-              <!--              </td>-->
-              <!--              <td>-->
-              <!--                {{e.closestDistance}}-->
-              <!--              </td>-->
+              <td>
+                <span *ngIf="e.graphId; in: explorerData.activeNetwork.degrees">
+                  {{ explorerData.activeNetwork.degrees[e.graphId] }}
+                </span>
+                <span
+                  *ngIf="!e.graphId; in: explorerData.activeNetwork.degrees"
+                >
+                  ?
+                </span>
+              </td>
             </tr>
           </ng-template>
         </p-table>

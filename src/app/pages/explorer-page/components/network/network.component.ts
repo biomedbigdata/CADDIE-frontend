@@ -8,7 +8,6 @@ import { ExplorerDataService } from '../../../../services/explorer-data/explorer
 import { LoadingOverlayService } from '../../../../services/loading-overlay/loading-overlay.service';
 import {toast} from 'bulma-toast';
 import html2canvas from 'html2canvas';
-import { pieChartContextRenderer } from 'src/app/utils';
 import { HttpErrorResponse } from '@angular/common/http';
 
 
@@ -22,6 +21,7 @@ declare var vis: any;
 export class NetworkComponent implements OnInit {
 
   @Input() networkType: 'basic' | 'analysis';
+  @Input() target: 'drug' | 'drug-target' | 'none';
 
   // dataset tile
   public selectedDataset: Dataset;
@@ -86,7 +86,6 @@ export class NetworkComponent implements OnInit {
   public isSeed = {};
 
   // for analysis network
-  public target: 'drug' | 'drug-target' | null = null;
   public drugStatusExpanded = false;
   public selectedDrugStatus: DrugStatus | null = null;
   public showDrugs = false;
@@ -323,11 +322,11 @@ export class NetworkComponent implements OnInit {
       }
     }
 
-    this.loadingOverlay.addTo('canvas-content');
+    this.loadingOverlay.addTo('loadingOverlayTarget');
 
     await this.addNetworkNodes(toAdd);
 
-    this.loadingOverlay.removeFrom('canvas-content');
+    this.loadingOverlay.removeFrom('loadingOverlayTarget');
   }
 
   public async addNetworkNodes(wrapperList: Wrapper[]) {
@@ -406,7 +405,7 @@ export class NetworkComponent implements OnInit {
     }
 
     toast({
-      message: `${dataList.length} nodes added to the networkVisJs.`,
+      message: `${dataList.length} nodes added to the network.`,
       duration: 10000,
       dismissible: true,
       pauseOnHover: true,
@@ -472,24 +471,6 @@ export class NetworkComponent implements OnInit {
       a.click();
     });
   }
-
-  // analysisWindowChanged($event: [any[], [Node[], CancerNode[], ExpressionCancerType]]) {
-  //   /**
-  //    * Changes view to analysis window if event is given, else uses current data
-  //    */
-  //   if ($event) {
-  //     this.explorerData.closeSummary();
-  //     this.nodes = $event[0];
-  //     this.basicNodes = $event[1][0];
-  //     this.cancerNodes = $event[1][1];
-  //     this.explorerData.activeNetwork.selectedExpressionCancerType = $event[1][2];
-  //   } else {
-  //     this.nodes = this.nodeData.nodes;
-  //     this.basicNodes = this.nodes;
-  //     this.cancerNodes = this.cancerNodes;
-  //     this.explorerData.activeNetwork.selectedExpressionCancerType = this.explorerData.activeNetwork.selectedExpressionCancerType;
-  //   }
-  // }
 
   public mapDataToNodes(data: Network): { nodes: any[], edges: any[] } {
     /**
@@ -906,7 +887,8 @@ export class NetworkComponent implements OnInit {
       if (drugType === 'approved') {
         nodeLabel = drug.name;
       } else {
-        nodeLabel = drug.dbId;
+        nodeLabel = drug.name;
+        // nodeLabel = drug.dbId;
       }
     } else if (nodeType === 'CancerNode') {
       const cancerDriverGene = details as CancerNode;

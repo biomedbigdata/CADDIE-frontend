@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {Dataset} from '../../../../../../interfaces';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { Dataset } from '../../../../../../interfaces';
 
 
 @Component({
@@ -19,6 +19,10 @@ export class InteractionDatasetTileComponent {
   public select(selectionItem) {
     this.selectedDataset = selectionItem;
     this.selectedDatasetChange.emit(selectionItem);
+  }
+
+  public kFormatter(num) {
+    return Math.abs(num) > 999 ? Math.sign(num) * (<any>(Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)
   }
 
 }

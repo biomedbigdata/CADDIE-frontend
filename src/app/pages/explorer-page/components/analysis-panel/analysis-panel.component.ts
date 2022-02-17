@@ -31,7 +31,6 @@ import {
   Tissue,
   DrugStatus, Dataset, MutationCancerType
 } from '../../../../interfaces';
-import { toast } from 'bulma-toast';
 import { NetworkSettings } from '../../../../network-settings';
 import { ControlService } from '../../../../services/control/control.service';
 import { LoadingOverlayService } from '../../../../services/loading-overlay/loading-overlay.service';
@@ -446,10 +445,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public graphmlLink(): string {
     return `${environment.backend}graph_export/?token=${this.token}`;
-  }
-
-  public print(x) {
-    console.log(x)
   }
 
   public loadNodeDataFromResult(result: any) {

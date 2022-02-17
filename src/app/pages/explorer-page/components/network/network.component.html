@@ -38,15 +38,15 @@
             <td><span class="selected-cancer-node"></span></td>
             <td>&nbsp;Selected Node</td>
           </tr>
-          <tr *ngIf="networkType === 'analysis'">
+          <tr *ngIf="networkType === 'analysis' && target === 'drug'">
             <td><span class="approved-drug"></span></td>
             <td>&nbsp;Approved Drug</td>
           </tr>
-          <tr *ngIf="networkType === 'analysis'">
+          <tr *ngIf="networkType === 'analysis' && target === 'drug'">
             <td><span class="non-approved-drug"></span></td>
             <td>&nbsp;Unapproved Drug</td>
           </tr>
-          <tr *ngIf="networkType === 'analysis'">
+          <tr *ngIf="networkType === 'analysis' && target === 'drug'">
             <td><span class="cancer-drug"></span></td>
             <td
               class="has-tooltip-right"
@@ -186,6 +186,14 @@
       >
       </app-button>
 
+      <app-button
+      buttonText="Upload Genes"
+      (callbackFun)="explorerData.showCustomGenesDialog = !explorerData.showCustomGenesDialog"
+      icon="fa fa-upload"
+      class="is-inline-block footer-buttons"
+    >
+    </app-button>
+
         <button
           (click)="toCanvas()"
           class="button is-primary has-tooltip is-inline-block footer-buttons"
@@ -211,7 +219,7 @@
           [selectedElement]="selectedTissue"
           [elements]="analysis.getTissues()"
           (callbackFun)="selectTissue($event)"
-          label="Expression Tissue"
+          label="Expr. Tissue"
           class="footer-buttons is-inline-block"
         ></app-category-selector>
 
@@ -220,7 +228,7 @@
           [selectedElement]="selectedExpressionCancerType"
           (callbackFun)="selectExpressionCancerType($event)"
           [elements]="analysis.getExpressionCancerTypes()"
-          label="Expression Cancer"
+          label="Expr. Cancer"
           class="footer-buttons is-inline-block"
         ></app-category-selector>
 

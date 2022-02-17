@@ -18,8 +18,9 @@ import {
   QuickAlgorithmType,
   TRUSTRANK
 } from '../../../../../../services/analysis/analysis.service';
-import {CancerType, Dataset, MutationCancerType, ExpressionCancerType, DrugTargetAction} from '../../../../../../interfaces';
+import { CancerType, Dataset, MutationCancerType, ExpressionCancerType, DrugTargetAction } from '../../../../../../interfaces';
 import { ExplorerDataService } from 'src/app/services/explorer-data/explorer-data.service';
+import { ControlService } from 'src/app/services/control/control.service';
 
 @Component({
   selector: 'app-launch-analysis',
@@ -33,8 +34,6 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public show = false;
   @Input()
   public target: 'drug' | 'drug-target';
-  @Input()
-  public interactionDrugDatasetItems: Dataset[];
 
   @Output()
   public showChange = new EventEmitter<boolean>();
@@ -64,7 +63,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public closenessMaxDeg = 0;
   public closenessHubPenalty = 0.0;
   public closenessResultSize = 20;
- 
+
 
   // harmonic Parameters
   public harmonicIncludeIndirectDrugs = false;
@@ -104,10 +103,17 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
 
   public maxTasks = MAX_TASKS;
 
-  constructor(public analysis: AnalysisService, public explorerData: ExplorerDataService) {
+  constructor(
+    public analysis: AnalysisService,
+    public explorerData: ExplorerDataService,
+    public control: ControlService
+    ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    if (!this.explorerData.interactionDrugDatasetItems) {
+      this.explorerData.interactionDrugDatasetItems = await this.control.getInteractionDrugDatasets();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -154,7 +160,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.cancer_dataset = dataset.name;
     parameters.gene_interaction_datasets = [geneInteractionDataset.name];
     parameters.drug_interaction_datasets = [drugInteractionDataset.name];
-    parameters.cancer_type_names = cancerTypes.map( (cancerType) => cancerType.name );
+    parameters.cancer_type_names = cancerTypes.map((cancerType) => cancerType.name);
     parameters.includeNutraceuticalDrugs = this.includeNutraceuticalDrugs;
     parameters.onlyAtcLDrugs = this.includeAtcLDrugs;
     parameters.filterPaths = this.filterPaths;

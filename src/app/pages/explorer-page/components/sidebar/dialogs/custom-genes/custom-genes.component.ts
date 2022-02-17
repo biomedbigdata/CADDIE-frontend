@@ -31,6 +31,7 @@ export class CustomGenesComponent implements OnInit {
   public itemsFound: Array<Wrapper> = [];
   public addedCount = 0;
   public selectOnly = false;
+  public addMissinGenesToNetwork = true;
   public loading = false;
   public notCancerGenes: Array<string> = [];
 
@@ -78,6 +79,10 @@ export class CustomGenesComponent implements OnInit {
     }
     // to trigger template update
     this.showChange.emit(this.show);
+
+    if (this.addMissinGenesToNetwork) {
+      this.explorerData.activeNetwork.addSelectionToNetwork()
+    }
   }
 
   public async addVisibleGenes() {
@@ -113,7 +118,7 @@ export class CustomGenesComponent implements OnInit {
       return;
     }
 
-    const filterOut = [`'`];
+    const filterOut = [`'`, `"`, `\``];
     const separators = ['\n', ',', ';', ' '];
 
     for (const char of filterOut) {

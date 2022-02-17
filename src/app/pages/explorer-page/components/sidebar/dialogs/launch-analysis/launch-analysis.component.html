@@ -491,7 +491,7 @@
 
       <div class="field" *ngIf="target === 'drug'">
         <label class="label">Gene Drug Interactions</label>
-        <app-interaction-dataset-tile [datasetItems]="interactionDrugDatasetItems"
+        <app-interaction-dataset-tile [datasetItems]="explorerData.interactionDrugDatasetItems"
                                       [selectedDataset]="explorerData.activeNetwork.selectedInteractionDrugDataset"
                                       (selectedDatasetChange)="explorerData.activeNetwork.selectedInteractionDrugDataset = $event;">
         </app-interaction-dataset-tile>

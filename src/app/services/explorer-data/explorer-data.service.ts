@@ -188,19 +188,19 @@ export class ExplorerDataService {
 
       public async initInteractionGeneDatasets() {
         /**
-         * Fetches Cancer Dataset data from API and initializes dataset tile
+         * Fetches Gene interaction dataset data from API and initializes dataset tile
          */
         this.interactionGeneDatasetItems = await this.control.getInteractionGeneDatasets();
-    
+
         this.activeNetwork.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
       }
     
       public async initInteractionDrugDatasets() {
         /**
-         * Fetches Cancer Dataset data from API and initializes dataset tile
+         * Fetches drug interaction dataset data from API and initializes dataset tile
          */
         this.interactionDrugDatasetItems = await this.control.getInteractionDrugDatasets();
-    
+        console.log(this.interactionDrugDatasetItems)
         this.activeNetwork.selectedInteractionDrugDataset = this.interactionDrugDatasetItems[0];
       }
 

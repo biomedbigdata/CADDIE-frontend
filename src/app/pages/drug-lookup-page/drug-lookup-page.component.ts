@@ -3,7 +3,6 @@ import {ControlService} from '../../services/control/control.service';
 import {CancerType, Dataset, Node, Drug} from '../../interfaces';
 import {toast} from 'bulma-toast';
 import {environment} from '../../../environments/environment';
-import { LoadingOverlayService } from 'src/app/services/loading-overlay/loading-overlay.service';
 
 @Component({
   selector: 'app-drug-lookup-page',
@@ -24,7 +23,6 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
 
   constructor(
     private control: ControlService,
-    private loadingOverlay: LoadingOverlayService,
   ) { }
 
   ngOnInit(): void {

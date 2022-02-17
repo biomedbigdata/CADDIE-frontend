@@ -47,9 +47,18 @@
       <p *ngIf="genes">
         Items parsed: {{genes.length}}
       </p>
+      
+      <label class="checkbox has-tooltip-right" 
+      data-tooltip="Will be slow for larger gene lists.
+Seeds can be uploaded for tasks
+without being added to the network.">
+        <input type="checkbox" [checked]="addMissinGenesToNetwork" (change)="addMissinGenesToNetwork = !addMissinGenesToNetwork">
+        Add genes to network
+      </label>
     </section>
+
     <footer class="modal-card-foot">
-      <button (click)="addGenes();" class="button is-success has-tooltip"
+      <button (click)="addGenes();" class="button is-success has-tooltip-right"
               data-tooltip="Add all to the selection."
               [disabled]="genes.length === 0 || loading">
         <span class="icon">

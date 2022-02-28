@@ -1,5 +1,7 @@
 <div *ngIf="token">
-  <div class="card analysis">
+  <div class="card analysis" [ngClass]="{
+    'analysisFullscreen': explorerData.analysisFullscreen
+  }">
     <header class="card-header is-relative">
       <p class="card-header-title">
         <span class="icon">
@@ -7,6 +9,18 @@
         </span>
         Analysis Results
       </p>
+      <a
+        (click)="explorerData.toggleAnalysisFullscreen()"
+        class="card-header-icon"
+        aria-label="fullscreen"
+      >
+        <span *ngIf="!explorerData.analysisFullscreen" class="icon">
+          <i class="fas fa-expand-alt"></i>
+        </span>
+        <span *ngIf="explorerData.analysisFullscreen" class="icon">
+          <i class="fas fa-compress-alt"></i>
+        </span>
+      </a>
       <a
         (click)="explorerData.closeAnalysis()"
         class="card-header-icon"
@@ -440,9 +454,9 @@
                 </button>
                 <p-sortIcon [field]="'score'"></p-sortIcon>
               </th>
-              <th [pSortableColumn]="'dbdegree'">
+              <th [pSortableColumn]="'dbDegree'">
                 Interactome Degree
-                <p-sortIcon [field]="'dbdegree'"></p-sortIcon>
+                <p-sortIcon [field]="'dbDegree'"></p-sortIcon>
               </th>
               <!--              <th>-->
               <!--                Closest Cancer Genes-->
@@ -503,8 +517,8 @@
               </td>
               <td>
                 <span *ngIf="e.inCancernet">
-                  <i class="fa fa-check has-text-primary"></i>
-                  Cancernet
+                  <i class="fa fa-check has-text-primary"></i>&nbsp;
+                  <a (click)="explorerData.openCancernetModal(e)" ><i class="fa fa-external-link has-text-primary"></i></a>
                 </span>
                 <span *ngIf="!e.inCancernet">
                   <i class="fa fa-times"></i>
@@ -614,13 +628,8 @@
                 </span>
               </td>
               <td>
-                <span *ngIf="e.graphId; in: explorerData.activeNetwork.degrees">
-                  {{ explorerData.activeNetwork.degrees[e.graphId] }}
-                </span>
-                <span
-                  *ngIf="!e.graphId; in: explorerData.activeNetwork.degrees"
-                >
-                  ?
+                <span>
+                  {{ e.dbDegree }}
                 </span>
               </td>
             </tr>
@@ -645,7 +654,7 @@
           selectionMode="multiple"
           [value]="tableCancerNodes"
           [selection]="tableSelectedCancerNodes"
-          dataKey="effectId"
+          dataKey="name"
           (selectionChange)="tableCancerDriverGeneSelection($event)"
         >
           <ng-template pTemplate="header">
@@ -696,7 +705,10 @@
               </td>
               <td>{{ e.cancerOccurrences }}</td>
               <td>{{ e.type }}</td>
-              <td *ngIf="tableHasScores">{{ e.score | number: "1.0-5" }}</td>
+              <td *ngIf="tableHasScores">
+                <span *ngIf="e.score">{{ e.score | number: "1.0-5" }}</span>
+                <span *ngIf="!e.score">N/A</span>
+              </td>
               <td>
                 <span *ngIf="e.isSeed">
                   <i class="fa fa-asterisk has-text-primary"></i>
@@ -707,13 +719,8 @@
                 </span>
               </td>
               <td>
-                <span *ngIf="e.graphId; in: explorerData.activeNetwork.degrees">
-                  {{ explorerData.activeNetwork.degrees[e.graphId] }}
-                </span>
-                <span
-                  *ngIf="!e.graphId; in: explorerData.activeNetwork.degrees"
-                >
-                  ?
+                <span>
+                  {{ e.dbDegree }}
                 </span>
               </td>
             </tr>

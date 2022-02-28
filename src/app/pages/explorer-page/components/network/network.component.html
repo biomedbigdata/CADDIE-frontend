@@ -55,6 +55,10 @@
               &nbsp;ATC Class L
             </td>
           </tr>
+          <tr *ngIf="networkType === 'analysis' && target === 'drug'">
+            <td><span class="cancernet-node">label</span></td>
+            <td>&nbsp;Drug in Cancernet</td>
+          </tr>
         </table>
       </div>
       <!-- END Legend -->
@@ -182,7 +186,9 @@
         buttonText="Menu"
         (callbackFun)="explorerData.showNetworkMenuDialog = !explorerData.showNetworkMenuDialog"
         icon="fa fa-cogs"
-        class="is-inline-block footer-buttons"
+        class="is-inline-block footer-buttons has-tooltip"
+        data-tooltip="Opens a menu of the functions 
+that revolve around the network."
       >
       </app-button>
 
@@ -190,14 +196,15 @@
       buttonText="Upload Genes"
       (callbackFun)="explorerData.showCustomGenesDialog = !explorerData.showCustomGenesDialog"
       icon="fa fa-upload"
-      class="is-inline-block footer-buttons"
+      class="is-inline-block footer-buttons has-tooltip"
+      data-tooltip="Upload a list of genes to the network or to the list of seed genes."
     >
     </app-button>
 
         <button
           (click)="toCanvas()"
           class="button is-primary has-tooltip is-inline-block footer-buttons"
-          data-tooltip="Take a screenshot of the current network."
+          data-tooltip="Take a screenshot of the current network"
         > 
           <span class="icon">
             <i class="fas fa-camera" aria-hidden="true"></i>
@@ -220,7 +227,8 @@
           [elements]="analysis.getTissues()"
           (callbackFun)="selectTissue($event)"
           label="Expr. Tissue"
-          class="footer-buttons is-inline-block"
+          class="footer-buttons is-inline-block has-tooltip"
+          data-tooltip="Highlight the gene expression in GTEx tissues"
         ></app-category-selector>
 
         <app-category-selector
@@ -229,7 +237,9 @@
           (callbackFun)="selectExpressionCancerType($event)"
           [elements]="analysis.getExpressionCancerTypes()"
           label="Expr. Cancer"
-          class="footer-buttons is-inline-block"
+          class="footer-buttons is-inline-block has-tooltip"
+          data-tooltip="Highlight the gene expression
+in TCGA cancer types"
         ></app-category-selector>
 
         <app-category-selector
@@ -240,7 +250,9 @@
           [elements]="analysis.getMutationCancerTypes()"
           (callbackFun)="colorMutationGradient($event)"
           label="Mutation"
-          class="footer-buttons is-inline-block"
+          class="footer-buttons is-inline-block has-tooltip"
+          data-tooltip="Highlight the cancer mutations
+in TCGA cancer types"
         ></app-category-selector>
 
         <app-toggle
@@ -254,13 +266,24 @@
         ></app-toggle>
 
         <app-button
-          *ngIf="networkType === 'basic'"
+          *ngIf="networkType === 'basic' && !networkFullscreenStatus"
           buttonText="Fullscreen"
-          (callbackFun)="networkFullscreen()"
-          icon="fa fa-arrows"
-          class="is-inline-block footer-buttons"
+          (callbackFun)="toggleNetworkFullscreen()"
+          icon="fas fa-expand-alt"
+          class="is-inline-block footer-buttons has-tooltip"
+          data-tooltip="Expand the network to fullscreen"
         >
         </app-button>
+
+        <app-button
+        *ngIf="networkType === 'basic' && networkFullscreenStatus"
+        buttonText="Close Fullscreen"
+        (callbackFun)="toggleNetworkFullscreen()"
+        icon="fas fa-compress-alt"
+        class="is-inline-block footer-buttons has-tooltip"
+        data-tooltip="Close the fullscreen"
+      >
+      </app-button>
 
         <div class="field" *ngIf="networkType === 'analysis'">
           <p class="control footer-buttons">

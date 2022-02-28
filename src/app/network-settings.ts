@@ -20,6 +20,8 @@ export class NetworkSettings {
 
   public static selectedBorderColor = '#ffa500';
   public static selectBorderHighlightColor = '#ffa500';
+  
+  public static cancernetFontColor = '#9c0606';
 
   // Edge color
   private static edgeGeneCancerGeneColor = '#686868';
@@ -132,6 +134,10 @@ export class NetworkSettings {
     }
   }
 
+  static getCancernetFontColor() {
+    return this.cancernetFontColor;
+  }
+
   static getNodeShape(wrapperType: WrapperType, cancerDrug?: boolean) {
     if (wrapperType === 'Node') {
       return this.hostShape;
@@ -231,7 +237,8 @@ export class NetworkSettings {
                       isSelected: boolean,
                       drugType?: string,
                       isATCClassL?: boolean,
-                      gradient?: number): any {
+                      gradient?: number,
+                      inCancernet?: boolean): any {
     if (!gradient) {
       gradient = 1.0;
     }
@@ -239,6 +246,7 @@ export class NetworkSettings {
     let nodeShape;
     let nodeSize;
     let nodeFont;
+    let nodeBorderColor;
     const nodeShadow = true;
     nodeShape = NetworkSettings.getNodeShape(nodeType);
     nodeSize = NetworkSettings.getNodeSize(nodeType);
@@ -301,14 +309,27 @@ export class NetworkSettings {
           background: nodeColor,
         },
       };
-
       node.borderWidth = this.selectedBorderWidth;
       node.borderWidthSelected = this.selectedBorderWidthSelected;
     } else {
-      node.color = nodeColor;
-
+      node.color = {
+        background: nodeColor,
+        border: nodeColor,
+        highlight: {
+          background: nodeColor,
+          border: nodeColor
+        },
+      }
       node.borderWidth = this.borderWidth;
       node.borderWidthSelected = this.borderWidthSelected;
+    }
+
+    if (inCancernet) {
+      node.font = {
+        color: NetworkSettings.getCancernetFontColor(),
+        bold: true,
+        size: 30
+      }
     }
 
     return node;

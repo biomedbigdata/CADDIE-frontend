@@ -73,6 +73,7 @@ import { PythonPageComponent } from './python-page/python-page.component';
 import { AnalysisParametersWindowComponent } from './pages/explorer-page/components/analysis-panel/analysis-parameters-window/analysis-parameters-window.component';
 import { ExplorerNetworkInformationComponent } from './pages/explorer-page/components/explorer-network-information/explorer-network-information.component';
 import { ExplorerPageTutorialComponent } from './pages/explorer-page/components/explorer-page-tutorial/explorer-page-tutorial.component';
+import { CancernetPanelComponent } from './components/cancernet-panel/cancernet-panel.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -123,6 +124,7 @@ PlotlyViaCDNModule.plotlyBundle = 'basic';
     AnalysisParametersWindowComponent,
     ExplorerNetworkInformationComponent,
     ExplorerPageTutorialComponent,
+    CancernetPanelComponent,
   ],
   imports: [
     BrowserModule,

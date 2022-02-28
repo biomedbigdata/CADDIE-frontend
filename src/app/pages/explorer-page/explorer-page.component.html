@@ -1,5 +1,6 @@
 <!-- <div class="is-hidden-mobile"> -->
   <div class="caddie explorer">
+    <app-cancernet-panel [drug]="explorerData.cancernetDrug" [(show)]="explorerData.showCancernetModal" (closeEvent)="explorerData.closeCancernetModal()"></app-cancernet-panel>
     <app-sidebar></app-sidebar>
     <div class="caddie right-window" id="loadingOverlayTarget">
       <div [hidden]="explorerData.selectedAnalysisToken">
@@ -7,7 +8,7 @@
         <app-explorer-network-information></app-explorer-network-information>
         <app-network [networkType]="'basic'" [target]="'none'"></app-network>
       </div>
-      <div class="analysis-view" *ngIf="explorerData.selectedAnalysisToken">
+      <div class="analysis-view" *ngIf="explorerData.selectedAnalysisToken"[ngClass]="{analysisFullscreen: explorerData.analysisFullscreen}" >
         <app-analysis-panel
           [(token)]="explorerData.selectedAnalysisToken"
           (showDetailsChange)="
@@ -24,6 +25,7 @@
           (visibleTab)="visibleAnalysisTab = $event"
         >
         </app-analysis-panel>
+        <!-- A modal to display the cancernet information for one drug -->
       </div>
     </div>
   </div>

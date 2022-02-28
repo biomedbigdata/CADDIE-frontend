@@ -113,7 +113,7 @@ export class NetworkComponent implements OnInit {
     }
   }
 
-  public networkFullscreen() {
+  public toggleNetworkFullscreen() {
     /**
      * Either sets network to fullscreen mode or back to normal mode
      */
@@ -121,7 +121,6 @@ export class NetworkComponent implements OnInit {
     // either add or remove class 'fullscreen' with settings for fullscreen network
     this.networkFullscreenStatus ? this.networkContainerEl.nativeElement.classList.remove('fullscreen') : this.networkContainerEl.nativeElement.classList.add('fullscreen');
 
-    // set this.networkFullscreenStatus
     this.networkFullscreenStatus = !this.networkFullscreenStatus;
 
     // adapt network to new layout
@@ -671,7 +670,8 @@ export class NetworkComponent implements OnInit {
           this.analysis.inSelection(item),
           undefined,
           undefined,
-          1.0));
+          1.0,
+          node.wrapper.data.inCancernet));
       node.wrapper = item;
       node.gradient = 1.0;
       gene.expressionLevel = undefined;
@@ -721,7 +721,8 @@ export class NetworkComponent implements OnInit {
           this.analysis.inSelection(item),
           undefined,
           undefined,
-          gradient));
+          gradient,
+          node.wrapper.data.inCancernet));
       node.wrapper = item;
       node.gradient = gradient;
 
@@ -772,7 +773,8 @@ export class NetworkComponent implements OnInit {
           this.analysis.inSelection(item),
           undefined,
           undefined,
-          gradient));
+          gradient,
+          node.wrapper.data.inCancernet));
       node.wrapper = item;
       node.gradient = gradient;
       nodes.find(g => getGeneNodeId(g) === item.nodeId).expressionLevelScore = gene.score;
@@ -850,7 +852,9 @@ export class NetworkComponent implements OnInit {
           this.analysis.inSelection(item),
           undefined,
           undefined,
-          gradient));
+          gradient,
+          node.wrapper.data.inCancernet
+          ));
       node.wrapper = item;
       node.gradient = gradient;
       // node.opacity = gradient;
@@ -864,7 +868,7 @@ export class NetworkComponent implements OnInit {
     return updatedNodes;
   }
 
-  public mapNode(nodeType: WrapperType, details: Node | CancerNode | Drug, isSeed?: boolean, score?: number): any {
+  public mapNode(nodeType: WrapperType, details: Node | CancerNode | Drug, isSeed?: boolean, score?: number, degree?: number): any {
     /**
      * Wraps, whether it is gene, cancerdrivergene or drug object, to a network node object
      */
@@ -872,6 +876,7 @@ export class NetworkComponent implements OnInit {
     let wrapper: Wrapper;
     let drugType;
     let isATCClassL;
+    let inCancernet;
     if (nodeType === 'Node') {
       const gene = details as Node;
       wrapper = getWrapperFromNode(gene);
@@ -884,6 +889,7 @@ export class NetworkComponent implements OnInit {
       wrapper = getWrapperFromDrug(drug);
       drugType = drug.status;
       isATCClassL = drug.isAtcAntineoplasticAndImmunomodulatingAgent;
+      inCancernet = drug.inCancernet;
       if (drugType === 'approved') {
         nodeLabel = drug.name;
       } else {
@@ -895,15 +901,14 @@ export class NetworkComponent implements OnInit {
       wrapper = getWrapperFromCancerNode(cancerDriverGene);
       nodeLabel = cancerDriverGene.name;
     }
-
     const node = NetworkSettings.getNodeStyle(nodeType, isSeed, this.analysis.inSelection(wrapper),
-      drugType, isATCClassL);
+      drugType, isATCClassL, undefined, inCancernet);
     node.id = wrapper.nodeId;
     node.label = nodeLabel;
     node.nodeType = nodeType;
     node.isSeed = isSeed;
     node.wrapper = wrapper;
-
+    node.degree = degree;
     return node;
   }
 

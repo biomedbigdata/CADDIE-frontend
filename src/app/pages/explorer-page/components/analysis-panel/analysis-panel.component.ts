@@ -87,7 +87,6 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
   public tab: 'meta' | 'network' | 'table' | 'summary' = 'network';
   public physicsEnabled = true;
-  public networkFullscreenStatus = false;
 
   public tableDrugs: Array<Drug & Scored & Baited> = [];
   public tableNodes: Array<Node & Scored & Seeded & Baited> = [];
@@ -203,6 +202,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             this.tableDrugs.forEach((drug) => {
               drug.rawScore = drug.score;
               drug.closestCancerGenes = (drug.closestCancerGenes as any).split(',');
+              drug.dbDegree = this.explorerData.activeNetwork.degrees[drug.graphId];
             });
           }));
         promises.push(this.control.getTaskResultGene(this.token)
@@ -214,6 +214,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
               node.rawMutationScore = node.mutationScore;
               node.isSeed = this.explorerData.activeNetwork.isSeed[node.graphId];
               node.closestCancerGenes = (node.closestCancerGenes as any).split(',');
+              node.dbDegree = this.explorerData.activeNetwork.degrees[node.graphId];
               if (this.analysis.nodeInSelection(node)) {
                 this.tableSelectedNodes.push(node);
               }
@@ -226,6 +227,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
               cancerDriverGene.rawScore = cancerDriverGene.score;
               cancerDriverGene.rawMutationScore = cancerDriverGene.mutationScore;
               cancerDriverGene.isSeed = this.explorerData.activeNetwork.isSeed[cancerDriverGene.graphId];
+              cancerDriverGene.dbDegree = this.explorerData.activeNetwork.degrees[cancerDriverGene.graphId];
             });
           }));
         await Promise.all(promises);
@@ -249,7 +251,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           if (nodeIds.length > 0) {
             const nodeId = nodeIds[0];
             const node = this.explorerData.activeNetwork.nodeData.nodes.get(nodeId);
-            if (node.nodeType === 'drug') {
+            if (node.nodeType === 'Drug') {
               return;
             }
             const wrapper = node.wrapper;
@@ -270,6 +272,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
             const wrapper = selectedNode.wrapper;
             wrapper.comorbidities = await this.getComorbidities(wrapper);
             wrapper.cancerTypes = await this.getRelatedCancerTypes(wrapper);
+            if (wrapper.type === 'Drug' && wrapper.data.inCancernet) {
+              wrapper.cancernet = await this.getCancernet(wrapper.data);
+            }
             this.explorerData.nodeDegree = this.explorerData.activeNetwork.getNodeDegree(wrapper.data.graphId);
             this.showDetailsChange.emit(wrapper);
           } else {
@@ -304,7 +309,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
                 selected,
                 drugType,
                 isATCCLassL,
-                node.gradient));
+                node.gradient,
+                item.data.inCancernet));
               updatedNodes.push(node);
             }
             this.explorerData.activeNetwork.nodeData.nodes.update(updatedNodes);
@@ -352,7 +358,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
                 nodeSelected,
                 drugType,
                 isATCClassL,
-                node.gradient));
+                node.gradient,
+                node.wrapper.data.inCancernet));
               updatedNodes.push(node);
             });
             this.explorerData.activeNetwork.nodeData.nodes.update(updatedNodes);
@@ -460,8 +467,9 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     this.explorerData.activeNetwork.drugNodes = [];
     const network = result.network;
     const isSeed: { [key: string]: boolean } = result.nodeAttributes.isSeed || {};
-    this.explorerData.activeNetwork.degrees = result.nodeAttributes.degrees || {};
-    const nodeTypes = result.nodeAttributes.nodeTypes || {};
+    const degrees = result.nodeAttributes.dbDegrees;
+    this.explorerData.activeNetwork.degrees = result.nodeAttributes.dbDegrees || {};
+    const nodeTypes = result.nodeAttributes.nodeTypes || {};  
     const scores = result.nodeAttributes.scores || {};
     const details = result.nodeAttributes.details || {};
     const wrappers: { [key: string]: Wrapper } = {};
@@ -476,7 +484,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
         wrappers[node] = getWrapperFromDrug(details[node]);
         this.explorerData.activeNetwork.drugNodes.push(details[node]);
       }
-      nodes.push(this.explorerData.activeNetwork.mapNode(nodeTypes[node], details[node], isSeed[node], scores[node]));
+      nodes.push(this.explorerData.activeNetwork.mapNode(nodeTypes[node], details[node], isSeed[node], scores[node], degrees[node]));
     }
     for (const edge of network.edges) {
       edges.push(this.explorerData.activeNetwork.mapEdge(edge, 'node-node', wrappers));
@@ -503,107 +511,15 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     this.explorerData.activeNetwork.networkData = { cancerNodes, otherNodes };
   }
 
-  // public selectTissue(tissue: Tissue | null) {
-  //   /**
-  //    * Handle tissue button and fetch data based on tissue + manage expression data
-  //    */
-  //   // remove potential mutation gradient selection
-  //   this.selectedExpressionCancerType = null;
-  //   this.selectedMutationCancerType = null;
-  //   this.expressionExpanded = false;
-  //   this.cancerExpressionExpanded = false;
-  //   this.mutationExpanded = false;
-
-  //   if (!tissue) {
-  //     // if no tissue selected, we reset all nodes in network
-  //     this.explorerData.activeNetwork.selectedTissue = null;
-  //     // reset each normal genes and cancer genes
-  //     const updatedNodes = [
-  //       ...this._resetNetworkColorGradient('Node'),
-  //       ...this._resetNetworkColorGradient('CancerNode')
-  //     ];
-  //     this.explorerData.activeNetwork.nodeData.nodes.update(updatedNodes);
-
-  //   } else {
-  //     // ELSE tissue is selected, fetch data based on min expression value
-  //     this.explorerData.activeNetwork.selectedTissue = tissue;
-
-  //     const minExp = 0.3;
-
-  //     // fetch all data
-  //     this.control.tissueExpressionGenes(tissue, this.explorerData.activeNetwork.basicNodes, this.explorerData.activeNetwork.cancerNodes)
-  //       .subscribe((response) => {
-  //         // response is object with key "cancerGenes" and "genes"
-  //         // each which is list of objects with "gene" and "level" (expression value)
-  //         const maxExpr = Math.max(...[...response.genes, ...response.cancerGenes].map(lvl => lvl.level));
-
-  //         // fetch each normal genes and cancer genes
-  //         const updatedGenes = this._interpretTissueExpressionResponse(
-  //           response.genes, maxExpr, minExp, 'Node'
-  //         );
-  //         const updatedCancerGenes = this._interpretTissueExpressionResponse(
-  //           response.cancerGenes, maxExpr, minExp, 'CancerNode'
-  //         );
-
-  //         const updatedNodes = [...updatedGenes, ...updatedCancerGenes];
-  //         this.explorerData.activeNetwork.nodeData.nodes.update(updatedNodes);
-  //       });
-  //   }
-  // }
-
-  // private _interpretTissueExpressionResponse(
-  //   /**
-  //    * Reads the result of the "TissueExpressionView" and converts it into input for the network
-  //    * Main function is to calculate the color gradient based on expression value
-  //    * We have to differentiate between Node and CancerNode to not mix up the types in the network
-  //    */
-  //   geneList: { gene: (Node | CancerNode), level: number }[],
-  //   maxExpr: number,
-  //   minExp: number,
-  //   nodeType: ('Node' | 'CancerNode')
-  // ): Node[] {
-  //   const updatedNodes = [];
-  //   for (const lvl of geneList) {
-  //     let item;
-  //     let nodes;
-  //     if (nodeType === 'Node') {
-  //       item = getWrapperFromNode(lvl.gene as Node);
-  //       nodes = this.explorerData.activeNetwork.basicNodes;
-  //     } else {
-  //       item = getWrapperFromCancerNode(lvl.gene as CancerNode);
-  //       nodes = this.explorerData.activeNetwork.cancerNodes;
-  //     }
-
-  //     const node = this.explorerData.activeNetwork.nodeData.nodes.get(item.nodeId);
-  //     if (!node) {
-  //       continue;
-  //     }
-  //     // calculate color gradient
-  //     const gradient = lvl.level !== null ? (Math.pow(lvl.level / maxExpr, 1 / 3) * (1 - minExp) + minExp) : -1;
-  //     const pos = this.network.getPositions([item.nodeId]);
-  //     node.x = pos[item.nodeId].x;
-  //     node.y = pos[item.nodeId].y;
-  //     Object.assign(node,
-  //       NetworkSettings.getNodeStyle(
-  //         node.wrapper.type,
-  //         node.isSeed,
-  //         this.analysis.inSelection(item),
-  //         undefined,
-  //         undefined,
-  //         gradient));
-  //     node.wrapper = item;
-  //     node.gradient = gradient;
-  //     nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
-  //     (node.wrapper.data as (Node | CancerNode)).expressionLevel = lvl.level;
-  //     updatedNodes.push(node);
-  //   }
-  //   return updatedNodes;
-  // }
-
   private async getRelatedCancerTypes(item: Wrapper) {
     const dataset: Dataset = this.result.cancerDataset;
     const data = await this.control.getRelatedCancerTypes(dataset, item.data);
     return data.cancerTypes;
+  }
+
+  private async getCancernet(drug: Drug) {
+    const data = await this.control.cancernetLookup(drug);
+    return data.cancernet
   }
 
   private async getComorbidities(item: Wrapper) {
@@ -645,7 +561,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           this.analysis.inSelection(item),
           undefined,
           undefined,
-          1.0));
+          1.0,
+          item.data.inCancernet));
       node.wrapper = item;
       node.gradient = 1.0;
       gene.expressionLevel = undefined;
@@ -692,7 +609,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           this.analysis.inSelection(item),
           undefined,
           undefined,
-          gradient));
+          gradient,
+          item.data.inCancerne));
       node.wrapper = item;
       node.gradient = gradient;
       updatedNodes.push(node);
@@ -913,7 +831,8 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           this.analysis.inSelection(item),
           undefined,
           undefined,
-          gradient));
+          gradient,
+          item.data.inCancerne));
       node.wrapper = item;
       node.gradient = gradient;
       nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevelScore = lvl.level;

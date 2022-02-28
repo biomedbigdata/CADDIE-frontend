@@ -1,4 +1,8 @@
-<div class="modal" [class.is-active]="show" *ngIf="explorerData.activeNetwork.selectedInteractionDrugDataset">
+<div
+  class="modal"
+  [class.is-active]="show"
+  *ngIf="explorerData.activeNetwork.selectedInteractionDrugDataset"
+>
   <div class="modal-background"></div>
   <div class="modal-card">
     <header class="modal-card-head">
@@ -13,24 +17,27 @@
       <button (click)="close()" class="delete" aria-label="close"></button>
     </header>
     <section class="modal-card-body">
-
       <div *ngIf="!analysis.canLaunchTask()">
         <div class="notification is-warning warning">
-          You can only run {{maxTasks}} tasks at once. Please wait for one of them to finish or delete it from the task
-          list.
+          You can only run {{ maxTasks }} tasks at once. Please wait for one of
+          them to finish or delete it from the task list.
         </div>
       </div>
 
-      <div class="tabs is-toggle is-small is-fullwidth   has-tooltip">
+      <div class="tabs is-toggle is-small is-fullwidth has-tooltip">
         <ul>
-          <li [class.is-active]="algorithm === algo.slug" *ngFor="let algo of algorithms">
-            <a (click)="algorithm = algo.slug" class="is-boxed is-medium">{{algo.name}}</a>
+          <li
+            [class.is-active]="algorithm === algo.slug"
+            *ngFor="let algo of algorithms"
+          >
+            <a (click)="algorithm = algo.slug" class="is-boxed is-medium">{{
+              algo.name
+            }}</a>
           </li>
         </ul>
       </div>
 
-      <div *ngIf="algorithm==='trustrank'">
-
+      <div *ngIf="algorithm === 'trustrank'">
         <div class="box">
           <article class="media">
             <div class="media-left">
@@ -40,8 +47,9 @@
               <div class="content">
                 <h6 class="is-6">About TrustRank</h6>
                 <p>
-                  TrustRank is a node centrality measure that ranks nodes in a network based on how well they are
-                  connected to a (trusted) set of seed nodes.
+                  TrustRank is a node centrality measure that ranks nodes in a
+                  network based on how well they are connected to a (trusted)
+                  set of seed nodes.
                 </p>
               </div>
             </div>
@@ -51,69 +59,112 @@
         <div class="field">
           <label class="label" for="trustrank-rs">Result Size</label>
           <div class="control">
-            <input [(ngModel)]="trustrankResultSize" id="trustrank-rs" class="input" type="number"
-                   placeholder="Result size" required>
+            <input
+              [(ngModel)]="trustrankResultSize"
+              id="trustrank-rs"
+              class="input"
+              type="number"
+              placeholder="Result size"
+              required
+            />
           </div>
         </div>
 
         <div class="field" *ngIf="target === 'drug'">
           <label class="label">Indirect Drugs</label>
-          <app-toggle textOn="Include" textOff="Ignore" tooltipOn="Include indirect drugs."
-                      tooltipOff="Exclude indirect drugs from the result."
-                      [(value)]="trustrankIncludeIndirectDrugs">
+          <app-toggle
+            textOn="Include"
+            textOff="Ignore"
+            tooltipOn="Include indirect drugs."
+            tooltipOff="Exclude indirect drugs from the result."
+            [(value)]="trustrankIncludeIndirectDrugs"
+          >
           </app-toggle>
           <p class="help">
-            Specifies whether also drugs targeting interactors of the seed nodes should be considered.
+            Specifies whether also drugs targeting interactors of the seed nodes
+            should be considered.
           </p>
         </div>
 
         <div class="field" *ngIf="target === 'drug'">
           <label class="label">Non-approved Drugs</label>
-          <app-toggle textOn="Include" textOff="Ignore" tooltipOn="Include non-approved drugs."
-                      tooltipOff="Exclude non-approved drugs from the result."
-                      [(value)]="trustrankIncludeNonApprovedDrugs">
+          <app-toggle
+            textOn="Include"
+            textOff="Ignore"
+            tooltipOn="Include non-approved drugs."
+            tooltipOff="Exclude non-approved drugs from the result."
+            [(value)]="trustrankIncludeNonApprovedDrugs"
+          >
           </app-toggle>
         </div>
 
         <div class="field">
           <label class="label" for="trustrank-df">Damping Factor</label>
           <div class="control">
-            <input [(ngModel)]="trustrankDampingFactor" id="trustrank-df" class="input" type="number"
-                   placeholder="Damping factor" min="0" max="1"  step="0.1" required>
+            <input
+              [(ngModel)]="trustrankDampingFactor"
+              id="trustrank-df"
+              class="input"
+              type="number"
+              placeholder="Damping factor"
+              min="0"
+              max="1"
+              step="0.1"
+              required
+            />
           </div>
           <p class="help">
-            The larger the damping factor, the faster the trust is propagated through the network.
+            The larger the damping factor, the faster the trust is propagated
+            through the network.
           </p>
         </div>
 
         <div class="field">
           <label class="label" for="trustrank-md">Maximum degree</label>
           <div class="control">
-            <input [(ngModel)]="trustrankMaxDeg" id="trustrank-md" class="input" type="number"
-                   placeholder="Maximum degree" min="0" required>
+            <input
+              [(ngModel)]="trustrankMaxDeg"
+              id="trustrank-md"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              required
+            />
           </div>
           <p class="help">
-            All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
+            All nodes with degree greater than this value will be ignored.
+            Disabled if equal to 0.
           </p>
         </div>
 
         <div class="field">
           <label class="label" for="trustrank-hp">Hub penalty</label>
           <div class="control">
-            <input [(ngModel)]="trustrankHubPenalty" id="trustrank-hp" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1"  step="0.1" required>
+            <input
+              [(ngModel)]="trustrankHubPenalty"
+              id="trustrank-hp"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              max="1"
+              step="0.1"
+              required
+            />
           </div>
-          <p class="help">
-            Penalty parameter for hubs.
-          </p>
+          <p class="help">Penalty parameter for hubs.</p>
         </div>
 
         <div class="field">
           <label class="label">Mutation Weights</label>
           <app-launch-analysis-category-dropdown
             [categories]="analysis.getMutationCancerTypes()"
-            [selectedCategory]="explorerData.activeNetwork.selectedMutationCancerType"
-            (selectedCategoryChange)="setSelectedMutationCancerType($event)">
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedMutationCancerType
+            "
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)"
+          >
           </app-launch-analysis-category-dropdown>
         </div>
 
@@ -121,15 +172,106 @@
           <label class="label">Expression Weights</label>
           <app-launch-analysis-category-dropdown
             [categories]="analysis.getExpressionCancerTypes()"
-            [selectedCategory]="explorerData.activeNetwork.selectedExpressionCancerType"
-            (selectedCategoryChange)="setSelectedExpressionCancerType($event)">
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedExpressionCancerType
+            "
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)"
+          >
+          </app-launch-analysis-category-dropdown>
+        </div>
+      </div>
+
+      <div *ngIf="algorithm === 'degree'">
+        <div class="box">
+          <article class="media">
+            <div class="media-left">
+              <span class="icon"><i class="fa fa-info"></i></span>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <h6 class="is-6">About Degree Centrality</h6>
+                <p>
+                  Degree Centrality assigns an importance score based simply on
+                  the number of links held by each node. In CADDIE, we use a
+                  modified version which does not consider all links but only
+                  the neighbouring seeds.
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="field">
+          <label class="label" for="degree-rs">Result Size</label>
+          <div class="control">
+            <input
+              [(ngModel)]="degreeResultSize"
+              id="degree-rs"
+              class="input"
+              type="number"
+              placeholder="Result size"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="field" *ngIf="target === 'drug'">
+          <label class="label">Non-approved Drugs</label>
+          <app-toggle
+            textOn="Include"
+            textOff="Ignore"
+            tooltipOn="Include non-approved drugs."
+            tooltipOff="Exclude non-approved drugs from the result."
+            [(value)]="degreeIncludeNonApprovedDrugs"
+          >
+          </app-toggle>
+        </div>
+
+        <div class="field">
+          <label class="label" for="degree-md">Maximum degree</label>
+          <div class="control">
+            <input
+              [(ngModel)]="degreeMaxDeg"
+              id="degree-md"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              required
+            />
+          </div>
+          <p class="help">
+            All nodes with degree greater than this value will be ignored.
+            Disabled if equal to 0.
+          </p>
+        </div>
+
+        <div class="field">
+          <label class="label">Mutation Weights</label>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getMutationCancerTypes()"
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedMutationCancerType
+            "
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)"
+          >
           </app-launch-analysis-category-dropdown>
         </div>
 
+        <div class="field">
+          <label class="label">Expression Weights</label>
+          <app-launch-analysis-category-dropdown
+            [categories]="analysis.getExpressionCancerTypes()"
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedExpressionCancerType
+            "
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)"
+          >
+          </app-launch-analysis-category-dropdown>
+        </div>
       </div>
 
-      <div *ngIf="algorithm==='harmonic'">
-
+      <div *ngIf="algorithm === 'harmonic'">
         <div class="box">
           <article class="media">
             <div class="media-left">
@@ -139,8 +281,9 @@
               <div class="content">
                 <h6 class="is-6">About Harmonic Centrality</h6>
                 <p>
-                  Harmonic Centrality is a node centrality measure that ranks the nodes in a network based on the
-                  lengths of their shortest paths to all other nodes in the network.
+                  Harmonic Centrality is a node centrality measure that ranks
+                  the nodes in a network based on the lengths of their shortest
+                  paths to all other nodes in the network.
                 </p>
               </div>
             </div>
@@ -150,58 +293,91 @@
         <div class="field">
           <label class="label" for="harmonic-rs">Result Size</label>
           <div class="control">
-            <input [(ngModel)]="harmonicResultSize" id="harmonic-rs" class="input" type="number"
-                   placeholder="Result size" required>
+            <input
+              [(ngModel)]="harmonicResultSize"
+              id="harmonic-rs"
+              class="input"
+              type="number"
+              placeholder="Result size"
+              required
+            />
           </div>
         </div>
 
         <div class="field" *ngIf="target === 'drug'">
           <label class="label">Indirect Drugs</label>
-          <app-toggle textOn="Include" textOff="Ignore" tooltipOn="Include indirect drugs."
-                      tooltipOff="Exclude indirect drugs from the result."
-                      [(value)]="harmonicIncludeIndirectDrugs">
+          <app-toggle
+            textOn="Include"
+            textOff="Ignore"
+            tooltipOn="Include indirect drugs."
+            tooltipOff="Exclude indirect drugs from the result."
+            [(value)]="harmonicIncludeIndirectDrugs"
+          >
           </app-toggle>
           <p class="help">
-            Specifies whether also drugs targeting interactors of the seed nodes should be considered.
+            Specifies whether also drugs targeting interactors of the seed nodes
+            should be considered.
           </p>
         </div>
 
         <div class="field" *ngIf="target === 'drug'">
           <label class="label">Non-approved Drugs</label>
-          <app-toggle textOn="Include" textOff="Ignore" tooltipOn="Include non-approved drugs."
-                      tooltipOff="Exclude non-approved drugs from the result."
-                      [(value)]="harmonicIncludeNonApprovedDrugs">
+          <app-toggle
+            textOn="Include"
+            textOff="Ignore"
+            tooltipOn="Include non-approved drugs."
+            tooltipOff="Exclude non-approved drugs from the result."
+            [(value)]="harmonicIncludeNonApprovedDrugs"
+          >
           </app-toggle>
         </div>
 
         <div class="field">
           <label class="label" for="harmonic-md">Maximum degree</label>
           <div class="control">
-            <input [(ngModel)]="harmonicMaxDeg" id="harmonic-md" class="input" type="number"
-                   placeholder="Maximum degree" min="0" required>
+            <input
+              [(ngModel)]="harmonicMaxDeg"
+              id="harmonic-md"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              required
+            />
           </div>
           <p class="help">
-            All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
+            All nodes with degree greater than this value will be ignored.
+            Disabled if equal to 0.
           </p>
         </div>
 
         <div class="field">
           <label class="label" for="harmonic-hp">Hub penalty</label>
           <div class="control">
-            <input [(ngModel)]="harmonicHubPenalty" id="harmonic-hp" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1"  step="0.1" required>
+            <input
+              [(ngModel)]="harmonicHubPenalty"
+              id="harmonic-hp"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              max="1"
+              step="0.1"
+              required
+            />
           </div>
-          <p class="help">
-            Penalty parameter for hubs.
-          </p>
+          <p class="help">Penalty parameter for hubs.</p>
         </div>
 
         <div class="field">
           <label class="label">Mutation Weights</label>
           <app-launch-analysis-category-dropdown
             [categories]="analysis.getMutationCancerTypes()"
-            [selectedCategory]="explorerData.activeNetwork.selectedMutationCancerType"
-            (selectedCategoryChange)="setSelectedMutationCancerType($event)">
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedMutationCancerType
+            "
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)"
+          >
           </app-launch-analysis-category-dropdown>
         </div>
 
@@ -209,14 +385,16 @@
           <label class="label">Expression Weights</label>
           <app-launch-analysis-category-dropdown
             [categories]="analysis.getExpressionCancerTypes()"
-            [selectedCategory]="explorerData.activeNetwork.selectedExpressionCancerType"
-            (selectedCategoryChange)="setSelectedExpressionCancerType($event)">
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedExpressionCancerType
+            "
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)"
+          >
           </app-launch-analysis-category-dropdown>
         </div>
       </div>
 
-      <div *ngIf="algorithm==='proximity'">
-
+      <div *ngIf="algorithm === 'proximity'">
         <div class="box">
           <article class="media">
             <div class="media-left">
@@ -226,8 +404,9 @@
               <div class="content">
                 <h6 class="is-6">About Network Proximity</h6>
                 <p>
-                  Network Proximity uses the average minimum distance from the drug’s targets to all of the selected
-                  seeds as a measure of proximity.
+                  Network Proximity uses the average minimum distance from the
+                  drug’s targets to all of the selected seeds as a measure of
+                  proximity.
                 </p>
               </div>
             </div>
@@ -237,46 +416,73 @@
         <div class="field">
           <label class="label" for="proximity-rs">Result size</label>
           <div class="control">
-            <input [(ngModel)]="proximityResultSize" id="proximity-rs" class="input" type="number"
-                   placeholder="Result size" required>
+            <input
+              [(ngModel)]="proximityResultSize"
+              id="proximity-rs"
+              class="input"
+              type="number"
+              placeholder="Result size"
+              required
+            />
           </div>
         </div>
 
         <div class="field">
           <label class="label">Non-approved drugs</label>
-          <app-toggle textOn="Include" textOff="Ignore" tooltipOn="Include non-approved drugs."
-                      tooltipOff="Exclude non-approved drugs from the result."
-                      [(value)]="proximityIncludeNonApprovedDrugs"></app-toggle>
+          <app-toggle
+            textOn="Include"
+            textOff="Ignore"
+            tooltipOn="Include non-approved drugs."
+            tooltipOff="Exclude non-approved drugs from the result."
+            [(value)]="proximityIncludeNonApprovedDrugs"
+          ></app-toggle>
         </div>
 
         <div class="field">
           <label class="label" for="proximity-md">Maximum degree</label>
           <div class="control">
-            <input [(ngModel)]="proximityMaxDeg" id="proximity-md" class="input" type="number"
-                   placeholder="Maximum degree" required>
+            <input
+              [(ngModel)]="proximityMaxDeg"
+              id="proximity-md"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              required
+            />
           </div>
           <p class="help">
-            All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
+            All nodes with degree greater than this value will be ignored.
+            Disabled if equal to 0.
           </p>
         </div>
 
         <div class="field">
           <label class="label" for="proximity-hp">Hub penalty</label>
           <div class="control">
-            <input [(ngModel)]="proximityHubPenalty" id="proximity-hp" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1"  step="0.1" required>
+            <input
+              [(ngModel)]="proximityHubPenalty"
+              id="proximity-hp"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              max="1"
+              step="0.1"
+              required
+            />
           </div>
-          <p class="help">
-            Penalty parameter for hubs.
-          </p>
+          <p class="help">Penalty parameter for hubs.</p>
         </div>
 
         <div class="field">
           <label class="label">Mutation Weights</label>
           <app-launch-analysis-category-dropdown
             [categories]="analysis.getMutationCancerTypes()"
-            [selectedCategory]="explorerData.activeNetwork.selectedMutationCancerType"
-            (selectedCategoryChange)="setSelectedMutationCancerType($event)">
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedMutationCancerType
+            "
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)"
+          >
           </app-launch-analysis-category-dropdown>
         </div>
 
@@ -284,15 +490,16 @@
           <label class="label">Expression Weights</label>
           <app-launch-analysis-category-dropdown
             [categories]="analysis.getExpressionCancerTypes()"
-            [selectedCategory]="explorerData.activeNetwork.selectedExpressionCancerType"
-            (selectedCategoryChange)="setSelectedExpressionCancerType($event)">
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedExpressionCancerType
+            "
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)"
+          >
           </app-launch-analysis-category-dropdown>
         </div>
-
       </div>
 
-      <div *ngIf="algorithm==='betweenness'">
-
+      <div *ngIf="algorithm === 'betweenness'">
         <div class="box">
           <article class="media">
             <div class="media-left">
@@ -302,8 +509,8 @@
               <div class="content">
                 <h6 class="is-6">About Betweenness Centrality</h6>
                 <p>
-                  Betweenness Centrality ranks the proteins in a network based on how many shortest paths pass through
-                  them.
+                  Betweenness Centrality ranks the proteins in a network based
+                  on how many shortest paths pass through them.
                 </p>
               </div>
             </div>
@@ -313,39 +520,63 @@
         <div class="field">
           <label class="label" for="proximity-rs">Result size</label>
           <div class="control">
-            <input [(ngModel)]="betweennessResultSize" id="betweenness-rs" class="input" type="number"
-                   placeholder="Result size" required>
+            <input
+              [(ngModel)]="betweennessResultSize"
+              id="betweenness-rs"
+              class="input"
+              type="number"
+              placeholder="Result size"
+              required
+            />
           </div>
         </div>
 
         <div class="field">
           <label class="label" for="betweenness-md">Maximum degree</label>
           <div class="control">
-            <input [(ngModel)]="betweennessMaxDeg" id="betweenness-md" class="input" type="number"
-                   placeholder="Maximum degree" min="0" required>
+            <input
+              [(ngModel)]="betweennessMaxDeg"
+              id="betweenness-md"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              required
+            />
           </div>
           <p class="help">
-            All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
+            All nodes with degree greater than this value will be ignored.
+            Disabled if equal to 0.
           </p>
         </div>
 
         <div class="field">
           <label class="label" for="betweenness-hp">Hub penalty</label>
           <div class="control">
-            <input [(ngModel)]="betweennessHubPenalty" id="betweenness-hp" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1"  step="0.1" required>
+            <input
+              [(ngModel)]="betweennessHubPenalty"
+              id="betweenness-hp"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              max="1"
+              step="0.1"
+              required
+            />
           </div>
-          <p class="help">
-            Penalty parameter for hubs.
-          </p>
+          <p class="help">Penalty parameter for hubs.</p>
         </div>
 
         <div class="field">
           <label class="label">Mutation Weights</label>
           <app-launch-analysis-category-dropdown
             [categories]="analysis.getMutationCancerTypes()"
-            [selectedCategory]="explorerData.activeNetwork.selectedMutationCancerType"
-            (selectedCategoryChange)="setSelectedMutationCancerType($event)">
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedMutationCancerType
+            "
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)"
+          >
           </app-launch-analysis-category-dropdown>
         </div>
 
@@ -353,13 +584,16 @@
           <label class="label">Expression Weights</label>
           <app-launch-analysis-category-dropdown
             [categories]="analysis.getExpressionCancerTypes()"
-            [selectedCategory]="explorerData.activeNetwork.selectedExpressionCancerType"
-            (selectedCategoryChange)="setSelectedExpressionCancerType($event)">
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedExpressionCancerType
+            "
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)"
+          >
           </app-launch-analysis-category-dropdown>
         </div>
       </div>
 
-      <div *ngIf="algorithm==='keypathwayminer'">
+      <div *ngIf="algorithm === 'keypathwayminer'">
         <div class="box">
           <article class="media">
             <div class="media-left">
@@ -369,15 +603,18 @@
               <div class="content">
                 <h6 class="is-6">About KeyPathwayMiner</h6>
                 <p>
-                  KeyPathwayMiner is a network enrichment tool that identifies condition-specific sub-networks
-                  (key pathways) (Alcaraz et al. 2016).
+                  KeyPathwayMiner is a network enrichment tool that identifies
+                  condition-specific sub-networks (key pathways) (Alcaraz et al.
+                  2016).
                 </p>
               </div>
             </div>
           </article>
         </div>
         <div class="field">
-          <label class="label" for="keypathwayminer-k">Additional proteins</label>
+          <label class="label" for="keypathwayminer-k"
+            >Additional proteins</label
+          >
           <div class="control">
             <div class="select">
               <select id="keypathwayminer-k" [(ngModel)]="keypathwayminerK">
@@ -395,19 +632,21 @@
               </select>
             </div>
           </div>
-          <p class="help">
-            Number of new proteins to be found.
-          </p>
+          <p class="help">Number of new proteins to be found.</p>
         </div>
       </div>
 
-      <div *ngIf="algorithm==='multisteiner'">
-
+      <div *ngIf="algorithm === 'multisteiner'">
         <div class="field">
-          <label class="label" for="multisteiner-numtrees">Number of Steiner trees to return</label>
+          <label class="label" for="multisteiner-numtrees"
+            >Number of Steiner trees to return</label
+          >
           <div class="control">
             <div class="select">
-              <select id="multisteiner-numtrees" [(ngModel)]="multisteinerNumTrees">
+              <select
+                id="multisteiner-numtrees"
+                [(ngModel)]="multisteinerNumTrees"
+              >
                 <option [ngValue]="1">1</option>
                 <option [ngValue]="2">2</option>
                 <option [ngValue]="3">3</option>
@@ -422,10 +661,15 @@
         </div>
 
         <div class="field">
-          <label class="label" for="multisteiner-numtrees">Tolerance for trees</label>
+          <label class="label" for="multisteiner-numtrees"
+            >Tolerance for trees</label
+          >
           <div class="control">
             <div class="select">
-              <select id="multisteiner-tolerance" [(ngModel)]="multisteinerTolerance">
+              <select
+                id="multisteiner-tolerance"
+                [(ngModel)]="multisteinerTolerance"
+              >
                 <option [ngValue]="0">0</option>
                 <option [ngValue]="1">1</option>
                 <option [ngValue]="2">2</option>
@@ -442,40 +686,58 @@
         <div class="field">
           <label class="label" for="multisteiner-md">Maximum degree</label>
           <div class="control">
-            <input [(ngModel)]="multisteinerMaxDeg" id="multisteiner-md" class="input" type="number"
-                   placeholder="Maximum degree" min="0" required>
+            <input
+              [(ngModel)]="multisteinerMaxDeg"
+              id="multisteiner-md"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              required
+            />
           </div>
           <p class="help">
-            All nodes with degree greater than this value will be ignored. Disabled if equal to 0.
+            All nodes with degree greater than this value will be ignored.
+            Disabled if equal to 0.
           </p>
         </div>
 
         <div class="field">
           <label class="label" for="multisteiner-hp">Hub penalty</label>
           <div class="control">
-            <input [(ngModel)]="multisteinerHubPenalty" id="multisteiner-hp" class="input" type="number"
-                   placeholder="Maximum degree" min="0" max="1"  step="0.1" required>
+            <input
+              [(ngModel)]="multisteinerHubPenalty"
+              id="multisteiner-hp"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              max="1"
+              step="0.1"
+              required
+            />
           </div>
-          <p class="help">
-            Penalty parameter for hubs.
-          </p>
+          <p class="help">Penalty parameter for hubs.</p>
         </div>
 
-<!--        <div class="field" *ngIf="target === 'drug-target'">-->
-<!--          <label class="label">Include non-seed cancer driver genes</label>-->
-<!--          <app-toggle textOn="Include" textOff="Ignore"-->
-<!--                      tooltipOn="Include cancer driver genes that are not seeds."-->
-<!--                      tooltipOff="Exclude vcancer driver genes that are not seeds."-->
-<!--                      [(value)]="multisteinerIncludeCancerNonSeeds"></app-toggle>-->
-<!--        </div>-->
+        <!--        <div class="field" *ngIf="target === 'drug-target'">-->
+        <!--          <label class="label">Include non-seed cancer driver genes</label>-->
+        <!--          <app-toggle textOn="Include" textOff="Ignore"-->
+        <!--                      tooltipOn="Include cancer driver genes that are not seeds."-->
+        <!--                      tooltipOff="Exclude vcancer driver genes that are not seeds."-->
+        <!--                      [(value)]="multisteinerIncludeCancerNonSeeds"></app-toggle>-->
+        <!--        </div>-->
 
         <div class="field">
           <label class="label">Mutation Weights</label>
 
           <app-launch-analysis-category-dropdown
             [categories]="analysis.getMutationCancerTypes()"
-            [selectedCategory]="explorerData.activeNetwork.selectedMutationCancerType"
-            (selectedCategoryChange)="setSelectedMutationCancerType($event)">
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedMutationCancerType
+            "
+            (selectedCategoryChange)="setSelectedMutationCancerType($event)"
+          >
           </app-launch-analysis-category-dropdown>
         </div>
 
@@ -483,64 +745,94 @@
           <label class="label">Expression Weights</label>
           <app-launch-analysis-category-dropdown
             [categories]="analysis.getExpressionCancerTypes()"
-            [selectedCategory]="explorerData.activeNetwork.selectedExpressionCancerType"
-            (selectedCategoryChange)="setSelectedExpressionCancerType($event)">
+            [selectedCategory]="
+              explorerData.activeNetwork.selectedExpressionCancerType
+            "
+            (selectedCategoryChange)="setSelectedExpressionCancerType($event)"
+          >
           </app-launch-analysis-category-dropdown>
         </div>
       </div>
 
       <div class="field" *ngIf="target === 'drug'">
         <label class="label">Gene Drug Interactions</label>
-        <app-interaction-dataset-tile [datasetItems]="explorerData.interactionDrugDatasetItems"
-                                      [selectedDataset]="explorerData.activeNetwork.selectedInteractionDrugDataset"
-                                      (selectedDatasetChange)="explorerData.activeNetwork.selectedInteractionDrugDataset = $event;">
+        <app-interaction-dataset-tile
+          [datasetItems]="explorerData.interactionDrugDatasetItems"
+          [selectedDataset]="
+            explorerData.activeNetwork.selectedInteractionDrugDataset
+          "
+          (selectedDatasetChange)="
+            explorerData.activeNetwork.selectedInteractionDrugDataset = $event
+          "
+        >
         </app-interaction-dataset-tile>
       </div>
 
-      <div class="field" *ngIf="target === 'drug' && explorerData.activeNetwork.selectedInteractionDrugDataset.name === 'DrugBank'">
+      <div
+        class="field"
+        *ngIf="
+          target === 'drug' &&
+          explorerData.activeNetwork.selectedInteractionDrugDataset.name ===
+            'DrugBank'
+        "
+      >
         <label class="label">Drug Target Actions</label>
         <app-launch-analysis-category-dropdown
-            [categories]="analysis.getDrugTargetActions()"
-            [selectedCategory]="selectedDrugTargetAction"
-            (selectedCategoryChange)="setSelectedDrugTargetAction($event)">
-          </app-launch-analysis-category-dropdown>
+          [categories]="analysis.getDrugTargetActions()"
+          [selectedCategory]="selectedDrugTargetAction"
+          (selectedCategoryChange)="setSelectedDrugTargetAction($event)"
+        >
+        </app-launch-analysis-category-dropdown>
       </div>
 
       <div class="field" *ngIf="target === 'drug'">
         <label class="label">Nutraceutical Drugs</label>
-        <app-toggle textOn="Include" textOff="Ignore" tooltipOn="Include nutraceutical drugs."
-                    tooltipOff="Exclude nutraceutical drugs from the analysis."
-                    [(value)]="includeNutraceuticalDrugs">
+        <app-toggle
+          textOn="Include"
+          textOff="Ignore"
+          tooltipOn="Include nutraceutical drugs."
+          tooltipOff="Exclude nutraceutical drugs from the analysis."
+          [(value)]="includeNutraceuticalDrugs"
+        >
         </app-toggle>
         <p class="help">
-          Specifies whether nutraceutical drugs should be considered in the drug search.
+          Specifies whether nutraceutical drugs should be considered in the drug
+          search.
         </p>
       </div>
 
       <div class="field" *ngIf="target === 'drug'">
         <label class="label">Only ATC class L</label>
-        <app-toggle textOn="Yes" textOff="No" tooltipOn="Include only ATC class L drugs."
-                    tooltipOff="Include only ATC class L drugs from the analysis."
-                    [(value)]="includeAtcLDrugs">
+        <app-toggle
+          textOn="Yes"
+          textOff="No"
+          tooltipOn="Include only ATC class L drugs."
+          tooltipOff="Include only ATC class L drugs from the analysis."
+          [(value)]="includeAtcLDrugs"
+        >
         </app-toggle>
         <p class="help">
           Set this to only consider ATC class L drugs for the search.
         </p>
       </div>
 
-      <div class="field" *ngIf="algorithm!=='multisteiner'">
+      <div class="field" *ngIf="algorithm !== 'multisteiner'">
         <label class="label">Filter Edges</label>
-        <app-toggle textOn="Yes" textOff="No" tooltipOn="Reduce edges to only shortest paths between seeds and results."
-                    tooltipOff="Show all edges in the resulting network"
-                    [(value)]="filterPaths">
+        <app-toggle
+          textOn="Yes"
+          textOff="No"
+          tooltipOn="Reduce edges to only shortest paths between seeds and results."
+          tooltipOff="Show all edges in the resulting network"
+          [(value)]="filterPaths"
+        >
         </app-toggle>
         <p class="help">
-          Automatically filter edges to make network more clear by only showing shorter pathways.
+          Automatically filter edges to make network more clear by only showing
+          shorter pathways.
 
           <!-- <a href="documentation#documentation-algorithms" target="_blank">
             Check the documentation for more information
           </a> -->
-
         </p>
       </div>
 
@@ -552,24 +844,32 @@
     </section>
 
     <footer class="modal-card-foot">
-      <button (click)="close()" class="button is-danger has-tooltip" data-tooltip="Close the current window.">Close
+      <button
+        (click)="close()"
+        class="button is-danger has-tooltip"
+        data-tooltip="Close the current window."
+      >
+        Close
       </button>
-      <button (click)="startTask(
-        explorerData.activeNetwork.selectedDataset,
-      explorerData.activeNetwork.selectedInteractionGeneDataset,
-      explorerData.activeNetwork.selectedInteractionDrugDataset,
-      explorerData.activeNetwork.selectedCancerTypeItems
-      ); close()" class="button is-primary has-tooltip"
-              data-tooltip="Run the analysis."
-              [disabled]="!analysis.canLaunchTask()">
+      <button
+        (click)="
+          startTask(
+            explorerData.activeNetwork.selectedDataset,
+            explorerData.activeNetwork.selectedInteractionGeneDataset,
+            explorerData.activeNetwork.selectedInteractionDrugDataset,
+            explorerData.activeNetwork.selectedCancerTypeItems
+          );
+          close()
+        "
+        class="button is-primary has-tooltip"
+        data-tooltip="Run the analysis."
+        [disabled]="!analysis.canLaunchTask()"
+      >
         <span class="icon">
           <i class="fa fa-rocket"></i>
         </span>
-        <span>
-          Launch
-        </span>
+        <span> Launch </span>
       </button>
-
     </footer>
   </div>
 </div>

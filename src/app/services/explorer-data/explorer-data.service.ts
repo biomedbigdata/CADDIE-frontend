@@ -35,6 +35,8 @@ export class ExplorerDataService {
     public showCustomGenesDialog = false;
     public showChangeCustomGenes = false;
     public showChangeVCFInput = false;
+    public showCancernetModal = false;
+    public analysisFullscreen = false;
     public triggerTemplateUpdateVCFInput = false;
     public selectedAnalysisToken: string | null = null;
 
@@ -82,6 +84,9 @@ export class ExplorerDataService {
     // filter tile
     public filterAddItems: Wrapper[] = [];
 
+    // drug to be displayed in cancernet modal
+    public cancernetDrug: Drug | null = null;
+
     public showDetailsChange = new EventEmitter<Wrapper>();
     public visibleItems = new EventEmitter<[any[], [Node[], CancerNode[], ExpressionCancerType]]>();
     public visibleTab = new EventEmitter<string>();
@@ -101,6 +106,20 @@ export class ExplorerDataService {
         // for the case user opens webpage on analysis view and then navigates to basic
         await this.initBasicNetwork();
       }
+    }
+
+    public openCancernetModal(drug: Drug) {
+      this.cancernetDrug = drug;
+      this.showCancernetModal = true;
+    }
+
+    public closeCancernetModal() {
+      this.cancernetDrug = null;
+      this.showCancernetModal = false;
+    }
+
+    public toggleAnalysisFullscreen() {
+      this.analysisFullscreen = !this.analysisFullscreen;
     }
 
     public openAnalysis(token) {
@@ -141,6 +160,7 @@ export class ExplorerDataService {
           queryParams: { task: null },
         });
       this.selectedAnalysisToken = null;
+      this.analysisFullscreen = false;
       this.activate('basic');
       this.analysis.switchSelection('main');
     }
@@ -200,7 +220,7 @@ export class ExplorerDataService {
          * Fetches drug interaction dataset data from API and initializes dataset tile
          */
         this.interactionDrugDatasetItems = await this.control.getInteractionDrugDatasets();
-        console.log(this.interactionDrugDatasetItems)
+
         this.activeNetwork.selectedInteractionDrugDataset = this.interactionDrugDatasetItems[0];
       }
 
@@ -210,7 +230,14 @@ export class ExplorerDataService {
        */
       const wrapper = getWrapperFromNode(gene);
       const node = NetworkSettings.getNodeStyle(
-        'Node', this.activeNetwork.isSeed[wrapper.data.graphId], this.analysis.inSelection(wrapper));
+        'Node', 
+        this.activeNetwork.isSeed[wrapper.data.graphId], 
+        this.analysis.inSelection(wrapper),
+        undefined,
+        undefined,
+        undefined,
+        wrapper.data.inCancernet
+        );
       let nodeLabel = gene.name;
       if (gene.name.length === 0) {
         nodeLabel = gene.backendId;
@@ -231,7 +258,10 @@ export class ExplorerDataService {
   
       const wrapper = getWrapperFromCancerNode(cancerDriverGene);
       const node = NetworkSettings.getNodeStyle(
-        'CancerNode', this.activeNetwork.isSeed[wrapper.data.graphId], this.analysis.inSelection(wrapper));
+        'CancerNode', 
+        this.activeNetwork.isSeed[wrapper.data.graphId], 
+        this.analysis.inSelection(wrapper)
+        );
       node.id = wrapper.nodeId;
       node.label = cancerDriverGene.name;
       node.x = cancerDriverGene.x;

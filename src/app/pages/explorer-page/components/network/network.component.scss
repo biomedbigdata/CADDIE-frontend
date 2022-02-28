@@ -79,6 +79,16 @@
       height: $legend-circle-size;
       display: inline-block;
     }
+    .cancernet-node{
+      // background: $network-approved-drug-color;
+      // border-radius: 50%;
+      // border: 5px solid $cancernet-border-color;
+      // width: $legend-circle-size;
+      // height: $legend-circle-size;
+      // display: inline-block;
+      font: 100;
+      color: $cancernet-border-color;
+    }
     .seed-node {
       background: $network-seed-gene-color;
       border-radius: 50%;

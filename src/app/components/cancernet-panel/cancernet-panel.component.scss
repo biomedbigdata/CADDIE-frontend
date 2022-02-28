@@ -1,0 +1,14 @@
+.modal-card {
+  height: 800px;
+  max-height: 80vh;
+  width: 70vw;
+  .cancer-type-long {
+    max-height: 150px;
+    overflow-y: auto;
+  }
+}
+
+.inline-flag {
+  margin: 0;
+  display: inline-block;
+}

@@ -12,7 +12,8 @@ import {
   ExpressionCancerType,
   Disease,
   DrugStatus,
-  TCGADataset
+  TCGADataset,
+  Drug
 } from '../../interfaces';
 import {AlgorithmType, QuickAlgorithmType} from '../analysis/analysis.service';
 import {Observable} from 'rxjs';
@@ -577,6 +578,15 @@ export class ControlService {
     .set('disease_name', diseaseName)
     .set('gene_symbol', geneSymbol);
     return this.http.get<any>(`https://exbio.wzw.tum.de/sponge-api/survivalAnalysis/getRates`, {params}).toPromise();
+  }
+
+  public cancernetLookup(drug: Drug): Promise<any> {
+    /**
+     * Returns cancernet information for a drug
+     */
+    const params = new HttpParams()
+      .set('drug_id', drug.backendId)
+    return this.http.get(`${environment.backend}cancernet_lookup/`, {params}).toPromise();
   }
 
 }

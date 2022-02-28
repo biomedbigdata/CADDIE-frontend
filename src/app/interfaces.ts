@@ -19,6 +19,7 @@ export interface Node {
   cancerOccurrences: number;
   mutationCounts: number;
   mutationScore: number;
+  dbDegree?: number;
 }
 
 export interface DrugTargetAction {
@@ -99,6 +100,7 @@ export interface CancerNode {
   expressionLevelScore?: number;
   mutationCounts: number;
   mutationScore: number;
+  dbDegree?: number;
 }
 
 export interface Interaction {
@@ -304,6 +306,7 @@ export interface Wrapper {
   nodeDegree?: number;
   cancerTypes?: CancerType[];
   comorbidities?: string[];
+  cancernet?: any[];
 }
 
 export interface Drug {
@@ -315,6 +318,8 @@ export interface Drug {
   isAtcAntineoplasticAndImmunomodulatingAgent: boolean;
   inLiterature: boolean;
   trialLinks: string[];
+  inCancernet: boolean;
+  dbDegree?: number;
 }
 
 export interface Dataset {

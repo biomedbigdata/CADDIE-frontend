@@ -3,6 +3,7 @@ import {ControlService} from '../../services/control/control.service';
 import {CancerType, Dataset, Node, Drug} from '../../interfaces';
 import {toast} from 'bulma-toast';
 import {environment} from '../../../environments/environment';
+import { ExplorerDataService } from 'src/app/services/explorer-data/explorer-data.service';
 
 @Component({
   selector: 'app-drug-lookup-page',
@@ -23,6 +24,7 @@ export class DrugLookupPageComponent implements OnInit, AfterViewInit {
 
   constructor(
     private control: ControlService,
+    public explorerData: ExplorerDataService
   ) { }
 
   ngOnInit(): void {

@@ -467,7 +467,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     this.explorerData.activeNetwork.drugNodes = [];
     const network = result.network;
     const isSeed: { [key: string]: boolean } = result.nodeAttributes.isSeed || {};
-    const degrees = result.nodeAttributes.dbDegrees;
+    const degrees = result.nodeAttributes.dbDegrees || {};
     this.explorerData.activeNetwork.degrees = result.nodeAttributes.dbDegrees || {};
     const nodeTypes = result.nodeAttributes.nodeTypes || {};  
     const scores = result.nodeAttributes.scores || {};

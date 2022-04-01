@@ -15,6 +15,10 @@ export class DatasetTileComponent {
 
   @Input() datasetItems: Dataset[];
 
+  public groupingHelper(item) {
+    return item.name
+  }
+
   public select(selectionItem) {
     this.selectedDataset = selectionItem;
     this.selectedDatasetChange.emit(selectionItem);

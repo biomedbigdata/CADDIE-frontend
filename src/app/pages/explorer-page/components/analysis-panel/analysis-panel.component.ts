@@ -145,22 +145,22 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
           'Normalized number of direct interactions of the drug with the seeds. ' +
           'The higher the score, the more relevant the drug.';
         this.tableProteinScoreTooltip =
-          'Normalized number of direct interactions of the protein with the seeds. ' +
-          'The higher the score, the more relevant the protein.';
+          'Normalized number of direct interactions of the gene with the seeds. ' +
+          'The higher the score, the more relevant the gene.';
       } else if (this.task.info.algorithm === 'harmonic' || this.task.info.algorithm === 'quick' || this.task.info.algorithm === 'super') {
         this.tableDrugScoreTooltip =
           'Normalized inverse mean distance of the drug to the seeds. ' +
           'The higher the score, the more relevant the drug.';
         this.tableProteinScoreTooltip =
-          'Normalized inverse mean distance of the protein to the seeds. ' +
-          'The higher the score, the more relevant the protein.';
+          'Normalized inverse mean distance of the gene to the seeds. ' +
+          'The higher the score, the more relevant the gene.';
       } else if (this.task.info.algorithm === 'trustrank') {
         this.tableDrugScoreTooltip =
           'Amount of ‘trust’ on the drug at termination of the algorithm. ' +
           'The higher the score, the more relevant the drug.';
         this.tableProteinScoreTooltip =
-          'Amount of ‘trust’ on the protein at termination of the algorithm. ' +
-          'The higher the score, the more relevant the protein.';
+          'Amount of ‘trust’ on the gene at termination of the algorithm. ' +
+          'The higher the score, the more relevant the gene.';
       } else if (this.task.info.algorithm === 'proximity') {
         this.tableDrugScoreTooltip =
           'Empirical z-score of mean minimum distance between the drug’s targets and the seeds. ' +

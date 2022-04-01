@@ -3,9 +3,10 @@
     <div class="column is-6">
       <ng-select [items]="datasetItems" bindLabel="name" [virtualScroll]="true" class="custom"
                  placeholder="Select..." [ngModel]="selectedDataset" (ngModelChange)="select($event)"
-                 data-tooltip="Select which interactions to use." [clearable]="false">
+                 data-tooltip="Select which interactions to use." [clearable]="false"
+                 [groupBy]="groupingHelper">
         <ng-template ng-option-tmp let-item="item">
-          {{item.name}} ({{kFormatter(item.count)}})
+          {{item.version}} ({{kFormatter(item.count)}})
         </ng-template>
       </ng-select>
     </div>

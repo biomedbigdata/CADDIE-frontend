@@ -282,17 +282,16 @@
               <b>Harmonic Centrality:</b> Harmonic centrality measurement can be
               described as the average shortest distance from each node to all
               other nodes in a network. This measurement is the equivalent of
-              closeness centrality for disconnected graphs. For comparable
-              results, the normalized version was used. Formally speaking, it
+              closeness centrality for disconnected graphs. Formally speaking, it
               can be annotated as
 
               <div class="documentation-formula">
                 <i>centrality<sub>harmonic</sub>(x) = </i>&sum;<sub
                   >y&#x2260;x</sub
-                ><sup>y</sup>( (n − 1) / dist(x, y) )
+                ><sup>y</sup>( (1) / dist(x, y) )
               </div>
 
-              where x is a given node and n − 1/dist(x, y) = 0 if dist(x, y) = ∞
+              where x is a given node and 1/dist(x, y) = 0 if dist(x, y) = ∞
               (<a
                 href="https://www.semanticscholar.org/paper/Closeness-Centrality-Extended-to-Unconnected-the-Rochat/a4ea7b92421415674c6ed954914f0512935d0dfb"
                 target="_blank"
@@ -409,6 +408,17 @@
             <li>
               <i>Nutraceutical Drugs (only drug search): </i>If set,
               nutraceutical drugs will be excluded.
+            </li>
+            <li>
+              <i>Only CTRPv2 (only drug search): </i>If set, only drugs tested
+              in the
+              <a
+                href="https://portals.broadinstitute.org/ctrp/?page=#ctd2BodyHome"
+                target="_blank"
+                >CTRPv2</a
+              >
+              dataset are considered. The CTRPv2 study contains 481 compounds
+              that target distinct processes in the cell.
             </li>
             <li>
               <i>Only ATC class L (only drug search): </i>If set, only drugs

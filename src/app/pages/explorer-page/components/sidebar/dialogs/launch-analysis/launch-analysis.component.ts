@@ -45,6 +45,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public algorithms: Array<Algorithm> = [];
   public includeNutraceuticalDrugs = true;
   public includeAtcLDrugs = false;
+  public includeOnlyCTRPv2Drugs = false;
   public filterPaths = true;
 
   // Trustrank Parameters
@@ -163,6 +164,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.cancer_type_names = cancerTypes.map((cancerType) => cancerType.name);
     parameters.includeNutraceuticalDrugs = this.includeNutraceuticalDrugs;
     parameters.onlyAtcLDrugs = this.includeAtcLDrugs;
+    parameters.include_only_ctrpv2_drugs = this.includeOnlyCTRPv2Drugs;
     parameters.filterPaths = this.filterPaths;
     parameters.mutationCancerType = this.explorerData.activeNetwork.selectedMutationCancerType ? this.explorerData.activeNetwork.selectedMutationCancerType.abbreviation : null;
     parameters.expressionCancerType = this.explorerData.activeNetwork.selectedExpressionCancerType ? this.explorerData.activeNetwork.selectedExpressionCancerType.name : null;

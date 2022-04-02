@@ -245,6 +245,24 @@
                 </tr>
                 <tr
                   *ngIf="
+                    task.info.parameters.includeOnlyCtrpv2Drugs !== undefined &&
+                    task.info.target === 'drug'
+                  "
+                >
+                  <td>Include only CTRPv2 drugs</td>
+                  <td>
+                    <i
+                      *ngIf="task.info.parameters.includeOnlyCtrpv2Drugs"
+                      class="fa fa-check"
+                    ></i>
+                    <i
+                      *ngIf="!task.info.parameters.includeOnlyCtrpv2Drugs"
+                      class="fa fa-times"
+                    ></i>
+                  </td>
+                </tr>
+                <tr
+                  *ngIf="
                     task.info.parameters.ignoreNonSeedBaits !== undefined &&
                     task.info.target === 'drug-target'
                   "

@@ -816,6 +816,21 @@
         </p>
       </div>
 
+      <div class="field" *ngIf="target === 'drug'">
+        <label class="label">Only CTRPv2 drugs</label>
+        <app-toggle
+          textOn="Yes"
+          textOff="No"
+          tooltipOn="Include only CTRPv2 drugs."
+          tooltipOff="Include only CTRPv2 drugs from the analysis."
+          [(value)]="includeOnlyCTRPv2Drugs"
+        >
+        </app-toggle>
+        <p class="help">
+          Set this to restrict the drug search to drugs used in CTRPv2.
+        </p>
+      </div>
+
       <div class="field" *ngIf="algorithm !== 'multisteiner'">
         <label class="label">Filter Edges</label>
         <app-toggle

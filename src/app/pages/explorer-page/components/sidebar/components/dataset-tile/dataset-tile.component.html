@@ -4,7 +4,8 @@
       <ng-select [items]="datasetItems" bindLabel="name" [virtualScroll]="true" class="custom has-tooltip-bottom"
                  placeholder="Select..." [ngModel]="selectedDataset" (ngModelChange)="select($event)"
                  data-tooltip="Choose the dataset for cancer driver genes." [clearable]="false"
-                 [groupBy]="groupingHelper">
+      >
+                 <!-- [groupBy]="groupingHelper" -->
         <ng-template ng-option-tmp let-item="item">
           {{item.version}} ({{item.count}})
         </ng-template>

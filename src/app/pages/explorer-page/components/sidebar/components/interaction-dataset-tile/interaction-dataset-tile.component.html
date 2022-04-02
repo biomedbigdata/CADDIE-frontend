@@ -4,7 +4,8 @@
       <ng-select [items]="datasetItems" bindLabel="name" [virtualScroll]="true" class="custom"
                  placeholder="Select..." [ngModel]="selectedDataset" (ngModelChange)="select($event)"
                  data-tooltip="Select which interactions to use." [clearable]="false"
-                 [groupBy]="groupingHelper">
+      >
+                 <!-- [groupBy]="groupingHelper"> -->
         <ng-template ng-option-tmp let-item="item">
           {{item.version}} ({{kFormatter(item.count)}})
         </ng-template>

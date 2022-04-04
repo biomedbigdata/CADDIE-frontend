@@ -169,7 +169,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.mutationCancerType = this.explorerData.activeNetwork.selectedMutationCancerType ? this.explorerData.activeNetwork.selectedMutationCancerType.abbreviation : null;
     parameters.expressionCancerType = this.explorerData.activeNetwork.selectedExpressionCancerType ? this.explorerData.activeNetwork.selectedExpressionCancerType.name : null;
     parameters.drug_target_action = this.selectedDrugTargetAction ? this.selectedDrugTargetAction.name : null;
-
+    
     if (this.algorithm === 'trustrank') {
       parameters.damping_factor = this.trustrankDampingFactor;
       parameters.include_indirect_drugs = this.trustrankIncludeIndirectDrugs;

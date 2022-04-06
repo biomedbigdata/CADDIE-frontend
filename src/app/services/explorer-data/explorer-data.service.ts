@@ -412,7 +412,7 @@ export class ExplorerDataService {
       parameters.includeNutraceuticalDrugs = true;
       parameters.onlyAtcLDrugs = false;
       parameters.filterPaths = true;
-      parameters.mutationCancerType = this.activeNetwork.selectedMutationCancerType ? this.activeNetwork.selectedMutationCancerType.abbreviation : null;
+      parameters.mutationCancerType = this.activeNetwork.selectedMutationCancerType ? this.activeNetwork.selectedMutationCancerType.name : null;
       parameters.expressionCancerType = this.activeNetwork.selectedExpressionCancerType ? this.activeNetwork.selectedExpressionCancerType.name : null;
   
       if (target === 'drug-target') {

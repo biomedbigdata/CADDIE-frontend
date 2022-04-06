@@ -166,7 +166,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
     parameters.onlyAtcLDrugs = this.includeAtcLDrugs;
     parameters.include_only_ctrpv2_drugs = this.includeOnlyCTRPv2Drugs;
     parameters.filterPaths = this.filterPaths;
-    parameters.mutationCancerType = this.explorerData.activeNetwork.selectedMutationCancerType ? this.explorerData.activeNetwork.selectedMutationCancerType.abbreviation : null;
+    parameters.mutationCancerType = this.explorerData.activeNetwork.selectedMutationCancerType ? this.explorerData.activeNetwork.selectedMutationCancerType.name : null;
     parameters.expressionCancerType = this.explorerData.activeNetwork.selectedExpressionCancerType ? this.explorerData.activeNetwork.selectedExpressionCancerType.name : null;
     parameters.drug_target_action = this.selectedDrugTargetAction ? this.selectedDrugTargetAction.name : null;
     

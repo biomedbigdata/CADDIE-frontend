@@ -1,8 +1,19 @@
 <div class="container is-fluid navbar-container">
   <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <img routerLink="/" src="assets/caddie_logo.png" class="menu-icon is-hoverable navbar-item logo" alt="logo"/>
-      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" (click)="toggleMobileMenu()">
+      <img
+        routerLink="/"
+        src="assets/caddie_logo.png"
+        class="menu-icon is-hoverable navbar-item logo"
+        alt="logo"
+      />
+      <a
+        role="button"
+        class="navbar-burger burger"
+        aria-label="menu"
+        aria-expanded="false"
+        (click)="toggleMobileMenu()"
+      >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -15,44 +26,76 @@
         <!-- <span class="is-6 title logo-letters navbar-item">Version 1.0.0</span> -->
       </div>
       <div class="navbar-end">
-        <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{exact: true}" class="navbar-item is-hoverable">
+        <a
+          routerLink="/"
+          routerLinkActive="is-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="navbar-item is-hoverable"
+        >
           <span class="icon"><i class="fa fa-home"></i></span>
           <span>Home</span>
         </a>
-        <a routerLink="/explorer" routerLinkActive="is-active" class="navbar-item is-hoverable">
+        <a
+          routerLink="/explorer"
+          routerLinkActive="is-active"
+          class="navbar-item is-hoverable"
+        >
           <span class="icon"><i class="fa fa-project-diagram"></i></span>
           <span>Explorer</span>
         </a>
-        <a routerLink="/drug-lookup" routerLinkActive="is-active" class="navbar-item is-hoverable">
+        <a
+          routerLink="/drug-lookup"
+          routerLinkActive="is-active"
+          class="navbar-item is-hoverable"
+        >
           <span class="icon"><i class="fa fa-search"></i></span>
           <span>Drug</span>
         </a>
-        <a routerLink="/gene-lookup" routerLinkActive="is-active" class="navbar-item is-hoverable">
+        <a
+          routerLink="/gene-lookup"
+          routerLinkActive="is-active"
+          class="navbar-item is-hoverable"
+        >
           <span class="icon"><i class="fa fa-search"></i></span>
           <span>Gene</span>
         </a>
-<!--        <a routerLink="/cite" routerLinkActive="is-active" class="navbar-item is-hoverable">-->
-<!--          <span class="icon"><i class="fa fa-feather"></i></span>-->
-<!--          <span>Cite</span>-->
-<!--        </a>-->
-<!--        <a routerLink="/download" routerLinkActive="is-active" class="navbar-item is-hoverable">-->
-<!--          <span class="icon"><i class="fa fa-download"></i></span>-->
-<!--          <span>Download</span>-->
-<!--        </a>-->
-        <a routerLink="/documentation" routerLinkActive="is-active" class="navbar-item is-hoverable">
+        <a
+          routerLink="/cite"
+          routerLinkActive="is-active"
+          class="navbar-item is-hoverable"
+          >
+          <span class="icon"><i class="fa fa-feather"></i></span>
+          <span>Cite</span>
+        </a>
+        <!--        <a routerLink="/download" routerLinkActive="is-active" class="navbar-item is-hoverable">-->
+        <!--          <span class="icon"><i class="fa fa-download"></i></span>-->
+        <!--          <span>Download</span>-->
+        <!--        </a>-->
+        <a
+          routerLink="/documentation"
+          routerLinkActive="is-active"
+          class="navbar-item is-hoverable"
+        >
           <span class="icon"><i class="fa fa-book"></i></span>
           <span>Help</span>
         </a>
-        <a routerLink="/python" routerLinkActive="is-active" class="navbar-item is-hoverable">
+        <a
+          routerLink="/python"
+          routerLinkActive="is-active"
+          class="navbar-item is-hoverable"
+        >
           <span class="icon"><i class="fa fa-laptop-code"></i></span>
           <span>Python</span>
         </a>
-        <a routerLink="/about" routerLinkActive="is-active" class="navbar-item is-hoverable">
+        <a
+          routerLink="/about"
+          routerLinkActive="is-active"
+          class="navbar-item is-hoverable"
+        >
           <span class="icon"><i class="fa fa-question"></i></span>
           <span>About</span>
         </a>
       </div>
-      
     </div>
   </nav>
 </div>

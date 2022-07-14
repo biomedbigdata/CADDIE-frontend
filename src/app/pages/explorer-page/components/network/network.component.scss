@@ -1,5 +1,9 @@
 @import "../../../../../scaffold.scss";
 
+.caddie.network {
+  z-index: 30;
+}
+
 .fullscreen {
   position: absolute !important;
   top: 0 !important;

@@ -499,6 +499,47 @@
         </div>
       </div>
 
+      <div *ngIf="algorithm === 'domino'">
+        <div class="box">
+          <article class="media">
+            <div class="media-left">
+              <span class="icon"><i class="fa fa-info"></i></span>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <h6 class="is-6">About DOMINO</h6>
+                <p>
+                  DOMINO is an active module identification (AMI) algorithm. It
+                  recieves a gene network and nodes' activity scores as input
+                  and report sub-networks (modules) that are putatively
+                  biologically meaningful in the context of the activity data.
+                  <a target="_blank" href="https://github.com/Shamir-Lab/DOMINO">More information.</a>
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="field">
+          <label class="label" for="betweenness-md">Maximum degree</label>
+          <div class="control">
+            <input
+              [(ngModel)]="betweennessMaxDeg"
+              id="betweenness-md"
+              class="input"
+              type="number"
+              placeholder="Maximum degree"
+              min="0"
+              required
+            />
+          </div>
+          <p class="help">
+            All nodes with degree greater than this value will be ignored.
+            Disabled if equal to 0.
+          </p>
+        </div>
+      </div>
+
       <div *ngIf="algorithm === 'betweenness'">
         <div class="box">
           <article class="media">

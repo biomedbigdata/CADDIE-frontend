@@ -12,7 +12,7 @@ import {
   Algorithm,
   AlgorithmType,
   AnalysisService, BETWEENNESS_CENTRALITY, HARMONIC_CENTRALITY,
-  DEGREE_CENTRALITY,
+  DEGREE_CENTRALITY, DOMINO,
   KEYPATHWAYMINER, MAX_TASKS,
   MULTISTEINER, NETWORK_PROXIMITY,
   QuickAlgorithmType,
@@ -47,6 +47,9 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
   public includeAtcLDrugs = false;
   public includeOnlyCTRPv2Drugs = false;
   public filterPaths = true;
+
+  // DOMINO parameters
+  public dominoMaxDeg = 0;
 
   // Trustrank Parameters
   public trustrankIncludeIndirectDrugs = false;
@@ -119,7 +122,7 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.target === 'drug-target') {
-      this.algorithms = [MULTISTEINER, KEYPATHWAYMINER, TRUSTRANK, HARMONIC_CENTRALITY, DEGREE_CENTRALITY, BETWEENNESS_CENTRALITY];
+      this.algorithms = [MULTISTEINER, KEYPATHWAYMINER, DOMINO, TRUSTRANK, HARMONIC_CENTRALITY, DEGREE_CENTRALITY, BETWEENNESS_CENTRALITY];
       this.algorithm = MULTISTEINER.slug;
     } else if (this.target === 'drug') {
       this.algorithms = [TRUSTRANK, HARMONIC_CENTRALITY, DEGREE_CENTRALITY, NETWORK_PROXIMITY];
@@ -212,6 +215,10 @@ export class LaunchAnalysisComponent implements OnInit, OnChanges {
       parameters.result_size = this.betweennessResultSize;
     } else if (this.algorithm === 'keypathwayminer') {
       parameters.k = this.keypathwayminerK;
+    } else if (this.algorithm === 'domino') {
+      if (this.dominoMaxDeg && this.dominoMaxDeg > 0) {
+        parameters.max_deg = this.dominoMaxDeg;
+      }
     } else if (this.algorithm === 'multisteiner') {
       parameters.num_trees = this.multisteinerNumTrees;
       parameters.tolerance = this.multisteinerTolerance;

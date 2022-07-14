@@ -17,7 +17,7 @@ import {Injectable} from '@angular/core';
 import {ControlService} from '../control/control.service';
 
 export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'harmonic' | 'degree' |
- 'proximity' | 'betweenness' | 'summary';
+ 'proximity' | 'betweenness' | 'summary' | 'domino';
 export type QuickAlgorithmType = 'quick' | 'super' | 'exampledrugtarget' | 'exampledrug';
 
 export const algorithmNames = {
@@ -28,6 +28,7 @@ export const algorithmNames = {
   degree: 'Degree Centrality',
   proximity: 'Network Proximity',
   betweenness: 'Betweenness Centrality',
+  domino: 'Domino',
   summary: 'Summary',
   quick: 'Simple',
   super: 'Quick-Start',
@@ -47,6 +48,8 @@ export const NETWORK_PROXIMITY: Algorithm = {slug: 'proximity', name: algorithmN
 export const BETWEENNESS_CENTRALITY: Algorithm = {slug: 'betweenness', name: algorithmNames.betweenness};
 export const KEYPATHWAYMINER: Algorithm = {slug: 'keypathwayminer', name: algorithmNames.keypathwayminer};
 export const MULTISTEINER: Algorithm = {slug: 'multisteiner', name: algorithmNames.multisteiner};
+export const DOMINO: Algorithm = {slug: 'domino', name: algorithmNames.domino};
+
 
 export const MAX_TASKS = 3;
 

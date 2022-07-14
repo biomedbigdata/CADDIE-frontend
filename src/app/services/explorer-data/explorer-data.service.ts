@@ -211,7 +211,6 @@ export class ExplorerDataService {
          * Fetches Gene interaction dataset data from API and initializes dataset tile
          */
         this.interactionGeneDatasetItems = await this.control.getInteractionGeneDatasets();
-        console.log(this.interactionGeneDatasetItems[0])
         this.activeNetwork.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
       }
     

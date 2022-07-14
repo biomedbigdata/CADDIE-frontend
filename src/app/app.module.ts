@@ -69,7 +69,7 @@ import {
 } from './pages/explorer-page/components/sidebar/dialogs/task-summmarize-dialog/task-summarize-dialog.component';
 import { CookieDisclaimerComponent } from './components/cookie-disclaimer/cookie-disclaimer.component';
 import { DocumentationPageComponent } from './pages/documentation-page/documentation-page.component';
-import { PythonPageComponent } from './python-page/python-page.component';
+import { PythonPageComponent } from './pages/python-page/python-page.component';
 import { AnalysisParametersWindowComponent } from './pages/explorer-page/components/analysis-panel/analysis-parameters-window/analysis-parameters-window.component';
 import { ExplorerNetworkInformationComponent } from './pages/explorer-page/components/explorer-network-information/explorer-network-information.component';
 import { ExplorerPageTutorialComponent } from './pages/explorer-page/components/explorer-page-tutorial/explorer-page-tutorial.component';

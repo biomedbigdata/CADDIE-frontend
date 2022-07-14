@@ -285,6 +285,18 @@ in TCGA cancer types"
       >
       </app-button>
 
+      <app-toggle
+      textOn="Isolated Nodes On"
+      textOff="Off"
+      (valueChange)="toggleIsolatedNodes()"
+      icon="fas fa-compress-alt"
+      class="is-inline-block footer-buttons has-tooltip"
+      tooltipOn="Enable visibility of isolated nodes in the network"
+      tooltipOff="Disable visibility of isolated nodes in the network"
+      [value]="showIsolatedNodes"
+    >
+    </app-toggle>
+
         <div class="field" *ngIf="networkType === 'analysis'">
           <p class="control footer-buttons">
             <button class="button is-danger   has-tooltip" data-tooltip="Delete the current analysis."

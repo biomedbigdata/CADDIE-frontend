@@ -187,6 +187,11 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
 
         await this.explorerData.activeNetwork.createNetwork();
 
+        if (this.task.info.algorithm === 'domino') {
+          this.explorerData.activeNetwork.toggleIsolatedNodes();
+          this.explorerData.activeNetwork.setClusterPhysics();
+        }
+
         // const isBig = nodes.length > 200 || edges.length > 200;
         // const options = NetworkSettings.getOptions(isBig ? 'analysis-big' : 'analysis');
         // this.physicsEnabled = !isBig;
@@ -508,7 +513,7 @@ export class AnalysisPanelComponent implements OnInit, OnChanges {
     }
     // set needed activeNetowrk properties
     this.explorerData.activeNetwork.cancerNodesSup = [];
-    this.explorerData.activeNetwork.networkData = { cancerNodes, otherNodes };
+    this.explorerData.activeNetwork.networkData = { cancerNodes: cancerNodes, nodes: otherNodes };
   }
 
   private async getRelatedCancerTypes(item: Wrapper) {

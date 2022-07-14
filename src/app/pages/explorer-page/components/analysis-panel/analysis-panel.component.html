@@ -476,13 +476,6 @@
                 Interactome Degree
                 <p-sortIcon [field]="'dbDegree'"></p-sortIcon>
               </th>
-              <!--              <th>-->
-              <!--                Closest Cancer Genes-->
-              <!--              </th>-->
-              <!--              <th [pSortableColumn]="'closestDistance'">-->
-              <!--                Cancer Gene distance-->
-              <!--                <p-sortIcon [field]="'closestDistance'"></p-sortIcon>-->
-              <!--              </th>-->
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-e>
@@ -619,6 +612,10 @@
                 Interactome Degree
                 <p-sortIcon [field]="'dbDegree'"></p-sortIcon>
               </th>
+              <th *ngIf="task.info.algorithm === 'domino'" [pSortableColumn]="'cluster'">
+                Cluster
+                <p-sortIcon [field]="'cluster'"></p-sortIcon>
+              </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-e>
@@ -648,6 +645,14 @@
               <td>
                 <span>
                   {{ e.dbDegree }}
+                </span>
+              </td>
+              <td *ngIf="task.info.algorithm === 'domino'">
+                <span *ngIf="e.cluster">
+                  {{ e.cluster }}
+                </span>
+                <span *ngIf="!e.cluster">
+                  -
                 </span>
               </td>
             </tr>
@@ -708,6 +713,10 @@
                 Interactome Degree
                 <p-sortIcon [field]="'dbDegree'"></p-sortIcon>
               </th>
+              <th *ngIf="task.info.algorithm === 'domino'" [pSortableColumn]="'cluster'">
+                Cluster
+                <p-sortIcon [field]="'cluster'"></p-sortIcon>
+              </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-e>
@@ -739,6 +748,14 @@
               <td>
                 <span>
                   {{ e.dbDegree }}
+                </span>
+              </td>
+              <td *ngIf="task.info.algorithm === 'domino'">
+                <span *ngIf="e.cluster">
+                  {{ e.cluster }}
+                </span>
+                <span *ngIf="!e.cluster">
+                  -
                 </span>
               </td>
             </tr>

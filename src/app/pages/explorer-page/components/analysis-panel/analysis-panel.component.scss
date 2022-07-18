@@ -7,6 +7,7 @@
   min-width: calc(100vw - #{$sidebar-width-max});
   right: 0;
   top: $navbar-height;
+  z-index: 30;
   &.analysisFullscreen{
     width: 100vw;
   }

@@ -545,8 +545,11 @@ export class NetworkComponent implements OnInit {
       // else gradient is activated, color nodes
       const mutationsCounts = [];
 
-      // fetch all data
-      const response = await this.control.mutationScores(mutationCancerType, this.basicNodes, this.cancerNodes);
+      // only look up the visible nodes
+      const cancerNodesToFetch = this.cancerNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+      const basicNodesToFetch = this.basicNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+      // fetch data
+      const response = await this.control.mutationScores(mutationCancerType, basicNodesToFetch, cancerNodesToFetch);
       for (const node of [...response.nodes, ...response.cancerNodes]) {
         if (node.nMutations !== null) {
           mutationsCounts.push(node.mutationCounts);
@@ -589,8 +592,11 @@ export class NetworkComponent implements OnInit {
 
       const minExp = 0.3;
 
-      // fetch all data
-      this.control.tissueExpressionGenes(tissue, this.basicNodes, this.cancerNodes)
+      // filter out nodes that are not displayed
+      const cancerNodesToFetch = this.cancerNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+      const basicNodesToFetch = this.basicNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+      // fetch data
+      this.control.tissueExpressionGenes(tissue, basicNodesToFetch, cancerNodesToFetch)
         .subscribe((response) => {
           // response is object with key "cancerGenes" and "genes"
           // each which is list of objects with "gene" and "level" (expression value)
@@ -636,8 +642,12 @@ export class NetworkComponent implements OnInit {
       this.explorerData.activeNetwork.selectedExpressionCancerType = expressionCancerType;
 
       const minExp = 0.3;
-      // fetch all data
-      this.control.expressionCancerTypeExpressionGenes(expressionCancerType, this.basicNodes, this.cancerNodes)
+
+      const cancerNodesToFetch = this.cancerNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+      const basicNodesToFetch = this.basicNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+
+      // fetch data
+      this.control.expressionCancerTypeExpressionGenes(expressionCancerType, basicNodesToFetch, cancerNodesToFetch)
         .subscribe((response) => {
           // response is object with key "cancerGenes" and "genes"
           // each which is list of objects with "gene" and "level" (expression value)

@@ -4,6 +4,10 @@
   z-index: 30;
 }
 
+.overlay {
+  z-index: 200;
+}
+
 .fullscreen {
   position: absolute !important;
   top: 0 !important;

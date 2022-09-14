@@ -325,7 +325,7 @@ body {
   height: calc(100% - #{$navbar-height});
   width: 100%;
   margin-left: -10px;
-  z-index: 30;
+  z-index: 10000;
   top: $navbar-height;
   width: calc(100vw - #{$sidebar-width});
   min-width: calc(100vw - #{$sidebar-width-max});

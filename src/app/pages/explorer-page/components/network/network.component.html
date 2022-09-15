@@ -219,6 +219,7 @@ that revolve around the network."
           [elements]="analysis.getDrugStatus()"
           (callbackFun)="toggleDrugs($event)"
           label="Drugs"
+          class="overlay footer-buttons"
         ></app-category-selector>
 
         <app-category-selector
@@ -229,6 +230,7 @@ that revolve around the network."
           label="Expr. Tissue"
           class="footer-buttons is-inline-block has-tooltip"
           data-tooltip="Highlight the gene expression in GTEx tissues"
+          class="overlay footer-buttons"
         ></app-category-selector>
 
         <app-category-selector
@@ -240,6 +242,7 @@ that revolve around the network."
           class="footer-buttons is-inline-block has-tooltip"
           data-tooltip="Highlight the gene expression
 in TCGA cancer types"
+          class="overlay footer-buttons"
         ></app-category-selector>
 
         <app-category-selector
@@ -253,6 +256,7 @@ in TCGA cancer types"
           class="footer-buttons is-inline-block has-tooltip"
           data-tooltip="Highlight the cancer mutations
 in TCGA cancer types"
+          class="overlay footer-buttons"
         ></app-category-selector>
 
         <app-toggle

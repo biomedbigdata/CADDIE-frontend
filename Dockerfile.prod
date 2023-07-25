@@ -1,4 +1,4 @@
-FROM node:16.15.0
+FROM node:16.15.0 as build-stage
 
 RUN apt-get update
 RUN apt-get install -y curl
@@ -10,11 +10,11 @@ RUN apt-get install -y nodejs
 COPY package.json /app/
 COPY package-lock.json /app/
 
-WORKDIR /app/
+WORKDIR /app
 
 RUN npm install
 
-COPY . /app/
+COPY ./ .
 
 # RUN NODE_OPTIONS="--max-old-space-size=16384"
 

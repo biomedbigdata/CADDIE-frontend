@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  backend: 'http://localhost:8000/', // 'http://10.162.163.20:8000/',
+  backend: 'https://exbio.wzw.tum.de/caddie/api/', // 'http://10.162.163.20:8000/',
 };
 
 /*

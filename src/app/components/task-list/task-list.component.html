@@ -1,5 +1,5 @@
-<button *ngIf="taskList.length > 1" class="button is-primary is-small" (click)="toggleCheckboxes()"><i class="fas fa-cogs"></i></button>
-<button *ngIf="showSummaryOptions" class="button is-primary summary-button" (click)="startSummmaryTask()">Summarize</button>
+<!-- <button *ngIf="taskList.length > 1" class="button is-primary is-small" (click)="toggleCheckboxes()"><i class="fas fa-cogs"></i></button>
+<button *ngIf="showSummaryOptions" class="button is-primary summary-button" (click)="startSummmaryTask()">Summarize</button> -->
 
 <div
   id="task-list"
@@ -20,9 +20,11 @@
               [class.fa-capsules]="task.info.target === 'drug'"
               [class.fa-crosshairs]="task.info.target === 'drug-target'"
               [class.fa-tasks]="task.info.target === 'summarize'"
-            ></i>
-            {{ algorithmNames[task.info.algorithm] }}</span
-          >
+            >
+          </i>
+
+            {{ algorithmNames[task.info.algorithm] }}
+            </span>
           <span class="icon is-pulled-right"
             ><i class="fas fa-pause" aria-hidden="true"></i
           ></span>

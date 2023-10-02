@@ -74,6 +74,7 @@ import { AnalysisParametersWindowComponent } from './pages/explorer-page/compone
 import { ExplorerNetworkInformationComponent } from './pages/explorer-page/components/explorer-network-information/explorer-network-information.component';
 import { ExplorerPageTutorialComponent } from './pages/explorer-page/components/explorer-page-tutorial/explorer-page-tutorial.component';
 import { CancernetPanelComponent } from './components/cancernet-panel/cancernet-panel.component';
+import { SimpleExplorerPageComponent } from './pages/simple-explorer-page/simple-explorer-page.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -125,6 +126,7 @@ PlotlyViaCDNModule.plotlyBundle = 'basic';
     ExplorerNetworkInformationComponent,
     ExplorerPageTutorialComponent,
     CancernetPanelComponent,
+    SimpleExplorerPageComponent,
   ],
   imports: [
     BrowserModule,

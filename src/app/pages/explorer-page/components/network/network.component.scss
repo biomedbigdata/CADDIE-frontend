@@ -135,3 +135,13 @@
     }
   }
 }
+
+.simple{
+  max-height: 500px;
+  #network-card {
+    max-height: 500px;
+    .network-size {
+      max-height: calc(500px - #{$network-footer-height});
+    }
+  }
+}

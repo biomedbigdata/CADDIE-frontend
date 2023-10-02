@@ -18,7 +18,7 @@ import {ControlService} from '../control/control.service';
 
 export type AlgorithmType = 'trustrank' | 'keypathwayminer' | 'multisteiner' | 'harmonic' | 'degree' |
  'proximity' | 'betweenness' | 'summary' | 'domino';
-export type QuickAlgorithmType = 'quick' | 'super' | 'exampledrugtarget' | 'exampledrug';
+export type QuickAlgorithmType = 'quick' | 'super' | 'exampledrugtarget' | 'exampledrug' | 'simpledrug';
 
 export const algorithmNames = {
   trustrank: 'TrustRank',
@@ -34,6 +34,7 @@ export const algorithmNames = {
   super: 'Quick-Start',
   exampledrugtarget: 'Quick Target Search',
   exampledrug: 'Quick Drug Search',
+  simpledrug: 'Drug Search',
 };
 
 export interface Algorithm {
@@ -67,8 +68,8 @@ export class AnalysisService {
 
   public tokens: string[] = [];
   public finishedTokens: string[] = [];
-  private tokensCookieKey = `caddie-tokens-${window.location.host}`;
-  private tokensFinishedCookieKey = `caddie-finishedTokens-${window.location.host}`;
+  private tokensCookieKey = `caddie-tokens-${window.location}`;
+  private tokensFinishedCookieKey = `caddie-finishedTokens-${window.location}`;
   public tasks: Task[] = [];
 
   private intervalId: any;
@@ -535,7 +536,7 @@ export class AnalysisService {
     });
   }
 
-  async startQuickAnalysis(algorithm: 'exampledrugtarget' | 'exampledrug', target: 'drug' | 'drug-target', parameters) {
+  async startQuickAnalysis(algorithm: 'exampledrugtarget' | 'exampledrug' , target: 'drug' | 'drug-target', parameters) {
     /**
      * Starts analysis, QUICK
      * accepts algorithm with parameters
@@ -596,6 +597,30 @@ export class AnalysisService {
     this.startWatching();
   }
 
+  async startSimpleAnalysis(parameters) {
+    /**
+     * Starts analysis, NOT QUICK
+     * accepts algorithm with parameters
+     */
+    if (!this.canLaunchTask()) {
+      toast({
+        message: `You can only run ${MAX_TASKS} tasks at once. Please wait for one of them to finish or delete it from the task list.`,
+        duration: 5000,
+        dismissible: true,
+        pauseOnHover: true,
+        type: 'is-danger',
+        position: 'top-center',
+        animate: { in: 'fadeIn', out: 'fadeOut' }
+      });
+      return;
+    }
+    const resp = await this.control.postTask('simpledrug', 'drug', parameters);
+    this.tokens.push(resp.token);
+    localStorage.setItem(this.tokensCookieKey, JSON.stringify(this.tokens));
+    this.startWatching();
+  }
+
+
   public isLaunchingQuick(): boolean {
     /**
      * returns status (boolean) of this.launchingQuick
@@ -637,7 +662,7 @@ export class AnalysisService {
     return this.canLaunchNewTask;
   }
 
-  public startWatching() {
+  public startWatching(tokensFinishedCookieKey = this.tokensFinishedCookieKey) {
     /**
      * start watching for task to finish
      *

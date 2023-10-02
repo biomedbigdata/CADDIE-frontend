@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  backend: 'https://exbio.wzw.tum.de/caddie_dev/api/',
+  backend: 'http://localhost:8000/',
 };

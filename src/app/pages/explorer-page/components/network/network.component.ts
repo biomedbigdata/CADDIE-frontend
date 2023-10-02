@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { CancerNode, CancerType, Dataset, Disease, Drug, DrugStatus, ExpressionCancerType, getGeneNodeId, getNodeIdsFromGeneDrugInteraction, getNodeIdsFromGeneGeneInteraction, getWrapperFromCancerNode, getWrapperFromDrug, getWrapperFromNode, Interaction, MutationCancerType, Node, Tissue, Wrapper, WrapperType } from '../../../../interfaces';
+import { CancerNode, CancerType, Dataset, Disease, Drug, DrugStatus, ExpressionCancerType, getGeneNodeId, getNodeIdsFromGeneDrugInteraction, getNodeIdsFromGeneGeneInteraction, getWrapperFromCancerNode, getWrapperFromDrug, getWrapperFromNode, Interaction, MutationCancerType, NetworkType, Node, Tissue, Wrapper, WrapperType } from '../../../../interfaces';
 import { Network } from '../../../../main-network';
 import { NetworkSettings } from '../../../../network-settings';
 import { AnalysisService } from '../../../../services/analysis/analysis.service';
@@ -20,7 +20,7 @@ declare var vis: any;
 })
 export class NetworkComponent implements OnInit {
 
-  @Input() networkType: 'basic' | 'analysis';
+  @Input() networkType: NetworkType;
   @Input() target: 'drug' | 'drug-target' | 'none';
 
   // dataset tile
@@ -104,8 +104,11 @@ export class NetworkComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // register component in explorerData
+
+
+
     this.explorerData.networks[this.networkType] = this;
+
     // activate basic network on init
     if (this.explorerData.selectedAnalysisToken) {
       this.explorerData.activate('analysis');

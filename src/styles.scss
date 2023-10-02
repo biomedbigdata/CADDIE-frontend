@@ -11,7 +11,7 @@ $secondary: #5b005b;
 $success: #48C774;
 $danger: #EF476F;
 $link: $primary;
-$info: $primary;
+$info: #3e8ed0;
 
 @import "~bulma/bulma.sass";
 @import '~bulma-tooltip';
@@ -461,3 +461,41 @@ body::-webkit-scrollbar-button:increment {
   display: none;
 }
 
+.text-center {
+  text-align: center;
+}
+
+
+
+.simple {
+  #network-card {
+    .card-content {
+      padding: 0;
+      .network-size {
+        max-height: 500px !important;
+      }
+    }
+  }
+}
+
+#simple-analysis-result-modal {
+  .modal-card-body{
+    overflow-y: hidden;
+    #simeAnalysisResultTableLength {
+      height: 30rem;
+    }
+  #analysis-content .scrollable {
+  }
+  .simpleAnalysis {
+      #network-card {
+        height: 500px;
+        .card-content {
+          padding: 0;
+          .network-size {
+            max-height: 500px !important;
+          }
+        }
+      }
+    }
+  }
+}

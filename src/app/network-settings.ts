@@ -324,14 +324,13 @@ export class NetworkSettings {
       node.borderWidthSelected = this.borderWidthSelected;
     }
 
-    // in cancernet
-    // if (inCancernet) {
-    //   node.font = {
-    //     color: NetworkSettings.getCancernetFontColor(),
-    //     bold: true,
-    //     size: 30
-    //   }
-    // }
+    if (inCancernet) {
+      node.font = {
+        color: NetworkSettings.getCancernetFontColor(),
+        bold: true,
+        size: 30
+      }
+    }
 
     return node;
   }

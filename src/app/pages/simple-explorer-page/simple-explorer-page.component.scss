@@ -1,0 +1,60 @@
+.mt-2 {
+    margin-top: 2rem;
+}
+
+.mt-1 {
+    margin-top: 1rem;
+}
+
+
+.tab-content {
+  visibility: hidden;
+  position: absolute;
+  width: calc(100% - 50px);
+  height: calc(100vh - 210px - 24px);
+
+  &.is-visible {
+    visibility: visible;
+  }
+
+  &.scrollable {
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+
+  h4 {
+    margin-top: 60px;
+  }
+}
+
+.table-header {
+  margin-bottom: 50px;
+}
+
+.checkbox-col {
+  width: 50px;
+}
+
+.meta {
+  table {
+    width: 500px;
+
+    td {
+      width: 50px;
+    }
+  }
+
+}
+
+#simple-analysis-result-modal {
+    height: 50rem;
+    width: 80rem;
+}
+
+#simpleCancerType {
+    width: 80%;
+}
+
+#simpleCustomGenes {
+    width: 20%
+}

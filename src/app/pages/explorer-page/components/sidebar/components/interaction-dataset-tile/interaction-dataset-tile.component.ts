@@ -21,6 +21,10 @@ export class InteractionDatasetTileComponent {
     this.selectedDatasetChange.emit(selectionItem);
   }
 
+  public groupingHelper(item) {
+    return item.name
+  }
+
   public kFormatter(num) {
     return Math.abs(num) > 999 ? Math.sign(num) * (<any>(Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)
   }

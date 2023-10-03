@@ -41,7 +41,7 @@ export class ExplorerDataService {
     public selectedAnalysisToken: string | null = null;
 
     // switch between networks, "this" of network component
-    public networks = {'basic': null, 'analysis': null};  // contains the network, keys are NetworkType, 'basic' and 'analysis'
+    public networks = {'basic': null, 'analysis': null, 'simple': null};  // contains the network, keys are NetworkType, 'basic' and 'analysis'
     public activeNetwork: any = false;
 
     // dataset tile
@@ -96,13 +96,14 @@ export class ExplorerDataService {
     }
 
     public async activate(networkType: NetworkType) {
+      
       if (this.networks[networkType] === null) {
         // analysis network before init
         this.activeNetwork = {};
         return
       }
       this.activeNetwork = this.networks[networkType];
-      if (networkType === 'basic' && this.activeNetwork.networkVisJs === null) {
+      if ((networkType === 'basic' || networkType === 'simple') && this.activeNetwork.networkVisJs === null) {
         // for the case user opens webpage on analysis view and then navigates to basic
         await this.initBasicNetwork();
       }
@@ -187,9 +188,9 @@ export class ExplorerDataService {
       this.cancerTypes = await this.control.getCancerTypes(dataset);
       this.activeNetwork.selectedCancerTypeItems = [this.cancerTypes[0]];
       // update network if exists
-
       if (this.activeNetwork) {
         this.loadingOverlay.addTo('loadingOverlayTarget');
+
         await this.activeNetwork.getMainNetwork(this.activeNetwork.selectedDataset, 
           this.activeNetwork.selectedInteractionGeneDataset, this.activeNetwork.selectedCancerTypeItems);
         }
@@ -198,31 +199,30 @@ export class ExplorerDataService {
       await this.activeNetwork.setNetworkDefaultSettings();
       }
 
-      public async initCancerDatasets() {
-        /**
-         * Fetches Cancer Dataset data from API and initializes dataset tile
-         */
-        this.datasetItems = this.datasetItems ? this.datasetItems : await this.control.getCancerDatasets();
-        this.activeNetwork.selectedDataset = this.datasetItems[0];
-      }
+    public async initCancerDatasets() {
+      /**
+       * Fetches Cancer Dataset data from API and initializes dataset tile
+       */
+      this.datasetItems = this.datasetItems ? this.datasetItems : await this.control.getCancerDatasets();
+      this.activeNetwork.selectedDataset = this.datasetItems[0];
+    }
 
-      public async initInteractionGeneDatasets() {
-        /**
-         * Fetches Gene interaction dataset data from API and initializes dataset tile
-         */
-        this.interactionGeneDatasetItems = await this.control.getInteractionGeneDatasets();
+    public async initInteractionGeneDatasets() {
+      /**
+       * Fetches Gene interaction dataset data from API and initializes dataset tile
+       */
+      this.interactionGeneDatasetItems = await this.control.getInteractionGeneDatasets();
+      this.activeNetwork.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
+    }
+  
+    public async initInteractionDrugDatasets() {
+      /**
+       * Fetches drug interaction dataset data from API and initializes dataset tile
+       */
+      this.interactionDrugDatasetItems = await this.control.getInteractionDrugDatasets();
 
-        this.activeNetwork.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
-      }
-    
-      public async initInteractionDrugDatasets() {
-        /**
-         * Fetches drug interaction dataset data from API and initializes dataset tile
-         */
-        this.interactionDrugDatasetItems = await this.control.getInteractionDrugDatasets();
-
-        this.activeNetwork.selectedInteractionDrugDataset = this.interactionDrugDatasetItems[0];
-      }
+      this.activeNetwork.selectedInteractionDrugDataset = this.interactionDrugDatasetItems[0];
+    }
 
     public mapGeneToNode(gene: Node): any {
       /**
@@ -281,7 +281,8 @@ export class ExplorerDataService {
       ) {
       /**
        * Fetches Network data from API
-       */
+      */
+     
       const data = await this.control.getNetwork(dataset, interactionDataset, cancerTypes);
       // this.activeNetwork.nodes = data.nodes;
       this.activeNetwork.basicNodes = data.nodes;
@@ -318,7 +319,8 @@ export class ExplorerDataService {
       this.getComorbidities(this.selectedWrapper);
   
       // if left sidebar is scrolled down, offer user to scroll up
-      if (document.getElementById('left-sidebar').scrollTop) {
+      const leftSidebarElement = document.getElementById('left-sidebar');
+      if (leftSidebarElement !== null && leftSidebarElement.scrollTop) {
         this.leftSidebarScrollTopButton = true;
         // setTimeout(() => this.leftSidebarScrollTopButton = false, 1000);
       }
@@ -388,7 +390,7 @@ export class ExplorerDataService {
       this.selectedWrapperComorbidities = data.interactions;
     }
   
-    public exampleSearch(target: 'drug' | 'drug-target') {
+    public exampleSearch(target: 'drug' | 'drug-target' | 'simple-drug') {
   
       // get seed genes if selected, otherwise all cancer genes
       const parameters: any = {};
@@ -412,7 +414,7 @@ export class ExplorerDataService {
       parameters.includeNutraceuticalDrugs = true;
       parameters.onlyAtcLDrugs = false;
       parameters.filterPaths = true;
-      parameters.mutationCancerType = this.activeNetwork.selectedMutationCancerType ? this.activeNetwork.selectedMutationCancerType.abbreviation : null;
+      parameters.mutationCancerType = this.activeNetwork.selectedMutationCancerType ? this.activeNetwork.selectedMutationCancerType.name : null;
       parameters.expressionCancerType = this.activeNetwork.selectedExpressionCancerType ? this.activeNetwork.selectedExpressionCancerType.name : null;
   
       if (target === 'drug-target') {
@@ -435,31 +437,41 @@ export class ExplorerDataService {
         parameters.hub_penalty = 0;
         parameters.result_size = 10;
         this.analysis.startQuickAnalysis('exampledrug', target, parameters);
+      } else if (target === 'simple-drug') {
+        // trustrank
+        parameters.damping_factor = 0.5;
+        parameters.include_indirect_drugs = true;
+        parameters.include_non_approved_drugs = true;
+        parameters.ignore_non_seed_baits = false;
+        // parameters.max_deg = 0;
+        parameters.hub_penalty = 0;
+        parameters.result_size = 10;
+        this.analysis.startSimpleAnalysis(parameters);
       }
     }
 
     public async initBasicNetwork() {
 
-      if (this.activeNetwork.networkType !== 'basic') {
+      if (this.activeNetwork.networkType === 'analysis') {
         this.activate('basic');
       }
-  
       if (!this.activeNetwork.selectedDataset) {
         // cancer datasets are always loaded
         await this.initCancerDatasets();
       }
-  
       if (!this.interactionGeneDatasetItems) {
         // interaction datasets are always loaded
         await this.initInteractionGeneDatasets();
       }
-      this.activeNetwork.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
-  
-      if (!this.cancerTypes || this.activeNetwork.selectedCancerTypeItems===undefined) {
+      if (this.activeNetwork.selectedInteractionGeneDataset === undefined) {
+        this.activeNetwork.selectedInteractionGeneDataset = this.interactionGeneDatasetItems[0];
+      }
+      
+      if (this.activeNetwork.selectedCancerTypeItems === undefined || !this.cancerTypes.length) {
         // cancer types are always loaded
         await this.initCancerTypes(this.activeNetwork.selectedDataset);
       }
-  
+
       // init network if network does not exist
       if (!this.activeNetwork.networkVisJs) {
         // default selection

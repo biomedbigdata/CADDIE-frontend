@@ -1,12 +1,12 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { CancerNode, CancerType, Dataset, Disease, Drug, DrugStatus, ExpressionCancerType, getGeneNodeId, getNodeIdsFromGeneDrugInteraction, getNodeIdsFromGeneGeneInteraction, getWrapperFromCancerNode, getWrapperFromDrug, getWrapperFromNode, Interaction, MutationCancerType, Node, Tissue, Wrapper, WrapperType } from '../../../../interfaces';
+import { CancerNode, CancerType, Dataset, Disease, Drug, DrugStatus, ExpressionCancerType, getGeneNodeId, getNodeIdsFromGeneDrugInteraction, getNodeIdsFromGeneGeneInteraction, getWrapperFromCancerNode, getWrapperFromDrug, getWrapperFromNode, Interaction, MutationCancerType, NetworkType, Node, Tissue, Wrapper, WrapperType } from '../../../../interfaces';
 import { Network } from '../../../../main-network';
 import { NetworkSettings } from '../../../../network-settings';
 import { AnalysisService } from '../../../../services/analysis/analysis.service';
 import { ControlService } from '../../../../services/control/control.service';
 import { ExplorerDataService } from '../../../../services/explorer-data/explorer-data.service';
 import { LoadingOverlayService } from '../../../../services/loading-overlay/loading-overlay.service';
-import {toast} from 'bulma-toast';
+import { toast } from 'bulma-toast';
 import html2canvas from 'html2canvas';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -20,7 +20,7 @@ declare var vis: any;
 })
 export class NetworkComponent implements OnInit {
 
-  @Input() networkType: 'basic' | 'analysis';
+  @Input() networkType: NetworkType;
   @Input() target: 'drug' | 'drug-target' | 'none';
 
   // dataset tile
@@ -64,7 +64,7 @@ export class NetworkComponent implements OnInit {
   public visibleCancerNodeCount = 0;
   public visibleNodeCount = 0;
   public visibleEdges: Set<string> = new Set();
-  public nodeData: { nodes: any, edges: any } = {nodes: [], edges: []};
+  public nodeData: { nodes: any, edges: any } = { nodes: [], edges: [] };
   public physicsEnabled = true;
 
   public nodes: any = []; // all network node objects
@@ -90,21 +90,25 @@ export class NetworkComponent implements OnInit {
   public selectedDrugStatus: DrugStatus | null = null;
   public showDrugs = false;
 
+  public showIsolatedNodes = true;
 
 
-  @ViewChild('network', {static: false}) networkEl: ElementRef;
-  @ViewChild('network_container', {static: false}) networkContainerEl: ElementRef;
+  @ViewChild('network', { static: false }) networkEl: ElementRef;
+  @ViewChild('network_container', { static: false }) networkContainerEl: ElementRef;
 
   constructor(
     public explorerData: ExplorerDataService,
     private control: ControlService,
     private loadingOverlay: LoadingOverlayService,
     public analysis: AnalysisService,
-    ) { }
+  ) { }
 
   ngOnInit(): void {
-    // register component in explorerData
+
+
+
     this.explorerData.networks[this.networkType] = this;
+
     // activate basic network on init
     if (this.explorerData.selectedAnalysisToken) {
       this.explorerData.activate('analysis');
@@ -143,7 +147,7 @@ export class NetworkComponent implements OnInit {
       zoomScale = 3.0;
     }
     this.networkVisJs.moveTo({
-      position: {x: coords.x, y: coords.y},
+      position: { x: coords.x, y: coords.y },
       scale: zoomScale,
       animation: true,
     });
@@ -151,7 +155,7 @@ export class NetworkComponent implements OnInit {
 
   public resetNetwork() {
     // Reset
-    this.explorerData.activeNetwork.nodeData = {nodes: null, edges: null};
+    this.explorerData.activeNetwork.nodeData = { nodes: null, edges: null };
     this.explorerData.activeNetwork.network = null;
   }
 
@@ -162,21 +166,21 @@ export class NetworkComponent implements OnInit {
      * initializes network
      */
 
-     // reset old stuff
-     this.analysis.resetSelection();
-     this.explorerData.selectedWrapper = null;
- 
-     // fetch all relevant network data and store it in component
-     // genes are returned alphabetically
-     await this.explorerData.getBasicNetwork(dataset, interactionDataset, cancerType);
- 
-     this.networkData = new Network(this.basicNodes, this.cancerNodes, this.interactions);
-     this.networkData.linkNodes();
- 
-     // get node and edge data for network
-     const {nodes, edges} = this.mapDataToNodes(this.networkData);
-     this.nodeData.nodes = new vis.DataSet(nodes);
-     this.nodeData.edges = new vis.DataSet(edges);
+    // reset old stuff
+    this.analysis.resetSelection();
+    this.explorerData.selectedWrapper = null;
+
+    // fetch all relevant network data and store it in component
+    // genes are returned alphabetically
+    await this.explorerData.getBasicNetwork(dataset, interactionDataset, cancerType);
+
+    this.networkData = new Network(this.basicNodes, this.cancerNodes, this.interactions);
+    this.networkData.linkNodes();
+
+    // get node and edge data for network
+    const { nodes, edges } = this.mapDataToNodes(this.networkData);
+    this.nodeData.nodes = new vis.DataSet(nodes);
+    this.nodeData.edges = new vis.DataSet(edges);
   }
 
   public setNetworkDefaultSettings() {
@@ -301,7 +305,7 @@ export class NetworkComponent implements OnInit {
   public async addSelectionToNetwork() {
     const selection: Wrapper[] = this.analysis.getSelection();
     const toAdd: Wrapper[] = [];
-    selection.forEach( (wrapper) => {
+    selection.forEach((wrapper) => {
       // see if node in network
       const node = this.nodeData.nodes.get(wrapper.nodeId);
       // if node is not in network
@@ -410,9 +414,30 @@ export class NetworkComponent implements OnInit {
       pauseOnHover: true,
       type: 'is-success',
       position: 'top-center',
-      animate: {in: 'fadeIn', out: 'fadeOut'}
+      animate: { in: 'fadeIn', out: 'fadeOut' }
     });
 
+  }
+
+  public setClusterPhysics() {
+    this.networkVisJs.setOptions({
+      physics: {
+        solver: 'forceAtlas2Based',
+        forceAtlas2Based: {
+          theta: 0.5,
+          gravitationalConstant: -100,
+          centralGravity: 0.01,
+          springLength: 100,
+          springConstant: 0.08,
+          damping: 0.4,
+          avoidOverlap: 1,
+        },
+        stabilization: {
+          enabled: true,
+          iterations: 1000
+        }
+      }
+    });
   }
 
   public updatePhysicsEnabled(bool) {
@@ -523,8 +548,11 @@ export class NetworkComponent implements OnInit {
       // else gradient is activated, color nodes
       const mutationsCounts = [];
 
-      // fetch all data
-      const response = await this.control.mutationScores(mutationCancerType, this.basicNodes, this.cancerNodes);
+      // only look up the visible nodes
+      const cancerNodesToFetch = this.cancerNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+      const basicNodesToFetch = this.basicNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+      // fetch data
+      const response = await this.control.mutationScores(mutationCancerType, basicNodesToFetch, cancerNodesToFetch);
       for (const node of [...response.nodes, ...response.cancerNodes]) {
         if (node.nMutations !== null) {
           mutationsCounts.push(node.mutationCounts);
@@ -567,8 +595,11 @@ export class NetworkComponent implements OnInit {
 
       const minExp = 0.3;
 
-      // fetch all data
-      this.control.tissueExpressionGenes(tissue, this.basicNodes, this.cancerNodes)
+      // filter out nodes that are not displayed
+      const cancerNodesToFetch = this.cancerNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+      const basicNodesToFetch = this.basicNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+      // fetch data
+      this.control.tissueExpressionGenes(tissue, basicNodesToFetch, cancerNodesToFetch)
         .subscribe((response) => {
           // response is object with key "cancerGenes" and "genes"
           // each which is list of objects with "gene" and "level" (expression value)
@@ -614,8 +645,12 @@ export class NetworkComponent implements OnInit {
       this.explorerData.activeNetwork.selectedExpressionCancerType = expressionCancerType;
 
       const minExp = 0.3;
-      // fetch all data
-      this.control.expressionCancerTypeExpressionGenes(expressionCancerType, this.basicNodes, this.cancerNodes)
+
+      const cancerNodesToFetch = this.cancerNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+      const basicNodesToFetch = this.basicNodes.filter(node => this.nodeData.nodes.get(node.graphId));
+
+      // fetch data
+      this.control.expressionCancerTypeExpressionGenes(expressionCancerType, basicNodesToFetch, cancerNodesToFetch)
         .subscribe((response) => {
           // response is object with key "cancerGenes" and "genes"
           // each which is list of objects with "gene" and "level" (expression value)
@@ -710,7 +745,7 @@ export class NetworkComponent implements OnInit {
         continue;
       }
       // calculate color gradient
-      const gradient = n.mutationCounts !== null ? ( Math.pow( n.mutationCounts / maxCount, 1 / 3 ) ) : -1;
+      const gradient = n.mutationCounts !== null ? (Math.pow(n.mutationCounts / maxCount, 1 / 3)) : -1;
       const pos = this.networkVisJs.getPositions([item.nodeId]);
       node.x = pos[item.nodeId].x;
       node.y = pos[item.nodeId].y;
@@ -728,7 +763,7 @@ export class NetworkComponent implements OnInit {
 
       nodes.find(gene => getGeneNodeId(gene) === item.nodeId).mutationScore = n.mutationScore;
       (node.wrapper.data as (Node | CancerNode)).mutationScore = n.mutationScore;
-      
+
       updatedNodes.push(node);
     }
     return updatedNodes;
@@ -740,7 +775,7 @@ export class NetworkComponent implements OnInit {
      * Main function is to calculate the color gradient based on expression value
      * We have to differentiate between Node and CancerNode to not mix up the types in the network
      */
-    geneList: { gene: (Node | CancerNode), level: number, score?: number}[],
+    geneList: { gene: (Node | CancerNode), level: number, score?: number }[],
     maxExpr: number,
     minExp: number,
     nodeType: ('Node' | 'CancerNode')
@@ -786,7 +821,7 @@ export class NetworkComponent implements OnInit {
     return updatedNodes;
   }
 
-  
+
 
   public async addVisibleGenesBasedOnComorbidity(disease: Disease) {
     /**
@@ -854,11 +889,11 @@ export class NetworkComponent implements OnInit {
           undefined,
           gradient,
           node.wrapper.data.inCancernet
-          ));
+        ));
       node.wrapper = item;
       node.gradient = gradient;
       // node.opacity = gradient;
-      
+
       nodes.find(gene => getGeneNodeId(gene) === item.nodeId).expressionLevel = lvl.level;
       (node.wrapper.data as (Node | CancerNode)).expressionLevel = lvl.level;
       // node.shape = 'custom';
@@ -970,6 +1005,37 @@ export class NetworkComponent implements OnInit {
         }, 5000);
 
       }
+    }
+  }
+
+  public toggleIsolatedNodes() {
+    this.showIsolatedNodes = !this.showIsolatedNodes;
+    if (!this.showIsolatedNodes) {
+      const filteredNodes = [];
+      this.networkData.nodes.forEach((node) => {
+        if (!this.getNodeDegree(node.graphId)) {
+          filteredNodes.push(node.graphId)
+        }
+      });
+      this.networkData.cancerNodes.forEach((node) => {
+        if (!this.getNodeDegree(node.graphId)) {
+          filteredNodes.push(node.graphId)
+        }
+      });
+      this.explorerData.activeNetwork.nodeData.nodes.remove(filteredNodes);
+    } else {
+      const addedNodes = [];
+      for (const node of this.networkData.nodes) {
+        if (!this.getNodeDegree(node.graphId)) {
+          addedNodes.push(this.explorerData.mapGeneToNode(node));
+        }
+      }
+      for (const node of this.networkData.cancerNodes) {
+        if (!this.getNodeDegree(node.graphId)) {
+          addedNodes.push(this.explorerData.mapCancerDriverGeneToNode(node));
+        }
+      }
+      this.explorerData.activeNetwork.nodeData.nodes.add(addedNodes);
     }
   }
 

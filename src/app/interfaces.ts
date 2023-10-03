@@ -1,6 +1,6 @@
 import {AlgorithmType, QuickAlgorithmType} from './services/analysis/analysis.service';
 
-export type NetworkType = 'basic' | 'analysis';
+export type NetworkType = 'basic' | 'analysis' | 'simple' | 'simpleAnalysis';
 
 export interface Node {
   /**

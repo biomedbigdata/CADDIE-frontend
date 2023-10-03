@@ -1,5 +1,13 @@
 @import "../../../../../scaffold.scss";
 
+.caddie.network {
+  z-index: 30;
+}
+
+.overlay {
+  z-index: 200;
+}
+
 .fullscreen {
   position: absolute !important;
   top: 0 !important;
@@ -124,6 +132,16 @@
       width: $legend-rectangle-width;
       height: $legend-rectangle-height;
       display: inline-block;
+    }
+  }
+}
+
+.simple{
+  max-height: 500px;
+  #network-card {
+    max-height: 500px;
+    .network-size {
+      max-height: calc(500px - #{$network-footer-height});
     }
   }
 }

@@ -355,11 +355,12 @@ export class ControlService {
      */
     const genesBackendIds = genes.map( (gene) => gene.backendId).join(',');
     const cancerGenesBackendIds = cancerGenes.map( (gene) => gene.backendId).join(',');
-    const params = new HttpParams()
-      .set('cancerType', `${expressionCancerType.backendId}`)
-      .set('genes', JSON.stringify(genesBackendIds))
-      .set('cancerGenes', JSON.stringify(cancerGenesBackendIds));
-    return this.http.get(`${environment.backend}gene_expression/`, {params});
+    const params = {
+      'cancerType': `${expressionCancerType.backendId}`,
+      'genes': JSON.stringify(genesBackendIds),
+      'cancerGenes': JSON.stringify(cancerGenesBackendIds),
+    }
+    return this.http.post(`${environment.backend}gene_expression/`, params);
   }
 
   public mutationScores(
@@ -394,11 +395,12 @@ export class ControlService {
      */
     const genesBackendIds = genes.map( (gene) => gene.backendId).join(',');
     const cancerGenesBackendIds = cancerGenes.map( (gene) => gene.backendId).join(',');
-    const params = new HttpParams()
-      .set('tissue', `${tissue.backendId}`)
-      .set('genes', JSON.stringify(genesBackendIds))
-      .set('cancerGenes', JSON.stringify(cancerGenesBackendIds));
-    return this.http.get(`${environment.backend}tissue_expression/`, {params});
+    const params = {
+      'tissue': `${tissue.backendId}`,
+      'genes': JSON.stringify(genesBackendIds),
+      'cancerGenes': JSON.stringify(cancerGenesBackendIds)
+    }
+    return this.http.post(`${environment.backend}tissue_expression/`, params);
   }
 
   public expressionCancerTypeExpression(

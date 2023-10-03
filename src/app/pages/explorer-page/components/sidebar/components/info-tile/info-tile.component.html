@@ -349,7 +349,30 @@
       </p>
 
       <p>
-        <b>In Cancernet: </b>
+        <b>CTRPv2: </b>
+        <span
+          class="icon is-small has-tooltip-right"
+          data-tooltip="Compound tested in CTRPv2 cell line study."
+        >
+          <i
+            class="fas"
+            [class.fa-times]="
+              !wrapper.data.ctrpv2Id
+            "
+            [class.fa-check]="
+              wrapper.data.ctrpv2Id
+            "
+          ></i></span>
+          <a
+          *ngIf="wrapper.data.ctrpv2Id"
+          target="_blank"
+          href="https://portals.broadinstitute.org/ctrp/?compoundId={{wrapper.data.ctrpv2Id}}&compoundName={{wrapper.data.name}}"
+          >link <i class="fa fa-external-link has-text-primary"></i
+        ></a>
+      </p>
+
+      <p>
+        <b>In CanceRx: </b>
         <span class="icon is-small">
           <i
             class="fas"

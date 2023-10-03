@@ -87,7 +87,7 @@
                 <a class="navbar-item"> Report an issue </a>
               </div>
             </div> -->
-            <span class="navbar-item"> Version: 1.0.0 </span>
+            <span class="navbar-item"> Version: 1.1.0 </span>
           </div>
         </div>
       </nav>
@@ -170,6 +170,14 @@
             side bar.
           </p>
 
+          <div class="container has-text-centered">
+            <img
+              src="assets/Upload Genes Manual.png"
+              alt="Upload a list of genes to CADDIE"
+              title="Upload a list of genes to CADDIE"
+            />
+          </div>
+          
           <a id="documentation-algorithms"></a>
 
           <h4 class="title is-4">Algorithms</h4>
@@ -258,10 +266,9 @@
               <b>Degree Centrality:</b> Degree centrality measurement is
               obtained by ranking the nodes in a network based on their degree,
               which is defined as the number of neighbors a node has divided by
-              the number of nodes. Its normalized form, which is implemented in
-              CADDIE, can be described as
+              the number of nodes. It be described as
               <div class="documentation-formula">
-                <i>centrality<sub>degree</sub>(x) = deg(x) / n − 1</i>
+                <i>centrality<sub>degree</sub>(x) = deg(x)</i>
               </div>
               where x is a given node and deg(x) is its degree. While it is a
               <a
@@ -282,17 +289,16 @@
               <b>Harmonic Centrality:</b> Harmonic centrality measurement can be
               described as the average shortest distance from each node to all
               other nodes in a network. This measurement is the equivalent of
-              closeness centrality for disconnected graphs. For comparable
-              results, the normalized version was used. Formally speaking, it
+              closeness centrality for disconnected graphs. Formally speaking, it
               can be annotated as
 
               <div class="documentation-formula">
                 <i>centrality<sub>harmonic</sub>(x) = </i>&sum;<sub
                   >y&#x2260;x</sub
-                ><sup>y</sup>( (n − 1) / dist(x, y) )
+                ><sup>y</sup>( 1 / dist(x, y) )
               </div>
 
-              where x is a given node and n − 1/dist(x, y) = 0 if dist(x, y) = ∞
+              where x is a given node and 1/dist(x, y) = 0 if dist(x, y) = ∞
               (<a
                 href="https://www.semanticscholar.org/paper/Closeness-Centrality-Extended-to-Unconnected-the-Rochat/a4ea7b92421415674c6ed954914f0512935d0dfb"
                 target="_blank"
@@ -409,6 +415,17 @@
             <li>
               <i>Nutraceutical Drugs (only drug search): </i>If set,
               nutraceutical drugs will be excluded.
+            </li>
+            <li>
+              <i>Only CTRPv2 (only drug search): </i>If set, only drugs tested
+              in the
+              <a
+                href="https://portals.broadinstitute.org/ctrp/?page=#ctd2BodyHome"
+                target="_blank"
+                >CTRPv2</a
+              >
+              dataset are considered. The CTRPv2 study contains 481 compounds
+              that target distinct processes in the cell.
             </li>
             <li>
               <i>Only ATC class L (only drug search): </i>If set, only drugs

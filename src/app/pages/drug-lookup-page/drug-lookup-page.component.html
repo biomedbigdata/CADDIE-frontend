@@ -1,4 +1,5 @@
 <div class="scrollable">
+    <app-cancernet-panel [drug]="explorerData.cancernetDrug" [(show)]="explorerData.showCancernetModal" (closeEvent)="explorerData.closeCancernetModal()"></app-cancernet-panel>
     <div class="content">
         <div class="container footer-padding">
             <div class="column is-8 is-offset-2">
@@ -58,7 +59,7 @@
                                 <p-sortIcon [field]="'isATCAntineoplasticAndImmunomodulatingAgent'"></p-sortIcon>
                             </th>
                             <th>
-                                In Cancernet
+                                CanceRx
                             </th>
                         </tr>
                     </ng-template>
@@ -97,9 +98,8 @@
                             </td>
                             <td>
                                 <span *ngIf="e.inCancernet">
-                    <i class="fa fa-check has-text-primary"></i>
-                    Cancernet
-                  </span>
+                                    <a (click)="explorerData.openCancernetModal(e)" >open<i class="fa fa-external-link has-text-primary"></i></a>
+                                  </span>
                                 <span *ngIf="!e.inCancernet">
                     <i class="fa fa-times"></i>
                   </span>
@@ -133,7 +133,7 @@
                                 <p-sortIcon [field]="'name'"></p-sortIcon>
                             </th>
                             <th [pSortableColumn]="'proteinName'">
-                                proteinName
+                                Protein Name
                                 <p-sortIcon [field]="'proteinName'"></p-sortIcon>
                             </th>
                             <th [pSortableColumn]="'cancerTypes'">

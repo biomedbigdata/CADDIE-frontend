@@ -11,4 +11,5 @@ export class AppComponent {
   public toggleMobileMenu() {
     this.mobileWindowExpanded = !this.mobileWindowExpanded;
   }
+
 }

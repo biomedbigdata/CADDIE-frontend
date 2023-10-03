@@ -1,4 +1,4 @@
-<div class="caddie network" #network_container>
+<div class="caddie network {{networkType}}" #network_container>
   <div class="card network" id="network-card" [ngClass]="{analysis: networkType==='analysis'}">
     <!-- <header class="card-header">
       <p class="card-header-title">Gene-Gene Interaction Network</p>
@@ -55,10 +55,10 @@
               &nbsp;ATC Class L
             </td>
           </tr>
-          <!-- <tr *ngIf="networkType === 'analysis' && target === 'drug'">
+          <tr *ngIf="networkType === 'analysis' && target === 'drug'">
             <td><span class="cancernet-node">label</span></td>
-            <td>&nbsp;Drug in Cancernet</td>
-          </tr> -->
+            <td>&nbsp;Drug in CanceRx</td>
+          </tr>
         </table>
       </div>
       <!-- END Legend -->
@@ -111,7 +111,7 @@
 
       <!-- START Legend -->
       <!-- <div
-        *ngIf="networkType === 'basic'"
+        *ngIf="networkType !== 'analysis'"
         class="legend main"
         [ngClass]="{
           'pushed-left':
@@ -141,7 +141,7 @@
       <!-- <div
         class="legend main gradient"
         *ngIf="
-          (networkType === 'basic' &&
+          (networkType !== 'analysis' &&
             explorerData.activeNetwork.selectedMutationCancerType) ||
           explorerData.activeNetwork.selectedExpressionCancerType ||
           selectedTissue
@@ -183,6 +183,7 @@
       <footer class="card-footer toolbar network-footer-container">
 
         <app-button
+        *ngIf="networkType !== 'simpleAnalysis' && networkType !== 'simple'"
         buttonText="Menu"
         (callbackFun)="explorerData.showNetworkMenuDialog = !explorerData.showNetworkMenuDialog"
         icon="fa fa-cogs"
@@ -193,6 +194,7 @@ that revolve around the network."
       </app-button>
 
       <app-button
+      *ngIf="networkType !== 'simpleAnalysis'"
       buttonText="Upload Genes"
       (callbackFun)="explorerData.showCustomGenesDialog = !explorerData.showCustomGenesDialog"
       icon="fa fa-upload"
@@ -219,9 +221,11 @@ that revolve around the network."
           [elements]="analysis.getDrugStatus()"
           (callbackFun)="toggleDrugs($event)"
           label="Drugs"
+          class="overlay footer-buttons"
         ></app-category-selector>
 
         <app-category-selector
+          *ngIf="networkType !== 'simpleAnalysis'"
           [expanded]="expressionExpanded"
           [selectedElement]="selectedTissue"
           [elements]="analysis.getTissues()"
@@ -229,9 +233,11 @@ that revolve around the network."
           label="Expr. Tissue"
           class="footer-buttons is-inline-block has-tooltip"
           data-tooltip="Highlight the gene expression in GTEx tissues"
+          class="overlay footer-buttons"
         ></app-category-selector>
 
         <app-category-selector
+          *ngIf="networkType !== 'simpleAnalysis'"
           [expanded]="expressionExpanded"
           [selectedElement]="selectedExpressionCancerType"
           (callbackFun)="selectExpressionCancerType($event)"
@@ -240,9 +246,11 @@ that revolve around the network."
           class="footer-buttons is-inline-block has-tooltip"
           data-tooltip="Highlight the gene expression
 in TCGA cancer types"
+          class="overlay footer-buttons"
         ></app-category-selector>
 
         <app-category-selector
+          *ngIf="networkType !== 'simpleAnalysis'"
           [expanded]="mutationCancerTypesExpanded"
           [selectedElement]="
             explorerData.activeNetwork.selectedMutationCancerType
@@ -253,6 +261,7 @@ in TCGA cancer types"
           class="footer-buttons is-inline-block has-tooltip"
           data-tooltip="Highlight the cancer mutations
 in TCGA cancer types"
+          class="overlay footer-buttons"
         ></app-category-selector>
 
         <app-toggle
@@ -284,6 +293,18 @@ in TCGA cancer types"
         data-tooltip="Close the fullscreen"
       >
       </app-button>
+
+      <app-toggle
+      textOn="Isolated Nodes On"
+      textOff="Off"
+      (valueChange)="toggleIsolatedNodes()"
+      icon="fas fa-compress-alt"
+      class="is-inline-block footer-buttons has-tooltip"
+      tooltipOn="Enable visibility of isolated nodes in the network"
+      tooltipOff="Disable visibility of isolated nodes in the network"
+      [value]="showIsolatedNodes"
+    >
+    </app-toggle>
 
         <div class="field" *ngIf="networkType === 'analysis'">
           <p class="control footer-buttons">

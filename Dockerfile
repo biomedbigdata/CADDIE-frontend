@@ -20,7 +20,7 @@ RUN cp -f /app/src/environments/environment.uhh.prod.ts /app/src/environments/en
 
 # RUN NODE_OPTIONS="--max-old-space-size=16384"
 
-RUN npm run build -- --prod --base-href=/ --output-path=./dist/caddie
+RUN npm run build -- --prod --base-href=/caddie/ --output-path=./dist/caddie
 
 FROM nginx:1.23.1-alpine
 

@@ -87,11 +87,16 @@ export class SimpleExplorerPageComponent implements OnInit {
     count: 38761
   }
   public interactionDrugDataset: Dataset = {
-    backendId: 4,
-    name: "DGIdb",
-    link: "https://www.dgidb.org/",
-    version: "4.2.0",
-    count: 26201
+    // backendId: 4,
+    // name: "DGIdb",
+    // link: "https://www.dgidb.org/",
+    // version: "4.2.0",
+    // count: 26201
+    "backendId": 2,
+    "name": "DrugBank",
+    "link": "https://go.drugbank.com/",
+    "version": "5.1.7",
+    "count": 15445
   }
   public cancerTypes: CancerType[] = [];
   public cancerType: CancerType = {

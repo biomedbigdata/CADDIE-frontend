@@ -499,3 +499,12 @@ body::-webkit-scrollbar-button:increment {
     }
   }
 }
+
+.simple-explorer {
+  .loadingOverlay{
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    position: absolute;
+  }
+}

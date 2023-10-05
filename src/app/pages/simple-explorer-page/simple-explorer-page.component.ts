@@ -6,6 +6,7 @@ import { AnalysisService } from 'src/app/services/analysis/analysis.service';
 import { ControlService } from 'src/app/services/control/control.service';
 import { environment } from 'src/environments/environment';
 import { ExplorerDataService } from 'src/app/services/explorer-data/explorer-data.service';
+import { LoadingOverlayService } from 'src/app/services/loading-overlay/loading-overlay.service';
 
 declare var vis: any;
 
@@ -23,7 +24,8 @@ export class SimpleExplorerPageComponent implements OnInit {
     public backend: ControlService,
     public explorerData: ExplorerDataService, 
     private route: ActivatedRoute,
-    private control: ControlService
+    private control: ControlService,
+    private loading: LoadingOverlayService
     ) {
     this.analysis.subscribeList((items, selected) => {
       if (this.explorerData.activeNetwork.nodeData.nodes === null || !this.explorerData.activeNetwork.nodeData.nodes.length) {
@@ -69,7 +71,6 @@ export class SimpleExplorerPageComponent implements OnInit {
         this.explorerData.activeNetwork.nodeData.nodes.update(updatedNodes);
       }
     });
-  
      }
 
   public dataset: Dataset = {
@@ -80,11 +81,16 @@ export class SimpleExplorerPageComponent implements OnInit {
     "count": 2088
   }
   public interactionGeneDataset: Dataset = {
-    backendId: 5,
-    name: "HTRIdb",
-    link: "http://www.lbbc.ibb.unesp.br/htri/index.jsp",
-    version: "2020-11-20",
-    count: 38761
+    // backendId: 5,
+    // name: "HTRIdb",
+    // link: "http://www.lbbc.ibb.unesp.br/htri/index.jsp",
+    // version: "2020-11-20",
+    // count: 38761
+    "backendId": 1,
+    "name": "BioGRID",
+    "link": "https://thebiogrid.org/",
+    "version": "4.0",
+    "count": 319747
   }
   public interactionDrugDataset: Dataset = {
     // backendId: 4,
@@ -120,6 +126,10 @@ export class SimpleExplorerPageComponent implements OnInit {
     this.explorerData.networks['simple'].selectedCancerTypeItems = [this.cancerType];
 
     this.explorerData.activate('simple');
+
+    // this.loading.addTo('loadingOverlayTarget');
+
+    // this.loadingOverlay.removeFrom('loadingOverlayTarget');
   }
 
   public selectCancerType(cancerType: CancerType) {

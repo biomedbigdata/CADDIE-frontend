@@ -22,7 +22,7 @@
             <td><span class="node"></span></td>
             <td>&nbsp;Gene</td>
           </tr>
-          <tr *ngIf="networkType === 'analysis'">
+          <tr *ngIf="networkType === 'analysis' || networkType === 'simpleAnalysis'">
             <td><span class="seed-node"></span></td>
             <td>&nbsp;Seed Gene</td>
           </tr>
@@ -30,7 +30,7 @@
             <td><span class="cancer-node"></span></td>
             <td>&nbsp;Cancer Gene</td>
           </tr>
-          <tr *ngIf="networkType === 'analysis'">
+          <tr *ngIf="networkType === 'analysis' || networkType === 'simpleAnalysis'">
             <td><span class="seed-cancer-node"></span></td>
             <td>&nbsp;Seed Cancer Gene</td>
           </tr>
@@ -38,15 +38,15 @@
             <td><span class="selected-cancer-node"></span></td>
             <td>&nbsp;Selected Node</td>
           </tr>
-          <tr *ngIf="networkType === 'analysis' && target === 'drug'">
+          <tr *ngIf="networkType === 'analysis' && target === 'drug' || networkType === 'simpleAnalysis'">
             <td><span class="approved-drug"></span></td>
             <td>&nbsp;Approved Drug</td>
           </tr>
-          <tr *ngIf="networkType === 'analysis' && target === 'drug'">
+          <tr *ngIf="networkType === 'analysis' && target === 'drug' || networkType === 'simpleAnalysis'">
             <td><span class="non-approved-drug"></span></td>
             <td>&nbsp;Unapproved Drug</td>
           </tr>
-          <tr *ngIf="networkType === 'analysis' && target === 'drug'">
+          <tr *ngIf="networkType === 'analysis' && target === 'drug' || networkType === 'simpleAnalysis'">
             <td><span class="cancer-drug"></span></td>
             <td
               class="has-tooltip-right"
@@ -55,7 +55,7 @@
               &nbsp;ATC Class L
             </td>
           </tr>
-          <tr *ngIf="networkType === 'analysis' && target === 'drug'">
+          <tr *ngIf="networkType === 'analysis' && target === 'drug' || networkType === 'simpleAnalysis'">
             <td><span class="cancernet-node">label</span></td>
             <td>&nbsp;Drug in CanceRx</td>
           </tr>
@@ -73,9 +73,9 @@
         "
       >
         <div class="color-gradient-gene bar"></div>
-        <div class="color-gradient-gene-seed bar" *ngIf="networkType === 'analysis'"></div>
+        <div class="color-gradient-gene-seed bar" *ngIf="networkType === 'analysis' || networkType === 'simpleAnalysis'"></div>
         <div class="color-gradient-cancer-gene bar"></div>
-        <div class="color-gradient-cancer-gene-seed bar" *ngIf="networkType === 'analysis'"></div>
+        <div class="color-gradient-cancer-gene-seed bar" *ngIf="networkType === 'analysis' || networkType === 'simpleAnalysis'"></div>
         <span class="annotation-max"
           >High <br />
           <span *ngIf="explorerData.activeNetwork.selectedMutationCancerType"

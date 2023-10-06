@@ -702,7 +702,7 @@ export class AnalysisService {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
-    this.intervalId = setInterval(watch, 5000);
+    this.intervalId = setInterval(watch, 3000);
   }
 
   public getGraphId(wrapper: Wrapper) {

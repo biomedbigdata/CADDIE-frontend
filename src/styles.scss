@@ -501,9 +501,33 @@ body::-webkit-scrollbar-button:increment {
 }
 
 .simple-explorer {
-  .loadingOverlay{
-    height: 100vh;
-    top: 0;
-    position: absolute;
+    .loadingOverlay{
+      left: 0;
+      top: 0;
+      width: 60vw;
+      position: absolute;
+      min-width: 0;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+  .simple-explorer { 
+    #task-list{
+      .list-item {
+        height: 65px !important;
+        .column {
+          display: inline-block;
+        }
+      }
+    }
+    .loadingOverlay{
+      height: 100vh;
+      width: 100vw;
+      top: 0;
+      position: absolute;
+    }
+  }
+  #simple-analysis-result-modal{
+    width: 100% !important;
   }
 }

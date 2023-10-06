@@ -504,13 +504,13 @@ body::-webkit-scrollbar-button:increment {
     .loadingOverlay{
       left: 0;
       top: 0;
-      width: 60vw;
+      width: 100vw;
       position: absolute;
       min-width: 0;
     }
 }
 
-@media only screen and (max-width: 1200px) {
+@media (max-width: 1200px) {
   .simple-explorer { 
     #task-list{
       .list-item {

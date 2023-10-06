@@ -17,11 +17,11 @@ RUN npm install
 COPY . /app/
 
 # environment.prod.ts will be used on server to provide backend url, however, staging requires dev url
-RUN cp -f /app/src/environments/environment.dev.ts /app/src/environments/environment.prod.ts
+RUN cp -f /app/src/environments/environment.local.ts /app/src/environments/environment.prod.ts
 
 # RUN NODE_OPTIONS="--max-old-space-size=16384"
 
-RUN npm run build -- --prod --base-href=/caddie_dev/ --output-path=./dist/caddie
+RUN npm run build -- --prod --base-href=/caddie/ --output-path=./dist/caddie
 
 RUN cp -r /app/dist/caddie/* /usr/share/nginx/html/
 

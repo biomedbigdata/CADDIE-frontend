@@ -6,4 +6,4 @@ services:
       dockerfile: Dockerfile.development
     image: caddie_web:development
     ports:
-      - "4200:4200"
+      - "4200:80"

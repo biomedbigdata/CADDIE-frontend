@@ -17,7 +17,7 @@ FROM nginx:mainline-alpine
 
 RUN apk update && apk add --upgrade apk-tools && apk upgrade --available
 
-COPY --from=build-stage /app/dist/caddie-frontend/ /usr/share/nginx/html/caddie/
+COPY --from=build-stage /app/dist/caddie-frontend/ /usr/share/nginx/html/
 
 COPY nginx/default.conf /etc/nginx/conf.d/
 

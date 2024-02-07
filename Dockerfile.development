@@ -17,7 +17,7 @@ RUN npm install
 COPY . /app/
 
 # environment.prod.ts will be used on server to provide backend url, however, staging requires dev url
-RUN cp -f /app/src/environments/environment.development.ts /app/src/environments/environment.ts
+RUN cp -f src/environments/environment.development.ts /app/src/environments/environment.ts
 
 # RUN NODE_OPTIONS="--max-old-space-size=16384"
 

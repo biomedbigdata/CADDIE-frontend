@@ -16,7 +16,7 @@ RUN npm install
 
 COPY . /app/
 
-RUN cp -f /app/src/environments/environment.local.ts /app/src/environments/environment.ts
+RUN cp -f src/environments/environment.local.ts /app/src/environments/environment.ts
 
 # RUN NODE_OPTIONS="--max-old-space-size=16384"
 

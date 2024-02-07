@@ -1,0 +1,24 @@
+FROM node:16.17 as build-stage
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install -g n
+RUN n 16.17.1
+RUN npm install
+COPY ./ .
+RUN rm -rf nginx
+
+COPY ./src/environments/environment.local.ts ./src/environments/environment.ts
+
+RUN npm run build -- --base-href=/caddie/ --output-path=./dist/caddie-frontend
+
+FROM nginx:mainline-alpine
+
+RUN apk update && apk add --upgrade apk-tools && apk upgrade --available
+
+COPY --from=build-stage /app/dist/caddie-frontend/ /usr/share/nginx/html/caddie/
+
+COPY nginx/default.conf /etc/nginx/conf.d/
+
+EXPOSE 80

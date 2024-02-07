@@ -1,30 +1,23 @@
-FROM node:16.15.0
+FROM node:16.17
 
-RUN apt-get update
-RUN apt-get install -y curl
+WORKDIR /app
 
-# RUN curl -sL https://deb.nodesource.com/setup_16.x | bash
-
-RUN apt-get install -y nodejs
-
-COPY package.json /app/
-COPY package-lock.json /app/
-
-WORKDIR /app/
-
+COPY package*.json ./
+RUN npm install -g n
+RUN n 16.17.1
 RUN npm install
-
-COPY . /app/
+COPY ./ .
+RUN rm -rf nginx
 
 RUN cp -f /app/src/environments/environment.development.ts /app/src/environments/environment.ts
 
 # RUN NODE_OPTIONS="--max-old-space-size=16384"
 
-RUN npm run build -- --prod --base-href=/caddie/ --output-path=./dist/caddie
+RUN npm run build -- --base-href=/caddie/ --output-path=/app/dist/caddie
 
-RUN cp -r /app/dist/caddie/* /usr/share/nginx/html/
+COPY /app/dist/caddie/ /usr/share/nginx/html/caddie/
 
 COPY nginx/default.conf /etc/nginx/conf.d/
 COPY nginx/htpasswd /etc/nginx/htpasswd
 
-EXPOSE 4200
+EXPOSE 80
